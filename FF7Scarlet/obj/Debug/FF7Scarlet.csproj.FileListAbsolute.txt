@@ -1,0 +1,13 @@
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\bin\Debug\FF7Scarlet.exe.config
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\bin\Debug\FF7Scarlet.exe
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\bin\Debug\FF7Scarlet.pdb
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.Properties.Resources.resources
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.csproj.GenerateResource.cache
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.csproj.CoreCompileInputs.cache
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.exe
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.pdb
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.csproj.AssemblyReference.cache
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.MainForm.resources
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.CodeForm.resources
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.ParameterForm.resources
+C:\Users\Amy\source\repos\FF7Scarlet\FF7Scarlet\obj\Debug\FF7Scarlet.ParameterControl.resources

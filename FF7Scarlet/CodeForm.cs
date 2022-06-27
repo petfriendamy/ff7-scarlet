@@ -14,6 +14,7 @@ namespace FF7Scarlet
     {
         public Code Code { get; private set; }
         private List<OpcodeInfo> currList;
+        private bool loading = true, unsavedChanges = false;
 
         public CodeForm(Code code = null)
         {
@@ -94,6 +95,7 @@ namespace FF7Scarlet
                     }
                 }
             }
+            loading = false;
         }
 
         private void UpdateOpcodesList()
@@ -121,6 +123,7 @@ namespace FF7Scarlet
                 }
                 comboBoxOpcodes.SelectedIndex = 0;
             }
+            if (!loading) { unsavedChanges = true; }
         }
 
         private void UpdateOpcodeParameter()
@@ -132,6 +135,7 @@ namespace FF7Scarlet
                 labelManualParameter.Visible = comboBoxManualParameter.Visible = 
                     (opcode.ParameterType != ParameterTypes.None);
             }
+            if (!loading) { unsavedChanges = true; }
         }
 
         private void SetParameterVisibility(int parameter, bool visible)
@@ -186,6 +190,7 @@ namespace FF7Scarlet
                     }
                 }
             }
+            unsavedChanges = true;
         }
 
         private void comboBoxOpcodeGroups_SelectedIndexChanged(object sender, EventArgs e)
@@ -206,6 +211,18 @@ namespace FF7Scarlet
         private void buttonParameter2_Click(object sender, EventArgs e)
         {
             EditParameter(1);
+        }
+
+        private void buttonOK_Click(object sender, EventArgs e)
+        {
+            if (unsavedChanges)
+            {
+                if (tabControlOptions.SelectedTab == tabPageGenerate)
+                {
+                    //stuff
+                }
+            }
+            Close();
         }
     }
 }
