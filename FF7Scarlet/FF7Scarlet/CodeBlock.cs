@@ -11,13 +11,15 @@ namespace FF7Scarlet
     {
         private readonly List<Code> block = new List<Code> { };
 
-        public CodeBlock(Code first)
+        public CodeBlock(Script parent, Code first)
         {
+            Parent = parent;
             AddToEnd(first);
         }
 
-        public CodeBlock(List<Code> list)
+        public CodeBlock(Script parent, List<Code> list)
         {
+            Parent = parent;
             block = list;
         }
 
@@ -139,7 +141,13 @@ namespace FF7Scarlet
                         }
                         else
                         {
-                            output += $"PerformAttack ({pop1.Parameter}, {pop2.Parameter})";
+                            string atkName = $"Unknown ({pop2.Parameter})";
+                            var scene = GetParentScene();
+                            if (scene != null)
+                            {
+                                atkName = scene.GetAttackName(pop2.Parameter.ToInt());
+                            }
+                            output += $"PerformAttack ({pop1.Parameter}, {atkName})";
                         }
                         break;
                     case Opcodes.AssignGlobal:

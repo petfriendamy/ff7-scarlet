@@ -117,10 +117,10 @@ namespace FF7Scarlet
             {
                 if (p.Checked || p.IsFirst)
                 {
-                    firstParse.Add(new CodeLine(-1, p.ParamType, p.Parameter));
+                    firstParse.Add(new CodeLine(null, -1, p.ParamType, p.Parameter));
                     if (!p.IsFirst && p.Operand != -1)
                     {
-                        firstParse.Add(new CodeLine(-1, p.Operand));
+                        firstParse.Add(new CodeLine(null, -1, p.Operand));
                     }
                 }
             }

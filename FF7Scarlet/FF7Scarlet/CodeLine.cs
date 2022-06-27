@@ -13,8 +13,9 @@ namespace FF7Scarlet
         public int Opcode { get; set; }
         public FFText Parameter { get; set; }
 
-        public CodeLine(int header, int opcode, FFText parameter = null)
+        public CodeLine(Script parent, int header, int opcode, FFText parameter = null)
         {
+            Parent = parent;
             Header = header;
             Opcode = opcode;
             Parameter = parameter;

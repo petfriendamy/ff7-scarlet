@@ -114,7 +114,7 @@ namespace FF7Scarlet
                             loading = false;
                         }
                     }
-                    catch (FileLoadException ex)
+                    catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
                     }

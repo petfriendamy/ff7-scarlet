@@ -11,8 +11,9 @@ namespace FF7Scarlet
         public int ID { get; }
         public FFText Name { get; }
 
-        public Enemy(int id, FFText name)
+        public Enemy(Scene parent, int id, FFText name)
         {
+            Parent = parent;
             ID = id;
             Name = name;
         }

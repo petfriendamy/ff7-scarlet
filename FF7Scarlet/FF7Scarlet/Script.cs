@@ -15,9 +15,11 @@ namespace FF7Scarlet
         {
             get { return code.Count == 0; }
         }
+        public AIContainer Parent { get; }
 
-        public Script(ref byte[] data, int offset, int nextOffset)
+        public Script(AIContainer parent, ref byte[] data, int offset, int nextOffset)
         {
+            Parent = parent;
             ParseScript(ref data, offset, nextOffset);
         }
 
@@ -44,7 +46,7 @@ namespace FF7Scarlet
                         {
                             throw new EndOfStreamException();
                         }
-                        var parsedLine = new CodeLine(pos, opcode);
+                        var parsedLine = new CodeLine(this, pos, opcode);
                         if (Enum.IsDefined(typeof(Opcodes), (int)opcode))
                         {
                             var type = OpcodeInfo.GetInfo(opcode).ParameterType;
@@ -107,17 +109,17 @@ namespace FF7Scarlet
                 if (labels.Contains(firstParse[i].Header))
                 {
                     int labelPos = labels.IndexOf(firstParse[i].Header) + 1;
-                    var newLabel = new CodeLine(-1, (int)Opcodes.Label, new FFText(labelPos));
+                    var newLabel = new CodeLine(this, -1, (int)Opcodes.Label, new FFText(labelPos));
                     firstParse.Insert(i, newLabel);
                     ++i;
                 }
             }
 
             //the final parsing
-            code = GetParsedCode(firstParse);
+            code = GetParsedCode(firstParse, this);
         }
 
-        public static List<Code> GetParsedCode(List<CodeLine> list)
+        public static List<Code> GetParsedCode(List<CodeLine> list, Script parent = null)
         {
             //use a stack to combine values
             var stack = new Stack<Code> { };
@@ -129,10 +131,17 @@ namespace FF7Scarlet
                     int popCount = OpcodeInfo.GetInfo(c.Opcode).PopCount;
                     if (popCount > 0)
                     {
-                        var block = new CodeBlock(c);
+                        var block = new CodeBlock(parent, c);
                         for (int i = 0; i < popCount; ++i)
                         {
-                            block.AddToTop(stack.Pop());
+                            try
+                            {
+                                block.AddToTop(stack.Pop());
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                                throw new InvalidOperationException($"{ex.Message} (opcode: {OpcodeInfo.GetInfo(c.Opcode).Name})");
+                            }
                         }
                         stack.Push(block);
                     }

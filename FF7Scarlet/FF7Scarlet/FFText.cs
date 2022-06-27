@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,7 +58,7 @@ namespace FF7Scarlet
                 {
                     if (data[i] != 0xFF)
                     {
-                        if (data[i] >= 0xEA && data[i] <= 0xF2)
+                        if (data[i] >= (int)CharacterNames.Cloud && data[i] <= (int)CharacterNames.Cid)
                         {
                             builder.Append("{" + Enum.GetName(typeof(CharacterNames), data[i]).ToUpper() + "}");
                             i += 2;
@@ -76,6 +77,17 @@ namespace FF7Scarlet
                 return builder.ToString().Trim();
             }
             return null;
+        }
+
+        public int ToInt()
+        {
+            int value;
+            var provider = new CultureInfo("en-US");
+            if (int.TryParse(ToString(), NumberStyles.HexNumber, provider, out value))
+            {
+                return value;
+            }
+            return -1;
         }
 
         public int CompareTo(object obj)

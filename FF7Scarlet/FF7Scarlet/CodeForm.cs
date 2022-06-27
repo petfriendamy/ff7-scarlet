@@ -174,7 +174,7 @@ namespace FF7Scarlet
                     Code test = null;
                     if (paramForm.Code.Count > 1)
                     {
-                        test = new CodeBlock(paramForm.Code);
+                        test = new CodeBlock(null, paramForm.Code);
                     }
                     else
                     {

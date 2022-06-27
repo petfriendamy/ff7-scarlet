@@ -32,6 +32,18 @@ namespace FF7Scarlet
             return null;
         }
 
+        public string GetAttackName(int id)
+        {
+            foreach (var atk in attackList)
+            {
+                if (atk.ID == id)
+                {
+                    return atk.Name.ToString();
+                }
+            }
+            return $"Unknown ({id:X4})";
+        }
+
         private void ParseData(byte[] data)
         {
             using (var ms = new MemoryStream(data, false))
@@ -72,7 +84,7 @@ namespace FF7Scarlet
                     enemyName[i] = new FFText(reader.ReadBytes(32));
                     if (!enemyName[i].IsEmpty())
                     {
-                        enemies[i] = new Enemy(enemyID[i], enemyName[i]);
+                        enemies[i] = new Enemy(this, enemyID[i], enemyName[i]);
                     }
                     reader.ReadBytes(152);
                 }

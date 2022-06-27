@@ -11,6 +11,7 @@ namespace FF7Scarlet
     {
         public const int SCRIPT_NUMBER = 16;
         protected Script[] scripts = new Script[SCRIPT_NUMBER];
+        public Scene Parent { get; protected set; }
 
         /*public AIContainer(ref byte[] data, int offset, int nextOffset)
         {
@@ -69,7 +70,7 @@ namespace FF7Scarlet
             {
                 if (scriptLengths[i] > 0)
                 {
-                    scripts[i] = new Script(ref data, scriptOffsets[i], scriptLengths[i]);
+                    scripts[i] = new Script(this, ref data, scriptOffsets[i], scriptLengths[i]);
                 }
             }
         }
