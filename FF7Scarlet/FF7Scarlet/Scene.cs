@@ -117,7 +117,14 @@ namespace FF7Scarlet
                                 next = formationAIoffset[j];
                             }
                         }
-                        formations[i].ParseScripts(ref AIdata, FORMATION_COUNT * 2, formationAIoffset[i], next);
+                        try
+                        {
+                            formations[i].ParseScripts(ref AIdata, FORMATION_COUNT * 2, formationAIoffset[i], next);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new FileLoadException($"An error occurred while parsing the formation scripts: {ex.Message}", ex);
+                        }
                     }
                 }
 
@@ -141,7 +148,14 @@ namespace FF7Scarlet
                                 next = enemyAIoffset[j];
                             }
                         }
-                        enemies[i].ParseScripts(ref AIdata, ENEMY_COUNT * 2, enemyAIoffset[i], next);
+                        try
+                        {
+                            enemies[i].ParseScripts(ref AIdata, ENEMY_COUNT * 2, enemyAIoffset[i], next);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new FileLoadException($"An error occurred while parsing the script for {enemyName[i]}: {ex.Message}", ex);
+                        }
                     }
                 }
             }

@@ -79,38 +79,44 @@ namespace FF7Scarlet
             {
                 if (File.Exists(file))
                 {
-                    currScene = new Scene(file);
+                    try
+                    {
+                        currScene = new Scene(file);
+                        listBoxEnemies.Items.Clear();
+                        if (currScene.GetEnemyByNumber(1) != null)
+                        {
+                            listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(1).Name.ToString());
+                        }
+                        if (currScene.GetEnemyByNumber(2) != null)
+                        {
+                            listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(2).Name.ToString());
+                        }
+                        if (currScene.GetEnemyByNumber(3) != null)
+                        {
+                            listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(3).Name.ToString());
+                        }
 
-                    listBoxEnemies.Items.Clear();
-                    if (currScene.GetEnemyByNumber(1) != null)
-                    {
-                        listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(1).Name.ToString());
-                    }
-                    if (currScene.GetEnemyByNumber(2) != null)
-                    {
-                        listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(2).Name.ToString());
-                    }
-                    if (currScene.GetEnemyByNumber(3) != null)
-                    {
-                        listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(3).Name.ToString());
-                    }
+                        //no enemies found
+                        if (listBoxEnemies.Items.Count == 0)
+                        {
+                            MessageBox.Show("This scene file is empty.", "No enemies found", MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                        }
+                        else
+                        {
+                            loading = true;
+                            listBoxEnemies.SelectedIndex = 0;
+                            listBoxScripts.Enabled = true;
+                            listBoxScripts.SelectedIndex = 0;
 
-                    //no enemies found
-                    if (listBoxEnemies.Items.Count == 0)
-                    {
-                        MessageBox.Show("This scene file is empty.", "No enemies found", MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning);
+                            UpdateScripts(1);
+                            DisplayScript(1, 0);
+                            loading = false;
+                        }
                     }
-                    else
+                    catch (FileLoadException ex)
                     {
-                        loading = true;
-                        listBoxEnemies.SelectedIndex = 0;
-                        listBoxScripts.Enabled = true;
-                        listBoxScripts.SelectedIndex = 0;
-
-                        UpdateScripts(1);
-                        DisplayScript(1, 0);
-                        loading = false;
+                        MessageBox.Show(ex.Message);
                     }
                 }
             }
