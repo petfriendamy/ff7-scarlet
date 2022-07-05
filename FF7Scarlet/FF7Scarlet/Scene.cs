@@ -23,6 +23,11 @@ namespace FF7Scarlet
             }
         }
 
+        public Scene(ref byte[] data)
+        {
+            ParseData(data);
+        }
+
         public Enemy GetEnemyByNumber(int id)
         {
             if (id >= 1 && id <= ENEMY_COUNT)
@@ -30,6 +35,24 @@ namespace FF7Scarlet
                 return enemies[id - 1];
             }
             return null;
+        }
+
+        public string GetEnemyNames()
+        {
+            string temp = "";
+            for (int i = 0; i < ENEMY_COUNT; i++)
+            {
+                if (enemies[i] != null)
+                {
+                    temp += enemies[i].Name;
+                    if (i + 1 < ENEMY_COUNT && enemies[i + 1] != null)
+                    {
+                        temp += ", ";
+                    }
+                }
+            }
+            if (temp == "") { return "EMPTY"; }
+            return temp;
         }
 
         public string GetAttackName(int id)
@@ -58,60 +81,67 @@ namespace FF7Scarlet
                 var enemyAIoffset = new int[ENEMY_COUNT];
                 byte[] AIdata;
 
-                //enemy IDs
-                for (i = 0; i < ENEMY_COUNT; ++i)
+                try
                 {
-                    enemyID[i] = reader.ReadInt16();
-                }
-
-                reader.ReadBytes(2); //padding
-                //battle setup data
-                for (i = 0; i < 4; ++i) { reader.ReadBytes(20); }
-                //camera placement data
-                for (i = 0; i < 4; ++i) { reader.ReadBytes(48); }
-                //battle formations
-                for (i = 0; i < 4; ++i)
-                {
-                    for (j = 0; j < 6; ++j)
+                    //enemy IDs
+                    for (i = 0; i < ENEMY_COUNT; ++i)
                     {
-                        reader.ReadBytes(16);
+                        enemyID[i] = reader.ReadUInt16();
+                    }
+
+                    reader.ReadBytes(2); //padding
+                    //battle setup data
+                    for (i = 0; i < 4; ++i) { reader.ReadBytes(20); }
+                    //camera placement data
+                    for (i = 0; i < 4; ++i) { reader.ReadBytes(48); }
+                    //battle formations
+                    for (i = 0; i < 4; ++i)
+                    {
+                        for (j = 0; j < 6; ++j)
+                        {
+                            reader.ReadBytes(16);
+                        }
+                    }
+
+                    //enemy data
+                    for (i = 0; i < ENEMY_COUNT; ++i)
+                    {
+                        enemyName[i] = new FFText(reader.ReadBytes(32));
+                        if (!enemyName[i].IsEmpty())
+                        {
+                            enemies[i] = new Enemy(this, enemyID[i], enemyName[i]);
+                        }
+                        reader.ReadBytes(152);
+                    }
+
+                    //attack data
+                    for (i = 0; i < ATTACK_COUNT; ++i) { reader.ReadBytes(28); }
+
+                    //attack IDs
+                    for (i = 0; i < ATTACK_COUNT; ++i)
+                    {
+                        attackID[i] = reader.ReadUInt16();
+                    }
+
+                    //attack names
+                    for (i = 0; i < ATTACK_COUNT; ++i)
+                    {
+                        attackName[i] = new FFText(reader.ReadBytes(32));
+                        if (!attackName[i].IsEmpty())
+                        {
+                            attackList.Add(new Attack(attackID[i], attackName[i]));
+                        }
                     }
                 }
-
-                //enemy data
-                for (i = 0; i < ENEMY_COUNT; ++i)
+                catch (Exception ex)
                 {
-                    enemyName[i] = new FFText(reader.ReadBytes(32));
-                    if (!enemyName[i].IsEmpty())
-                    {
-                        enemies[i] = new Enemy(this, enemyID[i], enemyName[i]);
-                    }
-                    reader.ReadBytes(152);
-                }
-
-                //attack data
-                for (i = 0; i < ATTACK_COUNT; ++i) { reader.ReadBytes(28); }
-
-                //attack IDs
-                for (i = 0; i < ATTACK_COUNT; ++i)
-                {
-                    attackID[i] = reader.ReadInt16();
-                }
-
-                //attack names
-                for (i = 0; i < ATTACK_COUNT; ++i)
-                {
-                    attackName[i] = new FFText(reader.ReadBytes(32));
-                    if (!attackName[i].IsEmpty())
-                    {
-                        attackList.Add(new Attack(attackID[i], attackName[i]));
-                    }
+                    throw new FileLoadException($"An error occured while parsing the enemy data: {ex.Message}", ex);
                 }
 
                 //formation offsets
                 for (i = 0; i < FORMATION_COUNT; ++i)
                 {
-                    formationAIoffset[i] = reader.ReadInt16();
+                    formationAIoffset[i] = reader.ReadUInt16();
                 }
 
                 //formations
@@ -143,7 +173,7 @@ namespace FF7Scarlet
                 //enemy A.I. offsets
                 for (i = 0; i < ENEMY_COUNT; ++i)
                 {
-                    enemyAIoffset[i] = reader.ReadInt16();
+                    enemyAIoffset[i] = reader.ReadUInt16();
                 }
 
                 //enemy A.I. scripts
@@ -166,7 +196,7 @@ namespace FF7Scarlet
                         }
                         catch (Exception ex)
                         {
-                            throw new FileLoadException($"An error occurred while parsing the script for {enemyName[i]}: {ex.Message}", ex);
+                            throw new FileLoadException($"An error occurred while parsing the script for {enemyName[i]} (enemy #{i + 1}): {ex.Message}", ex);
                         }
                     }
                 }

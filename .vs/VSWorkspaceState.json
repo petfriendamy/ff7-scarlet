@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\FF7Scarlet"
+    "\\FF7Scarlet",
+    "\\FF7Scarlet\\FF7Scarlet"
   ],
-  "SelectedNode": "\\FF7Scarlet\\FF7Scarlet.sln",
+  "SelectedNode": "\\FF7Scarlet\\FF7Scarlet\\AIContainer.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -14,7 +14,6 @@ namespace FF7Scarlet
     public partial class MainForm : Form
     {
         private const int SCRIPT_NUMBER = 16;
-        private Scene currScene;
         private readonly string[] SCRIPT_LIST = new string[SCRIPT_NUMBER]
         {
             "Pre-Battle", "Main", "General Counter", "Death Counter", "Physical Counter",
@@ -22,8 +21,10 @@ namespace FF7Scarlet
             "Custom Event 2", "Custom Event 3", "Custom Event 4", "Custom Event 5",
             "Custom Event 6", "Custom Event 7", "Custom Event 8"
         };
+        private Scene currScene;
+        private Scene[] sceneList;
         private List<Code> clipboard;
-        private bool loading = false, unsavedChanges = false;
+        private bool loading = false, unsavedChanges = false, isSceneBin = false;
 
         private Enemy SelectedEnemy
         {
@@ -63,14 +64,14 @@ namespace FF7Scarlet
             InitializeComponent();
         }
 
-        private void buttonLoad_Click(object sender, EventArgs e)
+        private async void buttonLoad_Click(object sender, EventArgs e)
         {
             DialogResult result;
             string file;
 
             using (var loadFile = new OpenFileDialog())
             {
-                loadFile.Filter = "Scene files|scene.*.bin";
+                loadFile.Filter = "Scene files|scene.bin;scene.*.bin";
                 result = loadFile.ShowDialog();
                 file = loadFile.FileName;
             }
@@ -81,44 +82,87 @@ namespace FF7Scarlet
                 {
                     try
                     {
-                        currScene = new Scene(file);
-                        listBoxEnemies.Items.Clear();
-                        if (currScene.GetEnemyByNumber(1) != null)
+                        loading = true;
+                        comboBoxSceneList.Items.Clear();
+                        if (Path.GetFileName(file) == "scene.bin")
                         {
-                            listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(1).Name.ToString());
-                        }
-                        if (currScene.GetEnemyByNumber(2) != null)
-                        {
-                            listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(2).Name.ToString());
-                        }
-                        if (currScene.GetEnemyByNumber(3) != null)
-                        {
-                            listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(3).Name.ToString());
-                        }
+                            isSceneBin = true;
+                            string temp = buttonLoad.Text;
+                            buttonLoad.Text = "Loading...";
+                            EnableDisableControls(false);
 
-                        //no enemies found
-                        if (listBoxEnemies.Items.Count == 0)
-                        {
-                            MessageBox.Show("This scene file is empty.", "No enemies found", MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
+                            var task = Task.Run(() => GZipper.LoadSceneBin(file));
+                            await task;
+                            sceneList = task.Result;
+
+                            currScene = sceneList[0];
+                            for (int i = 0; i < 256; ++i)
+                            {
+                                comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
+                            }
+                            comboBoxSceneList.SelectedIndex = 0;
+
+                            buttonLoad.Text = temp;
+                            EnableDisableControls(true);
                         }
                         else
                         {
-                            loading = true;
-                            listBoxEnemies.SelectedIndex = 0;
-                            listBoxScripts.Enabled = true;
-                            listBoxScripts.SelectedIndex = 0;
-
-                            UpdateScripts(1);
-                            DisplayScript(1, 0);
-                            loading = false;
+                            isSceneBin = false;
+                            currScene = new Scene(file);
                         }
+                        LoadNewEnemyList();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
                     }
+                    loading = false;
                 }
+            }
+        }
+
+        private void EnableDisableControls(bool enable)
+        {
+            buttonLoad.Enabled = enable;
+            buttonSave.Enabled = enable;
+            buttonSaveAs.Enabled = enable;
+            comboBoxSceneList.Enabled = enable;
+            listBoxEnemies.Enabled = enable;
+            listBoxScripts.Enabled = enable;
+            listBoxCurrScript.Enabled = enable;
+        }
+
+        private void LoadNewEnemyList()
+        {
+            loading = true;
+            listBoxEnemies.Items.Clear();
+            if (currScene.GetEnemyByNumber(1) != null)
+            {
+                listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(1).Name.ToString());
+            }
+            if (currScene.GetEnemyByNumber(2) != null)
+            {
+                listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(2).Name.ToString());
+            }
+            if (currScene.GetEnemyByNumber(3) != null)
+            {
+                listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(3).Name.ToString());
+            }
+
+            //no enemies found
+            if (listBoxEnemies.Items.Count == 0)
+            {
+                MessageBox.Show("This scene file is empty.", "No enemies found", MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            else
+            {
+                listBoxEnemies.SelectedIndex = 0;
+                listBoxScripts.Enabled = true;
+                listBoxScripts.SelectedIndex = 0;
+
+                UpdateScripts(1);
+                DisplayScript(1, 0);
             }
         }
 
@@ -246,6 +290,16 @@ namespace FF7Scarlet
                 listBoxCurrScript.SelectedIndex = temp + 1;
                 loading = false;
                 unsavedChanges = true;
+            }
+        }
+
+        private void comboBoxSceneList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && isSceneBin)
+            {
+                currScene = sceneList[comboBoxSceneList.SelectedIndex];
+                LoadNewEnemyList();
+                loading = false;
             }
         }
 

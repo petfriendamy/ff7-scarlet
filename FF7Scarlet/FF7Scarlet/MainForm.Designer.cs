@@ -48,6 +48,8 @@ namespace FF7Scarlet
             this.buttonSaveAs = new System.Windows.Forms.Button();
             this.groupBoxEnemies = new System.Windows.Forms.GroupBox();
             this.listBoxEnemies = new System.Windows.Forms.ListBox();
+            this.comboBoxSceneList = new System.Windows.Forms.ComboBox();
+            this.labelScenes = new System.Windows.Forms.Label();
             this.groupBoxScripts.SuspendLayout();
             this.groupBoxCurrScript.SuspendLayout();
             this.toolStripScript.SuspendLayout();
@@ -60,7 +62,7 @@ namespace FF7Scarlet
             this.buttonLoad.Location = new System.Drawing.Point(9, 348);
             this.buttonLoad.Name = "buttonLoad";
             this.buttonLoad.Size = new System.Drawing.Size(150, 23);
-            this.buttonLoad.TabIndex = 0;
+            this.buttonLoad.TabIndex = 3;
             this.buttonLoad.Text = "Load scene...";
             this.buttonLoad.UseVisualStyleBackColor = true;
             this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
@@ -70,10 +72,10 @@ namespace FF7Scarlet
             this.groupBoxScripts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBoxScripts.Controls.Add(this.listBoxScripts);
-            this.groupBoxScripts.Location = new System.Drawing.Point(9, 78);
+            this.groupBoxScripts.Location = new System.Drawing.Point(9, 109);
             this.groupBoxScripts.Name = "groupBoxScripts";
-            this.groupBoxScripts.Size = new System.Drawing.Size(150, 264);
-            this.groupBoxScripts.TabIndex = 1;
+            this.groupBoxScripts.Size = new System.Drawing.Size(150, 233);
+            this.groupBoxScripts.TabIndex = 2;
             this.groupBoxScripts.TabStop = false;
             this.groupBoxScripts.Text = "Scripts";
             // 
@@ -101,8 +103,8 @@ namespace FF7Scarlet
             "Custom Event 8"});
             this.listBoxScripts.Location = new System.Drawing.Point(3, 16);
             this.listBoxScripts.Name = "listBoxScripts";
-            this.listBoxScripts.Size = new System.Drawing.Size(144, 245);
-            this.listBoxScripts.TabIndex = 4;
+            this.listBoxScripts.Size = new System.Drawing.Size(144, 214);
+            this.listBoxScripts.TabIndex = 2;
             this.listBoxScripts.SelectedIndexChanged += new System.EventHandler(this.listBoxScripts_SelectedIndexChanged);
             // 
             // groupBoxCurrScript
@@ -112,10 +114,10 @@ namespace FF7Scarlet
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxCurrScript.Controls.Add(this.listBoxCurrScript);
             this.groupBoxCurrScript.Controls.Add(this.toolStripScript);
-            this.groupBoxCurrScript.Location = new System.Drawing.Point(165, 12);
+            this.groupBoxCurrScript.Location = new System.Drawing.Point(165, 40);
             this.groupBoxCurrScript.Name = "groupBoxCurrScript";
-            this.groupBoxCurrScript.Size = new System.Drawing.Size(447, 417);
-            this.groupBoxCurrScript.TabIndex = 2;
+            this.groupBoxCurrScript.Size = new System.Drawing.Size(447, 389);
+            this.groupBoxCurrScript.TabIndex = 6;
             this.groupBoxCurrScript.TabStop = false;
             this.groupBoxCurrScript.Text = "Current script";
             // 
@@ -127,8 +129,8 @@ namespace FF7Scarlet
             this.listBoxCurrScript.Location = new System.Drawing.Point(3, 41);
             this.listBoxCurrScript.Name = "listBoxCurrScript";
             this.listBoxCurrScript.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxCurrScript.Size = new System.Drawing.Size(441, 373);
-            this.listBoxCurrScript.TabIndex = 0;
+            this.listBoxCurrScript.Size = new System.Drawing.Size(441, 345);
+            this.listBoxCurrScript.TabIndex = 7;
             this.listBoxCurrScript.DoubleClick += new System.EventHandler(this.toolStripButtonEdit_Click);
             this.listBoxCurrScript.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBoxCurrScript_KeyDown);
             // 
@@ -149,7 +151,7 @@ namespace FF7Scarlet
             this.toolStripScript.Location = new System.Drawing.Point(3, 16);
             this.toolStripScript.Name = "toolStripScript";
             this.toolStripScript.Size = new System.Drawing.Size(441, 25);
-            this.toolStripScript.TabIndex = 1;
+            this.toolStripScript.TabIndex = 6;
             this.toolStripScript.Text = "toolStripScript";
             // 
             // toolStripButtonAdd
@@ -239,7 +241,7 @@ namespace FF7Scarlet
             this.buttonSave.Location = new System.Drawing.Point(9, 377);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(150, 23);
-            this.buttonSave.TabIndex = 3;
+            this.buttonSave.TabIndex = 4;
             this.buttonSave.Text = "Save scene";
             this.buttonSave.UseVisualStyleBackColor = true;
             // 
@@ -249,17 +251,17 @@ namespace FF7Scarlet
             this.buttonSaveAs.Location = new System.Drawing.Point(9, 406);
             this.buttonSaveAs.Name = "buttonSaveAs";
             this.buttonSaveAs.Size = new System.Drawing.Size(150, 23);
-            this.buttonSaveAs.TabIndex = 4;
+            this.buttonSaveAs.TabIndex = 5;
             this.buttonSaveAs.Text = "Save scene as...";
             this.buttonSaveAs.UseVisualStyleBackColor = true;
             // 
             // groupBoxEnemies
             // 
             this.groupBoxEnemies.Controls.Add(this.listBoxEnemies);
-            this.groupBoxEnemies.Location = new System.Drawing.Point(9, 12);
+            this.groupBoxEnemies.Location = new System.Drawing.Point(9, 40);
             this.groupBoxEnemies.Name = "groupBoxEnemies";
             this.groupBoxEnemies.Size = new System.Drawing.Size(150, 63);
-            this.groupBoxEnemies.TabIndex = 5;
+            this.groupBoxEnemies.TabIndex = 1;
             this.groupBoxEnemies.TabStop = false;
             this.groupBoxEnemies.Text = "Enemies";
             // 
@@ -270,14 +272,37 @@ namespace FF7Scarlet
             this.listBoxEnemies.Location = new System.Drawing.Point(3, 16);
             this.listBoxEnemies.Name = "listBoxEnemies";
             this.listBoxEnemies.Size = new System.Drawing.Size(144, 44);
-            this.listBoxEnemies.TabIndex = 0;
+            this.listBoxEnemies.TabIndex = 1;
             this.listBoxEnemies.SelectedIndexChanged += new System.EventHandler(this.listBoxEnemies_SelectedIndexChanged);
+            // 
+            // comboBoxSceneList
+            // 
+            this.comboBoxSceneList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxSceneList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSceneList.FormattingEnabled = true;
+            this.comboBoxSceneList.Location = new System.Drawing.Point(64, 12);
+            this.comboBoxSceneList.Name = "comboBoxSceneList";
+            this.comboBoxSceneList.Size = new System.Drawing.Size(548, 21);
+            this.comboBoxSceneList.TabIndex = 0;
+            this.comboBoxSceneList.SelectedIndexChanged += new System.EventHandler(this.comboBoxSceneList_SelectedIndexChanged);
+            // 
+            // labelScenes
+            // 
+            this.labelScenes.AutoSize = true;
+            this.labelScenes.Location = new System.Drawing.Point(12, 15);
+            this.labelScenes.Name = "labelScenes";
+            this.labelScenes.Size = new System.Drawing.Size(46, 13);
+            this.labelScenes.TabIndex = 7;
+            this.labelScenes.Text = "Scenes:";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 441);
+            this.Controls.Add(this.labelScenes);
+            this.Controls.Add(this.comboBoxSceneList);
             this.Controls.Add(this.groupBoxEnemies);
             this.Controls.Add(this.buttonSaveAs);
             this.Controls.Add(this.buttonSave);
@@ -296,6 +321,7 @@ namespace FF7Scarlet
             this.toolStripScript.PerformLayout();
             this.groupBoxEnemies.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -319,6 +345,8 @@ namespace FF7Scarlet
         private System.Windows.Forms.ToolStripButton toolStripButtonCut;
         private System.Windows.Forms.ToolStripButton toolStripButtonCopy;
         private System.Windows.Forms.ToolStripButton toolStripButtonPaste;
+        private System.Windows.Forms.ComboBox comboBoxSceneList;
+        private System.Windows.Forms.Label labelScenes;
     }
 }
 

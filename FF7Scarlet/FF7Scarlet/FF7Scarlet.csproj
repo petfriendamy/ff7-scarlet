@@ -62,9 +62,11 @@
     <Compile Include="CodeLine.cs" />
     <Compile Include="CommandInfo.cs" />
     <Compile Include="CommonVars.cs" />
+    <Compile Include="EndianConvert.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="FFText.cs" />
     <Compile Include="Formation.cs" />
+    <Compile Include="GZipper.cs" />
     <Compile Include="OpcodeInfo.cs" />
     <Compile Include="Opcodes.cs" />
     <Compile Include="ParameterControl.cs">

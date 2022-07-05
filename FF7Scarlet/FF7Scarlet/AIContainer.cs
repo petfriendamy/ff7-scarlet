@@ -35,7 +35,7 @@ namespace FF7Scarlet
             var scriptOffsets = new int[SCRIPT_NUMBER];
             for (i = 0; i < SCRIPT_NUMBER; ++i)
             {
-                scriptOffsets[i] = BitConverter.ToUInt16(data, (i * 2) + offset - headerSize);
+                scriptOffsets[i] = BitConverter.ToUInt16(data, (i * 2)); // + offset - headerSize);
             }
 
             //get script lengths
