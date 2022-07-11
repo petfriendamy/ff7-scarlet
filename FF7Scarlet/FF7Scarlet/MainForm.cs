@@ -64,14 +64,14 @@ namespace FF7Scarlet
             InitializeComponent();
         }
 
-        private async void buttonLoad_Click(object sender, EventArgs e)
+        private void buttonLoad_Click(object sender, EventArgs e)
         {
             DialogResult result;
             string file;
 
             using (var loadFile = new OpenFileDialog())
             {
-                loadFile.Filter = "Scene files|scene.bin;scene.*.bin";
+                loadFile.Filter = "scene.bin, scene files|scene.bin;scene.*.bin";
                 result = loadFile.ShowDialog();
                 file = loadFile.FileName;
             }
@@ -84,32 +84,25 @@ namespace FF7Scarlet
                     {
                         loading = true;
                         comboBoxSceneList.Items.Clear();
-                        if (Path.GetFileName(file) == "scene.bin")
+                        string name = Path.GetFileName(file);
+                        if (name == "scene.bin")
                         {
                             isSceneBin = true;
-                            string temp = buttonLoad.Text;
-                            buttonLoad.Text = "Loading...";
-                            EnableDisableControls(false);
-
-                            var task = Task.Run(() => GZipper.LoadSceneBin(file));
-                            await task;
-                            sceneList = task.Result;
-
+                            sceneList = GZipper.LoadSceneBin(file);
                             currScene = sceneList[0];
                             for (int i = 0; i < 256; ++i)
                             {
                                 comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
                             }
-                            comboBoxSceneList.SelectedIndex = 0;
-
-                            buttonLoad.Text = temp;
-                            EnableDisableControls(true);
                         }
                         else
                         {
                             isSceneBin = false;
                             currScene = new Scene(file);
+                            var temp = name.Split('.')[1];
+                            comboBoxSceneList.Items.Add($"{temp}: {currScene.GetEnemyNames()}");
                         }
+                        comboBoxSceneList.SelectedIndex = 0;
                         LoadNewEnemyList();
                     }
                     catch (Exception ex)
@@ -119,17 +112,6 @@ namespace FF7Scarlet
                     loading = false;
                 }
             }
-        }
-
-        private void EnableDisableControls(bool enable)
-        {
-            buttonLoad.Enabled = enable;
-            buttonSave.Enabled = enable;
-            buttonSaveAs.Enabled = enable;
-            comboBoxSceneList.Enabled = enable;
-            listBoxEnemies.Enabled = enable;
-            listBoxScripts.Enabled = enable;
-            listBoxCurrScript.Enabled = enable;
         }
 
         private void LoadNewEnemyList()
@@ -160,7 +142,6 @@ namespace FF7Scarlet
                 listBoxEnemies.SelectedIndex = 0;
                 listBoxScripts.Enabled = true;
                 listBoxScripts.SelectedIndex = 0;
-
                 UpdateScripts(1);
                 DisplayScript(1, 0);
             }
@@ -168,22 +149,32 @@ namespace FF7Scarlet
 
         private void UpdateScripts(int selectedEnemy)
         {
-            Enemy enemy = currScene.GetEnemyByNumber(selectedEnemy);
-            if (enemy != null)
+            try
             {
-                for (int i = 0; i < SCRIPT_NUMBER; ++i)
+                if (!currScene.ScriptsLoaded)
                 {
-                    listBoxScripts.Items[i] = SCRIPT_LIST[i];
-                    if (enemy.GetScriptAtPosition(i) != null)
+                    currScene.ParseAIScripts();
+                }
+                var enemy = currScene.GetEnemyByNumber(selectedEnemy);
+                if (enemy != null)
+                {
+                    for (int i = 0; i < SCRIPT_NUMBER; ++i)
                     {
-                        if (!enemy.GetScriptAtPosition(i).IsEmpty)
+                        listBoxScripts.Items[i] = SCRIPT_LIST[i];
+                        if (enemy.GetScriptAtPosition(i) != null)
                         {
-                            listBoxScripts.Items[i] += "*";
+                            if (!enemy.GetScriptAtPosition(i).IsEmpty)
+                            {
+                                listBoxScripts.Items[i] += "*";
+                            }
                         }
                     }
                 }
             }
-            
+            catch (FileLoadException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DisplayScript(int enemyID, int scriptID)

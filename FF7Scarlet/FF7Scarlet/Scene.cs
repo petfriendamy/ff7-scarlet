@@ -14,6 +14,12 @@ namespace FF7Scarlet
         private readonly Enemy[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
         private readonly List<Attack> attackList = new List<Attack> { };
+        private int[] formationAIoffset = new int[FORMATION_COUNT];
+        private int[] enemyAIoffset = new int[ENEMY_COUNT];
+        private byte[] formationAIRaw;
+        private byte[] enemyAIraw;
+
+        public bool ScriptsLoaded { get; private set; } = false;
 
         public Scene(string filePath)
         {
@@ -77,9 +83,7 @@ namespace FF7Scarlet
                 var enemyName = new FFText[ENEMY_COUNT];
                 var attackID = new int[ATTACK_COUNT];
                 var attackName = new FFText[ATTACK_COUNT];
-                var formationAIoffset = new int[FORMATION_COUNT];
-                var enemyAIoffset = new int[ENEMY_COUNT];
-                byte[] AIdata;
+                //byte[] AIdata;
 
                 try
                 {
@@ -145,30 +149,7 @@ namespace FF7Scarlet
                 }
 
                 //formations
-                AIdata = reader.ReadBytes(504);
-                for (i = 0; i < FORMATION_COUNT; ++i)
-                {
-                    if (formationAIoffset[i] >= 0 && formationAIoffset[i] < AIdata.Length)
-                    {
-                        formations[i] = new Formation();
-                        int next = -1;
-                        for (j = i + 1; j < FORMATION_COUNT && next == -1; ++j)
-                        {
-                            if (formationAIoffset[j] > 0 && formationAIoffset[j] < 0xFF)
-                            {
-                                next = formationAIoffset[j];
-                            }
-                        }
-                        try
-                        {
-                            formations[i].ParseScripts(ref AIdata, FORMATION_COUNT * 2, formationAIoffset[i], next);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new FileLoadException($"An error occurred while parsing the formation scripts: {ex.Message}", ex);
-                        }
-                    }
-                }
+                formationAIRaw = reader.ReadBytes(504);
 
                 //enemy A.I. offsets
                 for (i = 0; i < ENEMY_COUNT; ++i)
@@ -177,30 +158,61 @@ namespace FF7Scarlet
                 }
 
                 //enemy A.I. scripts
-                AIdata = reader.ReadBytes(4090);
-                for (i = 0; i < ENEMY_COUNT; ++i)
+                enemyAIraw = reader.ReadBytes(4096);
+            }
+        }
+
+        public void ParseAIScripts()
+        {
+            int i, j;
+            for (i = 0; i < FORMATION_COUNT; ++i)
+            {
+                if (formationAIoffset[i] >= 0 && formationAIoffset[i] < formationAIRaw.Length)
                 {
-                    if (enemies[i] != null)
+                    formations[i] = new Formation();
+                    int next = -1;
+                    for (j = i + 1; j < FORMATION_COUNT && next == -1; ++j)
                     {
-                        int next = -1;
-                        for (j = i + 1; j < ENEMY_COUNT && next == -1; ++j)
+                        if (formationAIoffset[j] > 0 && formationAIoffset[j] < 0xFF)
                         {
-                            if (enemies[j] != null)
-                            {
-                                next = enemyAIoffset[j];
-                            }
+                            next = formationAIoffset[j];
                         }
-                        try
-                        {
-                            enemies[i].ParseScripts(ref AIdata, ENEMY_COUNT * 2, enemyAIoffset[i], next);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new FileLoadException($"An error occurred while parsing the script for {enemyName[i]} (enemy #{i + 1}): {ex.Message}", ex);
-                        }
+                    }
+                    try
+                    {
+                        formations[i].ParseScripts(ref formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new FileLoadException($"An error occurred while parsing the formation scripts: {ex.Message}", ex);
                     }
                 }
             }
+
+            for (i = 0; i < ENEMY_COUNT; ++i)
+            {
+                if (enemies[i] != null)
+                {
+                    int next = -1;
+                    for (j = i + 1; j < ENEMY_COUNT && next == -1; ++j)
+                    {
+                        if (enemies[j] != null)
+                        {
+                            next = enemyAIoffset[j];
+                            if (next > enemyAIraw.Length) { next = -1; }
+                        }
+                    }
+                    try
+                    {
+                        enemies[i].ParseScripts(ref enemyAIraw, ENEMY_COUNT * 2, enemyAIoffset[i], next);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new FileLoadException($"An error occurred while parsing the script for {enemies[i].Name} (enemy #{i + 1}): {ex.Message}", ex);
+                    }
+                }
+            }
+            ScriptsLoaded = true;
         }
     }
 }
