@@ -32,7 +32,6 @@ namespace FF7Scarlet
             var intParser = new byte[4];
             var stringParser = new List<byte> { };
 
-            bool a = false;
             using (var ms = new MemoryStream(data, offset, length, false))
             using (var reader = new BinaryReader(ms))
             {
@@ -43,11 +42,6 @@ namespace FF7Scarlet
                     {
                         pos = (int)reader.BaseStream.Position;
                         opcode = reader.ReadByte();
-                        if (a)
-                        {
-                            System.Windows.Forms.MessageBox.Show(opcode.ToString("X2"));
-                            a = false;
-                        }
                         if (opcode == 0xFF)
                         {
                             throw new EndOfStreamException();

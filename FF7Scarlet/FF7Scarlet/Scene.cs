@@ -43,22 +43,37 @@ namespace FF7Scarlet
             return null;
         }
 
+        public bool IsEmpty()
+        {
+            return (enemies[0] == null && enemies[1] == null && enemies[2] == null);
+        }
+
         public string GetEnemyNames()
         {
-            string temp = "";
-            for (int i = 0; i < ENEMY_COUNT; i++)
+            if (IsEmpty())
             {
-                if (enemies[i] != null)
+                return "EMPTY";
+            }
+            else
+            {
+                string temp = "";
+                for (int i = 0; i < ENEMY_COUNT; i++)
                 {
-                    temp += enemies[i].Name;
-                    if (i + 1 < ENEMY_COUNT && enemies[i + 1] != null)
+                    if (enemies[i] == null)
+                    {
+                        temp += "(none)";
+                    }
+                    else
+                    {
+                        temp += enemies[i].Name;
+                    }
+                    if (i + 1 < ENEMY_COUNT)
                     {
                         temp += ", ";
                     }
                 }
+                return temp;
             }
-            if (temp == "") { return "EMPTY"; }
-            return temp;
         }
 
         public string GetAttackName(int id)
@@ -83,7 +98,6 @@ namespace FF7Scarlet
                 var enemyName = new FFText[ENEMY_COUNT];
                 var attackID = new int[ATTACK_COUNT];
                 var attackName = new FFText[ATTACK_COUNT];
-                //byte[] AIdata;
 
                 try
                 {
@@ -142,38 +156,46 @@ namespace FF7Scarlet
                     throw new FileLoadException($"An error occured while parsing the enemy data: {ex.Message}", ex);
                 }
 
-                //formation offsets
-                for (i = 0; i < FORMATION_COUNT; ++i)
+                if (IsEmpty())
                 {
-                    formationAIoffset[i] = reader.ReadUInt16();
+                    ScriptsLoaded = true;
                 }
-
-                //formations
-                formationAIRaw = reader.ReadBytes(504);
-
-                //enemy A.I. offsets
-                for (i = 0; i < ENEMY_COUNT; ++i)
+                else
                 {
-                    enemyAIoffset[i] = reader.ReadUInt16();
-                }
+                    //formation offsets
+                    for (i = 0; i < FORMATION_COUNT; ++i)
+                    {
+                        formationAIoffset[i] = reader.ReadUInt16();
+                    }
 
-                //enemy A.I. scripts
-                enemyAIraw = reader.ReadBytes(4096);
+                    //formations
+                    formationAIRaw = reader.ReadBytes(504);
+
+                    //enemy A.I. offsets
+                    for (i = 0; i < ENEMY_COUNT; ++i)
+                    {
+                        enemyAIoffset[i] = reader.ReadUInt16();
+                    }
+
+                    //enemy A.I. scripts
+                    enemyAIraw = reader.ReadBytes(4096);
+                }
             }
         }
 
         public void ParseAIScripts()
         {
-            int i, j;
+            int i, j, next;
+
+            //parse formation scripts
             for (i = 0; i < FORMATION_COUNT; ++i)
             {
-                if (formationAIoffset[i] >= 0 && formationAIoffset[i] < formationAIRaw.Length)
+                if (formationAIoffset[i] != 0xFFFF)
                 {
-                    formations[i] = new Formation();
-                    int next = -1;
+                    next = -1;
                     for (j = i + 1; j < FORMATION_COUNT && next == -1; ++j)
                     {
-                        if (formationAIoffset[j] > 0 && formationAIoffset[j] < 0xFF)
+                        if (formationAIoffset[j] != 0xFFFF)
                         {
                             next = formationAIoffset[j];
                         }
@@ -189,17 +211,17 @@ namespace FF7Scarlet
                 }
             }
 
+            //parse enemy scripts
             for (i = 0; i < ENEMY_COUNT; ++i)
             {
-                if (enemies[i] != null)
+                if (enemyAIoffset[i] != 0xFFFF)
                 {
-                    int next = -1;
+                    next = -1;
                     for (j = i + 1; j < ENEMY_COUNT && next == -1; ++j)
                     {
-                        if (enemies[j] != null)
+                        if (enemyAIoffset[j] != 0xFFFF)
                         {
                             next = enemyAIoffset[j];
-                            if (next > enemyAIraw.Length) { next = -1; }
                         }
                     }
                     try

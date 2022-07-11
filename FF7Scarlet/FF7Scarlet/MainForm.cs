@@ -118,33 +118,33 @@ namespace FF7Scarlet
         {
             loading = true;
             listBoxEnemies.Items.Clear();
-            if (currScene.GetEnemyByNumber(1) != null)
+            for (int i = 0; i < Scene.ENEMY_COUNT; ++i)
             {
-                listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(1).Name.ToString());
-            }
-            if (currScene.GetEnemyByNumber(2) != null)
-            {
-                listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(2).Name.ToString());
-            }
-            if (currScene.GetEnemyByNumber(3) != null)
-            {
-                listBoxEnemies.Items.Add(currScene.GetEnemyByNumber(3).Name.ToString());
+                var enemy = currScene.GetEnemyByNumber(i + 1);
+                if (enemy == null)
+                {
+                    listBoxEnemies.Items.Add("(none)");
+                }
+                else
+                {
+                    listBoxEnemies.Items.Add(enemy.Name.ToString());
+                }
             }
 
             //no enemies found
-            if (listBoxEnemies.Items.Count == 0)
+            /*if (currScene.IsEmpty())
             {
                 MessageBox.Show("This scene file is empty.", "No enemies found", MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }
             else
-            {
+            {*/
                 listBoxEnemies.SelectedIndex = 0;
                 listBoxScripts.Enabled = true;
                 listBoxScripts.SelectedIndex = 0;
                 UpdateScripts(1);
                 DisplayScript(1, 0);
-            }
+            //}
         }
 
         private void UpdateScripts(int selectedEnemy)
@@ -156,11 +156,11 @@ namespace FF7Scarlet
                     currScene.ParseAIScripts();
                 }
                 var enemy = currScene.GetEnemyByNumber(selectedEnemy);
-                if (enemy != null)
+                for (int i = 0; i < SCRIPT_NUMBER; ++i)
                 {
-                    for (int i = 0; i < SCRIPT_NUMBER; ++i)
+                    listBoxScripts.Items[i] = SCRIPT_LIST[i];
+                    if (enemy != null)
                     {
-                        listBoxScripts.Items[i] = SCRIPT_LIST[i];
                         if (enemy.GetScriptAtPosition(i) != null)
                         {
                             if (!enemy.GetScriptAtPosition(i).IsEmpty)
@@ -171,33 +171,37 @@ namespace FF7Scarlet
                     }
                 }
             }
-            catch (FileLoadException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void DisplayScript(int enemyID, int scriptID)
         {
             var enemy = currScene.GetEnemyByNumber(enemyID);
+            listBoxCurrScript.Items.Clear();
             if (enemy == null)
             {
-                throw new ArgumentNullException("Enemy doesn't exist.");
-            }
-            var script = enemy.GetScriptAtPosition(scriptID);
-            toolStripScript.Enabled = true;
-            listBoxCurrScript.Items.Clear();
-            if (script == null)
-            {
                 listBoxCurrScript.Enabled = false;
-                listBoxCurrScript.Items.Add("(Script is empty)");
+                listBoxCurrScript.Items.Add("(Enemy doesn't exist.)");
             }
             else
             {
-                listBoxCurrScript.Enabled = true;
-                foreach (var line in script.Disassemble())
+                var script = enemy.GetScriptAtPosition(scriptID);
+                toolStripScript.Enabled = true;
+                if (script == null)
                 {
-                    listBoxCurrScript.Items.Add(line);
+                    listBoxCurrScript.Enabled = false;
+                    listBoxCurrScript.Items.Add("(Script is empty)");
+                }
+                else
+                {
+                    listBoxCurrScript.Enabled = true;
+                    foreach (var line in script.Disassemble())
+                    {
+                        listBoxCurrScript.Items.Add(line);
+                    }
                 }
             }
         }

@@ -29,49 +29,46 @@ namespace FF7Scarlet
 
         public void ParseScripts(ref byte[] data, int headerSize, int offset, int nextOffset)
         {
-            int i, j;
-            if (offset > data.Length) { return; }
+            int i, j, next, start, length;
 
-            //get offsets
+            //get script offsets
             var scriptOffsets = new int[SCRIPT_NUMBER];
             for (i = 0; i < SCRIPT_NUMBER; ++i)
             {
                 scriptOffsets[i] = BitConverter.ToUInt16(data, (i * 2) + offset - headerSize);
             }
 
-            //get script lengths
-            var scriptLengths = new int[SCRIPT_NUMBER];
+            //get scripts
             for (i = 0; i < SCRIPT_NUMBER; ++i)
             {
-                if (scriptOffsets[i] >= 0 && scriptOffsets[i] < data.Length)
+                if (scriptOffsets[i] != 0xFFFF) //check if script exists
                 {
-                    bool test = false;
-                    for (j = i + 1; j < SCRIPT_NUMBER && !test; ++j)
+                    next = -1;
+                    for (j = i + 1; j < SCRIPT_NUMBER && next == -1; ++j) //check for next script (if it exists)
                     {
-                        if (scriptOffsets[j] >= 0 && scriptOffsets[j] < data.Length)
+                        if (scriptOffsets[j] != 0xFFFF)
                         {
-                            nextOffset = scriptOffsets[j];
-                            test = true;
+                            next = scriptOffsets[j];
                         }
                     }
-                    if (!test)
+                    if (next == -1) //no more scripts after this one
                     {
-                        nextOffset = data.Length;
+                        next = nextOffset;
                     }
-                    scriptLengths[i] = nextOffset - scriptOffsets[i];
-                }
-                else
-                {
-                    scriptLengths[i] = 0;
-                }
-            }
 
-            //finally, parse A.I. scripts
-            for (i = 0; i < SCRIPT_NUMBER; ++i)
-            {
-                if (scriptLengths[i] > 0)
-                {
-                    scripts[i] = new Script(this, ref data, scriptOffsets[i], scriptLengths[i]);
+                    //figure out script position and length
+                    start = offset + scriptOffsets[i] - headerSize;
+                    if (next == -1)
+                    {
+                        length = data.Length - start;
+                    }
+                    else
+                    {
+                        length = next + offset - headerSize - start;
+                    }
+
+                    //parse the script
+                    scripts[i] = new Script(this, ref data, start, length);
                 }
             }
         }
