@@ -215,7 +215,7 @@ namespace FF7Scarlet
             //parse enemy scripts
             for (i = 0; i < ENEMY_COUNT; ++i)
             {
-                if (enemyAIoffset[i] != 0xFFFF)
+                if (enemies[i] != null && enemyAIoffset[i] != 0xFFFF)
                 {
                     next = -1;
                     for (j = i + 1; j < ENEMY_COUNT && next == -1; ++j)

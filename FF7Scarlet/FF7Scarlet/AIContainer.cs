@@ -13,11 +13,6 @@ namespace FF7Scarlet
         protected Script[] scripts = new Script[SCRIPT_NUMBER];
         public Scene Parent { get; protected set; }
 
-        /*public AIContainer(ref byte[] data, int offset, int nextOffset)
-        {
-            ParseScripts(ref data, offset, nextOffset);
-        }*/
-
         public Script GetScriptAtPosition(int pos)
         {
             if (pos < 0 || pos >= SCRIPT_NUMBER)
@@ -65,6 +60,10 @@ namespace FF7Scarlet
                     else
                     {
                         length = next + offset - headerSize - start;
+                        if (start + length > data.Length)
+                        {
+                            length = data.Length - start;
+                        }
                     }
 
                     //parse the script
