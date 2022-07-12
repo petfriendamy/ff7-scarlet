@@ -244,6 +244,7 @@ namespace FF7Scarlet
             this.buttonSave.TabIndex = 4;
             this.buttonSave.Text = "Save scene";
             this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 
             // buttonSaveAs
             // 

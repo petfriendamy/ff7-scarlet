@@ -114,6 +114,11 @@ namespace FF7Scarlet
             }
         }
 
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            //stuff
+        }
+
         private void LoadNewEnemyList()
         {
             loading = true;
@@ -130,21 +135,11 @@ namespace FF7Scarlet
                     listBoxEnemies.Items.Add(enemy.Name.ToString());
                 }
             }
-
-            //no enemies found
-            /*if (currScene.IsEmpty())
-            {
-                MessageBox.Show("This scene file is empty.", "No enemies found", MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-            }
-            else
-            {*/
-                listBoxEnemies.SelectedIndex = 0;
-                listBoxScripts.Enabled = true;
-                listBoxScripts.SelectedIndex = 0;
-                UpdateScripts(1);
-                DisplayScript(1, 0);
-            //}
+            listBoxEnemies.SelectedIndex = 0;
+            listBoxScripts.Enabled = true;
+            listBoxScripts.SelectedIndex = 0;
+            UpdateScripts(1);
+            DisplayScript(1, 0);
         }
 
         private void UpdateScripts(int selectedEnemy)

@@ -202,6 +202,7 @@ namespace FF7Scarlet
                     }
                     try
                     {
+                        formations[i] = new Formation();
                         formations[i].ParseScripts(ref formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
                     }
                     catch (Exception ex)

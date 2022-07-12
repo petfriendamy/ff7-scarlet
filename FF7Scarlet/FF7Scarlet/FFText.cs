@@ -9,9 +9,12 @@ namespace FF7Scarlet
 {
     public class FFText : IComparable
     {
+        private const string TEXT_MAP = "ÄÁÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü⌘°¢£ÙÛ¶ß®©™´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»…?ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄¤‹›ﬁﬂ■▪‚„‰ÂÊËÁÈíîïìÓÔ ÒÙÛ";
+        private const byte MAP_OFFSET = 0x60, CHAR_OFFSET = 0x20;
+
         private enum CharacterNames
         {
-            Cloud = 0xEA, Barret, Tifa, Aerith, RedXIII, Yuffie, CaitSith, Vincent, Cid
+            Cloud, Barret, Tifa, Aerith, RedXIII, Yuffie, CaitSith, Vincent, Cid
         }
 
         private readonly byte[] data;
@@ -23,23 +26,57 @@ namespace FF7Scarlet
 
         public FFText(string str, int length = -1)
         {
+            int i, j;
             if (length == -1)
             {
                 length = str.Length;
             }
 
-            data = new byte[length + 1];
-            for (int i = 0; i < length; ++i)
+            var text = new List<byte> { };
+            var nameList = Enum.GetNames(typeof(CharacterNames));
+            for (i = 0; i < length; ++i)
             {
                 if (i < str.Length)
                 {
-                    data[i] = (byte)(str[i] - 0x20);
+                    byte b = (byte)str[i];
+
+                    if (b == (byte)'{') //check for names
+                    {
+                        string temp = str.Substring(i);
+                        for (j = 0; j < nameList.Length; ++j)
+                        {
+                            if (temp.StartsWith(nameList[j].ToUpper()))
+                            {
+                                text.Add(0xEA);
+                                text.Add(0x00);
+                                text.Add((byte)j);
+                                i += nameList[j].Length + 1;
+                                continue;
+                            }
+                        }
+
+                        //no matching name found, so assume regular character
+                        text.Add((byte)'{' - CHAR_OFFSET);
+                    }
+                    else if (b < MAP_OFFSET + CHAR_OFFSET)
+                    {
+                        text.Add((byte)(b - CHAR_OFFSET));
+                    }
+                    else
+                    {
+                        int pos = TEXT_MAP.IndexOf(str[i]);
+                        if (pos >= 0)
+                        {
+                            text.Add((byte)(pos + MAP_OFFSET));
+                        }
+                    }
                 }
                 else
                 {
-                    data[i] = 0xFF;
+                    text.Add(0xFF);
                 }
             }
+            data = text.ToArray();
         }
 
         public FFText(object value) : this(value.ToString()) { }
@@ -51,30 +88,43 @@ namespace FF7Scarlet
 
         public override string ToString()
         {
-            if (data.Length > 0)
+            if (data == null)
             {
-                var builder = new StringBuilder();
+                return null;
+            }
+            else if (data.Length > 0)
+            {
+                var text = new List<char> { };
                 for (int i = 0; i < data.Length; ++i)
                 {
-                    if (data[i] != 0xFF)
+                    if (data[i] == 0xFF) //end of string
                     {
-                        if (data[i] >= (int)CharacterNames.Cloud && data[i] <= (int)CharacterNames.Cid)
-                        {
-                            builder.Append("{" + Enum.GetName(typeof(CharacterNames), data[i]).ToUpper() + "}");
-                            i += 2;
-                        }
-                        else if (data[i] == 0xC1)
-                        {
-                            builder.Append('▪');
-                        }
-                        else
-                        {
-                            builder.Append((char)(data[i] + 0x20));
-                        }
+                        break;
+                    }
+                    else if (data[i] < MAP_OFFSET) //letters
+                    {
+                        text.Add((char)(data[i] + CHAR_OFFSET));
+                    }
+                    else if (data[i] == 0xEA) //character names
+                    {
+                        int charID = data[i + 2];
+                        i += 2;
+                        text.AddRange("{" + Enum.GetName(typeof(CharacterNames), charID).ToUpper() + "}");
+                    }
+                    else if ((data[i] - MAP_OFFSET + 1) < TEXT_MAP.Length)
+                    {
+                        text.Add(TEXT_MAP[data[i] - MAP_OFFSET + 1]);
+                    }
+                    else
+                    {
+                        text.Add('?');
                     }
                 }
-                if (builder.Length == 0) { return null; }
-                return builder.ToString().Trim();
+                if (text.Count == 0)
+                {
+                    return null;
+                }
+                return new string(text.ToArray()).Trim();
             }
             return null;
         }
