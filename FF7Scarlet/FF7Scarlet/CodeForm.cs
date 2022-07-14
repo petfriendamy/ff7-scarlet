@@ -56,7 +56,14 @@ namespace FF7Scarlet
                     else
                     {
                         var c = Code as CodeBlock;
-                        if (opcode.PopCount > 0)
+                        if (opcode.EnumValue == Opcodes.DebugMessage)
+                        {
+                            textBoxParameter1.Text = c.GetPopCount().ToString();
+                            textBoxParameter2.Text = c.GetParameter().ToString();
+                            SetParameterVisibility(1, true);
+                            SetParameterVisibility(2, true);
+                        }
+                        else if (opcode.PopCount > 0)
                         {
                             textBoxParameter1.Text = c.GetCodeAtPosition(0).Disassemble(false);
                             SetParameterVisibility(1, true);
@@ -153,13 +160,33 @@ namespace FF7Scarlet
         private void EditParameter(int pos)
         {
             Code param;
+            bool isString = false;
             if (Code is CodeBlock)
             {
-                param = (Code as CodeBlock).GetCodeAtPosition(pos);
+                if (Code.GetPrimaryOpcode() == (int)Opcodes.DebugMessage)
+                {
+                    if (pos == 0)
+                    {
+                        param = new CodeLine(Code.Parent, Code.GetHeader(), (int)Opcodes.PushConst01, new FFText(Code.GetPopCount()));
+                    }
+                    else
+                    {
+                        param = (Code as CodeBlock).GetCodeAtEnd();
+                        isString = true;
+                    }
+                }
+                else
+                {
+                    param = (Code as CodeBlock).GetCodeAtPosition(pos);
+                }
             }
             else
             {
                 param = Code;
+                if (Code.GetPrimaryOpcode() == (int)Opcodes.ShowMessage)
+                {
+                    isString = true;
+                }
             }
 
             var temp = new List<Code> { };
@@ -167,26 +194,33 @@ namespace FF7Scarlet
             {
                 temp.Add(p);
             }
-            using (var paramForm = new ParameterForm(temp))
+            using (var paramForm = new ParameterForm(temp, isString))
             {
                 if (paramForm.ShowDialog() == DialogResult.OK)
                 {
-                    Code test = null;
-                    if (paramForm.Code.Count > 1)
+                    if (isString)
                     {
-                        test = new CodeBlock(null, paramForm.Code);
+                        //stuff
                     }
                     else
                     {
-                        test = paramForm.Code[0];
-                    }
-                    if (pos == 0)
-                    {
-                        textBoxParameter1.Text = test.Disassemble(false);
-                    }
-                    else
-                    {
-                        textBoxParameter2.Text = test.Disassemble(false);
+                        Code test = null;
+                        if (paramForm.Code.Count > 1)
+                        {
+                            test = new CodeBlock(null, paramForm.Code);
+                        }
+                        else
+                        {
+                            test = paramForm.Code[0];
+                        }
+                        if (pos == 0)
+                        {
+                            textBoxParameter1.Text = test.Disassemble(false);
+                        }
+                        else
+                        {
+                            textBoxParameter2.Text = test.Disassemble(false);
+                        }
                     }
                 }
             }

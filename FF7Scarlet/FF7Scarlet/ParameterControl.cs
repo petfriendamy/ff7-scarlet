@@ -50,7 +50,8 @@ namespace FF7Scarlet
         {
             get
             {
-                if (OpcodeInfo.GetInfo(paramType).ParameterType != ParameterTypes.String)
+                var type = OpcodeInfo.GetInfo(paramType).ParameterType;
+                if (type != ParameterTypes.String && type != ParameterTypes.Debug)
                 {
                     var temp = comboBoxParameter.Text.Split(' ');
                     return new FFText(temp[0]);
@@ -149,7 +150,7 @@ namespace FF7Scarlet
                     singleParameter = true;
                     PForm?.SetSingleParameter(this);
                 }
-                else if (op.ParameterType == ParameterTypes.String)
+                else if (op.ParameterType == ParameterTypes.String || op.ParameterType == ParameterTypes.Debug)
                 {
                     comboBoxType.Items.Clear();
                     comboBoxType.Items.Add("String");
@@ -162,7 +163,7 @@ namespace FF7Scarlet
                     comboBoxType.SelectedIndex = paramTypes.IndexOf(op);
                 }
                 comboBoxParameter.Text = parameter.ToString();
-                if (op.ParameterType != ParameterTypes.String)
+                if (op.ParameterType != ParameterTypes.String && op.ParameterType != ParameterTypes.Debug)
                 {
                     var temp = int.Parse(parameter.ToString(), NumberStyles.HexNumber);
                     if (Enum.IsDefined(typeof(CommonVars.Globals), temp))

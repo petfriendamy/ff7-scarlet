@@ -12,6 +12,7 @@ namespace FF7Scarlet
         public int Header { get; set; }
         public int Opcode { get; set; }
         public FFText Parameter { get; set; }
+        public int PopCount { get; set; }
 
         public CodeLine(Script parent, int header, int opcode, FFText parameter = null)
         {
@@ -34,6 +35,11 @@ namespace FF7Scarlet
         public override FFText GetParameter()
         {
             return Parameter;
+        }
+
+        public override int GetPopCount()
+        {
+            return PopCount;
         }
 
         public override string Disassemble(bool verbose)

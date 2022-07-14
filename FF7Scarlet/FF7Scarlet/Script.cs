@@ -42,9 +42,9 @@ namespace FF7Scarlet
                     {
                         pos = (int)reader.BaseStream.Position;
                         opcode = reader.ReadByte();
-                        if (opcode == 0xFF)
+                        if (opcode == (byte)Opcodes.End)
                         {
-                            throw new EndOfStreamException();
+                            endOfStream = true;
                         }
                         var parsedLine = new CodeLine(this, pos, opcode);
                         if (Enum.IsDefined(typeof(Opcodes), (int)opcode))
@@ -74,6 +74,18 @@ namespace FF7Scarlet
                                     }
                                     parsedLine.Parameter = new FFText(stringParser.ToArray());
                                     break;
+                                case ParameterTypes.Debug:
+                                    parsedLine.PopCount = reader.ReadByte();
+                                    stringParser.Clear();
+                                    temp = 0xFF;
+                                    while (temp != 0)
+                                    {
+                                        temp = reader.ReadByte();
+                                        if (temp != 0) { stringParser.Add(temp); }
+                                    }
+                                    parsedLine.Parameter = new FFText(Encoding.ASCII.GetString(stringParser.ToArray()));
+                                    break;
+
                             }
                         }
                         firstParse.Add(parsedLine);
@@ -129,6 +141,10 @@ namespace FF7Scarlet
                 if (Enum.IsDefined(typeof(Opcodes), c.Opcode))
                 {
                     int popCount = OpcodeInfo.GetInfo(c.Opcode).PopCount;
+                    if (OpcodeInfo.GetInfo(c.Opcode).ParameterType == ParameterTypes.Debug)
+                    {
+                        popCount = c.PopCount;
+                    }
                     if (popCount > 0)
                     {
                         var block = new CodeBlock(parent, c);

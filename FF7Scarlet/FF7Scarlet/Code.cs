@@ -15,6 +15,7 @@ namespace FF7Scarlet
         public abstract int GetHeader();
         public abstract int GetPrimaryOpcode();
         public abstract FFText GetParameter();
+        public abstract int GetPopCount();
         public Scene GetParentScene()
         {
             if (Parent == null) { return null; }

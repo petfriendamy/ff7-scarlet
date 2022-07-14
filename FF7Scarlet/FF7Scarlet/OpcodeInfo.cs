@@ -13,7 +13,7 @@ namespace FF7Scarlet
 
     public enum ParameterTypes
     {
-        None, OneByte, TwoByte, ThreeByte, String, Label
+        None, OneByte, TwoByte, ThreeByte, String, Debug, Label
     }
 
     public class OpcodeInfo
@@ -77,7 +77,7 @@ namespace FF7Scarlet
             new OpcodeInfo(Opcodes.CopyStats, OpcodeGroups.Command, ParameterTypes.None, 2),
             new OpcodeInfo(Opcodes.AssignGlobal, OpcodeGroups.Command, ParameterTypes.None, 2),
             new OpcodeInfo(Opcodes.ElementalDef, OpcodeGroups.Command, ParameterTypes.None, 2),
-            new OpcodeInfo(Opcodes.DebugMessage, OpcodeGroups.Command, ParameterTypes.String, 1),
+            new OpcodeInfo(Opcodes.DebugMessage, OpcodeGroups.Command, ParameterTypes.Debug, 1),
             new OpcodeInfo(Opcodes.Pop2, OpcodeGroups.Command, ParameterTypes.None, 0),
 
             new OpcodeInfo(Opcodes.Label, OpcodeGroups.Jump, ParameterTypes.Label, 0),
@@ -145,7 +145,8 @@ namespace FF7Scarlet
         public bool IsParameter()
         {
             return Group == OpcodeGroups.Push || Group == OpcodeGroups.Jump
-                || Code == (int)Opcodes.RandomWord || ParameterType == ParameterTypes.String;
+                || Code == (int)Opcodes.RandomWord || ParameterType == ParameterTypes.String
+                || ParameterType == ParameterTypes.Debug;
         }
     }
 }

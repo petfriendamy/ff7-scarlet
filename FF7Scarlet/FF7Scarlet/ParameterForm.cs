@@ -15,11 +15,13 @@ namespace FF7Scarlet
         private List<ParameterControl> paramList;
         public List<Code> Code { get; private set; }
         private int xx, yy, offset;
+        private bool isString;
 
-        public ParameterForm(List<Code> code)
+        public ParameterForm(List<Code> code, bool isString)
         {
             InitializeComponent();
             Code = code;
+            this.isString = isString;
         }
 
         private void ParameterForm_Load(object sender, EventArgs e)
@@ -111,21 +113,27 @@ namespace FF7Scarlet
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            //convert code back into a proper script
-            var firstParse = new List<CodeLine> { };
-            foreach (var p in paramList)
+            if (isString)
             {
-                if (p.Checked || p.IsFirst)
+                //stuff
+            }
+            else //convert code back into a proper script
+            {
+                var firstParse = new List<CodeLine> { };
+                foreach (var p in paramList)
                 {
-                    firstParse.Add(new CodeLine(null, -1, p.ParamType, p.Parameter));
-                    if (!p.IsFirst && p.Operand != -1)
+                    if (p.Checked || p.IsFirst)
                     {
-                        firstParse.Add(new CodeLine(null, -1, p.Operand));
+                        firstParse.Add(new CodeLine(null, -1, p.ParamType, p.Parameter));
+                        if (!p.IsFirst && p.Operand != -1)
+                        {
+                            firstParse.Add(new CodeLine(null, -1, p.Operand));
+                        }
                     }
                 }
-            }
 
-            Code = Script.GetParsedCode(firstParse);
+                Code = Script.GetParsedCode(firstParse);
+            }
             DialogResult = DialogResult.OK;
             Close();
         }

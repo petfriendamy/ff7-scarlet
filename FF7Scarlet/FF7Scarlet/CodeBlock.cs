@@ -39,6 +39,11 @@ namespace FF7Scarlet
             else { return block[i]; }
         }
 
+        public Code GetCodeAtEnd()
+        {
+            return block[block.Count - 1];
+        }
+
         public override int GetHeader()
         {
             return block[0].GetHeader();
@@ -52,6 +57,11 @@ namespace FF7Scarlet
         public override FFText GetParameter()
         {
             return block[block.Count - 1].GetParameter();
+        }
+
+        public override int GetPopCount()
+        {
+            return block[block.Count - 1].GetPopCount();
         }
 
         public override string Disassemble(bool verbose)
@@ -152,6 +162,10 @@ namespace FF7Scarlet
                         break;
                     case Opcodes.AssignGlobal:
                         output += $"GlobalVar:{block[0].Disassemble(false)} = {block[1].Disassemble(false)}";
+                        break;
+                    case Opcodes.DebugMessage:
+                        pop1 = block[block.Count - 1] as CodeLine;
+                        output += $"DebugMessage \"{pop1.Parameter}\"";
                         break;
                     default:
                         output += $"{Enum.GetName(typeof(Opcodes), opcode)}({block[0].Disassemble(false)}";

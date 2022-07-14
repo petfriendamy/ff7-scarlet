@@ -63,62 +63,6 @@ namespace FF7Scarlet
         {
             InitializeComponent();
         }
-
-        private void buttonLoad_Click(object sender, EventArgs e)
-        {
-            DialogResult result;
-            string file;
-
-            using (var loadFile = new OpenFileDialog())
-            {
-                loadFile.Filter = "scene.bin, scene files|scene.bin;scene.*.bin";
-                result = loadFile.ShowDialog();
-                file = loadFile.FileName;
-            }
-
-            if (result == DialogResult.OK)
-            {
-                if (File.Exists(file))
-                {
-                    try
-                    {
-                        loading = true;
-                        comboBoxSceneList.Items.Clear();
-                        string name = Path.GetFileName(file);
-                        if (name == "scene.bin")
-                        {
-                            isSceneBin = true;
-                            sceneList = GZipper.LoadSceneBin(file);
-                            currScene = sceneList[0];
-                            for (int i = 0; i < 256; ++i)
-                            {
-                                comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
-                            }
-                        }
-                        else
-                        {
-                            isSceneBin = false;
-                            currScene = new Scene(file);
-                            var temp = name.Split('.')[1];
-                            comboBoxSceneList.Items.Add($"{temp}: {currScene.GetEnemyNames()}");
-                        }
-                        comboBoxSceneList.SelectedIndex = 0;
-                        LoadNewEnemyList();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    loading = false;
-                }
-            }
-        }
-
-        private void buttonSave_Click(object sender, EventArgs e)
-        {
-            //stuff
-        }
-
         private void LoadNewEnemyList()
         {
             loading = true;
@@ -281,6 +225,61 @@ namespace FF7Scarlet
                 loading = false;
                 unsavedChanges = true;
             }
+        }
+
+        private void buttonLoad_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            string file;
+
+            using (var loadFile = new OpenFileDialog())
+            {
+                loadFile.Filter = "scene.bin, scene files|scene.bin;scene.*.bin";
+                result = loadFile.ShowDialog();
+                file = loadFile.FileName;
+            }
+
+            if (result == DialogResult.OK)
+            {
+                if (File.Exists(file))
+                {
+                    try
+                    {
+                        loading = true;
+                        comboBoxSceneList.Items.Clear();
+                        string name = Path.GetFileName(file);
+                        if (name == "scene.bin")
+                        {
+                            isSceneBin = true;
+                            sceneList = GZipper.LoadSceneBin(file);
+                            currScene = sceneList[0];
+                            for (int i = 0; i < 256; ++i)
+                            {
+                                comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
+                            }
+                        }
+                        else
+                        {
+                            isSceneBin = false;
+                            currScene = new Scene(file);
+                            var temp = name.Split('.')[1];
+                            comboBoxSceneList.Items.Add($"{temp}: {currScene.GetEnemyNames()}");
+                        }
+                        comboBoxSceneList.SelectedIndex = 0;
+                        LoadNewEnemyList();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    loading = false;
+                }
+            }
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            //stuff
         }
 
         private void comboBoxSceneList_SelectedIndexChanged(object sender, EventArgs e)

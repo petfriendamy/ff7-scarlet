@@ -17,7 +17,8 @@ namespace FF7Scarlet
             new CommandInfo(Opcodes.Label, "Create new label", "Label ID"),
             new CommandInfo(Opcodes.Jump, "Goto label", "Label ID"),
             new CommandInfo(Opcodes.Attack, "Perform an attack", "Attack Type", "Attack ID"),
-            new CommandInfo(Opcodes.ShowMessage, "Show a message", "String")
+            new CommandInfo(Opcodes.ShowMessage, "Show a message", "String"),
+            new CommandInfo(Opcodes.DebugMessage, "Send a string to the debug console", "Var Count", "String")
         };
 
         public Opcodes Opcode { get; }
