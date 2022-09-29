@@ -160,6 +160,8 @@ namespace FF7Scarlet
         private void EditParameter(int pos)
         {
             Code param;
+
+            //check if parameter is a string or not
             bool isString = false;
             if (Code is CodeBlock)
             {
@@ -189,6 +191,7 @@ namespace FF7Scarlet
                 }
             }
 
+            //send the parameter to the parameter form for editing
             var temp = new List<Code> { };
             foreach (var p in param.BreakDown())
             {
@@ -213,13 +216,22 @@ namespace FF7Scarlet
                         {
                             test = paramForm.Code[0];
                         }
-                        if (pos == 0)
+
+                        //update parameter text
+                        if (tabControlOptions.SelectedTab == tabPageGenerate)
                         {
-                            textBoxParameter1.Text = test.Disassemble(false);
+                            if (pos == 0)
+                            {
+                                textBoxParameter1.Text = test.Disassemble(false);
+                            }
+                            else
+                            {
+                                textBoxParameter2.Text = test.Disassemble(false);
+                            }
                         }
                         else
                         {
-                            textBoxParameter2.Text = test.Disassemble(false);
+                            comboBoxManualParameter.Text = test.Disassemble(false);
                         }
                     }
                 }
@@ -251,9 +263,15 @@ namespace FF7Scarlet
         {
             if (unsavedChanges)
             {
+                var tempList = new List<Code> { };
                 if (tabControlOptions.SelectedTab == tabPageGenerate)
                 {
-                    //stuff
+                    
+                }
+                else
+                {
+                    Code = new CodeLine(null, -1, currList[comboBoxOpcodes.SelectedIndex].Code,
+                        new FFText(comboBoxManualParameter.Text));
                 }
             }
             Close();

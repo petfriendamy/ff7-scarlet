@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace FF7Scarlet
 {
-    public partial class MainForm : Form
+    public partial class BattleAIForm : Form
     {
         private const int SCRIPT_NUMBER = 16;
         private readonly string[] SCRIPT_LIST = new string[SCRIPT_NUMBER]
@@ -59,10 +59,23 @@ namespace FF7Scarlet
             get { return listBoxCurrScript.SelectedIndex; }
         }
 
-        public MainForm()
+        public BattleAIForm()
         {
             InitializeComponent();
         }
+
+        private void BattleAIForm_Load(object sender, EventArgs e)
+        {
+            sceneList = DataManager.GetSceneList();
+            currScene = sceneList[0];
+            for (int i = 0; i < 256; ++i)
+            {
+                comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
+            }
+            comboBoxSceneList.SelectedIndex = 0;
+            LoadNewEnemyList();
+        }
+
         private void LoadNewEnemyList()
         {
             loading = true;
@@ -227,7 +240,7 @@ namespace FF7Scarlet
             }
         }
 
-        private void buttonLoad_Click(object sender, EventArgs e)
+        /*private void buttonLoad_Click(object sender, EventArgs e)
         {
             DialogResult result;
             string file;
@@ -275,7 +288,7 @@ namespace FF7Scarlet
                     loading = false;
                 }
             }
-        }
+        }*/
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
@@ -401,6 +414,11 @@ namespace FF7Scarlet
 
                 e.Cancel = result == DialogResult.No;
             }
+        }
+
+        private void BattleAIForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DataManager.CloseForm(FormType.BattleAIEditor);
         }
     }
 }

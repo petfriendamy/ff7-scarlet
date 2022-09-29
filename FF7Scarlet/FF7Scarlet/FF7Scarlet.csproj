@@ -66,6 +66,7 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="FFText.cs" />
     <Compile Include="Formation.cs" />
+    <Compile Include="DataManager.cs" />
     <Compile Include="GZipper.cs" />
     <Compile Include="OpcodeInfo.cs" />
     <Compile Include="Opcodes.cs" />
@@ -82,20 +83,26 @@
       <DependentUpon>ParameterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Script.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="BattleAIForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="BattleAIForm.Designer.cs">
+      <DependentUpon>BattleAIForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
+    <Compile Include="StartupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartupForm.Designer.cs">
+      <DependentUpon>StartupForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="CodeForm.resx">
       <DependentUpon>CodeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="BattleAIForm.resx">
+      <DependentUpon>BattleAIForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ParameterControl.resx">
       <DependentUpon>ParameterControl.cs</DependentUpon>
@@ -112,6 +119,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="StartupForm.resx">
+      <DependentUpon>StartupForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

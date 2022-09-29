@@ -1,7 +1,7 @@
 ﻿
 namespace FF7Scarlet
 {
-    partial class MainForm
+    partial class BattleAIForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,8 +29,7 @@ namespace FF7Scarlet
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.buttonLoad = new System.Windows.Forms.Button();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BattleAIForm));
             this.groupBoxScripts = new System.Windows.Forms.GroupBox();
             this.listBoxScripts = new System.Windows.Forms.ListBox();
             this.groupBoxCurrScript = new System.Windows.Forms.GroupBox();
@@ -56,17 +55,6 @@ namespace FF7Scarlet
             this.groupBoxEnemies.SuspendLayout();
             this.SuspendLayout();
             // 
-            // buttonLoad
-            // 
-            this.buttonLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonLoad.Location = new System.Drawing.Point(9, 348);
-            this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(150, 23);
-            this.buttonLoad.TabIndex = 3;
-            this.buttonLoad.Text = "Load scene...";
-            this.buttonLoad.UseVisualStyleBackColor = true;
-            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
-            // 
             // groupBoxScripts
             // 
             this.groupBoxScripts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -74,7 +62,7 @@ namespace FF7Scarlet
             this.groupBoxScripts.Controls.Add(this.listBoxScripts);
             this.groupBoxScripts.Location = new System.Drawing.Point(9, 109);
             this.groupBoxScripts.Name = "groupBoxScripts";
-            this.groupBoxScripts.Size = new System.Drawing.Size(150, 233);
+            this.groupBoxScripts.Size = new System.Drawing.Size(150, 262);
             this.groupBoxScripts.TabIndex = 2;
             this.groupBoxScripts.TabStop = false;
             this.groupBoxScripts.Text = "Scripts";
@@ -103,7 +91,7 @@ namespace FF7Scarlet
             "Custom Event 8"});
             this.listBoxScripts.Location = new System.Drawing.Point(3, 16);
             this.listBoxScripts.Name = "listBoxScripts";
-            this.listBoxScripts.Size = new System.Drawing.Size(144, 214);
+            this.listBoxScripts.Size = new System.Drawing.Size(144, 243);
             this.listBoxScripts.TabIndex = 2;
             this.listBoxScripts.SelectedIndexChanged += new System.EventHandler(this.listBoxScripts_SelectedIndexChanged);
             // 
@@ -297,7 +285,7 @@ namespace FF7Scarlet
             this.labelScenes.TabIndex = 7;
             this.labelScenes.Text = "Scenes:";
             // 
-            // MainForm
+            // BattleAIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -309,12 +297,13 @@ namespace FF7Scarlet
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.groupBoxCurrScript);
             this.Controls.Add(this.groupBoxScripts);
-            this.Controls.Add(this.buttonLoad);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(500, 320);
-            this.Name = "MainForm";
+            this.Name = "BattleAIForm";
             this.Text = "Scarlet - Battle A.I. Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.BattleAIForm_FormClosed);
+            this.Load += new System.EventHandler(this.BattleAIForm_Load);
             this.groupBoxScripts.ResumeLayout(false);
             this.groupBoxCurrScript.ResumeLayout(false);
             this.groupBoxCurrScript.PerformLayout();
@@ -327,8 +316,6 @@ namespace FF7Scarlet
         }
 
         #endregion
-
-        private System.Windows.Forms.Button buttonLoad;
         private System.Windows.Forms.GroupBox groupBoxScripts;
         private System.Windows.Forms.GroupBox groupBoxCurrScript;
         private System.Windows.Forms.Button buttonSave;
