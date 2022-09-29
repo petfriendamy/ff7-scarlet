@@ -1,2 +1,2 @@
-# ff7-scarlet
-Battle script editor for FF7.
+# Scarlet
+A kernel and scene.bin editor for Final Fantasy VII.
