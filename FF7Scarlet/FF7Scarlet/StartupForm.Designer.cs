@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartupForm));
             this.buttonKernelEditor = new System.Windows.Forms.Button();
             this.buttonBattleDataEditor = new System.Windows.Forms.Button();
             this.buttonAIEditor = new System.Windows.Forms.Button();
@@ -56,6 +57,7 @@
             this.buttonKernelEditor.TabIndex = 0;
             this.buttonKernelEditor.Text = "Open Kernel Editor";
             this.buttonKernelEditor.UseVisualStyleBackColor = true;
+            this.buttonKernelEditor.Click += new System.EventHandler(this.buttonKernelEditor_Click);
             // 
             // buttonBattleDataEditor
             // 
@@ -140,12 +142,14 @@
             // buttonKernel2Browse
             // 
             this.buttonKernel2Browse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonKernel2Browse.Enabled = false;
             this.buttonKernel2Browse.Location = new System.Drawing.Point(379, 19);
             this.buttonKernel2Browse.Name = "buttonKernel2Browse";
             this.buttonKernel2Browse.Size = new System.Drawing.Size(75, 23);
             this.buttonKernel2Browse.TabIndex = 3;
             this.buttonKernel2Browse.Text = "Browse...";
             this.buttonKernel2Browse.UseVisualStyleBackColor = true;
+            this.buttonKernel2Browse.Click += new System.EventHandler(this.buttonKernel2Browse_Click);
             // 
             // groupBoxScene
             // 
@@ -178,6 +182,7 @@
             this.buttonSceneBrowse.TabIndex = 3;
             this.buttonSceneBrowse.Text = "Browse...";
             this.buttonSceneBrowse.UseVisualStyleBackColor = true;
+            this.buttonSceneBrowse.Click += new System.EventHandler(this.buttonSceneBrowse_Click);
             // 
             // StartupForm
             // 
@@ -190,6 +195,7 @@
             this.Controls.Add(this.buttonAIEditor);
             this.Controls.Add(this.buttonBattleDataEditor);
             this.Controls.Add(this.buttonKernelEditor);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StartupForm";
             this.Text = "Scarlet - Main Menu";
             this.groupBoxKernel.ResumeLayout(false);

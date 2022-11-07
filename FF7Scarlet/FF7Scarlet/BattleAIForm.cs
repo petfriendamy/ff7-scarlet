@@ -24,7 +24,7 @@ namespace FF7Scarlet
         private Scene currScene;
         private Scene[] sceneList;
         private List<Code> clipboard;
-        private bool loading = false, unsavedChanges = false, isSceneBin = false;
+        private bool loading = false, unsavedChanges = false;
 
         private Enemy SelectedEnemy
         {
@@ -74,6 +74,7 @@ namespace FF7Scarlet
             }
             comboBoxSceneList.SelectedIndex = 0;
             LoadNewEnemyList();
+            loading = false;
         }
 
         private void LoadNewEnemyList()
@@ -297,7 +298,7 @@ namespace FF7Scarlet
 
         private void comboBoxSceneList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!loading && isSceneBin)
+            if (!loading)
             {
                 currScene = sceneList[comboBoxSceneList.SelectedIndex];
                 LoadNewEnemyList();

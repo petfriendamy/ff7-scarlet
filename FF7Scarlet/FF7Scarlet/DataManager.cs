@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shojy.FF7.Elena;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,12 +15,14 @@ namespace FF7Scarlet
     public static class DataManager
     {
         private static StartupForm startupForm = null;
+        private static KernelForm kernelForm = null;
         private static BattleAIForm battleAIForm = null;
         private static Scene[] sceneList;
 
         public static string KernelPath { get; private set; }
         public static string Kernel2Path { get; private set; }
         public static string ScenePath { get; private set; }
+        public static KernelReader KernelReader { get; private set; }
 
         public static void SetStartupForm(StartupForm form)
         {
@@ -65,6 +68,10 @@ namespace FF7Scarlet
                     }
                 }
             }
+            else
+            {
+                MessageBox.Show("Invalid file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private static bool ValidateFile(FileClass fileClass, string path)
@@ -74,9 +81,21 @@ namespace FF7Scarlet
                 switch (fileClass)
                 {
                     case FileClass.Kernel:
-                        KernelPath = path;
-                        return true;
+                        try
+                        {
+                            if (KernelReader == null)
+                            {
+                                KernelReader = new KernelReader(path, KernelType.KernelBin);
+                            }
+                            KernelPath = path;
+                            return true;
+                        }
+                        catch { return false; }
                     case FileClass.Kernel2:
+                        if (KernelReader == null)
+                        {
+                            KernelReader = new KernelReader(path, KernelType.Kernel2Bin);
+                        }
                         Kernel2Path = path;
                         return true;
                     case FileClass.Scene:
@@ -107,6 +126,11 @@ namespace FF7Scarlet
             switch (type)
             {
                 case FormType.KernelEditor:
+                    if (kernelForm == null)
+                    {
+                        kernelForm = new KernelForm();
+                        kernelForm.Show();
+                    }
                     break;
                 case FormType.BattleDataEditor:
                     break;
@@ -125,6 +149,7 @@ namespace FF7Scarlet
             switch (type)
             {
                 case FormType.KernelEditor:
+                    kernelForm = null;
                     break;
                 case FormType.BattleDataEditor:
                     break;

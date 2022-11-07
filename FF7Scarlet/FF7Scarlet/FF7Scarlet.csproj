@@ -68,6 +68,12 @@
     <Compile Include="Formation.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="GZipper.cs" />
+    <Compile Include="KernelForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KernelForm.Designer.cs">
+      <DependentUpon>KernelForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="OpcodeInfo.cs" />
     <Compile Include="Opcodes.cs" />
     <Compile Include="ParameterControl.cs">
@@ -104,6 +110,9 @@
     <EmbeddedResource Include="BattleAIForm.resx">
       <DependentUpon>BattleAIForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="KernelForm.resx">
+      <DependentUpon>KernelForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ParameterControl.resx">
       <DependentUpon>ParameterControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,6 +146,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="scarlet_icona_hbW_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shojy.FF7.Elena\Shojy.FF7.Elena.csproj">
+      <Project>{d66e33c9-8939-4692-b4d6-d0f4f4a0fc73}</Project>
+      <Name>Shojy.FF7.Elena</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

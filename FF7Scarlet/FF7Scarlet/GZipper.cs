@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -147,7 +148,7 @@ namespace FF7Scarlet
                 sceneList[a] = new Scene(ref uncompressedScene);
                 b++;
             }
-            return sceneList.ToArray();
+            return sceneList;
         }
     }
 }

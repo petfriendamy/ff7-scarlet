@@ -24,6 +24,10 @@ namespace FF7Scarlet
             textBoxKernel.Text = DataManager.KernelPath;
             textBoxKernel2.Text = DataManager.Kernel2Path;
             textBoxScene.Text = DataManager.ScenePath;
+            if (textBoxKernel.Text != null)
+            {
+                buttonKernel2Browse.Enabled = true;
+            }
 
             if (DataManager.KernelFilesLoaded())
             {
@@ -67,6 +71,46 @@ namespace FF7Scarlet
                 DataManager.SetFilePath(FileClass.Kernel, file);
                 UpdateTextBoxes();
             }
+        }
+
+        private void buttonKernel2Browse_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            string file;
+            using (var loadFile = new OpenFileDialog())
+            {
+                loadFile.Filter = "kernel2.bin|kernel2.bin";
+                result = loadFile.ShowDialog();
+                file = loadFile.FileName;
+            }
+            if (result == DialogResult.OK)
+            {
+                DataManager.SetFilePath(FileClass.Kernel2, file);
+                UpdateTextBoxes();
+            }
+        }
+
+        private void buttonSceneBrowse_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            string file;
+            using (var loadFile = new OpenFileDialog())
+            {
+                loadFile.Filter = "scene.bin|scene.bin";
+                result = loadFile.ShowDialog();
+                file = loadFile.FileName;
+            }
+            if (result == DialogResult.OK)
+            {
+                DataManager.SetFilePath(FileClass.Scene, file);
+                UpdateTextBoxes();
+            }
+        }
+
+        private void buttonKernelEditor_Click(object sender, EventArgs e)
+        {
+            DataManager.OpenForm(FormType.KernelEditor);
+            buttonKernelEditor.Enabled = false;
         }
 
         private void buttonAIEditor_Click(object sender, EventArgs e)
