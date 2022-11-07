@@ -13,6 +13,19 @@ namespace FF7Scarlet
         protected Script[] scripts = new Script[SCRIPT_NUMBER];
         public Scene Parent { get; protected set; }
 
+        public void CreateNewScript(int pos, Code startingCode)
+        {
+            if (pos < 0 || pos >= SCRIPT_NUMBER)
+            {
+                throw new ArgumentOutOfRangeException("Script is out of range.");
+            }
+            if (scripts[pos] != null)
+            {
+                throw new ArgumentException("Script already exists.");
+            }
+            scripts[pos] = new Script(this, startingCode);
+        }
+
         public Script GetScriptAtPosition(int pos)
         {
             if (pos < 0 || pos >= SCRIPT_NUMBER)

@@ -42,6 +42,11 @@ namespace FF7Scarlet
             return PopCount;
         }
 
+        public override void SetParent(Script parent)
+        {
+            Parent = parent;
+        }
+
         public override string Disassemble(bool verbose)
         {
             string output = "";

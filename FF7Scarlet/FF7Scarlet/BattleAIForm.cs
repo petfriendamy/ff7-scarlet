@@ -14,6 +14,7 @@ namespace FF7Scarlet
     public partial class BattleAIForm : Form
     {
         private const int SCRIPT_NUMBER = 16;
+        private const string WINDOW_TITLE = "Scarlet - Battle A.I. Editor";
         private readonly string[] SCRIPT_LIST = new string[SCRIPT_NUMBER]
         {
             "Pre-Battle", "Main", "General Counter", "Death Counter", "Physical Counter",
@@ -66,7 +67,7 @@ namespace FF7Scarlet
 
         private void BattleAIForm_Load(object sender, EventArgs e)
         {
-            sceneList = DataManager.GetSceneList();
+            sceneList = DataManager.CopySceneList();
             currScene = sceneList[0];
             for (int i = 0; i < 256; ++i)
             {
@@ -159,6 +160,20 @@ namespace FF7Scarlet
             }
         }
 
+        private void ReloadScript(int selected)
+        {
+            loading = true;
+            DisplayScript(SelectedEnemyIndex, SelectedScriptIndex);
+            listBoxCurrScript.SelectedIndex = selected;
+            loading = false;
+        }
+
+        private void SetUnsaved(bool unsaved)
+        {
+            unsavedChanges = unsaved;
+            Text = $"{(unsaved ? "*" : "")}{WINDOW_TITLE}";
+        }
+
         private void SetClipboard(bool cut)
         {
             //get indices as ints
@@ -210,7 +225,7 @@ namespace FF7Scarlet
                     UpdateScripts(SelectedEnemyIndex);
                 }
             }
-            unsavedChanges = true;
+            SetUnsaved(true);
         }
 
         private void MoveUp()
@@ -223,7 +238,7 @@ namespace FF7Scarlet
                 DisplayScript(SelectedEnemyIndex, SelectedScriptIndex);
                 listBoxCurrScript.SelectedIndex = temp - 1;
                 loading = false;
-                unsavedChanges = true;
+                SetUnsaved(true);
             }
         }
 
@@ -237,7 +252,7 @@ namespace FF7Scarlet
                 DisplayScript(SelectedEnemyIndex, SelectedScriptIndex);
                 listBoxCurrScript.SelectedIndex = temp + 1;
                 loading = false;
-                unsavedChanges = true;
+                SetUnsaved(true);
             }
         }
 
@@ -325,9 +340,31 @@ namespace FF7Scarlet
 
         private void toolStripButtonAdd_Click(object sender, EventArgs e)
         {
+            DialogResult result;
+            Code newCode;
+
             using (var codeForm = new CodeForm())
             {
-                codeForm.ShowDialog();
+                result = codeForm.ShowDialog();
+                newCode = codeForm.Code;
+            }
+
+            if (result == DialogResult.OK)
+            {
+                if (SelectedScript == null)
+                {
+                    newCode.SetParent(SelectedScript);
+                    SelectedEnemy.CreateNewScript(SelectedScriptIndex, newCode);
+                    UpdateScripts(SelectedEnemyIndex);
+                    listBoxCurrScript.SelectedIndex = 0;
+                }
+                else
+                {
+                    int i = SelectedCodeIndex;
+                    SelectedScript.InsertCodeAtPosition(i, newCode);
+                    ReloadScript(i);
+                }
+                SetUnsaved(true);
             }
         }
 
@@ -335,9 +372,22 @@ namespace FF7Scarlet
         {
             if (SelectedCode != null)
             {
+                DialogResult result;
+                Code newCode;
+
                 using (var codeForm = new CodeForm(SelectedCode))
                 {
-                    codeForm.ShowDialog();
+                    result = codeForm.ShowDialog();
+                    newCode = codeForm.Code;
+                }
+
+                if (result == DialogResult.OK)
+                {
+                    int i = SelectedCodeIndex;
+                    newCode.SetParent(SelectedScript);
+                    SelectedScript.ReplaceCodeAtPosition(i, newCode);
+                    ReloadScript(i);
+                    SetUnsaved(true);
                 }
             }
         }

@@ -115,7 +115,9 @@ namespace FF7Scarlet
         {
             if (isString)
             {
-                //stuff
+                Code = new List<Code> {
+                    new CodeLine(null, -1, (int)Opcodes.ShowMessage, paramList[0].Parameter)
+                };
             }
             else //convert code back into a proper script
             {

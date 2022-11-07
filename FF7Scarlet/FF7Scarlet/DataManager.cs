@@ -160,9 +160,14 @@ namespace FF7Scarlet
             startupForm.EnableFormButton(type);
         }
 
-        public static Scene[] GetSceneList()
+        public static Scene[] CopySceneList()
         {
-            return sceneList;
+            var copy = new Scene[sceneList.Length];
+            for (int i = 0; i < sceneList.Length; ++i)
+            {
+                copy[i] = new Scene(sceneList[i]);
+            }
+            return copy;
         }
     }
 }

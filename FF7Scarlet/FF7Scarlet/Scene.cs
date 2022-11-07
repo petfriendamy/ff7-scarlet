@@ -18,6 +18,7 @@ namespace FF7Scarlet
         private int[] enemyAIoffset = new int[ENEMY_COUNT];
         private byte[] formationAIRaw;
         private byte[] enemyAIraw;
+        private byte[] rawData;
 
         public bool ScriptsLoaded { get; private set; } = false;
 
@@ -25,13 +26,21 @@ namespace FF7Scarlet
         {
             if (File.Exists(filePath))
             {
-                ParseData(File.ReadAllBytes(filePath));
+                rawData = File.ReadAllBytes(filePath);
+                ParseData(rawData);
             }
         }
 
         public Scene(ref byte[] data)
         {
-            ParseData(data);
+            rawData = data;
+            ParseData(rawData);
+        }
+
+        public Scene(Scene other)
+        {
+            rawData = other.rawData;
+            ParseData(rawData);
         }
 
         public Enemy GetEnemyByNumber(int id)

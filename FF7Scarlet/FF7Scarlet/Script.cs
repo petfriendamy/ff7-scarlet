@@ -23,6 +23,17 @@ namespace FF7Scarlet
             ParseScript(ref data, offset, nextOffset);
         }
 
+        public Script(AIContainer parent, Code startingCode)
+        {
+            Parent = parent;
+            startingCode.SetParent(this);
+            code = new List<Code> { startingCode };
+            if (startingCode.GetPrimaryOpcode() != (int)Opcodes.End)
+            {
+                code.Add(new CodeLine(this, -1, (int)Opcodes.End));
+            }
+        }
+
         public void ParseScript(ref byte[] data, int offset, int length)
         {
             //run through the script and idenify all the opcodes
@@ -189,6 +200,26 @@ namespace FF7Scarlet
                 return null;
             }
             return code[pos];
+        }
+
+        public void InsertCodeAtPosition(int pos, Code newCode)
+        {
+            if (IsEmpty || pos < 0 || pos >= code.Count)
+            {
+                code.Add(newCode);
+            }
+            else
+            {
+                code.Insert(pos, newCode);
+            }
+        }
+
+        public void ReplaceCodeAtPosition(int pos, Code newCode)
+        {
+            if (pos >= 0 && pos < code.Count)
+            {
+                code[pos] = newCode;
+            }
         }
 
         public void RemoveCodeAtPosition(int pos)

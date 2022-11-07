@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FF7Scarlet
 {
@@ -203,7 +204,8 @@ namespace FF7Scarlet
                 {
                     if (isString)
                     {
-                        //stuff
+                        textBoxParameter1.Text = paramForm.Code[0].GetParameter().ToString();
+                        comboBoxManualParameter.Text = textBoxParameter1.Text;
                     }
                     else
                     {
@@ -234,9 +236,9 @@ namespace FF7Scarlet
                             comboBoxManualParameter.Text = test.Disassemble(false);
                         }
                     }
+                    unsavedChanges = true;
                 }
             }
-            unsavedChanges = true;
         }
 
         private void comboBoxOpcodeGroups_SelectedIndexChanged(object sender, EventArgs e)
@@ -259,21 +261,42 @@ namespace FF7Scarlet
             EditParameter(1);
         }
 
+        private void comboBoxManualParameter_TextUpdate(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                unsavedChanges = true;
+            }
+        }
+
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (unsavedChanges)
+            if (unsavedChanges || Code == null)
             {
                 var tempList = new List<Code> { };
                 if (tabControlOptions.SelectedTab == tabPageGenerate)
                 {
-                    
+                    //stuff
                 }
                 else
                 {
-                    Code = new CodeLine(null, -1, currList[comboBoxOpcodes.SelectedIndex].Code,
-                        new FFText(comboBoxManualParameter.Text));
+                    var op = currList[comboBoxOpcodes.SelectedIndex];
+                    if (op.ParameterType == ParameterTypes.None)
+                    {
+                        Code = new CodeLine(null, -1, op.Code);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(comboBoxManualParameter.Text))
+                        {
+                            MessageBox.Show("Parameter cannot be empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        Code = new CodeLine(null, -1, op.Code, new FFText(comboBoxManualParameter.Text));
+                    }
                 }
             }
+            DialogResult = DialogResult.OK;
             Close();
         }
     }

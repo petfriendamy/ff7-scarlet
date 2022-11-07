@@ -64,6 +64,15 @@ namespace FF7Scarlet
             return block[block.Count - 1].GetPopCount();
         }
 
+        public override void SetParent(Script parent)
+        {
+            foreach (var c in block)
+            {
+                c.SetParent(parent);
+            }
+            Parent = parent;
+        }
+
         public override string Disassemble(bool verbose)
         {
             string output = "";

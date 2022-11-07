@@ -223,6 +223,7 @@ namespace FF7Scarlet
             this.comboBoxManualParameter.Name = "comboBoxManualParameter";
             this.comboBoxManualParameter.Size = new System.Drawing.Size(364, 21);
             this.comboBoxManualParameter.TabIndex = 6;
+            this.comboBoxManualParameter.TextUpdate += new System.EventHandler(this.comboBoxManualParameter_TextUpdate);
             // 
             // groupBoxOpcodes
             // 

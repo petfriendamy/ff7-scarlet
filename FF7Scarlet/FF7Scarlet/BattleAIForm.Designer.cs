@@ -44,7 +44,7 @@ namespace FF7Scarlet
             this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonDelete = new System.Windows.Forms.ToolStripButton();
             this.buttonSave = new System.Windows.Forms.Button();
-            this.buttonSaveAs = new System.Windows.Forms.Button();
+            this.buttonExport = new System.Windows.Forms.Button();
             this.groupBoxEnemies = new System.Windows.Forms.GroupBox();
             this.listBoxEnemies = new System.Windows.Forms.ListBox();
             this.comboBoxSceneList = new System.Windows.Forms.ComboBox();
@@ -230,19 +230,19 @@ namespace FF7Scarlet
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(150, 23);
             this.buttonSave.TabIndex = 4;
-            this.buttonSave.Text = "Save scene";
+            this.buttonSave.Text = "Save scene.bin";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 
-            // buttonSaveAs
+            // buttonExport
             // 
-            this.buttonSaveAs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSaveAs.Location = new System.Drawing.Point(9, 406);
-            this.buttonSaveAs.Name = "buttonSaveAs";
-            this.buttonSaveAs.Size = new System.Drawing.Size(150, 23);
-            this.buttonSaveAs.TabIndex = 5;
-            this.buttonSaveAs.Text = "Save scene as...";
-            this.buttonSaveAs.UseVisualStyleBackColor = true;
+            this.buttonExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonExport.Location = new System.Drawing.Point(9, 406);
+            this.buttonExport.Name = "buttonExport";
+            this.buttonExport.Size = new System.Drawing.Size(150, 23);
+            this.buttonExport.TabIndex = 5;
+            this.buttonExport.Text = "Export selected...";
+            this.buttonExport.UseVisualStyleBackColor = true;
             // 
             // groupBoxEnemies
             // 
@@ -293,7 +293,7 @@ namespace FF7Scarlet
             this.Controls.Add(this.labelScenes);
             this.Controls.Add(this.comboBoxSceneList);
             this.Controls.Add(this.groupBoxEnemies);
-            this.Controls.Add(this.buttonSaveAs);
+            this.Controls.Add(this.buttonExport);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.groupBoxCurrScript);
             this.Controls.Add(this.groupBoxScripts);
@@ -321,7 +321,7 @@ namespace FF7Scarlet
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.ToolStrip toolStripScript;
         private System.Windows.Forms.ListBox listBoxScripts;
-        private System.Windows.Forms.Button buttonSaveAs;
+        private System.Windows.Forms.Button buttonExport;
         private System.Windows.Forms.GroupBox groupBoxEnemies;
         private System.Windows.Forms.ListBox listBoxEnemies;
         private System.Windows.Forms.ListBox listBoxCurrScript;
