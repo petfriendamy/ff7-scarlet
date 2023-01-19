@@ -49,23 +49,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AIContainer.cs" />
-    <Compile Include="Attack.cs" />
-    <Compile Include="Code.cs" />
-    <Compile Include="CodeBlock.cs" />
-    <Compile Include="CodeForm.cs">
+    <Compile Include="AIEditor\AIContainer.cs" />
+    <Compile Include="AIEditor\Attack.cs" />
+    <Compile Include="AIEditor\Code.cs" />
+    <Compile Include="AIEditor\CodeBlock.cs" />
+    <Compile Include="AIEditor\CodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CodeForm.Designer.cs">
+    <Compile Include="AIEditor\CodeForm.Designer.cs">
       <DependentUpon>CodeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CodeLine.cs" />
-    <Compile Include="CommandInfo.cs" />
-    <Compile Include="CommonVars.cs" />
+    <Compile Include="AIEditor\CodeLine.cs" />
+    <Compile Include="AIEditor\CommandInfo.cs" />
+    <Compile Include="AIEditor\CommonVars.cs" />
     <Compile Include="EndianConvert.cs" />
-    <Compile Include="Enemy.cs" />
+    <Compile Include="AIEditor\Enemy.cs" />
     <Compile Include="FFText.cs" />
-    <Compile Include="Formation.cs" />
+    <Compile Include="AIEditor\Formation.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="GZipper.cs" />
     <Compile Include="KernelForm.cs">
@@ -74,49 +74,49 @@
     <Compile Include="KernelForm.Designer.cs">
       <DependentUpon>KernelForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OpcodeInfo.cs" />
-    <Compile Include="Opcodes.cs" />
-    <Compile Include="ParameterControl.cs">
+    <Compile Include="AIEditor\OpcodeInfo.cs" />
+    <Compile Include="AIEditor\Opcodes.cs" />
+    <Compile Include="AIEditor\ParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ParameterControl.Designer.cs">
+    <Compile Include="AIEditor\ParameterControl.Designer.cs">
       <DependentUpon>ParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParameterForm.cs">
+    <Compile Include="AIEditor\ParameterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ParameterForm.Designer.cs">
+    <Compile Include="AIEditor\ParameterForm.Designer.cs">
       <DependentUpon>ParameterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Script.cs" />
-    <Compile Include="BattleAIForm.cs">
+    <Compile Include="AIEditor\Script.cs" />
+    <Compile Include="AIEditor\BattleAIForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BattleAIForm.Designer.cs">
+    <Compile Include="AIEditor\BattleAIForm.Designer.cs">
       <DependentUpon>BattleAIForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scene.cs" />
+    <Compile Include="AIEditor\Scene.cs" />
     <Compile Include="StartupForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="StartupForm.Designer.cs">
       <DependentUpon>StartupForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="CodeForm.resx">
+    <EmbeddedResource Include="AIEditor\CodeForm.resx">
       <DependentUpon>CodeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BattleAIForm.resx">
+    <EmbeddedResource Include="AIEditor\BattleAIForm.resx">
       <DependentUpon>BattleAIForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="KernelForm.resx">
       <DependentUpon>KernelForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParameterControl.resx">
+    <EmbeddedResource Include="AIEditor\ParameterControl.resx">
       <DependentUpon>ParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParameterForm.resx">
+    <EmbeddedResource Include="AIEditor\ParameterForm.resx">
       <DependentUpon>ParameterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

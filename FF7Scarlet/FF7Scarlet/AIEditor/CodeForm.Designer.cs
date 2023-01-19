@@ -193,6 +193,7 @@ namespace FF7Scarlet
             this.comboBoxCommands.Name = "comboBoxCommands";
             this.comboBoxCommands.Size = new System.Drawing.Size(442, 21);
             this.comboBoxCommands.TabIndex = 1;
+            this.comboBoxCommands.SelectedIndexChanged += new System.EventHandler(this.comboBoxCommands_SelectedIndexChanged);
             // 
             // labelGenerateCommands
             // 

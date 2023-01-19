@@ -13,7 +13,7 @@ namespace FF7Scarlet
 
     public enum ParameterTypes
     {
-        None, OneByte, TwoByte, ThreeByte, String, Debug, Label
+        None, OneByte, TwoByte, ThreeByte, String, Debug, Label, Other
     }
 
     public class OpcodeInfo
