@@ -13,7 +13,8 @@ namespace FF7Scarlet
 {
     public partial class ParameterControl : UserControl
     {
-        private int operand = -1, paramType = -1;
+        private int operand = -1;
+        private byte paramType = 0xFF;
         private bool singleParameter = false;
         public int Operand
         {
@@ -31,7 +32,7 @@ namespace FF7Scarlet
                 operand = value;
             }
         }
-        public int ParamType
+        public byte ParamType
         {
             get
             {
@@ -134,7 +135,7 @@ namespace FF7Scarlet
             IsFirst = true;
         }
 
-        public void SetCode(int paramType, FFText parameter)
+        public void SetCode(byte paramType, FFText parameter)
         {
             ParamType = paramType;
             Parameter = parameter;
@@ -179,7 +180,7 @@ namespace FF7Scarlet
             }
         }
 
-        public void SetOperand(int operand)
+        public void SetOperand(byte operand)
         {
             var op = OpcodeInfo.GetInfo(operand);
             if (op != null)

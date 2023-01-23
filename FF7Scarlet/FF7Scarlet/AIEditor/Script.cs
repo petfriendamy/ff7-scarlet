@@ -10,7 +10,11 @@ namespace FF7Scarlet
 {
     public class Script
     {
+        public const ushort NULL_OFFSET = 0xFFFF;
         private List<Code> code;
+        private Dictionary<int, ushort> labels;
+        private bool headersAreCorrect = false;
+
         public bool IsEmpty
         {
             get { return code.Count == 0; }
@@ -28,9 +32,13 @@ namespace FF7Scarlet
             Parent = parent;
             startingCode.SetParent(this);
             code = new List<Code> { startingCode };
-            if (startingCode.GetPrimaryOpcode() != (int)Opcodes.End)
+            if (startingCode.GetPrimaryOpcode() == (byte)Opcodes.Label)
             {
-                code.Add(new CodeLine(this, -1, (int)Opcodes.End));
+                labels = new Dictionary<int, ushort> { { startingCode.GetParameter().ToInt(), startingCode.GetHeader() } };
+            }
+            if (startingCode.GetPrimaryOpcode() != (byte)Opcodes.End)
+            {
+                code.Add(new CodeLine(this, 0xFFFF, (byte)Opcodes.End));
             }
         }
 
@@ -39,9 +47,11 @@ namespace FF7Scarlet
             //run through the script and idenify all the opcodes
             var firstParse = new List<CodeLine> { };
             byte opcode, temp;
-            int pos;
+            ushort pos;
             var intParser = new byte[4];
             var stringParser = new List<byte> { };
+
+            labels = new Dictionary<int, ushort> { };
 
             using (var ms = new MemoryStream(data, offset, length, false))
             using (var reader = new BinaryReader(ms))
@@ -51,14 +61,14 @@ namespace FF7Scarlet
                 {
                     try
                     {
-                        pos = (int)reader.BaseStream.Position;
+                        pos = (ushort)reader.BaseStream.Position;
                         opcode = reader.ReadByte();
                         if (opcode == (byte)Opcodes.End)
                         {
                             endOfStream = true;
                         }
                         var parsedLine = new CodeLine(this, pos, opcode);
-                        if (Enum.IsDefined(typeof(Opcodes), (int)opcode))
+                        if (Enum.IsDefined(typeof(Opcodes), opcode))
                         {
                             var type = OpcodeInfo.GetInfo(opcode).ParameterType;
                             switch (type)
@@ -111,35 +121,37 @@ namespace FF7Scarlet
             //check for jumps and create labels
             var jumps =
                 from c in firstParse
-                where c.Opcode >= (int)Opcodes.JumpEqual && c.Opcode <= (int)Opcodes.Jump
+                where c.Opcode >= (byte)Opcodes.JumpEqual && c.Opcode <= (byte)Opcodes.Jump
                 orderby c.Parameter
                 select c;
 
-            var labels = new List<int> { };
+            var newLabels = new List<int> { };
             foreach (var j in jumps)
             {
                 int loc = int.Parse(j.Parameter.ToString(), NumberStyles.HexNumber);
-                if (!labels.Contains(loc))
+                if (!newLabels.Contains(loc))
                 {
-                    labels.Add(loc);
+                    newLabels.Add(loc);
                 }
-                j.Parameter = new FFText((labels.IndexOf(loc) + 1));
+                j.Parameter = new FFText((newLabels.IndexOf(loc) + 1));
             }
 
             //insert labels into the codelist
             for (int i = 0; i < firstParse.Count; ++i)
             {
-                if (labels.Contains(firstParse[i].Header))
+                if (newLabels.Contains(firstParse[i].Header))
                 {
-                    int labelPos = labels.IndexOf(firstParse[i].Header) + 1;
-                    var newLabel = new CodeLine(this, -1, (int)Opcodes.Label, new FFText(labelPos));
+                    int labelPos = newLabels.IndexOf(firstParse[i].Header) + 1;
+                    var newLabel = new CodeLine(this, 0xFFFF, (byte)Opcodes.Label, new FFText(labelPos));
                     firstParse.Insert(i, newLabel);
+                    labels.Add(labelPos, firstParse[i + 1].Header);
                     ++i;
                 }
             }
 
             //the final parsing
             code = GetParsedCode(firstParse, this);
+            headersAreCorrect = true;
         }
 
         public static List<Code> GetParsedCode(List<CodeLine> list, Script parent = null)
@@ -212,6 +224,11 @@ namespace FF7Scarlet
             {
                 code.Insert(pos, newCode);
             }
+            if (newCode.GetPrimaryOpcode() == (byte)Opcodes.Label)
+            {
+                labels.Add(newCode.GetParameter().ToInt(), newCode.GetHeader());
+            }
+            headersAreCorrect = false;
         }
 
         public void ReplaceCodeAtPosition(int pos, Code newCode)
@@ -219,6 +236,11 @@ namespace FF7Scarlet
             if (pos >= 0 && pos < code.Count)
             {
                 code[pos] = newCode;
+                if (newCode.GetPrimaryOpcode() == (byte)Opcodes.Label)
+                {
+                    labels.Add(newCode.GetParameter().ToInt(), newCode.GetHeader());
+                }
+                headersAreCorrect = false;
             }
         }
 
@@ -226,7 +248,12 @@ namespace FF7Scarlet
         {
             if (pos >= 0 && pos < code.Count)
             {
+                if (code[pos].GetPrimaryOpcode() == (byte)Opcodes.Label)
+                {
+                    labels.Remove(code[pos].GetParameter().ToInt());
+                }
                 code.RemoveAt(pos);
+                headersAreCorrect = false;
             }
         }
 
@@ -235,6 +262,7 @@ namespace FF7Scarlet
             if (pos > 0 && pos < code.Count)
             {
                 code.Reverse(pos - 1, 2);
+                headersAreCorrect = false;
             }
         }
 
@@ -243,7 +271,15 @@ namespace FF7Scarlet
             if (pos >= 0 && pos < code.Count - 1)
             {
                 code.Reverse(pos, 2);
+                headersAreCorrect = false;
             }
+        }
+
+        public ushort GetLabelPosition(int label)
+        {
+            if (!headersAreCorrect) { CorrectHeaders(); }
+            if (labels.ContainsKey(label)) { return labels[label]; }
+            return NULL_OFFSET;
         }
 
         public string[] Disassemble()
@@ -258,6 +294,37 @@ namespace FF7Scarlet
                 }
             }
             return output.ToArray();
+        }
+
+        public byte[] GetRawData()
+        {
+            if (!headersAreCorrect) { CorrectHeaders(); }
+
+            //convert data to bytes
+            var data = new List<byte> { };
+            foreach (var c in code)
+            {
+                if (c.GetPrimaryOpcode() != (byte)Opcodes.Label)
+                {
+                    data.AddRange(c.GetBytes());
+                }
+            }
+            return data.ToArray();
+        }
+
+        private void CorrectHeaders()
+        {
+            ushort currPos = 0;
+            foreach (var c in code)
+            {
+                if (c.GetPrimaryOpcode() == (byte)Opcodes.Label)
+                {
+                    labels[c.GetParameter().ToInt()] = currPos;
+                }
+                currPos = c.SetHeader(currPos);
+                c.SetParent(this);
+            }
+            headersAreCorrect = true;
         }
     }
 }

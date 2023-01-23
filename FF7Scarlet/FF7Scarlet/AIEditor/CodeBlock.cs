@@ -44,12 +44,12 @@ namespace FF7Scarlet
             return block[block.Count - 1];
         }
 
-        public override int GetHeader()
+        public override ushort GetHeader()
         {
             return block[0].GetHeader();
         }
 
-        public override int GetPrimaryOpcode()
+        public override byte GetPrimaryOpcode()
         {
             return block[block.Count - 1].GetPrimaryOpcode();
         }
@@ -59,9 +59,19 @@ namespace FF7Scarlet
             return block[block.Count - 1].GetParameter();
         }
 
-        public override int GetPopCount()
+        public override byte GetPopCount()
         {
             return block[block.Count - 1].GetPopCount();
+        }
+
+        public override ushort SetHeader(ushort value)
+        {
+            ushort currPos = value;
+            for (int i = block.Count - 1; i >= 0; i--)
+            {
+                currPos = block[i].SetHeader(currPos);
+            }
+            return currPos;
         }
 
         public override void SetParent(Script parent)
@@ -207,6 +217,19 @@ namespace FF7Scarlet
                 }
             }
             return separated;
+        }
+
+        public override byte[] GetBytes()
+        {
+            var data = new List<byte> { };
+            foreach (var c in BreakDown())
+            {
+                if (c.Opcode != (byte)Opcodes.Label)
+                {
+                    data.AddRange(c.GetBytes());
+                }
+            }
+            return data.ToArray();
         }
     }
 }

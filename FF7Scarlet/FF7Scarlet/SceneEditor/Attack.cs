@@ -8,13 +8,20 @@ namespace FF7Scarlet
 {
     public class Attack
     {
-        public int ID { get; }
+        public ushort ID { get; }
         public FFText Name { get; }
+        private byte[] rawData;
 
-        public Attack(int id, FFText name)
+        public Attack(ushort id, FFText name, byte[] data)
         {
             ID = id;
             Name = name;
+            rawData = data;
+        }
+
+        public byte[] GetRawData()
+        {
+            return rawData;
         }
     }
 }

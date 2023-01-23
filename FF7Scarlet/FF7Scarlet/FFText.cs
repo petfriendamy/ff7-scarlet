@@ -19,6 +19,11 @@ namespace FF7Scarlet
 
         private readonly byte[] data;
 
+        public int Length
+        {
+            get { return data.Length; }
+        }
+
         public FFText(byte[] data)
         {
             this.data = data;
@@ -138,6 +143,25 @@ namespace FF7Scarlet
                 return value;
             }
             return -1;
+        }
+
+        public byte[] GetBytes(ParameterTypes type = ParameterTypes.String)
+        {
+            var singleByte = new byte[1];
+            var threeByteInt = new byte[3];
+            switch (type)
+            {
+                case ParameterTypes.OneByte:
+                    singleByte[0] = (byte)ToInt();
+                    return singleByte;
+                case ParameterTypes.TwoByte:
+                    return BitConverter.GetBytes((ushort)ToInt());
+                case ParameterTypes.ThreeByte:
+                    Array.Copy(BitConverter.GetBytes(ToInt()), threeByteInt, 3);
+                    return threeByteInt;
+                default:
+                    return data;
+            }
         }
 
         public int CompareTo(object obj)

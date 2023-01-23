@@ -12,11 +12,13 @@ namespace FF7Scarlet
 
         public abstract string Disassemble(bool verbose);
         public abstract List<CodeLine> BreakDown();
-        public abstract int GetHeader();
-        public abstract int GetPrimaryOpcode();
+        public abstract ushort GetHeader();
+        public abstract byte GetPrimaryOpcode();
         public abstract FFText GetParameter();
-        public abstract int GetPopCount();
+        public abstract byte GetPopCount();
         public abstract void SetParent(Script parent);
+        public abstract ushort SetHeader(ushort value);
+        public abstract byte[] GetBytes();
         public Scene GetParentScene()
         {
             if (Parent == null) { return null; }

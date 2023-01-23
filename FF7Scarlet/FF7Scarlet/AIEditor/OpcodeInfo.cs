@@ -89,9 +89,9 @@ namespace FF7Scarlet
         public OpcodeGroups Group { get; }
         public ParameterTypes ParameterType { get; }
         public int PopCount { get; }
-        public int Code
+        public byte Code
         {
-            get { return (int)EnumValue; }
+            get { return (byte)EnumValue; }
         }
         public string Name
         {
@@ -119,7 +119,7 @@ namespace FF7Scarlet
             this.shortName = shortName;
         }
 
-        public static OpcodeInfo GetInfo(int opcode)
+        public static OpcodeInfo GetInfo(byte opcode)
         {
             for (int i = 0; i < OPCODE_LIST.Length; ++i)
             {
@@ -133,7 +133,7 @@ namespace FF7Scarlet
 
         public static OpcodeInfo GetInfo(Opcodes opcode)
         {
-            return GetInfo((int)opcode);
+            return GetInfo((byte)opcode);
         }
 
         public bool IsOperand()
@@ -145,7 +145,7 @@ namespace FF7Scarlet
         public bool IsParameter()
         {
             return Group == OpcodeGroups.Push || Group == OpcodeGroups.Jump
-                || Code == (int)Opcodes.RandomWord || ParameterType == ParameterTypes.String
+                || Code == (byte)Opcodes.RandomWord || ParameterType == ParameterTypes.String
                 || ParameterType == ParameterTypes.Debug;
         }
     }

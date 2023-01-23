@@ -116,7 +116,7 @@ namespace FF7Scarlet
             if (isString)
             {
                 Code = new List<Code> {
-                    new CodeLine(null, -1, (int)Opcodes.ShowMessage, paramList[0].Parameter)
+                    new CodeLine(null, 0xFFFF, (byte)Opcodes.ShowMessage, paramList[0].Parameter)
                 };
             }
             else //convert code back into a proper script
@@ -126,10 +126,10 @@ namespace FF7Scarlet
                 {
                     if (p.Checked || p.IsFirst)
                     {
-                        firstParse.Add(new CodeLine(null, -1, p.ParamType, p.Parameter));
+                        firstParse.Add(new CodeLine(null, 0xFFFF, p.ParamType, p.Parameter));
                         if (!p.IsFirst && p.Operand != -1)
                         {
-                            firstParse.Add(new CodeLine(null, -1, p.Operand));
+                            firstParse.Add(new CodeLine(null, 0xFFFF, (byte)p.Operand));
                         }
                     }
                 }

@@ -27,13 +27,6 @@ namespace FF7Scarlet
         public string ParameterName2 { get; }
         public ParameterTypes ParameterType1 { get; }
         public ParameterTypes ParameterType2 { get; }
-        /*public ParameterTypes ParameterType
-        {
-            get
-            {
-                return OpcodeInfo.GetInfo(Opcode).ParameterType;
-            }
-        }*/
 
         public CommandInfo(Opcodes opcode, string description, string parameter1, ParameterTypes type1, string parameter2, ParameterTypes type2)
         {
@@ -57,6 +50,34 @@ namespace FF7Scarlet
                 if (c.Opcode == opcode) { return c; }
             }
             return null;
+        }
+
+        public CodeBlock GenerateCode(CodeBlock old = null)
+        {
+            var op = OpcodeInfo.GetInfo(Opcode);
+            FFText p = null;
+            CodeBlock block = null;
+            if (old == null)
+            {
+                if (op.ParameterType != ParameterTypes.None)
+                {
+                    p = new FFText("");
+                }
+                block = new CodeBlock(null, new CodeLine(null, 0xFFFF, (byte)Opcode, p));
+                for (int i = 0; i < op.PopCount; ++i)
+                {
+                    block.AddToTop(new CodeLine(null, 0xFFFF, (byte)Opcodes.PushConst01, new FFText("0")));
+                }
+            }
+            else
+            {
+                p = old.GetParameter();
+                for (int i = 0; i < op.PopCount; ++i)
+                {
+                    block.AddToTop(old.GetCodeAtPosition(i));
+                }
+            }
+            return block;
         }
     }
 }

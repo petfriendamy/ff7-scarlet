@@ -243,6 +243,7 @@ namespace FF7Scarlet
             this.buttonExport.TabIndex = 5;
             this.buttonExport.Text = "Export selected...";
             this.buttonExport.UseVisualStyleBackColor = true;
+            this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
             // 
             // groupBoxEnemies
             // 
@@ -301,7 +302,7 @@ namespace FF7Scarlet
             this.MinimumSize = new System.Drawing.Size(500, 320);
             this.Name = "BattleAIForm";
             this.Text = "Scarlet - Battle A.I. Editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BattleAIForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.BattleAIForm_FormClosed);
             this.Load += new System.EventHandler(this.BattleAIForm_Load);
             this.groupBoxScripts.ResumeLayout(false);

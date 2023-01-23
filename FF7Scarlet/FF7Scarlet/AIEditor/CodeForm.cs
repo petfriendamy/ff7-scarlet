@@ -43,53 +43,54 @@ namespace FF7Scarlet
             {
                 opcode = currList[0];
                 command = CommandInfo.COMMAND_LIST[0];
+                Code = command.GenerateCode();
             }
             else
             {
                 opcode = OpcodeInfo.GetInfo(Code.GetPrimaryOpcode());
                 command = CommandInfo.GetInfo(opcode.EnumValue);
+            }
 
-                if (command != null)
+            if (command != null)
+            {
+                var cb = Code as CodeBlock;
+                comboBoxCommands.SelectedIndex = CommandInfo.COMMAND_LIST.ToList().IndexOf(command);
+                var ptype = command.ParameterType1;
+                for (int i = 1; i <= 2; ++i)
                 {
-                    var cb = Code as CodeBlock;
-                    comboBoxCommands.SelectedIndex = CommandInfo.COMMAND_LIST.ToList().IndexOf(command);
-                    var ptype = command.ParameterType1;
-                    for (int i = 1; i <= 2; ++i)
+                    switch (ptype)
                     {
-                        switch (ptype)
-                        {
-                            case ParameterTypes.None:
-                                break;
-                            case ParameterTypes.Debug:
-                                popCount = Code.GetPopCount();
-                                break;
-                            case ParameterTypes.String:
-                                strText = Code.GetParameter();
-                                break;
-                            case ParameterTypes.Label:
-                                label = Code.GetParameter().ToInt();
-                                break;
-                            default:
-                                if (i == 1) { param1 = cb.GetCodeAtPosition(0); }
-                                else { param2 = cb.GetCodeAtPosition(1); }
-                                break;
-                        }
-                        ptype = command.ParameterType2;
+                        case ParameterTypes.None:
+                            break;
+                        case ParameterTypes.Debug:
+                            popCount = Code.GetPopCount();
+                            break;
+                        case ParameterTypes.String:
+                            strText = Code.GetParameter();
+                            break;
+                        case ParameterTypes.Label:
+                            label = Code.GetParameter().ToInt();
+                            break;
+                        default:
+                            if (i == 1) { param1 = cb.GetCodeAtPosition(0); }
+                            else { param2 = cb.GetCodeAtPosition(1); }
+                            break;
                     }
-                    UpdateCommandParameters();
+                    ptype = command.ParameterType2;
                 }
-                else if (Code is CodeLine)
-                {
-                    var c = Code as CodeLine;
-                    var o = OpcodeInfo.GetInfo(c.Opcode);
-                    tabControlOptions.SelectedTab = tabPageManual;
-                    comboBoxOpcodeGroups.SelectedIndex = (int)o.Group;
-                    comboBoxOpcodes.SelectedIndex = currList.IndexOf(o);
+                UpdateCommandParameters();
+            }
+            else if (Code is CodeLine)
+            {
+                var c = Code as CodeLine;
+                var o = OpcodeInfo.GetInfo(c.Opcode);
+                tabControlOptions.SelectedTab = tabPageManual;
+                comboBoxOpcodeGroups.SelectedIndex = (int)o.Group;
+                comboBoxOpcodes.SelectedIndex = currList.IndexOf(o);
 
-                    if (o.ParameterType != ParameterTypes.None)
-                    {
-                        comboBoxManualParameter.Text = c.Parameter.ToString();
-                    }
+                if (o.ParameterType != ParameterTypes.None)
+                {
+                    comboBoxManualParameter.Text = c.Parameter.ToString();
                 }
             }
             loading = false;
@@ -98,6 +99,7 @@ namespace FF7Scarlet
         private void UpdateCommandParameters()
         {
             command = CommandInfo.COMMAND_LIST[comboBoxCommands.SelectedIndex];
+            opcode = OpcodeInfo.GetInfo(command.Opcode);
             labelParameter1.Text = command.ParameterName1;
             labelParameter2.Text = command.ParameterName2;
             SetParameterVisibility(1, false);
@@ -189,15 +191,63 @@ namespace FF7Scarlet
         {
             Code param;
 
-            //check if parameter is a string or not
-            bool isString = false;
-            if (Code is CodeBlock)
+            //check if parameter is a string or a label
+            bool isString = false, isLabel = false;
+
+            if (opcode.EnumValue == Opcodes.DebugMessage)
             {
-                if (Code.GetPrimaryOpcode() == (int)Opcodes.DebugMessage)
+                if (pos == 0)
+                {
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, new FFText(Code.GetPopCount()));
+                }
+                else
+                {
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, strText);
+                    isString = true;
+                }
+            }
+            else
+            {
+                Code currP;
+                ParameterTypes type;
+
+                if (pos == 0)
+                {
+                    currP = param1;
+                    type = command.ParameterType1;
+                }
+                else
+                {
+                    currP = param2;
+                    type = command.ParameterType2;
+                }
+                if (type == ParameterTypes.String)
+                {
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, strText);
+                    isString = true;
+                }
+                else if (type == ParameterTypes.Label)
+                {
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.Label, new FFText(label));
+                    isLabel = true;
+                }
+                else
+                {
+                    param = currP;
+                }
+            }
+            if (param == null)
+            {
+                param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, new FFText("0"));
+            }
+
+            /*if (Code is CodeBlock)
+            {
+                if (Code.GetPrimaryOpcode() == (byte)Opcodes.DebugMessage)
                 {
                     if (pos == 0)
                     {
-                        param = new CodeLine(Code.Parent, Code.GetHeader(), (int)Opcodes.PushConst01, new FFText(Code.GetPopCount()));
+                        param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, new FFText(Code.GetPopCount()));
                     }
                     else
                     {
@@ -213,11 +263,8 @@ namespace FF7Scarlet
             else
             {
                 param = Code;
-                if (Code.GetPrimaryOpcode() == (int)Opcodes.ShowMessage)
-                {
-                    isString = true;
-                }
-            }
+                isString = (Code.GetPrimaryOpcode() == (byte)Opcodes.ShowMessage);
+            }*/
 
             //send the parameter to the parameter form for editing
             var temp = new List<Code> { };
@@ -229,10 +276,28 @@ namespace FF7Scarlet
             {
                 if (paramForm.ShowDialog() == DialogResult.OK)
                 {
-                    if (isString)
+                    if (isString || isLabel)
                     {
-                        textBoxParameter1.Text = paramForm.Code[0].GetParameter().ToString();
-                        comboBoxManualParameter.Text = textBoxParameter1.Text;
+                        var p = paramForm.Code[0].GetParameter();
+                        if (pos == 0)
+                        {
+                            textBoxParameter1.Text = p.ToString();
+                            comboBoxManualParameter.Text = textBoxParameter1.Text;
+                        }
+                        else
+                        {
+                            textBoxParameter2.Text = p.ToString();
+                            comboBoxManualParameter.Text = textBoxParameter2.Text;
+                        }
+
+                        if (isString)
+                        {
+                            strText = p;
+                        }
+                        else
+                        {
+                            label = p.ToInt();
+                        }
                     }
                     else
                     {
@@ -326,25 +391,30 @@ namespace FF7Scarlet
                     FFText param;
                     if (tabControlOptions.SelectedTab == tabPageGenerate)
                     {
-                        var cmd = CommandInfo.COMMAND_LIST[comboBoxCommands.SelectedIndex];
-                        if (OpcodeInfo.GetInfo(cmd.Opcode).PopCount > 0)
+                        if (OpcodeInfo.GetInfo(command.Opcode).PopCount > 0)
                         {
-                            var cb = new CodeBlock(null, new CodeLine(null, -1, (int)cmd.Opcode));
+                            FFText p = null;
+                            if (command.ParameterType2 == ParameterTypes.Label)
+                            {
+                                p = new FFText(label);
+                            }
+                            var cb = new CodeBlock(null, new CodeLine(null, 0xFFFF, (byte)command.Opcode, p));
                             if (param2 != null) { cb.AddToTop(param2); }
+                            
                             cb.AddToTop(param1);
                             Code = cb;
                         }
                         else
                         {
                             param = ParseParameter(ParameterTypes.Other, textBoxParameter1.Text);
-                            Code = new CodeLine(null, -1, (int)cmd.Opcode, param);
+                            Code = new CodeLine(null, 0xFFFF, (byte)command.Opcode, param);
                         }
                     }
                     else
                     {
                         var op = currList[comboBoxOpcodes.SelectedIndex];
                         param = ParseParameter(op.ParameterType, comboBoxManualParameter.Text);
-                        Code = new CodeLine(null, -1, op.Code, param);
+                        Code = new CodeLine(null, 0xFFFF, op.Code, param);
                     }
                 }
                 catch (ArgumentNullException ex)

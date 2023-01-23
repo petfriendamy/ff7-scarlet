@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FF7Scarlet
 {
-    public enum Opcodes
+    public enum Opcodes : byte
     {
         PushAddress00 = 0x00, PushAddress01 = 0x01, PushAddress02 = 0x02,
         PushAddress03 = 0x03, PushValue10 = 0x10, PushValue11 = 0x11,

@@ -50,7 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AIEditor\AIContainer.cs" />
-    <Compile Include="AIEditor\Attack.cs" />
+    <Compile Include="AIEditor\ScriptTooLongException.cs" />
+    <Compile Include="SceneEditor\Attack.cs" />
     <Compile Include="AIEditor\Code.cs" />
     <Compile Include="AIEditor\CodeBlock.cs" />
     <Compile Include="AIEditor\CodeForm.cs">
@@ -63,7 +64,8 @@
     <Compile Include="AIEditor\CommandInfo.cs" />
     <Compile Include="AIEditor\CommonVars.cs" />
     <Compile Include="EndianConvert.cs" />
-    <Compile Include="AIEditor\Enemy.cs" />
+    <Compile Include="SceneEditor\ResistanceRate.cs" />
+    <Compile Include="SceneEditor\Enemy.cs" />
     <Compile Include="FFText.cs" />
     <Compile Include="AIEditor\Formation.cs" />
     <Compile Include="DataManager.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AIEditor\Scene.cs" />
+    <Compile Include="SceneEditor\ItemDropRate.cs" />
     <Compile Include="StartupForm.cs">
       <SubType>Form</SubType>
     </Compile>
