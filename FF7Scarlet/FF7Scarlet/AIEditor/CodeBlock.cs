@@ -145,12 +145,12 @@ namespace FF7Scarlet
                         break;
                     case Opcodes.JumpEqual:
                         pop1 = block[1] as CodeLine;
-                        output += $"If ({block[0].Disassemble(false)}) Goto Label {pop1.Parameter}";
+                        output += $"If ({block[0].Disassemble(false)}) Goto Label {pop1.Parameter.ToInt()}";
                         break;
                     case Opcodes.JumpNotEqual:
                         pop1 = block[1] as CodeLine;
                         output += $"If (1st in Stack != {block[0].Disassemble(false)})";
-                        output += $" Goto Label {pop1.Parameter}";
+                        output += $" Goto Label {pop1.Parameter.ToInt()}";
                         break;
                     case Opcodes.Mask:
                         output += $"({block[0].Disassemble(false)}.{block[1].Disassemble(false)})";

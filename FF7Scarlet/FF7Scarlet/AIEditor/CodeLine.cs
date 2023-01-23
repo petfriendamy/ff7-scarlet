@@ -73,7 +73,7 @@ namespace FF7Scarlet
                 }
                 else if (Opcode == (byte)Opcodes.Jump)
                 {
-                    output += "Goto Label " + Parameter;
+                    output += $"Goto Label {Parameter.ToInt()}";
                 }
                 else
                 {
@@ -121,14 +121,13 @@ namespace FF7Scarlet
                 {
                     output += $"\"{Parameter}\"";
                 }
-                else if (Opcode == (byte)Opcodes.Jump || Opcode == (byte)Opcodes.JumpEqual
-                    || Opcode == (byte)Opcodes.JumpNotEqual)
-                {
-                    output += $"Label {Parameter}";
-                }
                 else if (Opcode == (byte)Opcodes.Label)
                 {
-                    output += Parameter + "--";
+                    output += $"{Parameter.ToInt()} --";
+                }
+                else if (OpcodeInfo.Group == OpcodeGroups.Jump)
+                {
+                    output += $"Label {Parameter.ToInt()}";
                 }
                 else
                 {
@@ -171,6 +170,7 @@ namespace FF7Scarlet
         {
             int length = GetDataLength();
             if (length == 0) { return null; }
+
             var data = new byte[length];
             var temp = Parameter?.GetBytes(OpcodeInfo.ParameterType);
             data[0] = Opcode;
@@ -199,9 +199,9 @@ namespace FF7Scarlet
                 }
                 return data;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new FormatException($"Opcode {OpcodeInfo.Name} did not parse correctly. (Length was {length}, parameter length was {temp.Length})");
+                throw new FormatException($"Opcode {OpcodeInfo.Name} did not parse correctly: {ex.Message}");
             }
         }
 

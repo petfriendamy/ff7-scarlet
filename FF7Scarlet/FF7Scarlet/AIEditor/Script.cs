@@ -121,30 +121,33 @@ namespace FF7Scarlet
             //check for jumps and create labels
             var jumps =
                 from c in firstParse
-                where c.Opcode >= (byte)Opcodes.JumpEqual && c.Opcode <= (byte)Opcodes.Jump
+                where c.OpcodeInfo.Group == OpcodeGroups.Jump
                 orderby c.Parameter
                 select c;
 
             var newLabels = new List<int> { };
+            int currLabel = 0;
             foreach (var j in jumps)
             {
-                int loc = int.Parse(j.Parameter.ToString(), NumberStyles.HexNumber);
+                ushort loc = ushort.Parse(j.Parameter.ToString(), NumberStyles.HexNumber);
                 if (!newLabels.Contains(loc))
                 {
                     newLabels.Add(loc);
+                    currLabel++;
+                    labels.Add(currLabel, loc);
                 }
-                j.Parameter = new FFText((newLabels.IndexOf(loc) + 1));
+                j.Parameter = new FFText((newLabels.IndexOf(loc) + 1).ToString("X4"));
             }
 
             //insert labels into the codelist
             for (int i = 0; i < firstParse.Count; ++i)
             {
-                if (newLabels.Contains(firstParse[i].Header))
+                ushort header = firstParse[i].Header;
+                if (newLabels.Contains(header))
                 {
-                    int labelPos = newLabels.IndexOf(firstParse[i].Header) + 1;
-                    var newLabel = new CodeLine(this, 0xFFFF, (byte)Opcodes.Label, new FFText(labelPos));
+                    int labelPos = newLabels.IndexOf(header) + 1;
+                    var newLabel = new CodeLine(this, header, (byte)Opcodes.Label, new FFText(labelPos));
                     firstParse.Insert(i, newLabel);
-                    labels.Add(labelPos, firstParse[i + 1].Header);
                     ++i;
                 }
             }
@@ -279,7 +282,9 @@ namespace FF7Scarlet
         {
             if (!headersAreCorrect) { CorrectHeaders(); }
             if (labels.ContainsKey(label)) { return labels[label]; }
-            return NULL_OFFSET;
+
+            //label doesn't exist
+            throw new ArgumentOutOfRangeException($"Label {label}");
         }
 
         public string[] Disassemble()

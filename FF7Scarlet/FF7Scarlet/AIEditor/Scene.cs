@@ -92,7 +92,7 @@ namespace FF7Scarlet
         {
             foreach (var atk in attackList)
             {
-                if (atk.ID == id)
+                if (atk != null && atk.ID == id)
                 {
                     return atk.Name.ToString();
                 }
@@ -162,7 +162,7 @@ namespace FF7Scarlet
                     for (i = 0; i < ATTACK_COUNT; ++i)
                     {
                         attackName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
-                        if (!attackName[i].IsEmpty())
+                        if (attackID[i] != Script.NULL_OFFSET)
                         {
                             attackList[i] = new Attack(attackID[i], attackName[i], attackData[i]);
                         }
@@ -341,6 +341,20 @@ namespace FF7Scarlet
                     catch (Exception ex)
                     {
                         throw new Exception($"Error parsing enemy scripts: {ex.Message}");
+                    }
+
+                    //pad remaining data with 0xFF
+                    bool end = false;
+                    while (!end)
+                    {
+                        try
+                        {
+                            writer.Write((byte)0xFF);
+                        }
+                        catch
+                        {
+                            end = true;
+                        }
                     }
                 }
             }
