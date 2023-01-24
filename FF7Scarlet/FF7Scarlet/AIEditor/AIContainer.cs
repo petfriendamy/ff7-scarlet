@@ -97,7 +97,7 @@ namespace FF7Scarlet
 
         public byte[] GetRawAIData()
         {
-            ushort currPos = SCRIPT_NUMBER * 2, length;
+            ushort currPos = SCRIPT_NUMBER * 2;
             var offsets = new ushort[SCRIPT_NUMBER];
             var data = new List<byte> { };
             byte[] currScript;
@@ -122,13 +122,7 @@ namespace FF7Scarlet
                     offsets[i] = currPos;
                     currScript = scripts[i].GetRawData();
                     data.AddRange(currScript);
-                    length = (ushort)currScript.Length;
-                    while (length % 4 != 0)
-                    {
-                        data.Add(0xFF);
-                        length++;
-                    }
-                    currPos += length;
+                    currPos += (ushort)currScript.Length;
                 }
             }
 

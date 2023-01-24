@@ -228,7 +228,7 @@ namespace FF7Scarlet
                 }
                 else if (type == ParameterTypes.Label)
                 {
-                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.Label, new FFText(label));
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.Label, new FFText(label.ToString("X4")));
                     isLabel = true;
                 }
                 else
@@ -241,31 +241,6 @@ namespace FF7Scarlet
                 param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, new FFText("0"));
             }
 
-            /*if (Code is CodeBlock)
-            {
-                if (Code.GetPrimaryOpcode() == (byte)Opcodes.DebugMessage)
-                {
-                    if (pos == 0)
-                    {
-                        param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, new FFText(Code.GetPopCount()));
-                    }
-                    else
-                    {
-                        param = (Code as CodeBlock).GetCodeAtEnd();
-                        isString = true;
-                    }
-                }
-                else
-                {
-                    param = (Code as CodeBlock).GetCodeAtPosition(pos);
-                }
-            }
-            else
-            {
-                param = Code;
-                isString = (Code.GetPrimaryOpcode() == (byte)Opcodes.ShowMessage);
-            }*/
-
             //send the parameter to the parameter form for editing
             var temp = new List<Code> { };
             foreach (var p in param.BreakDown())
@@ -276,7 +251,7 @@ namespace FF7Scarlet
             {
                 if (paramForm.ShowDialog() == DialogResult.OK)
                 {
-                    if (isString || isLabel)
+                    if (isString)
                     {
                         var p = paramForm.Code[0].GetParameter();
                         if (pos == 0)
@@ -289,15 +264,22 @@ namespace FF7Scarlet
                             textBoxParameter2.Text = p.ToString();
                             comboBoxManualParameter.Text = textBoxParameter2.Text;
                         }
-
-                        if (isString)
+                        strText = p;
+                    }
+                    else if (isLabel)
+                    {
+                        var p = paramForm.Code[0].GetParameter().ToInt();
+                        if (pos == 0)
                         {
-                            strText = p;
+                            textBoxParameter1.Text = p.ToString();
+                            comboBoxManualParameter.Text = textBoxParameter1.Text;
                         }
                         else
                         {
-                            label = p.ToInt();
+                            textBoxParameter2.Text = p.ToString();
+                            comboBoxManualParameter.Text = textBoxParameter2.Text;
                         }
+                        label = p;
                     }
                     else
                     {
@@ -342,6 +324,11 @@ namespace FF7Scarlet
             if (string.IsNullOrEmpty(text))
             {
                 throw new ArgumentNullException("Parameter cannot be empty.");
+            }
+            if (type == ParameterTypes.Label)
+            {
+                int temp = int.Parse(text);
+                return new FFText(temp.ToString("X4"));
             }
             return new FFText(text);
         }
@@ -391,22 +378,22 @@ namespace FF7Scarlet
                     FFText param;
                     if (tabControlOptions.SelectedTab == tabPageGenerate)
                     {
-                        if (OpcodeInfo.GetInfo(command.Opcode).PopCount > 0)
+                        if (command.OpcodeInfo.PopCount > 0)
                         {
                             FFText p = null;
                             if (command.ParameterType2 == ParameterTypes.Label)
                             {
-                                p = new FFText(label);
+                                p = new FFText(label.ToString("X4"));
                             }
                             var cb = new CodeBlock(null, new CodeLine(null, 0xFFFF, (byte)command.Opcode, p));
                             if (param2 != null) { cb.AddToTop(param2); }
-                            
+
                             cb.AddToTop(param1);
                             Code = cb;
                         }
                         else
                         {
-                            param = ParseParameter(ParameterTypes.Other, textBoxParameter1.Text);
+                            param = ParseParameter(command.ParameterType1, textBoxParameter1.Text);
                             Code = new CodeLine(null, 0xFFFF, (byte)command.Opcode, param);
                         }
                     }

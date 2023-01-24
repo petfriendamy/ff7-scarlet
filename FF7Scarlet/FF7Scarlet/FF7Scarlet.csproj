@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AIEditor\AIContainer.cs" />
+    <Compile Include="AIEditor\ParameterInfo.cs" />
     <Compile Include="AIEditor\ScriptTooLongException.cs" />
     <Compile Include="SceneEditor\Attack.cs" />
     <Compile Include="AIEditor\Code.cs" />

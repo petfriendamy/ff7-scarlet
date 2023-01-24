@@ -391,7 +391,7 @@ namespace FF7Scarlet
                     currData = aiContainers[i].GetRawAIData();
                     scriptList.Add(currData);
                     length[i] = currData.Length;
-                    while (length[i] % 4 != 0) { length[i]++; }
+                    while (length[i] % 2 != 0) { length[i]++; }
                     currPos += (ushort)length[i];
                 }
             }

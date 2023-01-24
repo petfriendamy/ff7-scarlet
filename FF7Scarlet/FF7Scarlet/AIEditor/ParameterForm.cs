@@ -100,7 +100,7 @@ namespace FF7Scarlet
             }
         }
 
-        public void SetSingleParameter(ParameterControl caller)
+        public void SetAsSingleParameter(ParameterControl caller)
         {
             if (caller == parameterControl1)
             {
@@ -111,33 +111,51 @@ namespace FF7Scarlet
             }
         }
 
+        private CodeLine ValidateCode(byte opcode, FFText parameter)
+        {
+            var op = OpcodeInfo.GetInfo(opcode);
+            bool test = ParameterInfo.IsValid(op.ParameterType, parameter);
+            if (!test)
+            {
+                throw new ArgumentException("Parameter is invalid.");
+            }
+            return new CodeLine(null, 0xFFFF, opcode, parameter);
+        }
+
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (isString)
+            try
             {
-                Code = new List<Code> {
-                    new CodeLine(null, 0xFFFF, (byte)Opcodes.ShowMessage, paramList[0].Parameter)
-                };
-            }
-            else //convert code back into a proper script
-            {
-                var firstParse = new List<CodeLine> { };
-                foreach (var p in paramList)
+                if (isString)
                 {
-                    if (p.Checked || p.IsFirst)
+                    Code = new List<Code> {
+                        ValidateCode((byte)Opcodes.ShowMessage, paramList[0].Parameter)
+                    };
+                }
+                else //convert code back into a proper script
+                {
+                    var firstParse = new List<CodeLine> { };
+                    foreach (var p in paramList)
                     {
-                        firstParse.Add(new CodeLine(null, 0xFFFF, p.ParamType, p.Parameter));
-                        if (!p.IsFirst && p.Operand != -1)
+                        if (p.Checked || p.IsFirst)
                         {
-                            firstParse.Add(new CodeLine(null, 0xFFFF, (byte)p.Operand));
+                            firstParse.Add(ValidateCode(p.ParamType, p.Parameter));
+                            if (!p.IsFirst && p.Operand != -1)
+                            {
+                                firstParse.Add(new CodeLine(null, 0xFFFF, (byte)p.Operand));
+                            }
                         }
                     }
-                }
 
-                Code = Script.GetParsedCode(firstParse);
+                    Code = Script.GetParsedCode(firstParse);
+                }
+                DialogResult = DialogResult.OK;
+                Close();
             }
-            DialogResult = DialogResult.OK;
-            Close();
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

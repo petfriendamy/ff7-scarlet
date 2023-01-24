@@ -22,6 +22,10 @@ namespace FF7Scarlet
         };
 
         public Opcodes Opcode { get; }
+        public OpcodeInfo OpcodeInfo
+        {
+            get { return OpcodeInfo.GetInfo(Opcode); }
+        }
         public string Description { get; }
         public string ParameterName1 { get; }
         public string ParameterName2 { get; }

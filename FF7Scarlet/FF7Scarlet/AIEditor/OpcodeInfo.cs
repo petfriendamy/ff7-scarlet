@@ -11,11 +11,6 @@ namespace FF7Scarlet
         Push, Mathematical, Logical, Jump, BitOperation, Command
     }
 
-    public enum ParameterTypes
-    {
-        None, OneByte, TwoByte, ThreeByte, String, Debug, Label, Other
-    }
-
     public class OpcodeInfo
     {
         public static readonly OpcodeInfo[] OPCODE_LIST = new OpcodeInfo[]
