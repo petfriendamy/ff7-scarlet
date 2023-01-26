@@ -10,7 +10,6 @@ namespace FF7Scarlet
 {
     public class Script
     {
-        public const ushort NULL_OFFSET = 0xFFFF;
         private List<Code> code;
         private Dictionary<int, ushort> labels;
         private bool headersAreCorrect = false;

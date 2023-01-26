@@ -17,6 +17,7 @@ namespace FF7Scarlet
         {
             InitializeComponent();
             DataManager.SetStartupForm(this);
+            toolTip1.SetToolTip(groupBoxKernel2, "kernel2 cannot be loaded without kernel.bin.");
         }
 
         private void UpdateTextBoxes()
@@ -24,19 +25,21 @@ namespace FF7Scarlet
             textBoxKernel.Text = DataManager.KernelPath;
             textBoxKernel2.Text = DataManager.Kernel2Path;
             textBoxScene.Text = DataManager.ScenePath;
-            if (textBoxKernel.Text != null)
+            if (!string.IsNullOrEmpty(textBoxKernel.Text))
             {
+                textBoxKernel2.Enabled = true;
                 buttonKernel2Browse.Enabled = true;
+                toolTip1.RemoveAll();
             }
 
-            if (DataManager.KernelFilesLoaded())
+            if (DataManager.KernelFileIsLoaded)
             {
                 buttonKernelEditor.Enabled = true;
-                if (DataManager.SceneFileLoaded())
-                {
-                    buttonBattleDataEditor.Enabled = true;
-                    buttonAIEditor.Enabled = true;
-                }
+            }
+            if (DataManager.SceneFileIsLoaded)
+            {
+                buttonBattleDataEditor.Enabled = true;
+                buttonAIEditor.Enabled = true;
             }
         }
 
@@ -56,6 +59,23 @@ namespace FF7Scarlet
             }
         }
 
+        private void CheckLookupTable()
+        {
+            //check lookup table
+            if (DataManager.KernelFileIsLoaded && DataManager.SceneFileIsLoaded)
+            {
+                if (!DataManager.LookupTableIsCorrect())
+                {
+                    var result = MessageBox.Show("The scene lookup table does not match between scene.bin and kernel.bin. Would you like to correct it now?",
+                        "Incorrect Lookup Table", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        DataManager.SyncLookupTable();
+                    }
+                }
+            }
+        }
+
         private void buttonKernelBrowse_Click(object sender, EventArgs e)
         {
             DialogResult result;
@@ -70,6 +90,7 @@ namespace FF7Scarlet
             {
                 DataManager.SetFilePath(FileClass.Kernel, file);
                 UpdateTextBoxes();
+                CheckLookupTable();
             }
         }
 
@@ -104,6 +125,7 @@ namespace FF7Scarlet
             {
                 DataManager.SetFilePath(FileClass.Scene, file);
                 UpdateTextBoxes();
+                CheckLookupTable();
             }
         }
 

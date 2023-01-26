@@ -13,7 +13,7 @@ namespace FF7Scarlet
     {
         public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ATTACK_COUNT = 32,
             NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152, ATTACK_BLOCK_SIZE = 28,
-            FORMATION_BLOCK_SIZE = 504, ENEMY_AI_BLOCK_SIZE = 4090;
+            FORMATION_BLOCK_SIZE = 504, ENEMY_AI_BLOCK_SIZE = 4090, SCRIPT_NUMBER = 16;
         private readonly Enemy[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
         private Attack[] attackList = new Attack[ATTACK_COUNT];
@@ -162,7 +162,7 @@ namespace FF7Scarlet
                     for (i = 0; i < ATTACK_COUNT; ++i)
                     {
                         attackName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
-                        if (attackID[i] != Script.NULL_OFFSET)
+                        if (attackID[i] != DataManager.NULL_OFFSET_16_BIT)
                         {
                             attackList[i] = new Attack(attackID[i], attackName[i], attackData[i]);
                         }
@@ -207,12 +207,12 @@ namespace FF7Scarlet
             //parse formation scripts
             for (i = 0; i < FORMATION_COUNT; ++i)
             {
-                if (formationAIoffset[i] != Script.NULL_OFFSET)
+                if (formationAIoffset[i] != DataManager.NULL_OFFSET_16_BIT)
                 {
                     next = -1;
                     for (j = i + 1; j < FORMATION_COUNT && next == -1; ++j)
                     {
-                        if (formationAIoffset[j] != Script.NULL_OFFSET)
+                        if (formationAIoffset[j] != DataManager.NULL_OFFSET_16_BIT)
                         {
                             next = formationAIoffset[j];
                         }
@@ -232,12 +232,12 @@ namespace FF7Scarlet
             //parse enemy scripts
             for (i = 0; i < ENEMY_COUNT; ++i)
             {
-                if (enemies[i] != null && enemyAIoffset[i] != Script.NULL_OFFSET)
+                if (enemies[i] != null && enemyAIoffset[i] != DataManager.NULL_OFFSET_16_BIT)
                 {
                     next = -1;
                     for (j = i + 1; j < ENEMY_COUNT && next == -1; ++j)
                     {
-                        if (enemyAIoffset[j] != Script.NULL_OFFSET)
+                        if (enemyAIoffset[j] != DataManager.NULL_OFFSET_16_BIT)
                         {
                             next = enemyAIoffset[j];
                         }
@@ -262,98 +262,105 @@ namespace FF7Scarlet
                 using (var ms = new MemoryStream(rawData, true))
                 using (var writer = new BinaryWriter(ms))
                 {
+                    int i = 0;
                     //enemy data
                     try
                     {
                         writer.Seek(0x0298, SeekOrigin.Begin);
-                        foreach (var e in enemies)
+                        for (i = 0; i < ENEMY_COUNT; ++i)
                         {
-                            if (e == null) { writer.Write(GetNullBlock(ENEMY_DATA_BLOCK_SIZE + NAME_LENGTH)); }
-                            else { writer.Write(e.GetRawEnemyData()); }
+                            if (enemies[i] == null)
+                            {
+                                writer.Write(GetNullBlock(ENEMY_DATA_BLOCK_SIZE + NAME_LENGTH));
+                            }
+                            else { writer.Write(enemies[i].GetRawEnemyData()); }
                         }
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception($"Error parsing enemy data: {ex.Message}");
+                        throw new Exception($"Error in enemy data (index {i}): {ex.Message}", ex);
                     }
 
                     //attack data
                     try
                     {
-                        foreach (var a in attackList)
+                        for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            if (a == null) { writer.Write(GetNullBlock(ATTACK_BLOCK_SIZE)); }
-                            else { writer.Write(a.GetRawData()); }
+                            if (attackList[i] == null) { writer.Write(GetNullBlock(ATTACK_BLOCK_SIZE)); }
+                            else { writer.Write(attackList[i].GetRawData()); }
                         }
-                        foreach (var a in attackList)
+                        for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            if (a == null) { writer.Write((ushort)0xFFFF); }
-                            else { writer.Write(a.ID); }
+                            if (attackList[i] == null) { writer.Write((ushort)0xFFFF); }
+                            else { writer.Write(attackList[i].ID); }
                         }
-                        foreach (var a in attackList)
+                        for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            if (a == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
-                            else { writer.Write(a.Name.GetBytes()); }
+                            if (attackList[i] == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
+                            else { writer.Write(attackList[i].Name.GetBytes()); }
                         }
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception($"Error parsing attack data: {ex.Message}");
+                        throw new Exception($"Error in attack data (index {i}): {ex.Message}", ex);
                     }
 
-                    //formation data
-                    try
+                    if (ScriptsLoaded) //no need to update script data if it hasn't been changed
                     {
-                        formationAIRaw = GetRawScriptData(FORMATION_COUNT, FORMATION_BLOCK_SIZE, formations,
-                            ref formationAIoffset);
-
-                        foreach (var o in formationAIoffset)
-                        {
-                            writer.Write(o);
-                        }
-                        writer.Write(formationAIRaw);
-                    }
-                    catch (ScriptTooLongException)
-                    {
-                        throw new ScriptTooLongException("Formation A.I. block is too long!");
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception($"Error parsing formation scripts: {ex.Message}");
-                    }
-
-                    //enemy A.I. data
-                    try
-                    {
-                        enemyAIraw = GetRawScriptData(ENEMY_COUNT, ENEMY_AI_BLOCK_SIZE, enemies,
-                            ref enemyAIoffset);
-
-                        foreach (var o in enemyAIoffset)
-                        {
-                            writer.Write(o);
-                        }
-                        writer.Write(enemyAIraw);
-                    }
-                    catch (ScriptTooLongException)
-                    {
-                        throw new ScriptTooLongException("Enemy A.I. block is too long!");
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception($"Error parsing enemy scripts: {ex.Message}");
-                    }
-
-                    //pad remaining data with 0xFF
-                    bool end = false;
-                    while (!end)
-                    {
+                        //formation data
                         try
                         {
-                            writer.Write((byte)0xFF);
+                            formationAIRaw = GetRawScriptData(FORMATION_COUNT, FORMATION_BLOCK_SIZE, formations,
+                                ref formationAIoffset);
+
+                            foreach (var o in formationAIoffset)
+                            {
+                                writer.Write(o);
+                            }
+                            writer.Write(formationAIRaw);
                         }
-                        catch
+                        catch (ScriptTooLongException)
                         {
-                            end = true;
+                            throw new ScriptTooLongException("Formation A.I. block is too long!");
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Compiler error in formation scripts: {ex.Message}", ex);
+                        }
+
+                        //enemy A.I. data
+                        try
+                        {
+                            enemyAIraw = GetRawScriptData(ENEMY_COUNT, ENEMY_AI_BLOCK_SIZE, enemies,
+                                ref enemyAIoffset);
+
+                            foreach (var o in enemyAIoffset)
+                            {
+                                writer.Write(o);
+                            }
+                            writer.Write(enemyAIraw);
+                        }
+                        catch (ScriptTooLongException)
+                        {
+                            throw new ScriptTooLongException("Enemy A.I. block is too long!");
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Compiler error in enemy scripts: {ex.Message}");
+                        }
+
+                        //pad remaining data with 0xFF
+                        bool end = false;
+                        while (!end)
+                        {
+                            try
+                            {
+                                writer.Write((byte)0xFF);
+                            }
+                            catch
+                            {
+                                end = true;
+                            }
                         }
                     }
                 }
@@ -381,7 +388,7 @@ namespace FF7Scarlet
             {
                 if (aiContainers[i] == null || !aiContainers[i].HasScripts())
                 {
-                    offsets[i] = Script.NULL_OFFSET;
+                    offsets[i] = DataManager.NULL_OFFSET_16_BIT;
                     length[i] = 0;
                     scriptList.Add(null);
                 }

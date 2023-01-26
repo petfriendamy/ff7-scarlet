@@ -49,6 +49,8 @@ namespace FF7Scarlet
             this.listBoxEnemies = new System.Windows.Forms.ListBox();
             this.comboBoxSceneList = new System.Windows.Forms.ComboBox();
             this.labelScenes = new System.Windows.Forms.Label();
+            this.buttonExportMulti = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.groupBoxScripts.SuspendLayout();
             this.groupBoxCurrScript.SuspendLayout();
             this.toolStripScript.SuspendLayout();
@@ -62,7 +64,7 @@ namespace FF7Scarlet
             this.groupBoxScripts.Controls.Add(this.listBoxScripts);
             this.groupBoxScripts.Location = new System.Drawing.Point(9, 109);
             this.groupBoxScripts.Name = "groupBoxScripts";
-            this.groupBoxScripts.Size = new System.Drawing.Size(150, 262);
+            this.groupBoxScripts.Size = new System.Drawing.Size(150, 236);
             this.groupBoxScripts.TabIndex = 2;
             this.groupBoxScripts.TabStop = false;
             this.groupBoxScripts.Text = "Scripts";
@@ -91,7 +93,7 @@ namespace FF7Scarlet
             "Custom Event 8"});
             this.listBoxScripts.Location = new System.Drawing.Point(3, 16);
             this.listBoxScripts.Name = "listBoxScripts";
-            this.listBoxScripts.Size = new System.Drawing.Size(144, 243);
+            this.listBoxScripts.Size = new System.Drawing.Size(144, 217);
             this.listBoxScripts.TabIndex = 2;
             this.listBoxScripts.SelectedIndexChanged += new System.EventHandler(this.listBoxScripts_SelectedIndexChanged);
             // 
@@ -104,7 +106,7 @@ namespace FF7Scarlet
             this.groupBoxCurrScript.Controls.Add(this.toolStripScript);
             this.groupBoxCurrScript.Location = new System.Drawing.Point(165, 40);
             this.groupBoxCurrScript.Name = "groupBoxCurrScript";
-            this.groupBoxCurrScript.Size = new System.Drawing.Size(447, 389);
+            this.groupBoxCurrScript.Size = new System.Drawing.Size(447, 392);
             this.groupBoxCurrScript.TabIndex = 6;
             this.groupBoxCurrScript.TabStop = false;
             this.groupBoxCurrScript.Text = "Current script";
@@ -117,7 +119,7 @@ namespace FF7Scarlet
             this.listBoxCurrScript.Location = new System.Drawing.Point(3, 41);
             this.listBoxCurrScript.Name = "listBoxCurrScript";
             this.listBoxCurrScript.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxCurrScript.Size = new System.Drawing.Size(441, 345);
+            this.listBoxCurrScript.Size = new System.Drawing.Size(441, 348);
             this.listBoxCurrScript.TabIndex = 7;
             this.listBoxCurrScript.DoubleClick += new System.EventHandler(this.toolStripButtonEdit_Click);
             this.listBoxCurrScript.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBoxCurrScript_KeyDown);
@@ -226,10 +228,10 @@ namespace FF7Scarlet
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSave.Location = new System.Drawing.Point(9, 377);
+            this.buttonSave.Location = new System.Drawing.Point(9, 351);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(150, 23);
-            this.buttonSave.TabIndex = 4;
+            this.buttonSave.TabIndex = 3;
             this.buttonSave.Text = "Save scene.bin";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
@@ -237,11 +239,11 @@ namespace FF7Scarlet
             // buttonExport
             // 
             this.buttonExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonExport.Location = new System.Drawing.Point(9, 406);
+            this.buttonExport.Location = new System.Drawing.Point(9, 409);
             this.buttonExport.Name = "buttonExport";
             this.buttonExport.Size = new System.Drawing.Size(150, 23);
             this.buttonExport.TabIndex = 5;
-            this.buttonExport.Text = "Export selected...";
+            this.buttonExport.Text = "Export scene(s)...";
             this.buttonExport.UseVisualStyleBackColor = true;
             this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
             // 
@@ -286,11 +288,31 @@ namespace FF7Scarlet
             this.labelScenes.TabIndex = 7;
             this.labelScenes.Text = "Scenes:";
             // 
+            // buttonExportMulti
+            // 
+            this.buttonExportMulti.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonExportMulti.Location = new System.Drawing.Point(9, 380);
+            this.buttonExportMulti.Name = "buttonExportMulti";
+            this.buttonExportMulti.Size = new System.Drawing.Size(150, 23);
+            this.buttonExportMulti.TabIndex = 4;
+            this.buttonExportMulti.Text = "Import scene(s)...";
+            this.buttonExportMulti.UseVisualStyleBackColor = true;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.progressBar1.Location = new System.Drawing.Point(0, 438);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(624, 23);
+            this.progressBar1.TabIndex = 9;
+            // 
             // BattleAIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 441);
+            this.ClientSize = new System.Drawing.Size(624, 461);
+            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.buttonExportMulti);
             this.Controls.Add(this.labelScenes);
             this.Controls.Add(this.comboBoxSceneList);
             this.Controls.Add(this.groupBoxEnemies);
@@ -299,7 +321,7 @@ namespace FF7Scarlet
             this.Controls.Add(this.groupBoxCurrScript);
             this.Controls.Add(this.groupBoxScripts);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(500, 320);
+            this.MinimumSize = new System.Drawing.Size(560, 420);
             this.Name = "BattleAIForm";
             this.Text = "Scarlet - Battle A.I. Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BattleAIForm_FormClosing);
@@ -336,6 +358,8 @@ namespace FF7Scarlet
         private System.Windows.Forms.ToolStripButton toolStripButtonPaste;
         private System.Windows.Forms.ComboBox comboBoxSceneList;
         private System.Windows.Forms.Label labelScenes;
+        private System.Windows.Forms.Button buttonExportMulti;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

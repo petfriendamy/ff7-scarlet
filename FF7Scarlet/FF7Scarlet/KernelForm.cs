@@ -19,7 +19,7 @@ namespace FF7Scarlet
 
         private void KernelForm_Load(object sender, EventArgs e)
         {
-            foreach (var w in DataManager.KernelReader.WeaponData.Weapons)
+            foreach (var w in DataManager.Kernel.WeaponData.Weapons)
             {
                 textBox1.AppendText(w.Name + Environment.NewLine);
             }

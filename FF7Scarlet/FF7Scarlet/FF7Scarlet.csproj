@@ -52,6 +52,7 @@
     <Compile Include="AIEditor\AIContainer.cs" />
     <Compile Include="AIEditor\ParameterInfo.cs" />
     <Compile Include="AIEditor\ScriptTooLongException.cs" />
+    <Compile Include="KernelEditor\Kernel.cs" />
     <Compile Include="SceneEditor\Attack.cs" />
     <Compile Include="AIEditor\Code.cs" />
     <Compile Include="AIEditor\CodeBlock.cs" />
@@ -64,13 +65,11 @@
     <Compile Include="AIEditor\CodeLine.cs" />
     <Compile Include="AIEditor\CommandInfo.cs" />
     <Compile Include="AIEditor\CommonVars.cs" />
-    <Compile Include="EndianConvert.cs" />
     <Compile Include="SceneEditor\ResistanceRate.cs" />
     <Compile Include="SceneEditor\Enemy.cs" />
     <Compile Include="FFText.cs" />
     <Compile Include="AIEditor\Formation.cs" />
     <Compile Include="DataManager.cs" />
-    <Compile Include="GZipper.cs" />
     <Compile Include="KernelForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,7 +99,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AIEditor\Scene.cs" />
+    <Compile Include="SceneEditor\Scene.cs" />
     <Compile Include="SceneEditor\ItemDropRate.cs" />
     <Compile Include="StartupForm.cs">
       <SubType>Form</SubType>

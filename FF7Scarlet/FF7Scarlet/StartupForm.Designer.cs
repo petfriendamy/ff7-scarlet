@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartupForm));
             this.buttonKernelEditor = new System.Windows.Forms.Button();
             this.buttonBattleDataEditor = new System.Windows.Forms.Button();
@@ -41,6 +42,7 @@
             this.groupBoxScene = new System.Windows.Forms.GroupBox();
             this.textBoxScene = new System.Windows.Forms.TextBox();
             this.buttonSceneBrowse = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBoxKernel.SuspendLayout();
             this.groupBoxKernel2.SuspendLayout();
             this.groupBoxScene.SuspendLayout();
@@ -134,6 +136,7 @@
             // 
             this.textBoxKernel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxKernel2.Enabled = false;
             this.textBoxKernel2.Location = new System.Drawing.Point(6, 21);
             this.textBoxKernel2.Name = "textBoxKernel2";
             this.textBoxKernel2.Size = new System.Drawing.Size(367, 20);
@@ -222,5 +225,6 @@
         private System.Windows.Forms.GroupBox groupBoxScene;
         private System.Windows.Forms.TextBox textBoxScene;
         private System.Windows.Forms.Button buttonSceneBrowse;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

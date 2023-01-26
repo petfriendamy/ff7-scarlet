@@ -13,9 +13,8 @@ namespace FF7Scarlet
 {
     public partial class BattleAIForm : Form
     {
-        private const int SCRIPT_NUMBER = 16;
         private const string WINDOW_TITLE = "Scarlet - Battle A.I. Editor";
-        private readonly string[] SCRIPT_LIST = new string[SCRIPT_NUMBER]
+        private readonly string[] SCRIPT_LIST = new string[Scene.SCRIPT_NUMBER]
         {
             "Pre-Battle", "Main", "General Counter", "Death Counter", "Physical Counter",
             "Magic Counter", "Battle Victory", "Pre-Action Setup", "Custom Event 1",
@@ -25,7 +24,7 @@ namespace FF7Scarlet
         private Scene currScene;
         private Scene[] sceneList;
         private List<Code> clipboard;
-        private bool loading = false, unsavedChanges = false;
+        private bool loading = false, unsavedChanges = false, processing = false;
 
         private Enemy SelectedEnemy
         {
@@ -69,7 +68,7 @@ namespace FF7Scarlet
         {
             sceneList = DataManager.CopySceneList();
             currScene = sceneList[0];
-            for (int i = 0; i < 256; ++i)
+            for (int i = 0; i < DataManager.SCENE_COUNT; ++i)
             {
                 comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
             }
@@ -110,7 +109,7 @@ namespace FF7Scarlet
                     currScene.ParseAIScripts();
                 }
                 var enemy = currScene.GetEnemyByNumber(selectedEnemy);
-                for (int i = 0; i < SCRIPT_NUMBER; ++i)
+                for (int i = 0; i < Scene.SCRIPT_NUMBER; ++i)
                 {
                     listBoxScripts.Items[i] = SCRIPT_LIST[i];
                     if (enemy != null)
@@ -256,21 +255,77 @@ namespace FF7Scarlet
             }
         }
 
-        private void buttonSave_Click(object sender, EventArgs e)
+        private void EnableOrDisableForm(bool enable)
         {
-            //stuff
+            processing = !enable;
+            comboBoxSceneList.Enabled = enable;
+            listBoxEnemies.Enabled = enable;
+            listBoxScripts.Enabled = enable;
+            listBoxCurrScript.Enabled = enable;
+            toolStripScript.Enabled = enable;
+            buttonSave.Enabled = enable;
+            buttonExport.Enabled = enable;
+            buttonExportMulti.Enabled = enable;
+        }
+
+        private Task UpdateDataAsync(int pos)
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    sceneList[pos].UpdateRawData();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"An exception was thrown in scene {pos}:\n\n{ex.Message}", ex);
+                }
+            });
+        }
+
+        private async void buttonSave_Click(object sender, EventArgs e)
+        {
+            EnableOrDisableForm(false);
+            int i = 0;
+            try
+            {
+                for (i = 0; i < DataManager.SCENE_COUNT; ++i)
+                {
+                    await UpdateDataAsync(i);
+                    progressBar1.Value = ((i + i) / DataManager.SCENE_COUNT) * 100;
+                }
+                await Task.Delay(500);
+
+                if (!DataManager.KernelFileIsLoaded)
+                {
+                    MessageBox.Show("No kernel file is selected, so the lookup table cannot be updated. This scene.bin file may not work correctly in FF7.",
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                DataManager.UpdateAllScenes(this, sceneList);
+                DataManager.CreateSceneBin();
+                unsavedChanges = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            progressBar1.Value = 0;
+            EnableOrDisableForm(true);
+            buttonSave.Select();
         }
 
         private void buttonExport_Click(object sender, EventArgs e)
         {
             try
             {
+                EnableOrDisableForm(false);
                 currScene.UpdateRawData();
                 DialogResult result;
                 string path;
+                int pos = comboBoxSceneList.SelectedIndex;
                 using (var save = new SaveFileDialog())
                 {
-                    save.FileName = $"scene.{comboBoxSceneList.SelectedIndex}.bin";
+                    save.FileName = $"scene.{pos}.bin";
                     save.Filter = "Scene file|*.bin";
                     result = save.ShowDialog();
                     path = save.FileName;
@@ -279,12 +334,15 @@ namespace FF7Scarlet
                 if (result == DialogResult.OK)
                 {
                     File.WriteAllBytes(path, currScene.GetRawData());
+                    DataManager.UpdateScene(this, currScene, pos);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            EnableOrDisableForm(true);
+            buttonExport.Select();
         }
 
         private void comboBoxSceneList_SelectedIndexChanged(object sender, EventArgs e)
@@ -434,7 +492,8 @@ namespace FF7Scarlet
 
         private void BattleAIForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (unsavedChanges)
+            if (processing) { e.Cancel = true; }
+            else if (unsavedChanges)
             {
                 var result = MessageBox.Show("Unsaved changes will be lost. Are you sure?", "Unsaved changes",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning);

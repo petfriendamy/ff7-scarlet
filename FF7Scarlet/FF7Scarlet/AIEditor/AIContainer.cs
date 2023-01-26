@@ -59,12 +59,12 @@ namespace FF7Scarlet
             //get scripts
             for (i = 0; i < SCRIPT_NUMBER; ++i)
             {
-                if (scriptOffsets[i] != Script.NULL_OFFSET) //check if script exists
+                if (scriptOffsets[i] != DataManager.NULL_OFFSET_16_BIT) //check if script exists
                 {
                     next = -1;
                     for (j = i + 1; j < SCRIPT_NUMBER && next == -1; ++j) //check for next script (if it exists)
                     {
-                        if (scriptOffsets[j] != Script.NULL_OFFSET)
+                        if (scriptOffsets[j] != DataManager.NULL_OFFSET_16_BIT)
                         {
                             next = scriptOffsets[j];
                         }
@@ -115,7 +115,7 @@ namespace FF7Scarlet
             {
                 if (scripts[i] == null || scripts[i].IsEmpty)
                 {
-                    offsets[i] = Script.NULL_OFFSET;
+                    offsets[i] = DataManager.NULL_OFFSET_16_BIT;
                 }
                 else
                 {
