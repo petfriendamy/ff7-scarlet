@@ -36,6 +36,11 @@ namespace FF7Scarlet
             get { return !string.IsNullOrEmpty(KernelPath); }
         }
 
+        public static bool BothKernelFilesLoaded
+        {
+            get { return KernelFileIsLoaded && !string.IsNullOrEmpty(Kernel2Path); }
+        }
+
         public static bool SceneFileIsLoaded
         {
             get { return !string.IsNullOrEmpty(ScenePath); }
@@ -204,11 +209,11 @@ namespace FF7Scarlet
             if (KernelFileIsLoaded && SceneFileIsLoaded)
             {
                 Kernel.UpdateLookupTable(sceneLookupTable);
-                CreateKernel();
+                CreateKernel(false);
             }
         }
 
-        public static void CreateKernel()
+        public static void CreateKernel(bool updateKernel2)
         {
             if (!KernelFileIsLoaded)
             {
@@ -220,7 +225,7 @@ namespace FF7Scarlet
             ushort compressedLength, uncompressedLength;
             for (ushort i = 0; i < Kernel.SECTION_COUNT; ++i)
             {
-                uncompressedSection = Kernel.GetSectionRawData((KernelSection)i);
+                uncompressedSection = Kernel.GetSectionRawData((KernelSection)(i + 1));
                 uncompressedLength = (ushort)uncompressedSection.Length;
                 compressedSection = GetCompressedData(uncompressedSection);
                 compressedLength = (ushort)compressedSection.Length;
@@ -235,7 +240,11 @@ namespace FF7Scarlet
                 data.AddRange(compressedSection);
             }
             File.WriteAllBytes(KernelPath, data.ToArray());
-            //make sure to write to kernel2 also
+
+            if (updateKernel2 && BothKernelFilesLoaded)
+            {
+                //stuff
+            }
         }
 
         private static void LoadSceneBin(string path)
@@ -400,6 +409,12 @@ namespace FF7Scarlet
                         writer.Write((byte)0xFF);
                     }
                 }
+            }
+
+            //update the scene lookup table in the kernel
+            if (!LookupTableIsCorrect())
+            {
+                SyncLookupTable();
             }
         }
 

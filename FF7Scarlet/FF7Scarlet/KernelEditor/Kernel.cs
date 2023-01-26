@@ -17,8 +17,10 @@ namespace FF7Scarlet
         {
             for (int i = KERNEL_2_START; i < SECTION_COUNT; i++)
             {
-                var s = (KernelSection)i;
-                textSectionsUnedited[s] = KernelData[s];
+                var s = (KernelSection)(i + 1);
+                int length = KernelData[s].Length;
+                textSectionsUnedited[s] = new byte[length];
+                Array.Copy(KernelData[s], textSectionsUnedited[s], length);
             }
         }
 
@@ -41,7 +43,7 @@ namespace FF7Scarlet
         public byte[] GetSectionRawData(KernelSection section, bool isKernel2 = false)
         {
             //we do not want to write kernel2 data to kernel.bin
-            if ((int)section >= KERNEL_2_START && !isKernel2)
+            if ((int)section > KERNEL_2_START && !isKernel2)
             {
                 return textSectionsUnedited[section];
             }

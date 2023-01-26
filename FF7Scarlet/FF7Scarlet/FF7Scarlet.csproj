@@ -52,6 +52,12 @@
     <Compile Include="AIEditor\AIContainer.cs" />
     <Compile Include="AIEditor\ParameterInfo.cs" />
     <Compile Include="AIEditor\ScriptTooLongException.cs" />
+    <Compile Include="KernelEditor\KernelChunkExportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KernelEditor\KernelChunkExportForm.Designer.cs">
+      <DependentUpon>KernelChunkExportForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="KernelEditor\Kernel.cs" />
     <Compile Include="SceneEditor\Attack.cs" />
     <Compile Include="AIEditor\Code.cs" />
@@ -70,10 +76,10 @@
     <Compile Include="FFText.cs" />
     <Compile Include="AIEditor\Formation.cs" />
     <Compile Include="DataManager.cs" />
-    <Compile Include="KernelForm.cs">
+    <Compile Include="KernelEditor\KernelForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KernelForm.Designer.cs">
+    <Compile Include="KernelEditor\KernelForm.Designer.cs">
       <DependentUpon>KernelForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AIEditor\OpcodeInfo.cs" />
@@ -113,7 +119,10 @@
     <EmbeddedResource Include="AIEditor\BattleAIForm.resx">
       <DependentUpon>BattleAIForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="KernelForm.resx">
+    <EmbeddedResource Include="KernelEditor\KernelChunkExportForm.resx">
+      <DependentUpon>KernelChunkExportForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KernelEditor\KernelForm.resx">
       <DependentUpon>KernelForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AIEditor\ParameterControl.resx">

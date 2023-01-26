@@ -66,6 +66,7 @@ namespace FF7Scarlet
 
         private void BattleAIForm_Load(object sender, EventArgs e)
         {
+            //create private version of scene data that can be edited freely
             sceneList = DataManager.CopySceneList();
             currScene = sceneList[0];
             for (int i = 0; i < DataManager.SCENE_COUNT; ++i)
