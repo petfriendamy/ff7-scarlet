@@ -1,14 +1,4 @@
 ﻿using Shojy.FF7.Elena;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace FF7Scarlet
 {
@@ -21,15 +11,25 @@ namespace FF7Scarlet
         {
             InitializeComponent();
             this.kernel = kernel;
+            checkBoxes = new CheckBox[Kernel.SECTION_COUNT]
+            {
+                checkBoxChunk1, checkBoxChunk2, checkBoxChunk3, checkBoxChunk4,
+                checkBoxChunk5, checkBoxChunk6, checkBoxChunk7, checkBoxChunk8,
+                checkBoxChunk9, checkBoxChunk10, checkBoxChunk11, checkBoxChunk12,
+                checkBoxChunk13, checkBoxChunk14, checkBoxChunk15, checkBoxChunk16,
+                checkBoxChunk17, checkBoxChunk18, checkBoxChunk19, checkBoxChunk20,
+                checkBoxChunk21, checkBoxChunk22, checkBoxChunk23, checkBoxChunk24,
+                checkBoxChunk25, checkBoxChunk26, checkBoxChunk27
+
+            };
         }
 
         private void KernelChunkExportForm_Load(object sender, EventArgs e)
         {
-            checkBoxes = new CheckBox[9]
+            if (!DataManager.BothKernelFilesLoaded)
             {
-                checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7,
-                checkBox8, checkBox9
-            };
+                groupBoxKernel2Chunks.Enabled = false;
+            }
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
@@ -49,11 +49,33 @@ namespace FF7Scarlet
             }
         }
 
+        private void buttonSelectAll_Click(object sender, EventArgs e)
+        {
+            int max = Kernel.SECTION_COUNT;
+            if (!DataManager.BothKernelFilesLoaded) { max = Kernel.KERNEL1_END; }
+            for (int i = 0; i < max; ++i)
+            {
+                checkBoxes[i].Checked = true;
+            }
+        }
+
+        private void buttonUnselectAll_Click(object sender, EventArgs e)
+        {
+            foreach (var cb in checkBoxes)
+            {
+                cb.Checked = false;
+            }
+        }
+
         private void buttonExport_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(textBoxPath.Text))
+            {
+                MessageBox.Show("Please choose a directory.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             if (!Directory.Exists(textBoxPath.Text))
             {
-                MessageBox.Show("Directory does not exist.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Directory is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
@@ -68,15 +90,16 @@ namespace FF7Scarlet
                 }
                 else //output the files
                 {
-                    for (int i = 0; i < 9; ++i)
+                    for (int i = 0; i < Kernel.SECTION_COUNT; ++i)
                     {
                         if (checkBoxes[i].Checked)
                         {
                             string path = textBoxPath.Text + $"\\kernel.bin.chunk.{i + 1}";
-                            File.WriteAllBytes(path, kernel.GetSectionRawData((KernelSection)(i + 1)));
+                            File.WriteAllBytes(path, kernel.GetSectionRawData((KernelSection)(i + 1), true));
                         }
                     }
-                    MessageBox.Show("Done!");
+                    MessageBox.Show("Chunks exported successfully.", "Done!", MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     Close();
                 }
             }

@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shojy.FF7.Elena;
+﻿using Shojy.FF7.Elena;
+using Shojy.FF7.Elena.Equipment;
+using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Sections;
 
 namespace FF7Scarlet
 {
     public class Kernel : KernelReader
     {
-        public const int SECTION_COUNT = 27, KERNEL_2_START = 9;
-        private Dictionary<KernelSection, byte[]> textSectionsUnedited =
+        public const int SECTION_COUNT = 27, KERNEL1_END = 9;
+        private Dictionary<KernelSection, byte[]> kernel1TextSections =
             new Dictionary<KernelSection, byte[]> { };
 
         public Kernel(string file) : base(file, KernelType.KernelBin)
         {
-            for (int i = KERNEL_2_START; i < SECTION_COUNT; i++)
+            for (int i = KERNEL1_END; i < SECTION_COUNT; i++)
             {
                 var s = (KernelSection)(i + 1);
                 int length = KernelData[s].Length;
-                textSectionsUnedited[s] = new byte[length];
-                Array.Copy(KernelData[s], textSectionsUnedited[s], length);
+                kernel1TextSections[s] = new byte[length];
+                Array.Copy(KernelData[s], kernel1TextSections[s], length);
             }
         }
 
@@ -129,12 +126,69 @@ namespace FF7Scarlet
             return null;
         }
 
+        public Restrictions GetItemRestrictions(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].Restrictions;
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].Restrictions;
+                case KernelSection.ArmorData:
+                    return ArmorData.Armors[pos].Restrictions;
+                case KernelSection.AccessoryData:
+                    return AccessoryData.Accessories[pos].Restrictions;
+        }
+            return 0;
+        }
+
+        public EquipableBy GetEquipableFlags(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].EquipableBy;
+                case KernelSection.ArmorData:
+                    return ArmorData.Armors[pos].EquipableBy;
+                case KernelSection.AccessoryData:
+                    return AccessoryData.Accessories[pos].EquipableBy;
+                default:
+                    return 0;
+            }
+        }
+
+        public MateriaSlot[] GetMateriaSlots(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].MateriaSlots;
+                case KernelSection.ArmorData:
+                    return ArmorData.Armors[pos].MateriaSlots;
+                default:
+                    return null;
+            }
+        }
+
+        public GrowthRate GetGrowthRate(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].GrowthRate;
+                case KernelSection.ArmorData:
+                    return ArmorData.Armors[pos].GrowthRate;
+                default:
+                    return GrowthRate.None;
+            }
+        }
+
         public byte[] GetSectionRawData(KernelSection section, bool isKernel2 = false)
         {
             //we do not want to write kernel2 data to kernel.bin
-            if ((int)section > KERNEL_2_START && !isKernel2)
+            if ((int)section > KERNEL1_END && !isKernel2)
             {
-                return textSectionsUnedited[section];
+                return kernel1TextSections[section];
             }
             return KernelData[section];
         }

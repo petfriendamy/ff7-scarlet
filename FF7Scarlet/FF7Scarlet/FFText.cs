@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace FF7Scarlet
 {
@@ -11,11 +6,6 @@ namespace FF7Scarlet
     {
         private const string TEXT_MAP = "ÄÁÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü⌘°¢£ÙÛ¶ß®©™´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»…?ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄¤‹›ﬁﬂ■▪‚„‰ÂÊËÁÈíîïìÓÔ ÒÙÛ";
         private const byte MAP_OFFSET = 0x60, CHAR_OFFSET = 0x20;
-
-        private enum CharacterNames
-        {
-            Cloud, Barret, Tifa, Aerith, RedXIII, Yuffie, CaitSith, Vincent, Cid
-        }
 
         private readonly byte[] data;
 
@@ -38,7 +28,7 @@ namespace FF7Scarlet
             }
 
             var text = new List<byte> { };
-            var nameList = Enum.GetNames(typeof(CharacterNames));
+            var nameList = Enum.GetNames<Characters>();
             for (i = 0; i < length; ++i)
             {
                 if (i < str.Length)
@@ -114,7 +104,7 @@ namespace FF7Scarlet
                     {
                         int charID = data[i + 2];
                         i += 2;
-                        text.AddRange("{" + Enum.GetName(typeof(CharacterNames), charID).ToUpper() + "}");
+                        text.AddRange("{" + Enum.GetName(typeof(Characters), charID).ToUpper() + "}");
                     }
                     else if ((data[i] - MAP_OFFSET + 1) < TEXT_MAP.Length)
                     {

@@ -232,9 +232,9 @@ namespace FF7Scarlet
 
                 data.AddRange(BitConverter.GetBytes(compressedLength));
                 data.AddRange(BitConverter.GetBytes(uncompressedLength));
-                if (i >= Kernel.KERNEL_2_START)
+                if (i >= Kernel.KERNEL1_END)
                 {
-                    data.AddRange(BitConverter.GetBytes((ushort)Kernel.KERNEL_2_START));
+                    data.AddRange(BitConverter.GetBytes((ushort)Kernel.KERNEL1_END));
                 }
                 else { data.AddRange(BitConverter.GetBytes(i)); }
                 data.AddRange(compressedSection);
