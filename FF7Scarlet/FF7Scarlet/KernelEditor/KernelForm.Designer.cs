@@ -47,6 +47,20 @@
             this.tabPageBattleData = new System.Windows.Forms.TabPage();
             this.tabPageInitData = new System.Windows.Forms.TabPage();
             this.tabPageItemData = new System.Windows.Forms.TabPage();
+            this.damageCalculationControlItem = new FF7Scarlet.DamageCalculationControl();
+            this.comboBoxItemAttackEffectID = new System.Windows.Forms.ComboBox();
+            this.labelItemAttackEffectID = new System.Windows.Forms.Label();
+            this.comboBoxItemCamMovementID = new System.Windows.Forms.ComboBox();
+            this.labelItemCamMovementID = new System.Windows.Forms.Label();
+            this.groupBoxItemTargetFlags = new System.Windows.Forms.GroupBox();
+            this.checkBoxItemRandomTarget = new System.Windows.Forms.CheckBox();
+            this.checkBoxItemAllRows = new System.Windows.Forms.CheckBox();
+            this.checkBoxItemShortRange = new System.Windows.Forms.CheckBox();
+            this.checkBoxItemOneRowOnly = new System.Windows.Forms.CheckBox();
+            this.checkBoxItemSingleMultiToggle = new System.Windows.Forms.CheckBox();
+            this.checkBoxItemMultipleTargetDefault = new System.Windows.Forms.CheckBox();
+            this.checkBoxItemStartOnEnemies = new System.Windows.Forms.CheckBox();
+            this.checkBoxItemEnableSelection = new System.Windows.Forms.CheckBox();
             this.groupBoxItemRestrictions = new System.Windows.Forms.GroupBox();
             this.checkBoxItemIsSellable = new System.Windows.Forms.CheckBox();
             this.checkBoxItemUsableInMenu = new System.Windows.Forms.CheckBox();
@@ -57,6 +71,16 @@
             this.labelItemName = new System.Windows.Forms.Label();
             this.listBoxItems = new System.Windows.Forms.ListBox();
             this.tabPageWeaponData = new System.Windows.Forms.TabPage();
+            this.damageCalculationControlWeapon = new FF7Scarlet.DamageCalculationControl();
+            this.groupBoxWeaponTargetFlags = new System.Windows.Forms.GroupBox();
+            this.checkBoxWeaponRandomTarget = new System.Windows.Forms.CheckBox();
+            this.checkBoxWeaponAllRows = new System.Windows.Forms.CheckBox();
+            this.checkBoxWeaponShortRange = new System.Windows.Forms.CheckBox();
+            this.checkBoxWeaponOneRowOnly = new System.Windows.Forms.CheckBox();
+            this.checkBoxWeaponSingleMultiToggle = new System.Windows.Forms.CheckBox();
+            this.checkBoxWeaponMultipleTargetDefault = new System.Windows.Forms.CheckBox();
+            this.checkBoxWeaponStartOnEnemies = new System.Windows.Forms.CheckBox();
+            this.checkBoxWeaponEnableSelection = new System.Windows.Forms.CheckBox();
             this.groupBoxWeaponMateriaSlots = new System.Windows.Forms.GroupBox();
             this.labelWeaponMateriaGrowth = new System.Windows.Forms.Label();
             this.materiaSlotSelectorWeapon = new FF7Scarlet.MateriaSlotSelectorControl();
@@ -84,6 +108,10 @@
             this.labelWeaponName = new System.Windows.Forms.Label();
             this.listBoxWeapons = new System.Windows.Forms.ListBox();
             this.tabPageArmorData = new System.Windows.Forms.TabPage();
+            this.groupBoxArmorMateriaSlots = new System.Windows.Forms.GroupBox();
+            this.labelArmorMateriaGrowth = new System.Windows.Forms.Label();
+            this.materiaSlotSelectorArmor = new FF7Scarlet.MateriaSlotSelectorControl();
+            this.comboBoxArmorMateriaGrowth = new System.Windows.Forms.ComboBox();
             this.groupBoxArmorRestrictions = new System.Windows.Forms.GroupBox();
             this.checkBoxArmorIsSellable = new System.Windows.Forms.CheckBox();
             this.checkBoxArmorUsableInMenu = new System.Windows.Forms.CheckBox();
@@ -147,20 +175,19 @@
             this.buttonImport = new System.Windows.Forms.Button();
             this.buttonExport = new System.Windows.Forms.Button();
             this.panelButtons = new System.Windows.Forms.Panel();
-            this.groupBoxArmorMateriaSlots = new System.Windows.Forms.GroupBox();
-            this.labelArmorMateriaGrowth = new System.Windows.Forms.Label();
-            this.materiaSlotSelectorArmor = new FF7Scarlet.MateriaSlotSelectorControl();
-            this.comboBoxArmorMateriaGrowth = new System.Windows.Forms.ComboBox();
             this.tabControlMain.SuspendLayout();
             this.tabPageCommandData.SuspendLayout();
             this.tabPageAttackData.SuspendLayout();
             this.tabPageItemData.SuspendLayout();
+            this.groupBoxItemTargetFlags.SuspendLayout();
             this.groupBoxItemRestrictions.SuspendLayout();
             this.tabPageWeaponData.SuspendLayout();
+            this.groupBoxWeaponTargetFlags.SuspendLayout();
             this.groupBoxWeaponMateriaSlots.SuspendLayout();
             this.groupBoxWeaponRestrictions.SuspendLayout();
             this.groupBoxWeaponEquipable.SuspendLayout();
             this.tabPageArmorData.SuspendLayout();
+            this.groupBoxArmorMateriaSlots.SuspendLayout();
             this.groupBoxArmorRestrictions.SuspendLayout();
             this.groupBoxArmorEquipable.SuspendLayout();
             this.tabPageAccessoryData.SuspendLayout();
@@ -169,7 +196,6 @@
             this.tabPageMateriaData.SuspendLayout();
             this.tabPageKeyItemText.SuspendLayout();
             this.panelButtons.SuspendLayout();
-            this.groupBoxArmorMateriaSlots.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControlMain
@@ -189,7 +215,7 @@
             this.tabControlMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(728, 509);
+            this.tabControlMain.Size = new System.Drawing.Size(784, 561);
             this.tabControlMain.TabIndex = 0;
             // 
             // tabPageCommandData
@@ -203,7 +229,7 @@
             this.tabPageCommandData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageCommandData.Name = "tabPageCommandData";
             this.tabPageCommandData.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPageCommandData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageCommandData.Size = new System.Drawing.Size(776, 533);
             this.tabPageCommandData.TabIndex = 0;
             this.tabPageCommandData.Text = "Command";
             this.tabPageCommandData.UseVisualStyleBackColor = true;
@@ -212,10 +238,10 @@
             // 
             this.textBoxCommandDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxCommandDescription.Location = new System.Drawing.Point(195, 75);
+            this.textBoxCommandDescription.Location = new System.Drawing.Point(191, 75);
             this.textBoxCommandDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxCommandDescription.Name = "textBoxCommandDescription";
-            this.textBoxCommandDescription.Size = new System.Drawing.Size(513, 23);
+            this.textBoxCommandDescription.Size = new System.Drawing.Size(573, 23);
             this.textBoxCommandDescription.TabIndex = 16;
             // 
             // labelCommandDescription
@@ -232,10 +258,10 @@
             // 
             this.textBoxCommandName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxCommandName.Location = new System.Drawing.Point(195, 31);
+            this.textBoxCommandName.Location = new System.Drawing.Point(191, 31);
             this.textBoxCommandName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxCommandName.Name = "textBoxCommandName";
-            this.textBoxCommandName.Size = new System.Drawing.Size(222, 23);
+            this.textBoxCommandName.Size = new System.Drawing.Size(226, 23);
             this.textBoxCommandName.TabIndex = 14;
             // 
             // labelCommandName
@@ -257,7 +283,7 @@
             this.listBoxCommands.Location = new System.Drawing.Point(9, 13);
             this.listBoxCommands.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxCommands.Name = "listBoxCommands";
-            this.listBoxCommands.Size = new System.Drawing.Size(174, 409);
+            this.listBoxCommands.Size = new System.Drawing.Size(174, 454);
             this.listBoxCommands.TabIndex = 3;
             this.listBoxCommands.SelectedIndexChanged += new System.EventHandler(this.listBoxCommands_SelectedIndexChanged);
             // 
@@ -274,7 +300,7 @@
             this.tabPageAttackData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageAttackData.Name = "tabPageAttackData";
             this.tabPageAttackData.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPageAttackData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageAttackData.Size = new System.Drawing.Size(776, 533);
             this.tabPageAttackData.TabIndex = 1;
             this.tabPageAttackData.Text = "Magic/Summons";
             this.tabPageAttackData.UseVisualStyleBackColor = true;
@@ -283,17 +309,17 @@
             // 
             this.textBoxSummonText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSummonText.Enabled = false;
-            this.textBoxSummonText.Location = new System.Drawing.Point(426, 31);
+            this.textBoxSummonText.Location = new System.Drawing.Point(425, 31);
             this.textBoxSummonText.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxSummonText.Name = "textBoxSummonText";
-            this.textBoxSummonText.Size = new System.Drawing.Size(283, 23);
+            this.textBoxSummonText.Size = new System.Drawing.Size(339, 23);
             this.textBoxSummonText.TabIndex = 6;
             // 
             // labelSummonText
             // 
             this.labelSummonText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelSummonText.AutoSize = true;
-            this.labelSummonText.Location = new System.Drawing.Point(422, 13);
+            this.labelSummonText.Location = new System.Drawing.Point(425, 13);
             this.labelSummonText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelSummonText.Name = "labelSummonText";
             this.labelSummonText.Size = new System.Drawing.Size(127, 15);
@@ -304,16 +330,16 @@
             // 
             this.textBoxAttackDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAttackDescription.Location = new System.Drawing.Point(195, 78);
+            this.textBoxAttackDescription.Location = new System.Drawing.Point(191, 75);
             this.textBoxAttackDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAttackDescription.Name = "textBoxAttackDescription";
-            this.textBoxAttackDescription.Size = new System.Drawing.Size(513, 23);
+            this.textBoxAttackDescription.Size = new System.Drawing.Size(573, 23);
             this.textBoxAttackDescription.TabIndex = 4;
             // 
             // labelAttackDescription
             // 
             this.labelAttackDescription.AutoSize = true;
-            this.labelAttackDescription.Location = new System.Drawing.Point(191, 59);
+            this.labelAttackDescription.Location = new System.Drawing.Point(191, 57);
             this.labelAttackDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelAttackDescription.Name = "labelAttackDescription";
             this.labelAttackDescription.Size = new System.Drawing.Size(70, 15);
@@ -324,10 +350,10 @@
             // 
             this.textBoxAttackName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAttackName.Location = new System.Drawing.Point(195, 32);
+            this.textBoxAttackName.Location = new System.Drawing.Point(191, 31);
             this.textBoxAttackName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAttackName.Name = "textBoxAttackName";
-            this.textBoxAttackName.Size = new System.Drawing.Size(222, 23);
+            this.textBoxAttackName.Size = new System.Drawing.Size(226, 23);
             this.textBoxAttackName.TabIndex = 2;
             // 
             // labelAttackName
@@ -349,7 +375,7 @@
             this.listBoxAttacks.Location = new System.Drawing.Point(9, 13);
             this.listBoxAttacks.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxAttacks.Name = "listBoxAttacks";
-            this.listBoxAttacks.Size = new System.Drawing.Size(174, 409);
+            this.listBoxAttacks.Size = new System.Drawing.Size(174, 454);
             this.listBoxAttacks.TabIndex = 0;
             this.listBoxAttacks.SelectedIndexChanged += new System.EventHandler(this.listBoxAttacks_SelectedIndexChanged);
             // 
@@ -358,7 +384,7 @@
             this.tabPageBattleData.Location = new System.Drawing.Point(4, 24);
             this.tabPageBattleData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageBattleData.Name = "tabPageBattleData";
-            this.tabPageBattleData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageBattleData.Size = new System.Drawing.Size(776, 533);
             this.tabPageBattleData.TabIndex = 2;
             this.tabPageBattleData.Text = "Battle/Growth";
             this.tabPageBattleData.UseVisualStyleBackColor = true;
@@ -368,13 +394,19 @@
             this.tabPageInitData.Location = new System.Drawing.Point(4, 24);
             this.tabPageInitData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageInitData.Name = "tabPageInitData";
-            this.tabPageInitData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageInitData.Size = new System.Drawing.Size(776, 533);
             this.tabPageInitData.TabIndex = 3;
             this.tabPageInitData.Text = "Initial Data";
             this.tabPageInitData.UseVisualStyleBackColor = true;
             // 
             // tabPageItemData
             // 
+            this.tabPageItemData.Controls.Add(this.damageCalculationControlItem);
+            this.tabPageItemData.Controls.Add(this.comboBoxItemAttackEffectID);
+            this.tabPageItemData.Controls.Add(this.labelItemAttackEffectID);
+            this.tabPageItemData.Controls.Add(this.comboBoxItemCamMovementID);
+            this.tabPageItemData.Controls.Add(this.labelItemCamMovementID);
+            this.tabPageItemData.Controls.Add(this.groupBoxItemTargetFlags);
             this.tabPageItemData.Controls.Add(this.groupBoxItemRestrictions);
             this.tabPageItemData.Controls.Add(this.textBoxItemDescription);
             this.tabPageItemData.Controls.Add(this.labelItemDescription);
@@ -384,10 +416,157 @@
             this.tabPageItemData.Location = new System.Drawing.Point(4, 24);
             this.tabPageItemData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageItemData.Name = "tabPageItemData";
-            this.tabPageItemData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageItemData.Size = new System.Drawing.Size(776, 533);
             this.tabPageItemData.TabIndex = 9;
             this.tabPageItemData.Text = "Items";
             this.tabPageItemData.UseVisualStyleBackColor = true;
+            // 
+            // damageCalculationControlItem
+            // 
+            this.damageCalculationControlItem.AccuracyCalculation = FF7Scarlet.AccuracyCalculation.NoMiss1;
+            this.damageCalculationControlItem.ActualValue = ((byte)(0));
+            this.damageCalculationControlItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.damageCalculationControlItem.AttackPower = ((byte)(0));
+            this.damageCalculationControlItem.CanCrit = false;
+            this.damageCalculationControlItem.DamageType = FF7Scarlet.DamageType.Physical;
+            this.damageCalculationControlItem.Location = new System.Drawing.Point(191, 202);
+            this.damageCalculationControlItem.Name = "damageCalculationControlItem";
+            this.damageCalculationControlItem.Size = new System.Drawing.Size(576, 150);
+            this.damageCalculationControlItem.TabIndex = 29;
+            // 
+            // comboBoxItemAttackEffectID
+            // 
+            this.comboBoxItemAttackEffectID.FormattingEnabled = true;
+            this.comboBoxItemAttackEffectID.Location = new System.Drawing.Point(326, 119);
+            this.comboBoxItemAttackEffectID.Name = "comboBoxItemAttackEffectID";
+            this.comboBoxItemAttackEffectID.Size = new System.Drawing.Size(126, 23);
+            this.comboBoxItemAttackEffectID.TabIndex = 28;
+            // 
+            // labelItemAttackEffectID
+            // 
+            this.labelItemAttackEffectID.AutoSize = true;
+            this.labelItemAttackEffectID.Location = new System.Drawing.Point(326, 101);
+            this.labelItemAttackEffectID.Name = "labelItemAttackEffectID";
+            this.labelItemAttackEffectID.Size = new System.Drawing.Size(91, 15);
+            this.labelItemAttackEffectID.TabIndex = 27;
+            this.labelItemAttackEffectID.Text = "Attack effect ID:";
+            // 
+            // comboBoxItemCamMovementID
+            // 
+            this.comboBoxItemCamMovementID.FormattingEnabled = true;
+            this.comboBoxItemCamMovementID.Location = new System.Drawing.Point(191, 119);
+            this.comboBoxItemCamMovementID.Name = "comboBoxItemCamMovementID";
+            this.comboBoxItemCamMovementID.Size = new System.Drawing.Size(126, 23);
+            this.comboBoxItemCamMovementID.TabIndex = 26;
+            // 
+            // labelItemCamMovementID
+            // 
+            this.labelItemCamMovementID.AutoSize = true;
+            this.labelItemCamMovementID.Location = new System.Drawing.Point(191, 101);
+            this.labelItemCamMovementID.Name = "labelItemCamMovementID";
+            this.labelItemCamMovementID.Size = new System.Drawing.Size(126, 15);
+            this.labelItemCamMovementID.TabIndex = 25;
+            this.labelItemCamMovementID.Text = "Camera movement ID:";
+            // 
+            // groupBoxItemTargetFlags
+            // 
+            this.groupBoxItemTargetFlags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemRandomTarget);
+            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemAllRows);
+            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemShortRange);
+            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemOneRowOnly);
+            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemSingleMultiToggle);
+            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemMultipleTargetDefault);
+            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemStartOnEnemies);
+            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemEnableSelection);
+            this.groupBoxItemTargetFlags.Location = new System.Drawing.Point(191, 358);
+            this.groupBoxItemTargetFlags.Name = "groupBoxItemTargetFlags";
+            this.groupBoxItemTargetFlags.Size = new System.Drawing.Size(339, 124);
+            this.groupBoxItemTargetFlags.TabIndex = 24;
+            this.groupBoxItemTargetFlags.TabStop = false;
+            this.groupBoxItemTargetFlags.Text = "Target flags";
+            // 
+            // checkBoxItemRandomTarget
+            // 
+            this.checkBoxItemRandomTarget.AutoSize = true;
+            this.checkBoxItemRandomTarget.Location = new System.Drawing.Point(201, 97);
+            this.checkBoxItemRandomTarget.Name = "checkBoxItemRandomTarget";
+            this.checkBoxItemRandomTarget.Size = new System.Drawing.Size(105, 19);
+            this.checkBoxItemRandomTarget.TabIndex = 7;
+            this.checkBoxItemRandomTarget.Text = "Random target";
+            this.checkBoxItemRandomTarget.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxItemAllRows
+            // 
+            this.checkBoxItemAllRows.AutoSize = true;
+            this.checkBoxItemAllRows.Location = new System.Drawing.Point(201, 72);
+            this.checkBoxItemAllRows.Name = "checkBoxItemAllRows";
+            this.checkBoxItemAllRows.Size = new System.Drawing.Size(68, 19);
+            this.checkBoxItemAllRows.TabIndex = 6;
+            this.checkBoxItemAllRows.Text = "All rows";
+            this.checkBoxItemAllRows.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxItemShortRange
+            // 
+            this.checkBoxItemShortRange.AutoSize = true;
+            this.checkBoxItemShortRange.Location = new System.Drawing.Point(201, 47);
+            this.checkBoxItemShortRange.Name = "checkBoxItemShortRange";
+            this.checkBoxItemShortRange.Size = new System.Drawing.Size(87, 19);
+            this.checkBoxItemShortRange.TabIndex = 5;
+            this.checkBoxItemShortRange.Text = "Short range";
+            this.checkBoxItemShortRange.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxItemOneRowOnly
+            // 
+            this.checkBoxItemOneRowOnly.AutoSize = true;
+            this.checkBoxItemOneRowOnly.Location = new System.Drawing.Point(201, 22);
+            this.checkBoxItemOneRowOnly.Name = "checkBoxItemOneRowOnly";
+            this.checkBoxItemOneRowOnly.Size = new System.Drawing.Size(97, 19);
+            this.checkBoxItemOneRowOnly.TabIndex = 4;
+            this.checkBoxItemOneRowOnly.Text = "One row only";
+            this.checkBoxItemOneRowOnly.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxItemSingleMultiToggle
+            // 
+            this.checkBoxItemSingleMultiToggle.AutoSize = true;
+            this.checkBoxItemSingleMultiToggle.Location = new System.Drawing.Point(6, 97);
+            this.checkBoxItemSingleMultiToggle.Name = "checkBoxItemSingleMultiToggle";
+            this.checkBoxItemSingleMultiToggle.Size = new System.Drawing.Size(183, 19);
+            this.checkBoxItemSingleMultiToggle.TabIndex = 3;
+            this.checkBoxItemSingleMultiToggle.Text = "Toggle single/multiple targets";
+            this.checkBoxItemSingleMultiToggle.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxItemMultipleTargetDefault
+            // 
+            this.checkBoxItemMultipleTargetDefault.AutoSize = true;
+            this.checkBoxItemMultipleTargetDefault.Location = new System.Drawing.Point(6, 72);
+            this.checkBoxItemMultipleTargetDefault.Name = "checkBoxItemMultipleTargetDefault";
+            this.checkBoxItemMultipleTargetDefault.Size = new System.Drawing.Size(160, 19);
+            this.checkBoxItemMultipleTargetDefault.TabIndex = 2;
+            this.checkBoxItemMultipleTargetDefault.Text = "Multiple target by default";
+            this.checkBoxItemMultipleTargetDefault.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxItemStartOnEnemies
+            // 
+            this.checkBoxItemStartOnEnemies.AutoSize = true;
+            this.checkBoxItemStartOnEnemies.Location = new System.Drawing.Point(6, 47);
+            this.checkBoxItemStartOnEnemies.Name = "checkBoxItemStartOnEnemies";
+            this.checkBoxItemStartOnEnemies.Size = new System.Drawing.Size(114, 19);
+            this.checkBoxItemStartOnEnemies.TabIndex = 1;
+            this.checkBoxItemStartOnEnemies.Text = "Start on enemies";
+            this.checkBoxItemStartOnEnemies.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxItemEnableSelection
+            // 
+            this.checkBoxItemEnableSelection.AutoSize = true;
+            this.checkBoxItemEnableSelection.Location = new System.Drawing.Point(6, 22);
+            this.checkBoxItemEnableSelection.Name = "checkBoxItemEnableSelection";
+            this.checkBoxItemEnableSelection.Size = new System.Drawing.Size(111, 19);
+            this.checkBoxItemEnableSelection.TabIndex = 0;
+            this.checkBoxItemEnableSelection.Text = "Enable selection";
+            this.checkBoxItemEnableSelection.UseVisualStyleBackColor = true;
             // 
             // groupBoxItemRestrictions
             // 
@@ -395,7 +574,7 @@
             this.groupBoxItemRestrictions.Controls.Add(this.checkBoxItemIsSellable);
             this.groupBoxItemRestrictions.Controls.Add(this.checkBoxItemUsableInMenu);
             this.groupBoxItemRestrictions.Controls.Add(this.checkBoxItemUsableInBattle);
-            this.groupBoxItemRestrictions.Location = new System.Drawing.Point(480, 309);
+            this.groupBoxItemRestrictions.Location = new System.Drawing.Point(536, 358);
             this.groupBoxItemRestrictions.Name = "groupBoxItemRestrictions";
             this.groupBoxItemRestrictions.Size = new System.Drawing.Size(232, 124);
             this.groupBoxItemRestrictions.TabIndex = 23;
@@ -439,10 +618,10 @@
             // 
             this.textBoxItemDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxItemDescription.Location = new System.Drawing.Point(195, 75);
+            this.textBoxItemDescription.Location = new System.Drawing.Point(191, 75);
             this.textBoxItemDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxItemDescription.Name = "textBoxItemDescription";
-            this.textBoxItemDescription.Size = new System.Drawing.Size(513, 23);
+            this.textBoxItemDescription.Size = new System.Drawing.Size(576, 23);
             this.textBoxItemDescription.TabIndex = 12;
             // 
             // labelItemDescription
@@ -459,10 +638,10 @@
             // 
             this.textBoxItemName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxItemName.Location = new System.Drawing.Point(195, 31);
+            this.textBoxItemName.Location = new System.Drawing.Point(191, 31);
             this.textBoxItemName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxItemName.Name = "textBoxItemName";
-            this.textBoxItemName.Size = new System.Drawing.Size(222, 23);
+            this.textBoxItemName.Size = new System.Drawing.Size(226, 23);
             this.textBoxItemName.TabIndex = 10;
             // 
             // labelItemName
@@ -484,12 +663,14 @@
             this.listBoxItems.Location = new System.Drawing.Point(9, 13);
             this.listBoxItems.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxItems.Name = "listBoxItems";
-            this.listBoxItems.Size = new System.Drawing.Size(174, 409);
+            this.listBoxItems.Size = new System.Drawing.Size(174, 469);
             this.listBoxItems.TabIndex = 0;
             this.listBoxItems.SelectedIndexChanged += new System.EventHandler(this.listBoxItems_SelectedIndexChanged);
             // 
             // tabPageWeaponData
             // 
+            this.tabPageWeaponData.Controls.Add(this.damageCalculationControlWeapon);
+            this.tabPageWeaponData.Controls.Add(this.groupBoxWeaponTargetFlags);
             this.tabPageWeaponData.Controls.Add(this.groupBoxWeaponMateriaSlots);
             this.tabPageWeaponData.Controls.Add(this.groupBoxWeaponRestrictions);
             this.tabPageWeaponData.Controls.Add(this.groupBoxWeaponEquipable);
@@ -501,10 +682,121 @@
             this.tabPageWeaponData.Location = new System.Drawing.Point(4, 24);
             this.tabPageWeaponData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageWeaponData.Name = "tabPageWeaponData";
-            this.tabPageWeaponData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageWeaponData.Size = new System.Drawing.Size(776, 533);
             this.tabPageWeaponData.TabIndex = 4;
             this.tabPageWeaponData.Text = "Weapons";
             this.tabPageWeaponData.UseVisualStyleBackColor = true;
+            // 
+            // damageCalculationControlWeapon
+            // 
+            this.damageCalculationControlWeapon.AccuracyCalculation = FF7Scarlet.AccuracyCalculation.NoMiss1;
+            this.damageCalculationControlWeapon.ActualValue = ((byte)(0));
+            this.damageCalculationControlWeapon.AttackPower = ((byte)(0));
+            this.damageCalculationControlWeapon.CanCrit = false;
+            this.damageCalculationControlWeapon.DamageType = FF7Scarlet.DamageType.Physical;
+            this.damageCalculationControlWeapon.Location = new System.Drawing.Point(190, 60);
+            this.damageCalculationControlWeapon.Name = "damageCalculationControlWeapon";
+            this.damageCalculationControlWeapon.Size = new System.Drawing.Size(577, 147);
+            this.damageCalculationControlWeapon.TabIndex = 26;
+            // 
+            // groupBoxWeaponTargetFlags
+            // 
+            this.groupBoxWeaponTargetFlags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponRandomTarget);
+            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponAllRows);
+            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponShortRange);
+            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponOneRowOnly);
+            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponSingleMultiToggle);
+            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponMultipleTargetDefault);
+            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponStartOnEnemies);
+            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponEnableSelection);
+            this.groupBoxWeaponTargetFlags.Location = new System.Drawing.Point(428, 213);
+            this.groupBoxWeaponTargetFlags.Name = "groupBoxWeaponTargetFlags";
+            this.groupBoxWeaponTargetFlags.Size = new System.Drawing.Size(339, 124);
+            this.groupBoxWeaponTargetFlags.TabIndex = 25;
+            this.groupBoxWeaponTargetFlags.TabStop = false;
+            this.groupBoxWeaponTargetFlags.Text = "Target flags";
+            // 
+            // checkBoxWeaponRandomTarget
+            // 
+            this.checkBoxWeaponRandomTarget.AutoSize = true;
+            this.checkBoxWeaponRandomTarget.Location = new System.Drawing.Point(201, 97);
+            this.checkBoxWeaponRandomTarget.Name = "checkBoxWeaponRandomTarget";
+            this.checkBoxWeaponRandomTarget.Size = new System.Drawing.Size(105, 19);
+            this.checkBoxWeaponRandomTarget.TabIndex = 7;
+            this.checkBoxWeaponRandomTarget.Text = "Random target";
+            this.checkBoxWeaponRandomTarget.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxWeaponAllRows
+            // 
+            this.checkBoxWeaponAllRows.AutoSize = true;
+            this.checkBoxWeaponAllRows.Location = new System.Drawing.Point(201, 72);
+            this.checkBoxWeaponAllRows.Name = "checkBoxWeaponAllRows";
+            this.checkBoxWeaponAllRows.Size = new System.Drawing.Size(68, 19);
+            this.checkBoxWeaponAllRows.TabIndex = 6;
+            this.checkBoxWeaponAllRows.Text = "All rows";
+            this.checkBoxWeaponAllRows.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxWeaponShortRange
+            // 
+            this.checkBoxWeaponShortRange.AutoSize = true;
+            this.checkBoxWeaponShortRange.Location = new System.Drawing.Point(201, 47);
+            this.checkBoxWeaponShortRange.Name = "checkBoxWeaponShortRange";
+            this.checkBoxWeaponShortRange.Size = new System.Drawing.Size(87, 19);
+            this.checkBoxWeaponShortRange.TabIndex = 5;
+            this.checkBoxWeaponShortRange.Text = "Short range";
+            this.checkBoxWeaponShortRange.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxWeaponOneRowOnly
+            // 
+            this.checkBoxWeaponOneRowOnly.AutoSize = true;
+            this.checkBoxWeaponOneRowOnly.Location = new System.Drawing.Point(201, 22);
+            this.checkBoxWeaponOneRowOnly.Name = "checkBoxWeaponOneRowOnly";
+            this.checkBoxWeaponOneRowOnly.Size = new System.Drawing.Size(97, 19);
+            this.checkBoxWeaponOneRowOnly.TabIndex = 4;
+            this.checkBoxWeaponOneRowOnly.Text = "One row only";
+            this.checkBoxWeaponOneRowOnly.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxWeaponSingleMultiToggle
+            // 
+            this.checkBoxWeaponSingleMultiToggle.AutoSize = true;
+            this.checkBoxWeaponSingleMultiToggle.Location = new System.Drawing.Point(6, 97);
+            this.checkBoxWeaponSingleMultiToggle.Name = "checkBoxWeaponSingleMultiToggle";
+            this.checkBoxWeaponSingleMultiToggle.Size = new System.Drawing.Size(183, 19);
+            this.checkBoxWeaponSingleMultiToggle.TabIndex = 3;
+            this.checkBoxWeaponSingleMultiToggle.Text = "Toggle single/multiple targets";
+            this.checkBoxWeaponSingleMultiToggle.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxWeaponMultipleTargetDefault
+            // 
+            this.checkBoxWeaponMultipleTargetDefault.AutoSize = true;
+            this.checkBoxWeaponMultipleTargetDefault.Location = new System.Drawing.Point(6, 72);
+            this.checkBoxWeaponMultipleTargetDefault.Name = "checkBoxWeaponMultipleTargetDefault";
+            this.checkBoxWeaponMultipleTargetDefault.Size = new System.Drawing.Size(160, 19);
+            this.checkBoxWeaponMultipleTargetDefault.TabIndex = 2;
+            this.checkBoxWeaponMultipleTargetDefault.Text = "Multiple target by default";
+            this.checkBoxWeaponMultipleTargetDefault.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxWeaponStartOnEnemies
+            // 
+            this.checkBoxWeaponStartOnEnemies.AutoSize = true;
+            this.checkBoxWeaponStartOnEnemies.Location = new System.Drawing.Point(6, 47);
+            this.checkBoxWeaponStartOnEnemies.Name = "checkBoxWeaponStartOnEnemies";
+            this.checkBoxWeaponStartOnEnemies.Size = new System.Drawing.Size(114, 19);
+            this.checkBoxWeaponStartOnEnemies.TabIndex = 1;
+            this.checkBoxWeaponStartOnEnemies.Text = "Start on enemies";
+            this.checkBoxWeaponStartOnEnemies.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxWeaponEnableSelection
+            // 
+            this.checkBoxWeaponEnableSelection.AutoSize = true;
+            this.checkBoxWeaponEnableSelection.Location = new System.Drawing.Point(6, 22);
+            this.checkBoxWeaponEnableSelection.Name = "checkBoxWeaponEnableSelection";
+            this.checkBoxWeaponEnableSelection.Size = new System.Drawing.Size(111, 19);
+            this.checkBoxWeaponEnableSelection.TabIndex = 0;
+            this.checkBoxWeaponEnableSelection.Text = "Enable selection";
+            this.checkBoxWeaponEnableSelection.UseVisualStyleBackColor = true;
             // 
             // groupBoxWeaponMateriaSlots
             // 
@@ -512,9 +804,9 @@
             this.groupBoxWeaponMateriaSlots.Controls.Add(this.labelWeaponMateriaGrowth);
             this.groupBoxWeaponMateriaSlots.Controls.Add(this.materiaSlotSelectorWeapon);
             this.groupBoxWeaponMateriaSlots.Controls.Add(this.comboBoxWeaponMateriaGrowth);
-            this.groupBoxWeaponMateriaSlots.Location = new System.Drawing.Point(195, 184);
+            this.groupBoxWeaponMateriaSlots.Location = new System.Drawing.Point(190, 213);
             this.groupBoxWeaponMateriaSlots.Name = "groupBoxWeaponMateriaSlots";
-            this.groupBoxWeaponMateriaSlots.Size = new System.Drawing.Size(222, 108);
+            this.groupBoxWeaponMateriaSlots.Size = new System.Drawing.Size(233, 124);
             this.groupBoxWeaponMateriaSlots.TabIndex = 20;
             this.groupBoxWeaponMateriaSlots.TabStop = false;
             this.groupBoxWeaponMateriaSlots.Text = "Materia slots";
@@ -530,22 +822,27 @@
             // 
             // materiaSlotSelectorWeapon
             // 
+            this.materiaSlotSelectorWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.materiaSlotSelectorWeapon.BackColor = System.Drawing.Color.LightSlateGray;
             this.materiaSlotSelectorWeapon.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.materiaSlotSelectorWeapon.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             this.materiaSlotSelectorWeapon.Location = new System.Drawing.Point(6, 22);
             this.materiaSlotSelectorWeapon.Name = "materiaSlotSelectorWeapon";
-            this.materiaSlotSelectorWeapon.Size = new System.Drawing.Size(210, 35);
+            this.materiaSlotSelectorWeapon.Size = new System.Drawing.Size(221, 35);
             this.materiaSlotSelectorWeapon.TabIndex = 0;
             // 
             // comboBoxWeaponMateriaGrowth
             // 
+            this.comboBoxWeaponMateriaGrowth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxWeaponMateriaGrowth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxWeaponMateriaGrowth.FormattingEnabled = true;
             this.comboBoxWeaponMateriaGrowth.Location = new System.Drawing.Point(6, 78);
             this.comboBoxWeaponMateriaGrowth.Name = "comboBoxWeaponMateriaGrowth";
-            this.comboBoxWeaponMateriaGrowth.Size = new System.Drawing.Size(210, 23);
+            this.comboBoxWeaponMateriaGrowth.Size = new System.Drawing.Size(221, 23);
             this.comboBoxWeaponMateriaGrowth.TabIndex = 2;
+            this.comboBoxWeaponMateriaGrowth.SelectedIndexChanged += new System.EventHandler(this.comboBoxWeaponMateriaGrowth_SelectedIndexChanged);
             // 
             // groupBoxWeaponRestrictions
             // 
@@ -554,9 +851,9 @@
             this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponIsSellable);
             this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponUsableInMenu);
             this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponUsableInBattle);
-            this.groupBoxWeaponRestrictions.Location = new System.Drawing.Point(476, 298);
+            this.groupBoxWeaponRestrictions.Location = new System.Drawing.Point(532, 343);
             this.groupBoxWeaponRestrictions.Name = "groupBoxWeaponRestrictions";
-            this.groupBoxWeaponRestrictions.Size = new System.Drawing.Size(232, 124);
+            this.groupBoxWeaponRestrictions.Size = new System.Drawing.Size(235, 124);
             this.groupBoxWeaponRestrictions.TabIndex = 19;
             this.groupBoxWeaponRestrictions.TabStop = false;
             this.groupBoxWeaponRestrictions.Text = "Item restrictions";
@@ -620,9 +917,9 @@
             this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponTifa);
             this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponBarret);
             this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponCloud);
-            this.groupBoxWeaponEquipable.Location = new System.Drawing.Point(195, 298);
+            this.groupBoxWeaponEquipable.Location = new System.Drawing.Point(191, 343);
             this.groupBoxWeaponEquipable.Name = "groupBoxWeaponEquipable";
-            this.groupBoxWeaponEquipable.Size = new System.Drawing.Size(275, 124);
+            this.groupBoxWeaponEquipable.Size = new System.Drawing.Size(335, 124);
             this.groupBoxWeaponEquipable.TabIndex = 13;
             this.groupBoxWeaponEquipable.TabStop = false;
             this.groupBoxWeaponEquipable.Text = "Equipable by...";
@@ -741,16 +1038,16 @@
             // 
             this.textBoxWeaponDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxWeaponDescription.Location = new System.Drawing.Point(195, 75);
+            this.textBoxWeaponDescription.Location = new System.Drawing.Point(365, 31);
             this.textBoxWeaponDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxWeaponDescription.Name = "textBoxWeaponDescription";
-            this.textBoxWeaponDescription.Size = new System.Drawing.Size(513, 23);
+            this.textBoxWeaponDescription.Size = new System.Drawing.Size(402, 23);
             this.textBoxWeaponDescription.TabIndex = 12;
             // 
             // labelWeaponDescription
             // 
             this.labelWeaponDescription.AutoSize = true;
-            this.labelWeaponDescription.Location = new System.Drawing.Point(191, 57);
+            this.labelWeaponDescription.Location = new System.Drawing.Point(365, 13);
             this.labelWeaponDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelWeaponDescription.Name = "labelWeaponDescription";
             this.labelWeaponDescription.Size = new System.Drawing.Size(70, 15);
@@ -759,12 +1056,10 @@
             // 
             // textBoxWeaponName
             // 
-            this.textBoxWeaponName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxWeaponName.Location = new System.Drawing.Point(195, 31);
+            this.textBoxWeaponName.Location = new System.Drawing.Point(191, 31);
             this.textBoxWeaponName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxWeaponName.Name = "textBoxWeaponName";
-            this.textBoxWeaponName.Size = new System.Drawing.Size(222, 23);
+            this.textBoxWeaponName.Size = new System.Drawing.Size(166, 23);
             this.textBoxWeaponName.TabIndex = 10;
             // 
             // labelWeaponName
@@ -786,7 +1081,7 @@
             this.listBoxWeapons.Location = new System.Drawing.Point(9, 13);
             this.listBoxWeapons.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxWeapons.Name = "listBoxWeapons";
-            this.listBoxWeapons.Size = new System.Drawing.Size(174, 409);
+            this.listBoxWeapons.Size = new System.Drawing.Size(174, 454);
             this.listBoxWeapons.TabIndex = 1;
             this.listBoxWeapons.SelectedIndexChanged += new System.EventHandler(this.listBoxWeapons_SelectedIndexChanged);
             // 
@@ -803,10 +1098,56 @@
             this.tabPageArmorData.Location = new System.Drawing.Point(4, 24);
             this.tabPageArmorData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageArmorData.Name = "tabPageArmorData";
-            this.tabPageArmorData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageArmorData.Size = new System.Drawing.Size(776, 533);
             this.tabPageArmorData.TabIndex = 5;
             this.tabPageArmorData.Text = "Armor";
             this.tabPageArmorData.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxArmorMateriaSlots
+            // 
+            this.groupBoxArmorMateriaSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxArmorMateriaSlots.Controls.Add(this.labelArmorMateriaGrowth);
+            this.groupBoxArmorMateriaSlots.Controls.Add(this.materiaSlotSelectorArmor);
+            this.groupBoxArmorMateriaSlots.Controls.Add(this.comboBoxArmorMateriaGrowth);
+            this.groupBoxArmorMateriaSlots.Location = new System.Drawing.Point(191, 224);
+            this.groupBoxArmorMateriaSlots.Name = "groupBoxArmorMateriaSlots";
+            this.groupBoxArmorMateriaSlots.Size = new System.Drawing.Size(226, 108);
+            this.groupBoxArmorMateriaSlots.TabIndex = 23;
+            this.groupBoxArmorMateriaSlots.TabStop = false;
+            this.groupBoxArmorMateriaSlots.Text = "Materia slots";
+            // 
+            // labelArmorMateriaGrowth
+            // 
+            this.labelArmorMateriaGrowth.AutoSize = true;
+            this.labelArmorMateriaGrowth.Location = new System.Drawing.Point(6, 60);
+            this.labelArmorMateriaGrowth.Name = "labelArmorMateriaGrowth";
+            this.labelArmorMateriaGrowth.Size = new System.Drawing.Size(49, 15);
+            this.labelArmorMateriaGrowth.TabIndex = 1;
+            this.labelArmorMateriaGrowth.Text = "Growth:";
+            // 
+            // materiaSlotSelectorArmor
+            // 
+            this.materiaSlotSelectorArmor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.materiaSlotSelectorArmor.BackColor = System.Drawing.Color.LightSlateGray;
+            this.materiaSlotSelectorArmor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.materiaSlotSelectorArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
+            this.materiaSlotSelectorArmor.Location = new System.Drawing.Point(6, 22);
+            this.materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
+            this.materiaSlotSelectorArmor.Size = new System.Drawing.Size(214, 35);
+            this.materiaSlotSelectorArmor.TabIndex = 0;
+            // 
+            // comboBoxArmorMateriaGrowth
+            // 
+            this.comboBoxArmorMateriaGrowth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxArmorMateriaGrowth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxArmorMateriaGrowth.FormattingEnabled = true;
+            this.comboBoxArmorMateriaGrowth.Location = new System.Drawing.Point(6, 78);
+            this.comboBoxArmorMateriaGrowth.Name = "comboBoxArmorMateriaGrowth";
+            this.comboBoxArmorMateriaGrowth.Size = new System.Drawing.Size(214, 23);
+            this.comboBoxArmorMateriaGrowth.TabIndex = 2;
+            this.comboBoxArmorMateriaGrowth.SelectedIndexChanged += new System.EventHandler(this.comboBoxArmorMateriaGrowth_SelectedIndexChanged);
             // 
             // groupBoxArmorRestrictions
             // 
@@ -814,7 +1155,7 @@
             this.groupBoxArmorRestrictions.Controls.Add(this.checkBoxArmorIsSellable);
             this.groupBoxArmorRestrictions.Controls.Add(this.checkBoxArmorUsableInMenu);
             this.groupBoxArmorRestrictions.Controls.Add(this.checkBoxArmorUsableInBattle);
-            this.groupBoxArmorRestrictions.Location = new System.Drawing.Point(476, 298);
+            this.groupBoxArmorRestrictions.Location = new System.Drawing.Point(532, 343);
             this.groupBoxArmorRestrictions.Name = "groupBoxArmorRestrictions";
             this.groupBoxArmorRestrictions.Size = new System.Drawing.Size(232, 124);
             this.groupBoxArmorRestrictions.TabIndex = 22;
@@ -869,9 +1210,9 @@
             this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorTifa);
             this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorBarret);
             this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorCloud);
-            this.groupBoxArmorEquipable.Location = new System.Drawing.Point(195, 298);
+            this.groupBoxArmorEquipable.Location = new System.Drawing.Point(191, 343);
             this.groupBoxArmorEquipable.Name = "groupBoxArmorEquipable";
-            this.groupBoxArmorEquipable.Size = new System.Drawing.Size(275, 124);
+            this.groupBoxArmorEquipable.Size = new System.Drawing.Size(335, 124);
             this.groupBoxArmorEquipable.TabIndex = 14;
             this.groupBoxArmorEquipable.TabStop = false;
             this.groupBoxArmorEquipable.Text = "Equipable by...";
@@ -990,10 +1331,10 @@
             // 
             this.textBoxArmorDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxArmorDescription.Location = new System.Drawing.Point(195, 75);
+            this.textBoxArmorDescription.Location = new System.Drawing.Point(191, 75);
             this.textBoxArmorDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxArmorDescription.Name = "textBoxArmorDescription";
-            this.textBoxArmorDescription.Size = new System.Drawing.Size(513, 23);
+            this.textBoxArmorDescription.Size = new System.Drawing.Size(573, 23);
             this.textBoxArmorDescription.TabIndex = 12;
             // 
             // labelArmorDescription
@@ -1010,10 +1351,10 @@
             // 
             this.textBoxArmorName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxArmorName.Location = new System.Drawing.Point(195, 31);
+            this.textBoxArmorName.Location = new System.Drawing.Point(191, 31);
             this.textBoxArmorName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxArmorName.Name = "textBoxArmorName";
-            this.textBoxArmorName.Size = new System.Drawing.Size(222, 23);
+            this.textBoxArmorName.Size = new System.Drawing.Size(226, 23);
             this.textBoxArmorName.TabIndex = 10;
             // 
             // labelArmorName
@@ -1035,7 +1376,7 @@
             this.listBoxArmor.Location = new System.Drawing.Point(9, 13);
             this.listBoxArmor.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxArmor.Name = "listBoxArmor";
-            this.listBoxArmor.Size = new System.Drawing.Size(174, 409);
+            this.listBoxArmor.Size = new System.Drawing.Size(174, 454);
             this.listBoxArmor.TabIndex = 2;
             this.listBoxArmor.SelectedIndexChanged += new System.EventHandler(this.listBoxArmor_SelectedIndexChanged);
             // 
@@ -1051,7 +1392,7 @@
             this.tabPageAccessoryData.Location = new System.Drawing.Point(4, 24);
             this.tabPageAccessoryData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageAccessoryData.Name = "tabPageAccessoryData";
-            this.tabPageAccessoryData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageAccessoryData.Size = new System.Drawing.Size(776, 533);
             this.tabPageAccessoryData.TabIndex = 6;
             this.tabPageAccessoryData.Text = "Accessories";
             this.tabPageAccessoryData.UseVisualStyleBackColor = true;
@@ -1062,7 +1403,7 @@
             this.groupBoxAccessoryRestrictions.Controls.Add(this.checkBoxAccessoryIsSellable);
             this.groupBoxAccessoryRestrictions.Controls.Add(this.checkBoxAccessoryUsableInMenu);
             this.groupBoxAccessoryRestrictions.Controls.Add(this.checkBoxAccessoryUsableInBattle);
-            this.groupBoxAccessoryRestrictions.Location = new System.Drawing.Point(476, 298);
+            this.groupBoxAccessoryRestrictions.Location = new System.Drawing.Point(532, 343);
             this.groupBoxAccessoryRestrictions.Name = "groupBoxAccessoryRestrictions";
             this.groupBoxAccessoryRestrictions.Size = new System.Drawing.Size(232, 124);
             this.groupBoxAccessoryRestrictions.TabIndex = 22;
@@ -1117,9 +1458,9 @@
             this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryTifa);
             this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryBarret);
             this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryCloud);
-            this.groupBoxAccessoryEquipable.Location = new System.Drawing.Point(195, 298);
+            this.groupBoxAccessoryEquipable.Location = new System.Drawing.Point(191, 343);
             this.groupBoxAccessoryEquipable.Name = "groupBoxAccessoryEquipable";
-            this.groupBoxAccessoryEquipable.Size = new System.Drawing.Size(275, 124);
+            this.groupBoxAccessoryEquipable.Size = new System.Drawing.Size(335, 124);
             this.groupBoxAccessoryEquipable.TabIndex = 14;
             this.groupBoxAccessoryEquipable.TabStop = false;
             this.groupBoxAccessoryEquipable.Text = "Equipable by...";
@@ -1238,10 +1579,10 @@
             // 
             this.textBoxAccessoryDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAccessoryDescription.Location = new System.Drawing.Point(195, 75);
+            this.textBoxAccessoryDescription.Location = new System.Drawing.Point(191, 75);
             this.textBoxAccessoryDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAccessoryDescription.Name = "textBoxAccessoryDescription";
-            this.textBoxAccessoryDescription.Size = new System.Drawing.Size(513, 23);
+            this.textBoxAccessoryDescription.Size = new System.Drawing.Size(573, 23);
             this.textBoxAccessoryDescription.TabIndex = 12;
             // 
             // labelAccessoryDescription
@@ -1258,10 +1599,10 @@
             // 
             this.textBoxAccessoryName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAccessoryName.Location = new System.Drawing.Point(195, 31);
+            this.textBoxAccessoryName.Location = new System.Drawing.Point(191, 31);
             this.textBoxAccessoryName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAccessoryName.Name = "textBoxAccessoryName";
-            this.textBoxAccessoryName.Size = new System.Drawing.Size(222, 23);
+            this.textBoxAccessoryName.Size = new System.Drawing.Size(226, 23);
             this.textBoxAccessoryName.TabIndex = 10;
             // 
             // labelAccessoryName
@@ -1283,7 +1624,7 @@
             this.listBoxAccessories.Location = new System.Drawing.Point(9, 13);
             this.listBoxAccessories.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxAccessories.Name = "listBoxAccessories";
-            this.listBoxAccessories.Size = new System.Drawing.Size(174, 409);
+            this.listBoxAccessories.Size = new System.Drawing.Size(174, 454);
             this.listBoxAccessories.TabIndex = 2;
             this.listBoxAccessories.SelectedIndexChanged += new System.EventHandler(this.listBoxAccessories_SelectedIndexChanged);
             // 
@@ -1301,7 +1642,7 @@
             this.tabPageMateriaData.Location = new System.Drawing.Point(4, 24);
             this.tabPageMateriaData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageMateriaData.Name = "tabPageMateriaData";
-            this.tabPageMateriaData.Size = new System.Drawing.Size(720, 481);
+            this.tabPageMateriaData.Size = new System.Drawing.Size(776, 533);
             this.tabPageMateriaData.TabIndex = 7;
             this.tabPageMateriaData.Text = "Materia";
             this.tabPageMateriaData.UseVisualStyleBackColor = true;
@@ -1312,9 +1653,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxMateriaElement.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxMateriaElement.FormattingEnabled = true;
-            this.comboBoxMateriaElement.Location = new System.Drawing.Point(195, 119);
+            this.comboBoxMateriaElement.Location = new System.Drawing.Point(191, 119);
             this.comboBoxMateriaElement.Name = "comboBoxMateriaElement";
-            this.comboBoxMateriaElement.Size = new System.Drawing.Size(222, 23);
+            this.comboBoxMateriaElement.Size = new System.Drawing.Size(226, 23);
             this.comboBoxMateriaElement.TabIndex = 16;
             // 
             // labelMateriaElement
@@ -1331,16 +1672,16 @@
             this.comboBoxMateriaType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxMateriaType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxMateriaType.FormattingEnabled = true;
-            this.comboBoxMateriaType.Location = new System.Drawing.Point(425, 119);
+            this.comboBoxMateriaType.Location = new System.Drawing.Point(423, 119);
             this.comboBoxMateriaType.Name = "comboBoxMateriaType";
-            this.comboBoxMateriaType.Size = new System.Drawing.Size(283, 23);
+            this.comboBoxMateriaType.Size = new System.Drawing.Size(221, 23);
             this.comboBoxMateriaType.TabIndex = 14;
             // 
             // labelMateriaType
             // 
             this.labelMateriaType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelMateriaType.AutoSize = true;
-            this.labelMateriaType.Location = new System.Drawing.Point(425, 101);
+            this.labelMateriaType.Location = new System.Drawing.Point(423, 101);
             this.labelMateriaType.Name = "labelMateriaType";
             this.labelMateriaType.Size = new System.Drawing.Size(76, 15);
             this.labelMateriaType.TabIndex = 13;
@@ -1350,10 +1691,10 @@
             // 
             this.textBoxMateriaDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMateriaDescription.Location = new System.Drawing.Point(195, 75);
+            this.textBoxMateriaDescription.Location = new System.Drawing.Point(191, 75);
             this.textBoxMateriaDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxMateriaDescription.Name = "textBoxMateriaDescription";
-            this.textBoxMateriaDescription.Size = new System.Drawing.Size(513, 23);
+            this.textBoxMateriaDescription.Size = new System.Drawing.Size(573, 23);
             this.textBoxMateriaDescription.TabIndex = 12;
             // 
             // labelMateriaDescription
@@ -1370,10 +1711,10 @@
             // 
             this.textBoxMateriaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMateriaName.Location = new System.Drawing.Point(195, 31);
+            this.textBoxMateriaName.Location = new System.Drawing.Point(191, 31);
             this.textBoxMateriaName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxMateriaName.Name = "textBoxMateriaName";
-            this.textBoxMateriaName.Size = new System.Drawing.Size(222, 23);
+            this.textBoxMateriaName.Size = new System.Drawing.Size(226, 23);
             this.textBoxMateriaName.TabIndex = 10;
             // 
             // labelMateriaName
@@ -1395,7 +1736,7 @@
             this.listBoxMateria.Location = new System.Drawing.Point(9, 13);
             this.listBoxMateria.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxMateria.Name = "listBoxMateria";
-            this.listBoxMateria.Size = new System.Drawing.Size(174, 409);
+            this.listBoxMateria.Size = new System.Drawing.Size(174, 454);
             this.listBoxMateria.TabIndex = 2;
             this.listBoxMateria.SelectedIndexChanged += new System.EventHandler(this.listBoxMateria_SelectedIndexChanged);
             // 
@@ -1409,7 +1750,7 @@
             this.tabPageKeyItemText.Location = new System.Drawing.Point(4, 24);
             this.tabPageKeyItemText.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageKeyItemText.Name = "tabPageKeyItemText";
-            this.tabPageKeyItemText.Size = new System.Drawing.Size(720, 481);
+            this.tabPageKeyItemText.Size = new System.Drawing.Size(776, 533);
             this.tabPageKeyItemText.TabIndex = 8;
             this.tabPageKeyItemText.Text = "Key Items";
             this.tabPageKeyItemText.UseVisualStyleBackColor = true;
@@ -1418,16 +1759,16 @@
             // 
             this.textBoxKeyItemDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxKeyItemDescription.Location = new System.Drawing.Point(195, 78);
+            this.textBoxKeyItemDescription.Location = new System.Drawing.Point(191, 75);
             this.textBoxKeyItemDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxKeyItemDescription.Name = "textBoxKeyItemDescription";
-            this.textBoxKeyItemDescription.Size = new System.Drawing.Size(513, 23);
+            this.textBoxKeyItemDescription.Size = new System.Drawing.Size(573, 23);
             this.textBoxKeyItemDescription.TabIndex = 8;
             // 
             // labelKeyItemDescription
             // 
             this.labelKeyItemDescription.AutoSize = true;
-            this.labelKeyItemDescription.Location = new System.Drawing.Point(191, 59);
+            this.labelKeyItemDescription.Location = new System.Drawing.Point(191, 57);
             this.labelKeyItemDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelKeyItemDescription.Name = "labelKeyItemDescription";
             this.labelKeyItemDescription.Size = new System.Drawing.Size(70, 15);
@@ -1438,10 +1779,10 @@
             // 
             this.textBoxKeyItemName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxKeyItemName.Location = new System.Drawing.Point(195, 32);
+            this.textBoxKeyItemName.Location = new System.Drawing.Point(191, 31);
             this.textBoxKeyItemName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxKeyItemName.Name = "textBoxKeyItemName";
-            this.textBoxKeyItemName.Size = new System.Drawing.Size(222, 23);
+            this.textBoxKeyItemName.Size = new System.Drawing.Size(226, 23);
             this.textBoxKeyItemName.TabIndex = 6;
             // 
             // labelKeyItemName
@@ -1463,7 +1804,7 @@
             this.listBoxKeyItems.Location = new System.Drawing.Point(9, 13);
             this.listBoxKeyItems.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxKeyItems.Name = "listBoxKeyItems";
-            this.listBoxKeyItems.Size = new System.Drawing.Size(174, 409);
+            this.listBoxKeyItems.Size = new System.Drawing.Size(174, 454);
             this.listBoxKeyItems.TabIndex = 1;
             this.listBoxKeyItems.SelectedIndexChanged += new System.EventHandler(this.listBoxKeyItems_SelectedIndexChanged);
             // 
@@ -1482,7 +1823,7 @@
             // buttonImport
             // 
             this.buttonImport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonImport.Location = new System.Drawing.Point(474, 8);
+            this.buttonImport.Location = new System.Drawing.Point(531, 8);
             this.buttonImport.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonImport.Name = "buttonImport";
             this.buttonImport.Size = new System.Drawing.Size(117, 27);
@@ -1493,7 +1834,7 @@
             // buttonExport
             // 
             this.buttonExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonExport.Location = new System.Drawing.Point(597, 8);
+            this.buttonExport.Location = new System.Drawing.Point(654, 8);
             this.buttonExport.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonExport.Name = "buttonExport";
             this.buttonExport.Size = new System.Drawing.Size(117, 27);
@@ -1508,58 +1849,17 @@
             this.panelButtons.Controls.Add(this.buttonSave);
             this.panelButtons.Controls.Add(this.buttonImport);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 463);
+            this.panelButtons.Location = new System.Drawing.Point(0, 515);
             this.panelButtons.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(728, 46);
+            this.panelButtons.Size = new System.Drawing.Size(784, 46);
             this.panelButtons.TabIndex = 4;
-            // 
-            // groupBoxArmorMateriaSlots
-            // 
-            this.groupBoxArmorMateriaSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBoxArmorMateriaSlots.Controls.Add(this.labelArmorMateriaGrowth);
-            this.groupBoxArmorMateriaSlots.Controls.Add(this.materiaSlotSelectorArmor);
-            this.groupBoxArmorMateriaSlots.Controls.Add(this.comboBoxArmorMateriaGrowth);
-            this.groupBoxArmorMateriaSlots.Location = new System.Drawing.Point(195, 184);
-            this.groupBoxArmorMateriaSlots.Name = "groupBoxArmorMateriaSlots";
-            this.groupBoxArmorMateriaSlots.Size = new System.Drawing.Size(222, 108);
-            this.groupBoxArmorMateriaSlots.TabIndex = 23;
-            this.groupBoxArmorMateriaSlots.TabStop = false;
-            this.groupBoxArmorMateriaSlots.Text = "Materia slots";
-            // 
-            // labelArmorMateriaGrowth
-            // 
-            this.labelArmorMateriaGrowth.AutoSize = true;
-            this.labelArmorMateriaGrowth.Location = new System.Drawing.Point(6, 60);
-            this.labelArmorMateriaGrowth.Name = "labelArmorMateriaGrowth";
-            this.labelArmorMateriaGrowth.Size = new System.Drawing.Size(49, 15);
-            this.labelArmorMateriaGrowth.TabIndex = 1;
-            this.labelArmorMateriaGrowth.Text = "Growth:";
-            // 
-            // materiaSlotSelectorArmor
-            // 
-            this.materiaSlotSelectorArmor.BackColor = System.Drawing.Color.LightSlateGray;
-            this.materiaSlotSelectorArmor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.materiaSlotSelectorArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
-            this.materiaSlotSelectorArmor.Location = new System.Drawing.Point(6, 22);
-            this.materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
-            this.materiaSlotSelectorArmor.Size = new System.Drawing.Size(210, 35);
-            this.materiaSlotSelectorArmor.TabIndex = 0;
-            // 
-            // comboBoxArmorMateriaGrowth
-            // 
-            this.comboBoxArmorMateriaGrowth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxArmorMateriaGrowth.FormattingEnabled = true;
-            this.comboBoxArmorMateriaGrowth.Location = new System.Drawing.Point(6, 78);
-            this.comboBoxArmorMateriaGrowth.Name = "comboBoxArmorMateriaGrowth";
-            this.comboBoxArmorMateriaGrowth.Size = new System.Drawing.Size(210, 23);
-            this.comboBoxArmorMateriaGrowth.TabIndex = 2;
             // 
             // KernelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(728, 509);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.panelButtons);
             this.Controls.Add(this.tabControlMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1576,10 +1876,14 @@
             this.tabPageAttackData.PerformLayout();
             this.tabPageItemData.ResumeLayout(false);
             this.tabPageItemData.PerformLayout();
+            this.groupBoxItemTargetFlags.ResumeLayout(false);
+            this.groupBoxItemTargetFlags.PerformLayout();
             this.groupBoxItemRestrictions.ResumeLayout(false);
             this.groupBoxItemRestrictions.PerformLayout();
             this.tabPageWeaponData.ResumeLayout(false);
             this.tabPageWeaponData.PerformLayout();
+            this.groupBoxWeaponTargetFlags.ResumeLayout(false);
+            this.groupBoxWeaponTargetFlags.PerformLayout();
             this.groupBoxWeaponMateriaSlots.ResumeLayout(false);
             this.groupBoxWeaponMateriaSlots.PerformLayout();
             this.groupBoxWeaponRestrictions.ResumeLayout(false);
@@ -1588,6 +1892,8 @@
             this.groupBoxWeaponEquipable.PerformLayout();
             this.tabPageArmorData.ResumeLayout(false);
             this.tabPageArmorData.PerformLayout();
+            this.groupBoxArmorMateriaSlots.ResumeLayout(false);
+            this.groupBoxArmorMateriaSlots.PerformLayout();
             this.groupBoxArmorRestrictions.ResumeLayout(false);
             this.groupBoxArmorRestrictions.PerformLayout();
             this.groupBoxArmorEquipable.ResumeLayout(false);
@@ -1603,8 +1909,6 @@
             this.tabPageKeyItemText.ResumeLayout(false);
             this.tabPageKeyItemText.PerformLayout();
             this.panelButtons.ResumeLayout(false);
-            this.groupBoxArmorMateriaSlots.ResumeLayout(false);
-            this.groupBoxArmorMateriaSlots.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1733,5 +2037,29 @@
         private Label labelArmorMateriaGrowth;
         private MateriaSlotSelectorControl materiaSlotSelectorArmor;
         private ComboBox comboBoxArmorMateriaGrowth;
+        private GroupBox groupBoxItemTargetFlags;
+        private CheckBox checkBoxItemRandomTarget;
+        private CheckBox checkBoxItemAllRows;
+        private CheckBox checkBoxItemShortRange;
+        private CheckBox checkBoxItemOneRowOnly;
+        private CheckBox checkBoxItemSingleMultiToggle;
+        private CheckBox checkBoxItemMultipleTargetDefault;
+        private CheckBox checkBoxItemStartOnEnemies;
+        private CheckBox checkBoxItemEnableSelection;
+        private GroupBox groupBoxWeaponTargetFlags;
+        private CheckBox checkBoxWeaponRandomTarget;
+        private CheckBox checkBoxWeaponAllRows;
+        private CheckBox checkBoxWeaponShortRange;
+        private CheckBox checkBoxWeaponOneRowOnly;
+        private CheckBox checkBoxWeaponSingleMultiToggle;
+        private CheckBox checkBoxWeaponMultipleTargetDefault;
+        private CheckBox checkBoxWeaponStartOnEnemies;
+        private CheckBox checkBoxWeaponEnableSelection;
+        private ComboBox comboBoxItemCamMovementID;
+        private Label labelItemCamMovementID;
+        private ComboBox comboBoxItemAttackEffectID;
+        private Label labelItemAttackEffectID;
+        private DamageCalculationControl damageCalculationControlItem;
+        private DamageCalculationControl damageCalculationControlWeapon;
     }
 }

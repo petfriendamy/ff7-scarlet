@@ -28,7 +28,7 @@ namespace FF7Scarlet
             {
                 for (int i = 0; i < SLOT_COUNT; ++i)
                 {
-                    SetSlotInner(i, GetMatchingSlot(value, slots[i]), true, true);
+                    SetSlotInner(i, GetMatchingSlot(slots[i]), value, true, true);
                 }
                 growthRate = value;
             }
@@ -72,17 +72,18 @@ namespace FF7Scarlet
 
         public bool SetSlot(int slot, MateriaSlot value)
         {
-            return SetSlotInner(slot, value, false, false);
+            return SetSlotInner(slot, value, GrowthRate, false, false);
         }
 
-        private bool SetSlotInner(int slot, MateriaSlot value, bool ignoreLeft, bool ignoreRight)
+        private bool SetSlotInner(int slot, MateriaSlot value, GrowthRate rate, bool ignoreLeft, bool ignoreRight)
         {
             if (slot >= 0 && slot < SLOT_COUNT)
             {
-                if (slots[slot] != value)
+                var newValue = GetMatchingSlot(rate, value);
+                if (slots[slot] != newValue)
                 {
                     //update slot value
-                    MateriaSlot currentValue = GetMatchingSlot(slots[slot]), newValue = GetMatchingSlot(value);
+                    var currentValue = GetMatchingSlot(rate, slots[slot]);
                     var pb = pictureBoxes[slot];
                     pb.Image = ImageLookupTable[newValue];
                     slots[slot] = newValue;
@@ -91,7 +92,7 @@ namespace FF7Scarlet
                         var mi = menuStrips[slot].Items[i] as ToolStripMenuItem;
                         if (mi != null)
                         {
-                            mi.Checked = (newValue == GetMatchingSlot((MateriaSlot)i));
+                            mi.Checked = (newValue == GetMatchingSlot(rate, (MateriaSlot)i));
                         }
                     }
 
@@ -103,11 +104,11 @@ namespace FF7Scarlet
                             var prevValue = GetMatchingSlot(slots[slot - 1]);
                             if (SlotIsRightLinked(newValue) && !SlotIsLeftLinked(prevValue))
                             {
-                                SetSlotInner(slot - 1, MateriaSlot.NormalLeftLinkedSlot, false, true);
+                                SetSlotInner(slot - 1, MateriaSlot.NormalLeftLinkedSlot, rate, false, true);
                             }
                             else if (SlotIsRightLinked(currentValue) && SlotIsLeftLinked(prevValue))
                             {
-                                SetSlotInner(slot - 1, MateriaSlot.NormalUnlinkedSlot, false, true);
+                                SetSlotInner(slot - 1, MateriaSlot.NormalUnlinkedSlot, rate, false, true);
                             }
                         }
                         if (!ignoreRight && slot < SLOT_COUNT - 1) //update slot to the right
@@ -115,11 +116,11 @@ namespace FF7Scarlet
                             var nextValue = GetMatchingSlot(slots[slot + 1]);
                             if (SlotIsLeftLinked(newValue) && !SlotIsRightLinked(nextValue))
                             {
-                                SetSlotInner(slot + 1, MateriaSlot.NormalRightLinkedSlot, true, false);
+                                SetSlotInner(slot + 1, MateriaSlot.NormalRightLinkedSlot, rate, true, false);
                             }
                             else if (SlotIsLeftLinked(currentValue) && SlotIsRightLinked(nextValue))
                             {
-                                SetSlotInner(slot + 1, MateriaSlot.NormalUnlinkedSlot, true, false);
+                                SetSlotInner(slot + 1, MateriaSlot.NormalUnlinkedSlot, rate, true, false);
                             }
                         }
                     }

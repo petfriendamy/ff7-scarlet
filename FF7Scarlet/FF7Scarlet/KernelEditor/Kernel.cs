@@ -1,4 +1,5 @@
 ﻿using Shojy.FF7.Elena;
+using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Sections;
@@ -124,6 +125,67 @@ namespace FF7Scarlet
                     return KeyItemDescriptions.Strings;
             }
             return null;
+        }
+
+        public ushort GetCameraMovementID(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].CameraMovementId;
+                default:
+                    return DataManager.NULL_OFFSET_16_BIT;
+            }
+        }
+
+        public byte GetAttackEffectID(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].AttackEffectId;
+                default:
+                    return 0xFF;
+            }
+        }
+
+        public TargetData GetTargetData(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].TargetData;
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].Targets;
+                default:
+                    return 0;
+            }
+        }
+
+        public byte GetDamageCalculationID(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].DamageCalculationId;
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].DamageCalculationId;
+                default:
+                    return 0;
+            }
+        }
+
+        public byte GetAttackPower(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].AttackPower;
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].AttackStrength;
+                default:
+                    return 0;
+            }
         }
 
         public Restrictions GetItemRestrictions(KernelSection section, int pos)
