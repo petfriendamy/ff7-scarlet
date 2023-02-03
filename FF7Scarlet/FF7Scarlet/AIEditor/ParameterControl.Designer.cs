@@ -1,5 +1,5 @@
 ﻿
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     partial class ParameterControl
     {

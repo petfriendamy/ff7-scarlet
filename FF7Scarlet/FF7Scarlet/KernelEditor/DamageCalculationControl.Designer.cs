@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet
+﻿namespace FF7Scarlet.KernelEditor
 {
     partial class DamageCalculationControl
     {
@@ -37,15 +37,17 @@
             this.labelAccuracyCalculation = new System.Windows.Forms.Label();
             this.labelDamageType = new System.Windows.Forms.Label();
             this.comboBoxDamageType = new System.Windows.Forms.ComboBox();
-            this.textBoxAttackPower = new System.Windows.Forms.TextBox();
             this.labelPower = new System.Windows.Forms.Label();
             this.textBoxActualValue = new System.Windows.Forms.TextBox();
             this.labelActualValue = new System.Windows.Forms.Label();
+            this.numericAttackPower = new System.Windows.Forms.NumericUpDown();
             this.groupBoxMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericAttackPower)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBoxMain
             // 
+            this.groupBoxMain.Controls.Add(this.numericAttackPower);
             this.groupBoxMain.Controls.Add(this.checkBoxIsNull);
             this.groupBoxMain.Controls.Add(this.comboBoxDamageFormula);
             this.groupBoxMain.Controls.Add(this.labelDamageFormula);
@@ -54,7 +56,6 @@
             this.groupBoxMain.Controls.Add(this.labelAccuracyCalculation);
             this.groupBoxMain.Controls.Add(this.labelDamageType);
             this.groupBoxMain.Controls.Add(this.comboBoxDamageType);
-            this.groupBoxMain.Controls.Add(this.textBoxAttackPower);
             this.groupBoxMain.Controls.Add(this.labelPower);
             this.groupBoxMain.Controls.Add(this.textBoxActualValue);
             this.groupBoxMain.Controls.Add(this.labelActualValue);
@@ -156,14 +157,6 @@
             this.comboBoxDamageType.TabIndex = 4;
             this.comboBoxDamageType.SelectedIndexChanged += new System.EventHandler(this.comboBoxDamageType_SelectedIndexChanged);
             // 
-            // textBoxAttackPower
-            // 
-            this.textBoxAttackPower.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxAttackPower.Location = new System.Drawing.Point(6, 66);
-            this.textBoxAttackPower.Name = "textBoxAttackPower";
-            this.textBoxAttackPower.Size = new System.Drawing.Size(80, 23);
-            this.textBoxAttackPower.TabIndex = 3;
-            // 
             // labelPower
             // 
             this.labelPower.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -195,6 +188,18 @@
             this.labelActualValue.TabIndex = 0;
             this.labelActualValue.Text = "Actual value:";
             // 
+            // numericAttackPower
+            // 
+            this.numericAttackPower.Location = new System.Drawing.Point(7, 66);
+            this.numericAttackPower.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericAttackPower.Name = "numericAttackPower";
+            this.numericAttackPower.Size = new System.Drawing.Size(79, 23);
+            this.numericAttackPower.TabIndex = 12;
+            // 
             // DamageCalculationControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -204,6 +209,7 @@
             this.Size = new System.Drawing.Size(520, 140);
             this.groupBoxMain.ResumeLayout(false);
             this.groupBoxMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericAttackPower)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -215,7 +221,6 @@
         private Label labelActualValue;
         private Label labelDamageType;
         private ComboBox comboBoxDamageType;
-        private TextBox textBoxAttackPower;
         private Label labelPower;
         private ComboBox comboBoxAccuracyCalculation;
         private Label labelAccuracyCalculation;
@@ -223,5 +228,6 @@
         private ComboBox comboBoxDamageFormula;
         private Label labelDamageFormula;
         private CheckBox checkBoxIsNull;
+        private NumericUpDown numericAttackPower;
     }
 }

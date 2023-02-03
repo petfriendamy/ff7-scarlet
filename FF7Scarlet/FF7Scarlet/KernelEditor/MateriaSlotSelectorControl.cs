@@ -1,7 +1,6 @@
 ﻿using Shojy.FF7.Elena.Equipment;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.KernelEditor
 {
     public partial class MateriaSlotSelectorControl : UserControl
     {

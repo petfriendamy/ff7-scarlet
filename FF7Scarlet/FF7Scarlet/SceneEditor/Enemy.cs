@@ -1,14 +1,7 @@
-﻿using FF7Scarlet.SceneEditor;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FF7Scarlet.AIEditor;
 using Shojy.FF7.Elena.Battle;
-using System.Configuration;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.SceneEditor
 {
     public class Enemy : AIContainer
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     partial class ParameterForm
     {
@@ -34,8 +34,8 @@ namespace FF7Scarlet
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
-            this.parameterControl2 = new FF7Scarlet.ParameterControl();
-            this.parameterControl1 = new FF7Scarlet.ParameterControl();
+            this.parameterControl2 = new FF7Scarlet.AIEditor.ParameterControl();
+            this.parameterControl1 = new FF7Scarlet.AIEditor.ParameterControl();
             this.panelButtons.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.SuspendLayout();
@@ -113,7 +113,6 @@ namespace FF7Scarlet
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ParameterForm";
             this.Text = "Add/edit parameter";
-            this.Load += new System.EventHandler(this.ParameterForm_Load);
             this.panelButtons.ResumeLayout(false);
             this.panelMain.ResumeLayout(false);
             this.ResumeLayout(false);

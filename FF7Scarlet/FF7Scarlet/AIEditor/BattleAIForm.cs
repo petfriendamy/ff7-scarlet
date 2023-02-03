@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using FF7Scarlet.SceneEditor;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public partial class BattleAIForm : Form
     {
@@ -23,7 +14,7 @@ namespace FF7Scarlet
         };
         private Scene currScene;
         private Scene[] sceneList;
-        private List<Code> clipboard;
+        private List<Code>? clipboard;
         private bool loading = false, unsavedChanges = false, processing = false;
 
         private Enemy SelectedEnemy
@@ -34,7 +25,7 @@ namespace FF7Scarlet
         {
             get { return listBoxEnemies.SelectedIndex + 1; }
         }
-        private Script SelectedScript
+        private Script? SelectedScript
         {
             get
             {
@@ -46,7 +37,7 @@ namespace FF7Scarlet
         {
             get { return listBoxScripts.SelectedIndex; }
         }
-        private Code SelectedCode
+        private Code? SelectedCode
         {
             get
             {
@@ -62,10 +53,7 @@ namespace FF7Scarlet
         public BattleAIForm()
         {
             InitializeComponent();
-        }
 
-        private void BattleAIForm_Load(object sender, EventArgs e)
-        {
             //create private version of scene data that can be edited freely
             sceneList = DataManager.CopySceneList();
             currScene = sceneList[0];
@@ -74,6 +62,11 @@ namespace FF7Scarlet
                 comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
             }
             comboBoxSceneList.SelectedIndex = 0;
+        }
+
+        private void BattleAIForm_Load(object sender, EventArgs e)
+        {
+            
             LoadNewEnemyList();
             loading = false;
         }
@@ -176,61 +169,67 @@ namespace FF7Scarlet
 
         private void SetClipboard(bool cut)
         {
-            //get indices as ints
-            var indices = new List<int> { };
-            foreach (int i in listBoxCurrScript.SelectedIndices)
+            if (SelectedScript != null)
             {
-                indices.Add(i);
-            }
-            indices.Sort();
-
-            //if code is selected, copy it to the clipboard
-            if (indices.Count > 0)
-            {
-                clipboard = new List<Code> { };
-                foreach (int i in indices)
+                //get indices as ints
+                var indices = new List<int> { };
+                foreach (int i in listBoxCurrScript.SelectedIndices)
                 {
-                    clipboard.Add(SelectedScript.GetCodeAtPosition(i));
+                    indices.Add(i);
                 }
+                indices.Sort();
 
-                if (cut) //remove code from the script
+                //if code is selected, copy it to the clipboard
+                if (indices.Count > 0)
                 {
-                    RemoveSelectedLines();
+                    clipboard = new List<Code> { };
+                    foreach (int i in indices)
+                    {
+                        clipboard.Add(SelectedScript.GetCodeAtPosition(i));
+                    }
+
+                    if (cut) //remove code from the script
+                    {
+                        RemoveSelectedLines();
+                    }
+                    toolStripButtonPaste.Enabled = true;
                 }
-                toolStripButtonPaste.Enabled = true;
             }
         }
 
         private void RemoveSelectedLines()
         {
-            //get indices as ints
-            var indices = new List<int> { };
-            foreach (int i in listBoxCurrScript.SelectedIndices)
+            if (SelectedScript != null)
             {
-                indices.Add(i);
-            }
-            indices.Sort();
-            indices.Reverse();
+                //get indices as ints
+                var indices = new List<int> { };
+                foreach (int i in listBoxCurrScript.SelectedIndices)
+                {
+                    indices.Add(i);
+                }
+                indices.Sort();
+                indices.Reverse();
 
-            //if code is selected, telete it
-            if (indices.Count > 0)
-            {
-                foreach (int i in indices)
+                //if code is selected, telete it
+                if (indices.Count > 0)
                 {
-                    SelectedScript.RemoveCodeAtPosition(i);
-                    listBoxCurrScript.Items.RemoveAt(i);
+                    foreach (int i in indices)
+                    {
+                        SelectedScript.RemoveCodeAtPosition(i);
+                        listBoxCurrScript.Items.RemoveAt(i);
+                    }
+                    if (listBoxCurrScript.Items.Count == 0)
+                    {
+                        UpdateScripts(SelectedEnemyIndex);
+                    }
                 }
-                if (listBoxCurrScript.Items.Count == 0)
-                {
-                    UpdateScripts(SelectedEnemyIndex);
-                }
+                SetUnsaved(true);
             }
-            SetUnsaved(true);
         }
 
         private void MoveUp()
         {
-            if (SelectedCode != null)
+            if (SelectedCode != null && SelectedScript != null)
             {
                 int temp = SelectedCodeIndex;
                 loading = true;
@@ -244,7 +243,7 @@ namespace FF7Scarlet
 
         private void MoveDown()
         {
-            if (SelectedCode != null)
+            if (SelectedCode != null && SelectedScript != null)
             {
                 int temp = SelectedCodeIndex;
                 loading = true;
@@ -386,9 +385,9 @@ namespace FF7Scarlet
 
             if (result == DialogResult.OK)
             {
-                if (SelectedScript == null)
+                if (SelectedScript == null) //??
                 {
-                    newCode.SetParent(SelectedScript);
+                    //newCode.SetParent(SelectedScript);
                     SelectedEnemy.CreateNewScript(SelectedScriptIndex, newCode);
                     UpdateScripts(SelectedEnemyIndex);
                     listBoxCurrScript.SelectedIndex = 0;
@@ -405,7 +404,7 @@ namespace FF7Scarlet
 
         private void toolStripButtonEdit_Click(object sender, EventArgs e)
         {
-            if (SelectedCode != null)
+            if (SelectedScript != null && SelectedCode != null)
             {
                 DialogResult result;
                 Code newCode;
@@ -439,7 +438,7 @@ namespace FF7Scarlet
 
         private void toolStripButtonPaste_Click(object sender, EventArgs e)
         {
-
+            //stuff
         }
 
         private void toolStripButtonMoveUp_Click(object sender, EventArgs e)

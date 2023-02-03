@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FF7Scarlet.SceneEditor;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public abstract class AIContainer
     {
         public const int SCRIPT_NUMBER = 16;
         protected Script[] scripts = new Script[SCRIPT_NUMBER];
-        public Scene Parent { get; protected set; }
+        public Scene? Parent { get; protected set; }
 
         public void CreateNewScript(int pos, Code startingCode)
         {
@@ -31,7 +25,7 @@ namespace FF7Scarlet
         {
             if (pos < 0 || pos >= SCRIPT_NUMBER)
             {
-                return null;
+                throw new ArgumentOutOfRangeException();
             }
             return scripts[pos];
         }

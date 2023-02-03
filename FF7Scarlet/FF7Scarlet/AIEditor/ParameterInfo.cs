@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public enum ParameterTypes
     {
@@ -41,7 +41,7 @@ namespace FF7Scarlet
             MaxLength = maxLength;
         }
 
-        public static ParameterInfo GetInfo(ParameterTypes type)
+        public static ParameterInfo? GetInfo(ParameterTypes type)
         {
             foreach (var p in PARAMETER_LIST)
             {
@@ -50,7 +50,7 @@ namespace FF7Scarlet
             return null;
         }
 
-        public bool IsValid(FFText data)
+        public bool IsValid(FFText? data)
         {
             switch (ValidData)
             {
@@ -63,13 +63,15 @@ namespace FF7Scarlet
                     }
                     break;
             }
-            if (MaxLength > 0 && data.Length > MaxLength * 2) { return false; }
+            if (MaxLength > 0 && data?.Length > MaxLength * 2) { return false; }
             return true;
         }
 
-        public static bool IsValid(ParameterTypes type, FFText data)
+        public static bool IsValid(ParameterTypes type, FFText? data)
         {
-            return GetInfo(type).IsValid(data);
+            var info = GetInfo(type);
+            if (info == null) { return false; }
+            return info.IsValid(data);
         }
     }
 }

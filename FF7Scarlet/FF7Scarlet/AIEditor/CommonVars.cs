@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public static class CommonVars
     {

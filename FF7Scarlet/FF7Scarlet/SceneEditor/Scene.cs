@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.SceneEditor
 {
     public class Scene
     {
@@ -19,8 +19,8 @@ namespace FF7Scarlet
         private Attack[] attackList = new Attack[ATTACK_COUNT];
         private ushort[] formationAIoffset = new ushort[FORMATION_COUNT];
         private ushort[] enemyAIoffset = new ushort[ENEMY_COUNT];
-        private byte[] formationAIRaw;
-        private byte[] enemyAIraw;
+        private byte[]? formationAIRaw;
+        private byte[]? enemyAIraw;
         private byte[] rawData;
 
         public bool ScriptsLoaded { get; private set; } = false;
@@ -31,6 +31,10 @@ namespace FF7Scarlet
             {
                 rawData = File.ReadAllBytes(filePath);
                 ParseData(rawData);
+            }
+            else
+            {
+                throw new FileNotFoundException();
             }
         }
 
@@ -52,7 +56,7 @@ namespace FF7Scarlet
             {
                 return enemies[id - 1];
             }
-            return null;
+            throw new ArgumentOutOfRangeException();
         }
 
         public bool IsEmpty()
@@ -94,7 +98,9 @@ namespace FF7Scarlet
             {
                 if (atk != null && atk.ID == id)
                 {
-                    return atk.Name.ToString();
+                    var str = atk.Name.ToString();
+                    if (str == null) { return $"Unnamed ({id:X4})"; }
+                    else { return str; }
                 }
             }
             return $"Unknown ({id:X4})";
@@ -202,6 +208,10 @@ namespace FF7Scarlet
 
         public void ParseAIScripts()
         {
+            if (formationAIRaw == null || enemyAIraw == null)
+            {
+                throw new ArgumentNullException();
+            }
             int i, j, next;
 
             //parse formation scripts
@@ -297,7 +307,12 @@ namespace FF7Scarlet
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
                             if (attackList[i] == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
-                            else { writer.Write(attackList[i].Name.GetBytes()); }
+                            else
+                            {
+                                var name = attackList[i].Name.GetBytes();
+                                if (name == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
+                                else { writer.Write(name); }
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -390,7 +405,7 @@ namespace FF7Scarlet
                 {
                     offsets[i] = DataManager.NULL_OFFSET_16_BIT;
                     length[i] = 0;
-                    scriptList.Add(null);
+                    scriptList.Add(new byte[0]);
                 }
                 else
                 {
@@ -415,7 +430,7 @@ namespace FF7Scarlet
             {
                 for (i = 0; i < containerCount; ++i)
                 {
-                    if (scriptList[i] != null)
+                    if (scriptList[i].Length != 0)
                     {
                         writer.Write(scriptList[i]);
                         for (j = scriptList[i].Length; j < length[i]; ++j)

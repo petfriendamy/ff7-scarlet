@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Media;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.KernelEditor
 {
     public partial class DamageCalculationControl : UserControl
     {
@@ -41,7 +41,7 @@ namespace FF7Scarlet
             set
             {
                 attackPower = value;
-                textBoxAttackPower.Text = value.ToString();
+                numericAttackPower.Value = value;
             }
         }
         public DamageType DamageType
@@ -94,7 +94,7 @@ namespace FF7Scarlet
                 TrySetCaller(100);
                 info.IsNull = value;
                 checkBoxIsNull.Checked = value;
-                textBoxAttackPower.Enabled =  comboBoxDamageType.Enabled = 
+                numericAttackPower.Enabled =  comboBoxDamageType.Enabled = 
                     comboBoxAccuracyCalculation.Enabled = checkBoxCanCrit.Enabled = 
                     comboBoxDamageFormula.Enabled = !value;
                 UpdateActualValueTextBox(100);

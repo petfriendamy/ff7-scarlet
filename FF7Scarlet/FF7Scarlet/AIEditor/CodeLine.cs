@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public class CodeLine : Code
     {
         public ushort Header { get; private set; }
         public byte Opcode { get; set; }
-        public OpcodeInfo OpcodeInfo
+        public OpcodeInfo? OpcodeInfo
         {
             get { return OpcodeInfo.GetInfo(Opcode); }
         }
-        public FFText Parameter { get; set; }
+        public FFText? Parameter { get; set; }
         public byte PopCount { get; set; }
 
-        public CodeLine(Script parent, ushort header, byte opcode, FFText parameter = null)
+        public CodeLine(Script? parent, ushort header, byte opcode, FFText? parameter = null)
         {
             Parent = parent;
             Header = header;
@@ -36,7 +37,7 @@ namespace FF7Scarlet
             return Opcode;
         }
 
-        public override FFText GetParameter()
+        public override FFText? GetParameter()
         {
             return Parameter;
         }
@@ -73,7 +74,10 @@ namespace FF7Scarlet
                 }
                 else if (Opcode == (byte)Opcodes.Jump)
                 {
-                    output += $"Goto Label {Parameter.ToInt()}";
+                    if (Parameter != null)
+                    {
+                        output += $"Goto Label {Parameter.ToInt()}";
+                    }
                 }
                 else
                 {
@@ -106,7 +110,7 @@ namespace FF7Scarlet
                 }
                 else
                 {
-                    output += Enum.GetName(typeof(Opcodes), Opcode) + " ";
+                    output += Enum.GetName((Opcodes)Opcode) + " ";
                 }
             }
             else
@@ -125,7 +129,7 @@ namespace FF7Scarlet
                 {
                     output += $"{Parameter.ToInt()} --";
                 }
-                else if (OpcodeInfo.Group == OpcodeGroups.Jump)
+                else if (OpcodeInfo?.Group == OpcodeGroups.Jump)
                 {
                     output += $"Label {Parameter.ToInt()}";
                 }
@@ -140,22 +144,25 @@ namespace FF7Scarlet
         private string ParseHexParameter()
         {
             string output = "";
-            int param = int.Parse(Parameter.ToString(), NumberStyles.HexNumber);
-
-            if (Opcode == (byte)Opcodes.PushConst01)
+            int param;
+            var formatProvider = new CultureInfo("en-US");
+            if (int.TryParse(Parameter?.ToString(), NumberStyles.HexNumber, formatProvider, out param))
             {
-                output += param.ToString("X2");
-            }
-            else
-            {
-                output += param.ToString("X4");
-                if (Enum.IsDefined(typeof(CommonVars.Globals), param))
+                if (Opcode == (byte)Opcodes.PushConst01)
                 {
-                    output += $" ({Enum.GetName(typeof(CommonVars.Globals), param)})";
+                    output += param.ToString("X2");
                 }
-                else if (Enum.IsDefined(typeof(CommonVars.ActorGlobals), param))
+                else
                 {
-                    output += $" ({Enum.GetName(typeof(CommonVars.ActorGlobals), param)})";
+                    output += param.ToString("X4");
+                    if (Enum.IsDefined((CommonVars.Globals)param))
+                    {
+                        output += $" ({Enum.GetName((CommonVars.Globals)param)})";
+                    }
+                    else if (Enum.IsDefined((CommonVars.ActorGlobals)param))
+                    {
+                        output += $" ({Enum.GetName((CommonVars.ActorGlobals)param)})";
+                    }
                 }
             }
             return output;
@@ -169,46 +176,57 @@ namespace FF7Scarlet
         public override byte[] GetBytes()
         {
             int length = GetDataLength();
-            if (length == 0) { return null; }
+            if (length == 0) { return new byte[0]; }
 
-            var data = new byte[length];
-            var temp = Parameter?.GetBytes(OpcodeInfo.ParameterType);
-            data[0] = Opcode;
             try
             {
-                if (OpcodeInfo.Group == OpcodeGroups.Jump)
+                var data = new byte[length];
+                if (OpcodeInfo == null) { throw new ArgumentNullException(); }
+                try
                 {
-                    temp = BitConverter.GetBytes(Parent.GetLabelPosition(Parameter.ToInt()));
-                    Array.Copy(temp, 0, data, 1, temp.Length);
-                }
-                else
-                {
-                    switch (OpcodeInfo.ParameterType)
+                    if (Parameter == null) { throw new ArgumentNullException(); }
+                    var temp = Parameter.GetBytes(OpcodeInfo.ParameterType);
+                    data[0] = Opcode;
+
+                    if (OpcodeInfo.Group == OpcodeGroups.Jump)
                     {
-                        case ParameterTypes.None:
-                            break;
-                        case ParameterTypes.Debug:
-                            data[1] = PopCount;
-                            Array.Copy(temp, 0, data, 2, temp.Length);
-                            data[data.Length - 1] = 0;
-                            break;
-                        default:
-                            Array.Copy(temp, 0, data, 1, temp.Length);
-                            break;
+                        if (Parent == null) { throw new ArgumentNullException(); }
+                        temp = BitConverter.GetBytes(Parent.GetLabelPosition(Parameter.ToInt()));
+                        Array.Copy(temp, 0, data, 1, temp.Length);
                     }
+                    else
+                    {
+                        switch (OpcodeInfo.ParameterType)
+                        {
+                            case ParameterTypes.None:
+                                break;
+                            case ParameterTypes.Debug:
+                                data[1] = PopCount;
+                                Array.Copy(temp, 0, data, 2, temp.Length);
+                                data[data.Length - 1] = 0;
+                                break;
+                            default:
+                                Array.Copy(temp, 0, data, 1, temp.Length);
+                                break;
+                        }
+                    }
+                    return data;
                 }
-                return data;
+                catch (Exception ex)
+                {
+                    throw new FormatException($"Opcode {OpcodeInfo.Name} did not parse correctly: {ex.Message}");
+                }
             }
-            catch (Exception ex)
+            catch (ArgumentNullException)
             {
-                throw new FormatException($"Opcode {OpcodeInfo.Name} did not parse correctly: {ex.Message}");
+                throw new FormatException("Unknown opcode found.");
             }
         }
 
         private int GetDataLength()
         {
             int length = 0;
-            if (Opcode != (byte)Opcodes.Label)
+            if (Opcode != (byte)Opcodes.Label && OpcodeInfo != null)
             {
                 length = 1;
                 switch (OpcodeInfo.ParameterType)
@@ -223,10 +241,10 @@ namespace FF7Scarlet
                         length += 3;
                         break;
                     case ParameterTypes.String:
-                        length += Parameter.Length;
+                        if (Parameter != null) { length += Parameter.Length; }
                         break;
                     case ParameterTypes.Debug:
-                        length += Parameter.Length + 1;
+                        if (Parameter != null) { length += Parameter.Length + 1; }
                         break;
                 }
             }

@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet
+﻿namespace FF7Scarlet.KernelEditor
 {
     partial class MateriaSlotSelectorControl
     {

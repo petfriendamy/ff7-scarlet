@@ -1,5 +1,5 @@
 ﻿
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     partial class CodeForm
     {
@@ -61,9 +61,10 @@ namespace FF7Scarlet
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(377, 8);
+            this.buttonOK.Location = new System.Drawing.Point(440, 9);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(75, 23);
+            this.buttonOK.Size = new System.Drawing.Size(88, 27);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -73,9 +74,10 @@ namespace FF7Scarlet
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(296, 8);
+            this.buttonCancel.Location = new System.Drawing.Point(345, 9);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.Size = new System.Drawing.Size(88, 27);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -86,9 +88,10 @@ namespace FF7Scarlet
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxOpcodes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxOpcodes.FormattingEnabled = true;
-            this.comboBoxOpcodes.Location = new System.Drawing.Point(6, 46);
+            this.comboBoxOpcodes.Location = new System.Drawing.Point(7, 53);
+            this.comboBoxOpcodes.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBoxOpcodes.Name = "comboBoxOpcodes";
-            this.comboBoxOpcodes.Size = new System.Drawing.Size(425, 21);
+            this.comboBoxOpcodes.Size = new System.Drawing.Size(495, 23);
             this.comboBoxOpcodes.TabIndex = 3;
             this.comboBoxOpcodes.SelectedIndexChanged += new System.EventHandler(this.comboBoxOpcodes_SelectedIndexChanged);
             // 
@@ -98,9 +101,10 @@ namespace FF7Scarlet
             this.tabControlOptions.Controls.Add(this.tabPageManual);
             this.tabControlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlOptions.Location = new System.Drawing.Point(0, 0);
+            this.tabControlOptions.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabControlOptions.Name = "tabControlOptions";
             this.tabControlOptions.SelectedIndex = 0;
-            this.tabControlOptions.Size = new System.Drawing.Size(464, 181);
+            this.tabControlOptions.Size = new System.Drawing.Size(541, 209);
             this.tabControlOptions.TabIndex = 5;
             // 
             // tabPageGenerate
@@ -108,10 +112,11 @@ namespace FF7Scarlet
             this.tabPageGenerate.Controls.Add(this.groupBoxGeneratedParameters);
             this.tabPageGenerate.Controls.Add(this.comboBoxCommands);
             this.tabPageGenerate.Controls.Add(this.labelGenerateCommands);
-            this.tabPageGenerate.Location = new System.Drawing.Point(4, 22);
+            this.tabPageGenerate.Location = new System.Drawing.Point(4, 24);
+            this.tabPageGenerate.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageGenerate.Name = "tabPageGenerate";
-            this.tabPageGenerate.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGenerate.Size = new System.Drawing.Size(456, 155);
+            this.tabPageGenerate.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tabPageGenerate.Size = new System.Drawing.Size(533, 181);
             this.tabPageGenerate.TabIndex = 0;
             this.tabPageGenerate.Text = "Generate code";
             this.tabPageGenerate.UseVisualStyleBackColor = true;
@@ -124,36 +129,41 @@ namespace FF7Scarlet
             this.groupBoxGeneratedParameters.Controls.Add(this.textBoxParameter2);
             this.groupBoxGeneratedParameters.Controls.Add(this.buttonParameter1);
             this.groupBoxGeneratedParameters.Controls.Add(this.textBoxParameter1);
-            this.groupBoxGeneratedParameters.Location = new System.Drawing.Point(7, 47);
+            this.groupBoxGeneratedParameters.Location = new System.Drawing.Point(8, 54);
+            this.groupBoxGeneratedParameters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBoxGeneratedParameters.Name = "groupBoxGeneratedParameters";
-            this.groupBoxGeneratedParameters.Size = new System.Drawing.Size(441, 102);
+            this.groupBoxGeneratedParameters.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.groupBoxGeneratedParameters.Size = new System.Drawing.Size(514, 118);
             this.groupBoxGeneratedParameters.TabIndex = 2;
             this.groupBoxGeneratedParameters.TabStop = false;
             this.groupBoxGeneratedParameters.Text = "Parameters";
             // 
             // labelParameter2
             // 
-            this.labelParameter2.Location = new System.Drawing.Point(6, 52);
+            this.labelParameter2.Location = new System.Drawing.Point(7, 60);
+            this.labelParameter2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelParameter2.Name = "labelParameter2";
-            this.labelParameter2.Size = new System.Drawing.Size(66, 13);
+            this.labelParameter2.Size = new System.Drawing.Size(77, 15);
             this.labelParameter2.TabIndex = 5;
             this.labelParameter2.Text = "label2";
             this.labelParameter2.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // labelParameter1
             // 
-            this.labelParameter1.Location = new System.Drawing.Point(6, 23);
+            this.labelParameter1.Location = new System.Drawing.Point(7, 27);
+            this.labelParameter1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelParameter1.Name = "labelParameter1";
-            this.labelParameter1.Size = new System.Drawing.Size(66, 13);
+            this.labelParameter1.Size = new System.Drawing.Size(77, 15);
             this.labelParameter1.TabIndex = 4;
             this.labelParameter1.Text = "label1";
             this.labelParameter1.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // buttonParameter2
             // 
-            this.buttonParameter2.Location = new System.Drawing.Point(360, 47);
+            this.buttonParameter2.Location = new System.Drawing.Point(420, 54);
+            this.buttonParameter2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonParameter2.Name = "buttonParameter2";
-            this.buttonParameter2.Size = new System.Drawing.Size(75, 23);
+            this.buttonParameter2.Size = new System.Drawing.Size(88, 27);
             this.buttonParameter2.TabIndex = 3;
             this.buttonParameter2.Text = "Edit";
             this.buttonParameter2.UseVisualStyleBackColor = true;
@@ -161,17 +171,19 @@ namespace FF7Scarlet
             // 
             // textBoxParameter2
             // 
-            this.textBoxParameter2.Location = new System.Drawing.Point(78, 49);
+            this.textBoxParameter2.Location = new System.Drawing.Point(91, 57);
+            this.textBoxParameter2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxParameter2.Name = "textBoxParameter2";
             this.textBoxParameter2.ReadOnly = true;
-            this.textBoxParameter2.Size = new System.Drawing.Size(276, 20);
+            this.textBoxParameter2.Size = new System.Drawing.Size(321, 23);
             this.textBoxParameter2.TabIndex = 2;
             // 
             // buttonParameter1
             // 
-            this.buttonParameter1.Location = new System.Drawing.Point(360, 18);
+            this.buttonParameter1.Location = new System.Drawing.Point(420, 21);
+            this.buttonParameter1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonParameter1.Name = "buttonParameter1";
-            this.buttonParameter1.Size = new System.Drawing.Size(75, 23);
+            this.buttonParameter1.Size = new System.Drawing.Size(88, 27);
             this.buttonParameter1.TabIndex = 1;
             this.buttonParameter1.Text = "Edit";
             this.buttonParameter1.UseVisualStyleBackColor = true;
@@ -179,28 +191,31 @@ namespace FF7Scarlet
             // 
             // textBoxParameter1
             // 
-            this.textBoxParameter1.Location = new System.Drawing.Point(78, 20);
+            this.textBoxParameter1.Location = new System.Drawing.Point(91, 23);
+            this.textBoxParameter1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxParameter1.Name = "textBoxParameter1";
             this.textBoxParameter1.ReadOnly = true;
-            this.textBoxParameter1.Size = new System.Drawing.Size(276, 20);
+            this.textBoxParameter1.Size = new System.Drawing.Size(321, 23);
             this.textBoxParameter1.TabIndex = 0;
             // 
             // comboBoxCommands
             // 
             this.comboBoxCommands.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCommands.FormattingEnabled = true;
-            this.comboBoxCommands.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxCommands.Location = new System.Drawing.Point(7, 22);
+            this.comboBoxCommands.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBoxCommands.Name = "comboBoxCommands";
-            this.comboBoxCommands.Size = new System.Drawing.Size(442, 21);
+            this.comboBoxCommands.Size = new System.Drawing.Size(515, 23);
             this.comboBoxCommands.TabIndex = 1;
             this.comboBoxCommands.SelectedIndexChanged += new System.EventHandler(this.comboBoxCommands_SelectedIndexChanged);
             // 
             // labelGenerateCommands
             // 
             this.labelGenerateCommands.AutoSize = true;
-            this.labelGenerateCommands.Location = new System.Drawing.Point(6, 3);
+            this.labelGenerateCommands.Location = new System.Drawing.Point(7, 3);
+            this.labelGenerateCommands.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelGenerateCommands.Name = "labelGenerateCommands";
-            this.labelGenerateCommands.Size = new System.Drawing.Size(59, 13);
+            this.labelGenerateCommands.Size = new System.Drawing.Size(69, 15);
             this.labelGenerateCommands.TabIndex = 0;
             this.labelGenerateCommands.Text = "Commands";
             // 
@@ -209,10 +224,11 @@ namespace FF7Scarlet
             this.tabPageManual.Controls.Add(this.comboBoxManualParameter);
             this.tabPageManual.Controls.Add(this.groupBoxOpcodes);
             this.tabPageManual.Controls.Add(this.labelManualParameter);
-            this.tabPageManual.Location = new System.Drawing.Point(4, 22);
+            this.tabPageManual.Location = new System.Drawing.Point(4, 24);
+            this.tabPageManual.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageManual.Name = "tabPageManual";
-            this.tabPageManual.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageManual.Size = new System.Drawing.Size(456, 155);
+            this.tabPageManual.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tabPageManual.Size = new System.Drawing.Size(533, 181);
             this.tabPageManual.TabIndex = 1;
             this.tabPageManual.Text = "Manual";
             this.tabPageManual.UseVisualStyleBackColor = true;
@@ -220,9 +236,10 @@ namespace FF7Scarlet
             // comboBoxManualParameter
             // 
             this.comboBoxManualParameter.FormattingEnabled = true;
-            this.comboBoxManualParameter.Location = new System.Drawing.Point(78, 92);
+            this.comboBoxManualParameter.Location = new System.Drawing.Point(91, 106);
+            this.comboBoxManualParameter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBoxManualParameter.Name = "comboBoxManualParameter";
-            this.comboBoxManualParameter.Size = new System.Drawing.Size(364, 21);
+            this.comboBoxManualParameter.Size = new System.Drawing.Size(424, 23);
             this.comboBoxManualParameter.TabIndex = 6;
             this.comboBoxManualParameter.TextUpdate += new System.EventHandler(this.comboBoxManualParameter_TextUpdate);
             // 
@@ -230,9 +247,11 @@ namespace FF7Scarlet
             // 
             this.groupBoxOpcodes.Controls.Add(this.comboBoxOpcodeGroups);
             this.groupBoxOpcodes.Controls.Add(this.comboBoxOpcodes);
-            this.groupBoxOpcodes.Location = new System.Drawing.Point(11, 7);
+            this.groupBoxOpcodes.Location = new System.Drawing.Point(13, 8);
+            this.groupBoxOpcodes.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBoxOpcodes.Name = "groupBoxOpcodes";
-            this.groupBoxOpcodes.Size = new System.Drawing.Size(437, 79);
+            this.groupBoxOpcodes.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.groupBoxOpcodes.Size = new System.Drawing.Size(510, 91);
             this.groupBoxOpcodes.TabIndex = 5;
             this.groupBoxOpcodes.TabStop = false;
             this.groupBoxOpcodes.Text = "Opcodes";
@@ -250,18 +269,20 @@ namespace FF7Scarlet
             "Script jumps",
             "Bit operations",
             "Other commands"});
-            this.comboBoxOpcodeGroups.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxOpcodeGroups.Location = new System.Drawing.Point(7, 22);
+            this.comboBoxOpcodeGroups.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBoxOpcodeGroups.Name = "comboBoxOpcodeGroups";
-            this.comboBoxOpcodeGroups.Size = new System.Drawing.Size(425, 21);
+            this.comboBoxOpcodeGroups.Size = new System.Drawing.Size(495, 23);
             this.comboBoxOpcodeGroups.TabIndex = 4;
             this.comboBoxOpcodeGroups.SelectedIndexChanged += new System.EventHandler(this.comboBoxOpcodeGroups_SelectedIndexChanged);
             // 
             // labelManualParameter
             // 
             this.labelManualParameter.AutoSize = true;
-            this.labelManualParameter.Location = new System.Drawing.Point(17, 95);
+            this.labelManualParameter.Location = new System.Drawing.Point(20, 110);
+            this.labelManualParameter.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelManualParameter.Name = "labelManualParameter";
-            this.labelManualParameter.Size = new System.Drawing.Size(55, 13);
+            this.labelManualParameter.Size = new System.Drawing.Size(61, 15);
             this.labelManualParameter.TabIndex = 1;
             this.labelManualParameter.Text = "Parameter";
             // 
@@ -270,24 +291,25 @@ namespace FF7Scarlet
             this.panelButtons.Controls.Add(this.buttonOK);
             this.panelButtons.Controls.Add(this.buttonCancel);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 181);
+            this.panelButtons.Location = new System.Drawing.Point(0, 209);
+            this.panelButtons.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(464, 40);
+            this.panelButtons.Size = new System.Drawing.Size(541, 46);
             this.panelButtons.TabIndex = 6;
             // 
             // CodeForm
             // 
             this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(464, 221);
+            this.ClientSize = new System.Drawing.Size(541, 255);
             this.Controls.Add(this.tabControlOptions);
             this.Controls.Add(this.panelButtons);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "CodeForm";
             this.Text = "Add/edit code";
-            this.Load += new System.EventHandler(this.CodeForm_Load);
             this.tabControlOptions.ResumeLayout(false);
             this.tabPageGenerate.ResumeLayout(false);
             this.tabPageGenerate.PerformLayout();

@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+﻿using System.Data;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public partial class ParameterControl : UserControl
     {
@@ -47,11 +39,14 @@ namespace FF7Scarlet
                 paramType = value;
             }
         }
-        public FFText Parameter
+        public FFText? Parameter
         {
             get
             {
-                var type = OpcodeInfo.GetInfo(paramType).ParameterType;
+                var op = OpcodeInfo.GetInfo(paramType);
+                if (op == null) { return null; }
+
+                var type = op.ParameterType;
                 if (type == ParameterTypes.Label)
                 {
                     ushort temp;
@@ -68,7 +63,7 @@ namespace FF7Scarlet
             }
             private set
             {
-                comboBoxParameter.Text = value.ToString();
+                comboBoxParameter.Text = value?.ToString();
             }
         }
         public bool IsFirst { get; private set; } = false;
@@ -77,7 +72,7 @@ namespace FF7Scarlet
             get { return checkBoxEnabled.Checked; }
             set { checkBoxEnabled.Checked = value; }
         }
-        private ParameterForm PForm
+        private ParameterForm? PForm
         {
             get
             {
@@ -134,7 +129,7 @@ namespace FF7Scarlet
             IsFirst = true;
         }
 
-        public void SetCode(byte paramType, FFText parameter)
+        public void SetCode(byte paramType, FFText? parameter)
         {
             ParamType = paramType;
             Parameter = parameter;
@@ -169,26 +164,29 @@ namespace FF7Scarlet
                 }
 
                 //set text in parameter textbox
-                if (op.Group == OpcodeGroups.Jump)
+                if (parameter != null)
                 {
-                    comboBoxParameter.Text = parameter.ToInt().ToString();
-                }
-                else
-                {
-                    comboBoxParameter.Text = parameter.ToString();
-                }
-                
-                //add common variables to the dropdown list
-                if (op.ParameterType != ParameterTypes.String && op.ParameterType != ParameterTypes.Debug)
-                {
-                    var temp = int.Parse(parameter.ToString(), NumberStyles.HexNumber);
-                    if (Enum.IsDefined(typeof(CommonVars.Globals), temp))
+                    if (op.Group == OpcodeGroups.Jump)
                     {
-                        comboBoxParameter.Text += $" ({(CommonVars.Globals)temp})";
+                        comboBoxParameter.Text = parameter.ToInt().ToString();
                     }
-                    if (Enum.IsDefined(typeof(CommonVars.ActorGlobals), temp))
+                    else
                     {
-                        comboBoxParameter.Text += $" ({(CommonVars.ActorGlobals)temp})";
+                        comboBoxParameter.Text = parameter.ToString();
+                    }
+
+                    //add common variables to the dropdown list
+                    if (op.ParameterType != ParameterTypes.String && op.ParameterType != ParameterTypes.Debug)
+                    {
+                        var temp = int.Parse(parameter.ToString(), NumberStyles.HexNumber);
+                        if (Enum.IsDefined(typeof(CommonVars.Globals), temp))
+                        {
+                            comboBoxParameter.Text += $" ({(CommonVars.Globals)temp})";
+                        }
+                        if (Enum.IsDefined(typeof(CommonVars.ActorGlobals), temp))
+                        {
+                            comboBoxParameter.Text += $" ({(CommonVars.ActorGlobals)temp})";
+                        }
                     }
                 }
                 checkBoxEnabled.Checked = true;

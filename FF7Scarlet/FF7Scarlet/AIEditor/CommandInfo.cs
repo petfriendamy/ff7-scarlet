@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public class CommandInfo
     {
@@ -22,17 +22,17 @@ namespace FF7Scarlet
         };
 
         public Opcodes Opcode { get; }
-        public OpcodeInfo OpcodeInfo
+        public OpcodeInfo? OpcodeInfo
         {
             get { return OpcodeInfo.GetInfo(Opcode); }
         }
         public string Description { get; }
         public string ParameterName1 { get; }
-        public string ParameterName2 { get; }
+        public string? ParameterName2 { get; }
         public ParameterTypes ParameterType1 { get; }
         public ParameterTypes ParameterType2 { get; }
 
-        public CommandInfo(Opcodes opcode, string description, string parameter1, ParameterTypes type1, string parameter2, ParameterTypes type2)
+        public CommandInfo(Opcodes opcode, string description, string parameter1, ParameterTypes type1, string? parameter2, ParameterTypes type2)
         {
             Opcode = opcode;
             Description = description;
@@ -47,7 +47,7 @@ namespace FF7Scarlet
         {
         }
 
-        public static CommandInfo GetInfo(Opcodes opcode)
+        public static CommandInfo? GetInfo(Opcodes opcode)
         {
             foreach (var c in COMMAND_LIST)
             {
@@ -56,11 +56,12 @@ namespace FF7Scarlet
             return null;
         }
 
-        public CodeBlock GenerateCode(CodeBlock old = null)
+        public CodeBlock GenerateCode(CodeBlock? old = null)
         {
             var op = OpcodeInfo.GetInfo(Opcode);
-            FFText p = null;
-            CodeBlock block = null;
+            if (op == null) { throw new ArgumentNullException(); }
+            FFText? p = null;
+            CodeBlock block;
             if (old == null)
             {
                 if (op.ParameterType != ParameterTypes.None)
@@ -76,7 +77,8 @@ namespace FF7Scarlet
             else
             {
                 p = old.GetParameter();
-                for (int i = 0; i < op.PopCount; ++i)
+                block = new CodeBlock(null, old.GetCodeAtPosition(0));
+                for (int i = 1; i < op.PopCount; ++i)
                 {
                     block.AddToTop(old.GetCodeAtPosition(i));
                 }

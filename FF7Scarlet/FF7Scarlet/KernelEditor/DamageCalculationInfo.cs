@@ -166,64 +166,52 @@ namespace FF7Scarlet
             return FormulaDescriptions[form];
         }
 
-        private int GetUpperValue(byte value)
-        {
-            char temp = value.ToString("X2")[0];
-            return int.Parse(temp.ToString(), NumberStyles.HexNumber) * 0x10;
-        }
-
-        private int GetLowerValue(byte value)
-        {
-            char temp = value.ToString("X2")[1];
-            return int.Parse(temp.ToString(), NumberStyles.HexNumber);
-        }
-
-        private int GetLowerValue(DamageFormulas form)
+        private byte GetLowerNybble(DamageFormulas form)
         {
             switch (form)
             {
                 case DamageFormulas.NoDamage:
                 case DamageFormulas.UsersHP:
                 case DamageFormulas.MasterFist:
-                    return 0x00;
+                    return 0x0;
                 case DamageFormulas.Standard:
                 case DamageFormulas.UsersMaxMinusCurrHP:
                 case DamageFormulas.Powersoul:
-                    return 0x01;
+                    return 0x1;
                 case DamageFormulas.Simple:
                 case DamageFormulas.DeadAllies:
-                    return 0x02;
+                    return 0x2;
                 case DamageFormulas.CurrHPPercentage:
                 case DamageFormulas.TargetLevelAverage:
-                    return 0x03;
+                    return 0x3;
                 case DamageFormulas.MaxHPPercentage:
                 case DamageFormulas.CurrHPMultiplier:
-                    return 0x04;
+                    return 0x4;
                 case DamageFormulas.SimpleStronger:
                 case DamageFormulas.CurrMPMultiplier:
-                    return 0x05;
+                    return 0x5;
                 case DamageFormulas.StaticDamage:
                 case DamageFormulas.MissingScore:
-                    return 0x06;
+                    return 0x6;
                 case DamageFormulas.PowerDividedBy32:
                 case DamageFormulas.DeathPenalty:
-                    return 0x07;
+                    return 0x7;
                 case DamageFormulas.Recovery:
                 case DamageFormulas.DiceRoll:
                 case DamageFormulas.PremiumHeart:
-                    return 0x08;
+                    return 0x8;
                 case DamageFormulas.Throw:
                 case DamageFormulas.NumOfEscapes:
-                    return 0x09;
+                    return 0x9;
                 case DamageFormulas.Coin:
                 case DamageFormulas.LeaveWith1HP:
-                    return 0x0A;
+                    return 0xA;
                 case DamageFormulas.TimeOnClock:
-                    return 0x0B;
+                    return 0xB;
                 case DamageFormulas.TargetKills:
-                    return 0x0C;
+                    return 0xC;
                 case DamageFormulas.AireTamStorm:
-                    return 0x0D;
+                    return 0xD;
                 default:
                     return 0;
             }
@@ -231,18 +219,18 @@ namespace FF7Scarlet
 
         private DamageType GetDamageType(byte actualValue)
         {
-            int upper = GetUpperValue(actualValue);
-            if (upper > 0xB0) { throw new ArgumentException("Invalid value."); }
+            byte upper = HexParser.GetUpperNybble(actualValue);
+            if (upper > 0xB) { throw new ArgumentException("Invalid value."); }
             else
             {
                 switch (upper)
                 {
-                    case 0x20:
-                    case 0x40:
-                    case 0x50:
-                    case 0x70:
-                    case 0x80:
-                    case 0x90:
+                    case 0x2:
+                    case 0x4:
+                    case 0x5:
+                    case 0x7:
+                    case 0x8:
+                    case 0x9:
                         return DamageType.Magical;
                     default:
                         return DamageType.Physical;
@@ -252,15 +240,15 @@ namespace FF7Scarlet
 
         private bool GetIfCanCrit(byte actualValue)
         {
-            int upper = GetUpperValue(actualValue);
-            if (upper > 0xB0) { throw new ArgumentException("Invalid value."); }
+            byte upper = HexParser.GetUpperNybble(actualValue);
+            if (upper > 0xB) { throw new ArgumentException("Invalid value."); }
             else
             {
                 switch (upper)
                 {
-                    case 0x10:
-                    case 0x60:
-                    case 0xA0:
+                    case 0x1:
+                    case 0x6:
+                    case 0xA:
                         return true;
                     default:
                         return false;
@@ -270,21 +258,21 @@ namespace FF7Scarlet
 
         private AccuracyCalculation GetAccuracyCalculation(byte actualValue)
         {
-            int upper = GetUpperValue(actualValue);
-            if (upper > 0xB0) { throw new ArgumentException("Invalid value."); }
+            byte upper = HexParser.GetUpperNybble(actualValue);
+            if (upper > 0xB) { throw new ArgumentException("Invalid value."); }
             else
             {
                 switch (upper)
                 {
-                    case 0x00:
-                    case 0x40:
+                    case 0x0:
+                    case 0x4:
                         return AccuracyCalculation.NoMiss1;
-                    case 0x30:
-                    case 0x50:
+                    case 0x3:
+                    case 0x5:
                         return AccuracyCalculation.NoMiss2;
-                    case 0x80:
+                    case 0x8:
                         return AccuracyCalculation.HitChanceModTargetLevel;
-                    case 0x90:
+                    case 0x9:
                         return AccuracyCalculation.Manip;
                     default:
                         return AccuracyCalculation.Normal;
@@ -294,53 +282,55 @@ namespace FF7Scarlet
 
         private DamageFormulas GetDamageFormula(byte actualValue)
         {
-            int upper = GetUpperValue(actualValue), lower = GetLowerValue(actualValue);
-            if (upper > 0xB0) { throw new ArgumentException("Invalid value."); }
+            byte upper = HexParser.GetUpperNybble(actualValue),
+                lower = HexParser.GetLowerNybble(actualValue);
+
+            if (upper > 0xB) { throw new ArgumentException("Invalid value."); }
             else
             {
-                if (upper == 0x60 || upper == 0x70) //special formulas
+                if (upper == 0x6 || upper == 0x7) //special formulas
                 {
                     switch (lower)
                     {
-                        case 0x00:
+                        case 0x0:
                             return DamageFormulas.UsersHP;
-                        case 0x01:
+                        case 0x1:
                             return DamageFormulas.UsersMaxMinusCurrHP;
-                        case 0x08:
+                        case 0x8:
                             return DamageFormulas.DiceRoll;
-                        case 0x09:
+                        case 0x9:
                             return DamageFormulas.NumOfEscapes;
-                        case 0x0A:
+                        case 0xA:
                             return DamageFormulas.LeaveWith1HP;
-                        case 0x0B:
+                        case 0xB:
                             return DamageFormulas.TimeOnClock;
-                        case 0x0C:
+                        case 0xC:
                             return DamageFormulas.TargetKills;
-                        case 0x0D:
+                        case 0xD:
                             return DamageFormulas.AireTamStorm;
                     }
                 }
-                else if (upper == 0xA0) //damage multipliers
+                else if (upper == 0xA) //damage multipliers
                 {
                     switch (lower)
                     {
-                        case 0x00:
+                        case 0x0:
                             return DamageFormulas.MasterFist;
-                        case 0x01:
+                        case 0x1:
                             return DamageFormulas.Powersoul;
-                        case 0x02:
+                        case 0x2:
                             return DamageFormulas.DeadAllies;
-                        case 0x03:
+                        case 0x3:
                             return DamageFormulas.TargetLevelAverage;
-                        case 0x04:
+                        case 0x4:
                             return DamageFormulas.CurrHPMultiplier;
-                        case 0x05:
+                        case 0x5:
                             return DamageFormulas.CurrMPMultiplier;
-                        case 0x06:
+                        case 0x6:
                             return DamageFormulas.MissingScore;
-                        case 0x07:
+                        case 0x7:
                             return DamageFormulas.DeathPenalty;
-                        case 0x08:
+                        case 0x8:
                             return DamageFormulas.PremiumHeart;
                     }
                 }
@@ -348,27 +338,27 @@ namespace FF7Scarlet
                 {
                     switch (lower)
                     {
-                        case 0x00:
+                        case 0x0:
                             return DamageFormulas.NoDamage;
-                        case 0x01:
+                        case 0x1:
                             return DamageFormulas.Standard;
-                        case 0x02:
+                        case 0x2:
                             return DamageFormulas.Simple;
-                        case 0x03:
+                        case 0x3:
                             return DamageFormulas.CurrHPPercentage;
-                        case 0x04:
+                        case 0x4:
                             return DamageFormulas.MaxHPPercentage;
-                        case 0x05:
+                        case 0x5:
                             return DamageFormulas.SimpleStronger;
-                        case 0x06:
+                        case 0x6:
                             return DamageFormulas.StaticDamage;
-                        case 0x07:
+                        case 0x7:
                             return DamageFormulas.PowerDividedBy32;
-                        case 0x08:
+                        case 0x8:
                             return DamageFormulas.Recovery;
-                        case 0x09:
+                        case 0x9:
                             return DamageFormulas.Throw;
-                        case 0x0A:
+                        case 0xA:
                             return DamageFormulas.Coin;
                     }
                 }
@@ -400,7 +390,7 @@ namespace FF7Scarlet
             DamageFormulas form)
         {
             //checks if the current combination is valid
-            int lower = GetLowerValue(form);
+            byte lower = GetLowerNybble(form);
             if (canCrit && (type == DamageType.Magical || AccuracyCalculation != AccuracyCalculation.Normal))
             {
                 return 0xFF;
@@ -412,38 +402,38 @@ namespace FF7Scarlet
             else if (UsesModifier(form))
             {
                 if (DamageType == DamageType.Magical || !canCrit) { return 0xFF; }
-                else { return (byte)(0xA0 + lower); }
+                else { return HexParser.MergeNybbles(0xA, lower); }
             }
             else if (IsSpecialFormula(form))
             {
                 if (DamageType == DamageType.Physical)
                 {
                     if (!canCrit) { return 0xFF; }
-                    else { return (byte)(0x60 + lower); }
+                    else { return HexParser.MergeNybbles(0x6, lower); }
                 }
-                else { return (byte)(0x70 + lower); }
+                else { return HexParser.MergeNybbles(0x7, lower); }
             }
             else
             {
                 switch (calc)
                 {
                     case AccuracyCalculation.NoMiss1:
-                        if (type == DamageType.Physical) { return (byte)(0x00 + lower); }
-                        else { return (byte)(0x40 + lower); }
+                        if (type == DamageType.Physical) { return HexParser.MergeNybbles(0x0, lower); }
+                        else { return HexParser.MergeNybbles(0x4, lower); }
                     case AccuracyCalculation.NoMiss2:
-                        if (type == DamageType.Physical) { return (byte)(0x30 + lower); }
-                        else { return (byte)(0x50 + lower); }
+                        if (type == DamageType.Physical) { return HexParser.MergeNybbles(0x3, lower); }
+                        else { return HexParser.MergeNybbles(0x5, lower); }
                     case AccuracyCalculation.Normal:
                         if (type == DamageType.Physical)
                         {
-                            if (canCrit) { return (byte)(0x10 + lower); }
-                            else { return (byte)(0xB0 + lower); }
+                            if (canCrit) { return HexParser.MergeNybbles(0x1, lower); }
+                            else { return HexParser.MergeNybbles(0xB, lower); }
                         }
-                        else { return (byte)(0x20 + lower); }
+                        else { return HexParser.MergeNybbles(0x2, lower); }
                     case AccuracyCalculation.HitChanceModTargetLevel:
-                        return (byte)(0x80 + lower);
+                        return HexParser.MergeNybbles(0x8, lower);
                     case AccuracyCalculation.Manip:
-                        return (byte)(0x90 + lower);
+                        return HexParser.MergeNybbles(0x9, lower);
                 }
             }
             return 0;

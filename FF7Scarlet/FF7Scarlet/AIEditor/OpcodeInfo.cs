@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public enum OpcodeGroups
     {
@@ -78,7 +78,7 @@ namespace FF7Scarlet
             new OpcodeInfo(Opcodes.Label, OpcodeGroups.Jump, ParameterTypes.Label, 0),
         };
 
-        private string shortName;
+        private string? shortName;
 
         public Opcodes EnumValue { get; }
         public OpcodeGroups Group { get; }
@@ -88,11 +88,11 @@ namespace FF7Scarlet
         {
             get { return (byte)EnumValue; }
         }
-        public string Name
+        public string? Name
         {
-            get { return Enum.GetName(typeof(Opcodes), EnumValue); }
+            get { return Enum.GetName(EnumValue); }
         }
-        public string ShortName
+        public string? ShortName
         {
             get
             {
@@ -105,7 +105,7 @@ namespace FF7Scarlet
         }
 
         public OpcodeInfo(Opcodes enumValue, OpcodeGroups group, ParameterTypes parameterType, int popCount,
-            string shortName = null)
+            string? shortName = null)
         {
             EnumValue = enumValue;
             Group = group;
@@ -114,7 +114,7 @@ namespace FF7Scarlet
             this.shortName = shortName;
         }
 
-        public static OpcodeInfo GetInfo(byte opcode)
+        public static OpcodeInfo? GetInfo(byte opcode)
         {
             for (int i = 0; i < OPCODE_LIST.Length; ++i)
             {
@@ -126,7 +126,7 @@ namespace FF7Scarlet
             return null;
         }
 
-        public static OpcodeInfo GetInfo(Opcodes opcode)
+        public static OpcodeInfo? GetInfo(Opcodes opcode)
         {
             return GetInfo((byte)opcode);
         }

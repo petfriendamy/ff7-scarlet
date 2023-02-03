@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace FF7Scarlet
+﻿namespace FF7Scarlet.AIEditor
 {
     public partial class ParameterForm : Form
     {
@@ -22,11 +12,7 @@ namespace FF7Scarlet
             InitializeComponent();
             Code = code;
             this.isString = isString;
-        }
 
-        private void ParameterForm_Load(object sender, EventArgs e)
-        {
-            
             paramList = new List<ParameterControl> { parameterControl1, parameterControl2 };
             parameterControl1.SetAsFirst();
 
@@ -39,25 +25,28 @@ namespace FF7Scarlet
             foreach (var c in Code)
             {
                 var op = OpcodeInfo.GetInfo(c.GetPrimaryOpcode());
-                if (op.IsParameter() || op.Group == OpcodeGroups.Jump)
+                if (op != null)
                 {
-                    paramList[i].SetCode(c.GetPrimaryOpcode(), c.GetParameter());
+                    if (op.IsParameter() || op.Group == OpcodeGroups.Jump)
+                    {
+                        paramList[i].SetCode(c.GetPrimaryOpcode(), c.GetParameter());
 
-                    //add more lines as needed
-                    if (i == paramList.Count - 1)
-                    {
-                        AddParameter();
+                        //add more lines as needed
+                        if (i == paramList.Count - 1)
+                        {
+                            AddParameter();
+                        }
                     }
-                }
-                else if (op.IsOperand())
-                {
-                    if (i > 0 && paramList[i - 1].Operand == -1)
+                    else if (op.IsOperand())
                     {
-                        i--;
+                        if (i > 0 && paramList[i - 1].Operand == -1)
+                        {
+                            i--;
+                        }
+                        paramList[i].SetOperand(c.GetPrimaryOpcode());
                     }
-                    paramList[i].SetOperand(c.GetPrimaryOpcode());
+                    ++i;
                 }
-                ++i;
             }
         }
 
@@ -111,9 +100,13 @@ namespace FF7Scarlet
             }
         }
 
-        private CodeLine ValidateCode(byte opcode, FFText parameter)
+        private CodeLine ValidateCode(byte opcode, FFText? parameter)
         {
             var op = OpcodeInfo.GetInfo(opcode);
+            if (op == null)
+            {
+                throw new ArgumentNullException("Opcode is invalid.");
+            }
             bool test = ParameterInfo.IsValid(op.ParameterType, parameter);
             if (!test)
             {

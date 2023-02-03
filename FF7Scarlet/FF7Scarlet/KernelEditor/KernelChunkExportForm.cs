@@ -1,6 +1,6 @@
 ﻿using Shojy.FF7.Elena;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.KernelEditor
 {
     public partial class KernelChunkExportForm : Form
     {

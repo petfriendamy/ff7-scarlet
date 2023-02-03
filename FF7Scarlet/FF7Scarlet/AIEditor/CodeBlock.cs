@@ -5,19 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public class CodeBlock : Code
     {
         private readonly List<Code> block = new List<Code> { };
 
-        public CodeBlock(Script parent, Code first)
+        public CodeBlock(Script? parent, Code first)
         {
             Parent = parent;
             AddToEnd(first);
         }
 
-        public CodeBlock(Script parent, List<Code> list)
+        public CodeBlock(Script? parent, List<Code> list)
         {
             Parent = parent;
             block = list;
@@ -35,7 +35,7 @@ namespace FF7Scarlet
 
         public Code GetCodeAtPosition(int i)
         {
-            if (i < 0 || i >= block.Count) { return null; }
+            if (i < 0 || i >= block.Count) { throw new ArgumentOutOfRangeException(); }
             else { return block[i]; }
         }
 
@@ -54,7 +54,7 @@ namespace FF7Scarlet
             return block[block.Count - 1].GetPrimaryOpcode();
         }
 
-        public override FFText GetParameter()
+        public override FFText? GetParameter()
         {
             return block[block.Count - 1].GetParameter();
         }
@@ -89,7 +89,7 @@ namespace FF7Scarlet
             if (Enum.IsDefined(typeof(Opcodes), GetPrimaryOpcode()))
             {
                 var opcode = (Opcodes)GetPrimaryOpcode();
-                CodeLine pop1, pop2;
+                CodeLine? pop1, pop2;
                 switch (opcode)
                 {
                     case Opcodes.Add:
@@ -145,12 +145,18 @@ namespace FF7Scarlet
                         break;
                     case Opcodes.JumpEqual:
                         pop1 = block[1] as CodeLine;
-                        output += $"If ({block[0].Disassemble(false)}) Goto Label {pop1.Parameter.ToInt()}";
+                        if (pop1 != null && pop1.Parameter != null)
+                        {
+                            output += $"If ({block[0].Disassemble(false)}) Goto Label {pop1.Parameter.ToInt()}";
+                        }
                         break;
                     case Opcodes.JumpNotEqual:
                         pop1 = block[1] as CodeLine;
-                        output += $"If (1st in Stack != {block[0].Disassemble(false)})";
-                        output += $" Goto Label {pop1.Parameter.ToInt()}";
+                        if (pop1 != null && pop1.Parameter != null)
+                        {
+                            output += $"If (1st in Stack != {block[0].Disassemble(false)})";
+                            output += $" Goto Label {pop1.Parameter.ToInt()}";
+                        }
                         break;
                     case Opcodes.Mask:
                         output += $"({block[0].Disassemble(false)}.{block[1].Disassemble(false)})";
@@ -164,19 +170,22 @@ namespace FF7Scarlet
                     case Opcodes.Attack:
                         pop1 = block[0] as CodeLine;
                         pop2 = block[1] as CodeLine;
-                        if (pop1.Parameter.ToString() == "24")
+                        if (pop1 != null)
                         {
-                            output += "Wait";
-                        }
-                        else
-                        {
-                            string atkName = $"Unknown ({pop2.Parameter})";
-                            var scene = GetParentScene();
-                            if (scene != null)
+                            if (pop1.Parameter?.ToString() == "24")
                             {
-                                atkName = scene.GetAttackName(pop2.Parameter.ToInt());
+                                output += "Wait";
                             }
-                            output += $"PerformAttack ({pop1.Parameter}, {atkName})";
+                            else if (pop2 != null && pop2.Parameter != null)
+                            {
+                                string atkName = $"Unknown ({pop2.Parameter})";
+                                var scene = GetParentScene();
+                                if (scene != null)
+                                {
+                                    atkName = scene.GetAttackName(pop2.Parameter.ToInt());
+                                }
+                                output += $"PerformAttack ({pop1.Parameter}, {atkName})";
+                            }
                         }
                         break;
                     case Opcodes.AssignGlobal:
@@ -184,7 +193,7 @@ namespace FF7Scarlet
                         break;
                     case Opcodes.DebugMessage:
                         pop1 = block[block.Count - 1] as CodeLine;
-                        output += $"DebugMessage \"{pop1.Parameter}\"";
+                        output += $"DebugMessage \"{pop1?.Parameter}\"";
                         break;
                     default:
                         output += $"{Enum.GetName(typeof(Opcodes), opcode)}({block[0].Disassemble(false)}";

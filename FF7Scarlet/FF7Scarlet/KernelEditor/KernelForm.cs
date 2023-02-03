@@ -1,34 +1,38 @@
 ﻿using Shojy.FF7.Elena;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
-using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Materias;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.KernelEditor
 {
     public partial class KernelForm : Form
     {
         private Kernel kernel;
-        private const int SUMMON_OFFSET = 56, TARGET_FLAG_COUNT = 8, ITEM_RESTRICTION_COUNT = 3,
-            CHARACTER_COUNT = 11;
+        private const int SUMMON_OFFSET = 56;
         private bool unsavedChanges = false, loading = true;
 
         private Dictionary<KernelSection, TabPage> tabPages = new Dictionary<KernelSection, TabPage> { };
         private Dictionary<KernelSection, ListBox> listBoxes = new Dictionary<KernelSection, ListBox> { };
         private Dictionary<KernelSection, TextBox> nameTextBoxes = new Dictionary<KernelSection, TextBox> { };
         private Dictionary<KernelSection, TextBox> descriptionTextBoxes = new Dictionary<KernelSection, TextBox> { };
-        private Dictionary<KernelSection, CheckBox[]> targetData = new Dictionary<KernelSection, CheckBox[]> { };
+        private Dictionary<KernelSection, StatIncreaseControl> statIncreases = new Dictionary<KernelSection, StatIncreaseControl> { };
+        private Dictionary<KernelSection, TargetDataControl> targetData = new Dictionary<KernelSection, TargetDataControl> { };
         private Dictionary<KernelSection, DamageCalculationControl> damageCalculationControls = new Dictionary<KernelSection, DamageCalculationControl> { };
-        private Dictionary<KernelSection, CheckBox[]> itemRestrictionLists = new Dictionary<KernelSection, CheckBox[]> { };
-        private Dictionary<KernelSection, CheckBox[]> equipableLists = new Dictionary<KernelSection, CheckBox[]> { };
+        private Dictionary<KernelSection, ItemRestrictionsControl> itemRestrictionLists = new Dictionary<KernelSection, ItemRestrictionsControl> { };
+        private Dictionary<KernelSection, EquipableListControl> equipableLists = new Dictionary<KernelSection, EquipableListControl> { };
         private Dictionary<KernelSection, MateriaSlotSelectorControl> materiaSlots = new Dictionary<KernelSection, MateriaSlotSelectorControl> { };
         private Dictionary<KernelSection, ComboBox> materiaGrowthComboBoxes = new Dictionary<KernelSection, ComboBox> { };
+        private Dictionary<KernelSection, ElementsControl> elementLists = new Dictionary<KernelSection, ElementsControl> { };
+        private Dictionary<KernelSection, ComboBox> elementDamageModifiers = new Dictionary<KernelSection, ComboBox> { };
+        private Dictionary<KernelSection, StatusesControl> statusLists = new Dictionary<KernelSection, StatusesControl> { };
+        private Dictionary<KernelSection, ComboBox> equipmentStatus = new Dictionary<KernelSection, ComboBox> { };
 
         public KernelForm()
         {
             InitializeComponent();
 
             //create private version of kernel data that can be edited freely
+            if (DataManager.KernelPath == null) { throw new ArgumentNullException(); }
             kernel = new Kernel(DataManager.KernelPath);
             if (DataManager.BothKernelFilesLoaded)
             {
@@ -56,79 +60,52 @@ namespace FF7Scarlet
             listBoxes.Add(KernelSection.ItemData, listBoxItems);
             nameTextBoxes.Add(KernelSection.ItemData, textBoxItemName);
             descriptionTextBoxes.Add(KernelSection.ItemData, textBoxItemDescription);
-            targetData.Add(KernelSection.ItemData, new CheckBox[TARGET_FLAG_COUNT]
-            {
-                checkBoxItemEnableSelection, checkBoxItemStartOnEnemies, checkBoxItemMultipleTargetDefault,
-                checkBoxItemSingleMultiToggle, checkBoxItemOneRowOnly, checkBoxItemShortRange,
-                checkBoxItemAllRows, checkBoxItemRandomTarget
-            });
+            targetData.Add(KernelSection.ItemData, targetDataControlItem);
             damageCalculationControls.Add(KernelSection.ItemData, damageCalculationControlItem);
-            itemRestrictionLists.Add(KernelSection.ItemData, new CheckBox[ITEM_RESTRICTION_COUNT]
-            {
-                checkBoxItemIsSellable, checkBoxItemUsableInBattle, checkBoxItemUsableInMenu
-            });
+            itemRestrictionLists.Add(KernelSection.ItemData, itemRestrictionsItem);
+            elementLists.Add(KernelSection.ItemData, elementsControlItem);
+            statusLists.Add(KernelSection.ItemData, statusesControlItem);
 
             //weapon data
             tabPages.Add(KernelSection.WeaponData, tabPageWeaponData);
             listBoxes.Add(KernelSection.WeaponData, listBoxWeapons);
             nameTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponName);
             descriptionTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponDescription);
-            targetData.Add(KernelSection.WeaponData, new CheckBox[TARGET_FLAG_COUNT]
-            {
-                checkBoxWeaponEnableSelection, checkBoxWeaponStartOnEnemies, checkBoxWeaponMultipleTargetDefault,
-                checkBoxWeaponSingleMultiToggle, checkBoxWeaponOneRowOnly, checkBoxWeaponShortRange,
-                checkBoxWeaponAllRows, checkBoxWeaponRandomTarget
-            });
+            //statIncreases.Add(KernelSection.WeaponData, statIncreaseControlWeapon);
+            targetData.Add(KernelSection.WeaponData, targetDataControlWeapon);
             damageCalculationControls.Add(KernelSection.WeaponData, damageCalculationControlWeapon);
-            itemRestrictionLists.Add(KernelSection.WeaponData, new CheckBox[ITEM_RESTRICTION_COUNT]
-            {
-                checkBoxWeaponIsSellable, checkBoxWeaponUsableInBattle, checkBoxWeaponUsableInMenu
-            });
-            equipableLists.Add(KernelSection.WeaponData, new CheckBox[CHARACTER_COUNT]
-            {
-                checkBoxWeaponCloud, checkBoxWeaponBarret, checkBoxWeaponTifa,
-                checkBoxWeaponAerith, checkBoxWeaponRed, checkBoxWeaponYuffie,
-                checkBoxWeaponCaitSith, checkBoxWeaponVincent, checkBoxWeaponCid,
-                checkBoxWeaponYCloud, checkBoxWeaponSephiroth
-            });
+            itemRestrictionLists.Add(KernelSection.WeaponData, itemRestrictionsWeapon);
+            equipableLists.Add(KernelSection.WeaponData, equipableListWeapon);
             materiaSlots.Add(KernelSection.WeaponData, materiaSlotSelectorWeapon);
             materiaGrowthComboBoxes.Add(KernelSection.WeaponData, comboBoxWeaponMateriaGrowth);
+            elementLists.Add(KernelSection.WeaponData, elementsControlWeapon);
+            equipmentStatus.Add(KernelSection.WeaponData, comboBoxWeaponStatus);
 
             //armor data
             tabPages.Add(KernelSection.ArmorData, tabPageArmorData);
             listBoxes.Add(KernelSection.ArmorData, listBoxArmor);
             nameTextBoxes.Add(KernelSection.ArmorData, textBoxArmorName);
             descriptionTextBoxes.Add(KernelSection.ArmorData, textBoxArmorDescription);
-            itemRestrictionLists.Add(KernelSection.ArmorData, new CheckBox[ITEM_RESTRICTION_COUNT]
-            {
-                checkBoxArmorIsSellable, checkBoxArmorUsableInBattle, checkBoxArmorUsableInMenu
-            });
-            equipableLists.Add(KernelSection.ArmorData, new CheckBox[CHARACTER_COUNT]
-            {
-                checkBoxArmorCloud, checkBoxArmorBarret, checkBoxArmorTifa,
-                checkBoxArmorAerith, checkBoxArmorRed, checkBoxArmorYuffie,
-                checkBoxArmorCaitSith, checkBoxArmorVincent, checkBoxArmorCid,
-                checkBoxArmorYCloud, checkBoxArmorSephiroth
-            });
+            statIncreases.Add(KernelSection.ArmorData, statIncreaseControlArmor);
+            itemRestrictionLists.Add(KernelSection.ArmorData, itemRestrictionsArmor);
+            equipableLists.Add(KernelSection.ArmorData, equipableListArmor);
             materiaSlots.Add(KernelSection.ArmorData, materiaSlotSelectorArmor);
             materiaGrowthComboBoxes.Add(KernelSection.ArmorData, comboBoxArmorMateriaGrowth);
+            elementLists.Add(KernelSection.ArmorData, elementsControlArmor);
+            elementDamageModifiers.Add(KernelSection.ArmorData, comboBoxArmorElementModifier);
+            equipmentStatus.Add(KernelSection.ArmorData, comboBoxArmorStatus);
 
             //accessory data
             tabPages.Add(KernelSection.AccessoryData, tabPageAccessoryData);
             listBoxes.Add(KernelSection.AccessoryData, listBoxAccessories);
             nameTextBoxes.Add(KernelSection.AccessoryData, textBoxAccessoryName);
             descriptionTextBoxes.Add(KernelSection.AccessoryData, textBoxAccessoryDescription);
-            itemRestrictionLists.Add(KernelSection.AccessoryData, new CheckBox[ITEM_RESTRICTION_COUNT]
-            {
-                checkBoxAccessoryIsSellable, checkBoxAccessoryUsableInBattle, checkBoxAccessoryUsableInMenu
-            });
-            equipableLists.Add(KernelSection.AccessoryData, new CheckBox[CHARACTER_COUNT]
-            {
-                checkBoxAccessoryCloud, checkBoxAccessoryBarret, checkBoxAccessoryTifa,
-                checkBoxAccessoryAerith, checkBoxAccessoryRed, checkBoxAccessoryYuffie,
-                checkBoxAccessoryCaitSith, checkBoxAccessoryVincent, checkBoxAccessoryCid,
-                checkBoxAccessoryYCloud, checkBoxAccessorySephiroth
-            });
+            statIncreases.Add(KernelSection.AccessoryData, statIncreaseControlAccessory);
+            itemRestrictionLists.Add(KernelSection.AccessoryData, itemRestrictionsAccessory);
+            equipableLists.Add(KernelSection.AccessoryData, equipableListAccessory);
+            elementLists.Add(KernelSection.AccessoryData, elementsControlAccessory);
+            elementDamageModifiers.Add(KernelSection.AccessoryData, comboBoxAccessoryElementModifier);
+            statusLists.Add(KernelSection.AccessoryData, statusesControlAccessory);
 
             //materia data
             tabPages.Add(KernelSection.MateriaData, tabPageMateriaData);
@@ -155,12 +132,48 @@ namespace FF7Scarlet
                 }
             }
 
+            //element modifiers
+            foreach (var cb in elementDamageModifiers.Values)
+            {
+                cb.Items.Add("None");
+                foreach (var m in Enum.GetValues<DamageModifier>())
+                {
+                    if (m != DamageModifier.Normal) { cb.Items.Add(m); }
+                }
+            }
+
+            //status effects
+            foreach (var cb in equipmentStatus.Values)
+            {
+                cb.Items.Add("None");
+                foreach (var s in Enum.GetValues<EquipmentStatus>())
+                {
+                    if (s == EquipmentStatus.MBarrier)
+                    {
+                        cb.Items.Add("M.Barrier");
+                    }
+                    else
+                    {
+                        string final = s.ToString();
+                        for (int i = 1; i < final.Length; ++i)
+                        {
+                            if (char.IsUpper(final[i]))
+                            {
+                                final = final.Substring(0, i) + ' ' + final.Substring(i);
+                                break;
+                            }
+                        }
+                        cb.Items.Add(final);
+                    }
+                }
+            }
+
             //materia info
             foreach (var g in Enum.GetNames<GrowthRate>())
             {
-                foreach (var cb in materiaGrowthComboBoxes)
+                foreach (var cb in materiaGrowthComboBoxes.Values)
                 {
-                    cb.Value.Items.Add(g);
+                    cb.Items.Add(g);
                 }
             }
             foreach (var el in Enum.GetNames<MateriaElements>())
@@ -171,6 +184,10 @@ namespace FF7Scarlet
             {
                 comboBoxMateriaType.Items.Add(mt);
             }
+
+            //show/hide controls that are invalid
+            itemRestrictionsWeapon.ShowThrowable = true;
+            statIncreaseControlAccessory.Count = 2;
 
             //disable all the controls while there's no data in them
             foreach (var tab in tabPages)
@@ -201,18 +218,35 @@ namespace FF7Scarlet
         {
             if (tabPages.ContainsKey(section))
             {
-                var tab = tabPages[section];
-                for (int i = 0; i < tab.Controls.Count; ++i)
+                var page = tabPages[section];
+                EnableOrDisableInner(page, enabled, listBoxes[section]);
+            }
+        }
+
+        private void EnableOrDisableInner(TabPage page, bool enabled, Control? ignore)
+        {
+            for (int i = 0; i < page.Controls.Count; ++i)
+            {
+                var c = page.Controls[i];
+                if (c != ignore)
                 {
-                    var c = tab.Controls[i];
-                    if (c != listBoxes[section])
+                    if (c is TabControl)
                     {
-                        c.Enabled = enabled;
+                        var innerTab = c as TabControl;
+                        if (innerTab != null)
+                        {
+                            for (int j = 0; j < innerTab.TabCount; ++j)
+                            {
+                                EnableOrDisableInner(innerTab.TabPages[j], enabled, null);
+                            }
+                        }
                     }
+                    else { c.Enabled = enabled; }
                 }
             }
         }
 
+        //fills the current tab with data from the selected item
         private void PopulateTabWithSelected(KernelSection section)
         {
             loading = true;
@@ -225,18 +259,16 @@ namespace FF7Scarlet
                     nameTextBoxes[section].Text = kernel.GetAssociatedNames(section)[i];
                     descriptionTextBoxes[section].Text = kernel.GetAssociatedDescriptions(section)[i];
 
+                    //check for stat increases
+                    if (statIncreases.ContainsKey(section))
+                    {
+                        statIncreases[section].SetStatIncreases(kernel.GetStatIncreases(section, i));
+                    }
+
                     //check for target data
                     if (targetData.ContainsKey(section))
                     {
-                        var td = kernel.GetTargetData(section, i);
-                        targetData[section][0].Checked = td.HasFlag(TargetData.EnableSelection);
-                        targetData[section][1].Checked = td.HasFlag(TargetData.StartCursorOnEnemyRow);
-                        targetData[section][2].Checked = td.HasFlag(TargetData.DefaultMultipleTargets);
-                        targetData[section][3].Checked = td.HasFlag(TargetData.ToggleSingleMultiTarget);
-                        targetData[section][4].Checked = td.HasFlag(TargetData.SingleRowOnly);
-                        targetData[section][5].Checked = td.HasFlag(TargetData.ShortRange);
-                        targetData[section][6].Checked = td.HasFlag(TargetData.AllRows);
-                        targetData[section][7].Checked = td.HasFlag(TargetData.RandomTarget);
+                        targetData[section].SetTargetData(kernel.GetTargetData(section, i));
                     }
 
                     //check for damage calculation data
@@ -249,27 +281,13 @@ namespace FF7Scarlet
                     //check for item restrictions
                     if (itemRestrictionLists.ContainsKey(section))
                     {
-                        var restrictions = kernel.GetItemRestrictions(section, i);
-                        itemRestrictionLists[section][0].Checked = restrictions.HasFlag(Restrictions.CanBeSold);
-                        itemRestrictionLists[section][1].Checked = restrictions.HasFlag(Restrictions.CanBeUsedInBattle);
-                        itemRestrictionLists[section][2].Checked = restrictions.HasFlag(Restrictions.CanBeUsedInMenu);
+                        itemRestrictionLists[section].SetItemRestrictions(kernel.GetItemRestrictions(section, i));
                     }
 
                     //check for equip lists
                     if (equipableLists.ContainsKey(section))
                     {
-                        var equip = kernel.GetEquipableFlags(section, i);
-                        equipableLists[section][0].Checked = equip.HasFlag(EquipableBy.Cloud);
-                        equipableLists[section][1].Checked = equip.HasFlag(EquipableBy.Barret);
-                        equipableLists[section][2].Checked = equip.HasFlag(EquipableBy.Tifa);
-                        equipableLists[section][3].Checked = equip.HasFlag(EquipableBy.Aeris);
-                        equipableLists[section][4].Checked = equip.HasFlag(EquipableBy.RedXIII);
-                        equipableLists[section][5].Checked = equip.HasFlag(EquipableBy.Yuffie);
-                        equipableLists[section][6].Checked = equip.HasFlag(EquipableBy.CaitSith);
-                        equipableLists[section][7].Checked = equip.HasFlag(EquipableBy.Vincent);
-                        equipableLists[section][8].Checked = equip.HasFlag(EquipableBy.Cid);
-                        equipableLists[section][9].Checked = equip.HasFlag(EquipableBy.YoungCloud);
-                        equipableLists[section][10].Checked = equip.HasFlag(EquipableBy.Sephiroth);
+                        equipableLists[section].SetEquipableFlags(kernel.GetEquipableFlags(section, i));
                     }
 
                     //check for materia slots
@@ -283,6 +301,42 @@ namespace FF7Scarlet
                             materiaSlots[section].SetSlot(j, slots[j]);
                         }
                         materiaGrowthComboBoxes[section].SelectedIndex = (int)rate;
+                    }
+
+                    //check for elements
+                    if (elementLists.ContainsKey(section))
+                    {
+                        elementLists[section].SetElements(kernel.GetElements(section, i));
+                    }
+                    if (elementDamageModifiers.ContainsKey(section))
+                    {
+                        int modifier = (int)kernel.GetDamageModifier(section, i);
+                        if (modifier == 0xFF)
+                        {
+                            elementDamageModifiers[section].SelectedIndex = 0;
+                        }
+                        else
+                        {
+                            elementDamageModifiers[section].SelectedIndex = modifier + 1;
+                        }
+                    }
+
+                    //check for status effects
+                    if (statusLists.ContainsKey(section))
+                    {
+                        statusLists[section].SetStatuses(kernel.GetStatuses(section, i));
+                    }
+                    if (equipmentStatus.ContainsKey(section))
+                    {
+                        int status = (int)kernel.GetEquipmentStatus(section, i);
+                        if (status == 0xFF)
+                        {
+                            equipmentStatus[section].SelectedIndex = 0;
+                        }
+                        else
+                        {
+                            equipmentStatus[section].SelectedIndex = status + 1;
+                        }
                     }
 
                     //get data specific to this section
@@ -313,7 +367,32 @@ namespace FF7Scarlet
                         //weapon data
                         case KernelSection.WeaponData:
                             var weapon = kernel.WeaponData.Weapons[i];
-                            checkBoxWeaponIsThrowable.Checked = ((int)weapon.Restrictions & 0x08) != 0;
+                            numericWeaponHitChance.Value = weapon.AccuracyRate;
+                            numericWeaponCritChance.Value = weapon.CriticalRate;
+                            numericWeaponModelIndex.Value = HexParser.GetLowerNybble(weapon.WeaponModelId);
+                            numericWeaponAnimationIndex.Value = HexParser.GetUpperNybble(weapon.WeaponModelId);
+                            break;
+
+                        //armor data
+                        case KernelSection.ArmorData:
+                            var armor = kernel.ArmorData.Armors[i];
+                            numericArmorDefense.Value = armor.Defense;
+                            numericArmorDefensePercent.Value = armor.Evade;
+                            numericArmorMagicDefense.Value = armor.MagicDefense;
+                            numericArmorMagicDefensePercent.Value = armor.MagicEvade;
+                            break;
+
+                        //accessory data
+                        case KernelSection.AccessoryData:
+                            var acc = kernel.AccessoryData.Accessories[i];
+                            if (acc.SpecialEffect == AccessoryEffect.None)
+                            {
+                                comboBoxAccessorySpecialEffects.SelectedIndex = 0;
+                            }
+                            else
+                            {
+                                comboBoxAccessorySpecialEffects.SelectedIndex = (int)acc.SpecialEffect + 1;
+                            }
                             break;
 
                         //materia data

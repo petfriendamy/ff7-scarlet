@@ -4,8 +4,20 @@ using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Sections;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.KernelEditor
 {
+    public struct StatIncrease
+    {
+        public CharacterStat Stat { get; set; }
+        public byte Amount { get; set; }
+
+        public StatIncrease(CharacterStat stat, byte amount)
+        {
+            Stat = stat;
+            Amount = amount;
+        }
+    }
+
     public class Kernel : KernelReader
     {
         public const int SECTION_COUNT = 27, KERNEL1_END = 9;
@@ -85,7 +97,7 @@ namespace FF7Scarlet
                 case KernelSection.KeyItemDescriptions:
                     return KeyItemNames.Strings;
             }
-            return null;
+            return new string[0];
         }
 
         public string[] GetAssociatedDescriptions(KernelSection section)
@@ -124,7 +136,7 @@ namespace FF7Scarlet
                 case KernelSection.KeyItemDescriptions:
                     return KeyItemDescriptions.Strings;
             }
-            return null;
+            return new string[0];
         }
 
         public ushort GetCameraMovementID(KernelSection section, int pos)
@@ -146,6 +158,31 @@ namespace FF7Scarlet
                     return ItemData.Items[pos].AttackEffectId;
                 default:
                     return 0xFF;
+            }
+        }
+
+        public StatIncrease[] GetStatIncreases(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ArmorData:
+                    var armor = ArmorData.Armors[pos];
+                    return new StatIncrease[4]
+                    {
+                        new StatIncrease(armor.BoostedStat1, armor.BoostedStat1Bonus),
+                        new StatIncrease(armor.BoostedStat2, armor.BoostedStat2Bonus),
+                        new StatIncrease(armor.BoostedStat3, armor.BoostedStat3Bonus),
+                        new StatIncrease(armor.BoostedStat4, armor.BoostedStat4Bonus)
+                    };
+                case KernelSection.AccessoryData:
+                    var accessory = AccessoryData.Accessories[pos];
+                    return new StatIncrease[2]
+                    {
+                        new StatIncrease(accessory.BoostedStat1, accessory.BoostedStat1Bonus),
+                        new StatIncrease(accessory.BoostedStat2, accessory.BoostedStat2Bonus)
+                    };
+                default:
+                    return new StatIncrease[0];
             }
         }
 
@@ -228,7 +265,7 @@ namespace FF7Scarlet
                 case KernelSection.ArmorData:
                     return ArmorData.Armors[pos].MateriaSlots;
                 default:
-                    return null;
+                    return new MateriaSlot[0];
             }
         }
 
@@ -242,6 +279,62 @@ namespace FF7Scarlet
                     return ArmorData.Armors[pos].GrowthRate;
                 default:
                     return GrowthRate.None;
+            }
+        }
+
+        public Elements GetElements(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].Element;
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].AttackElements;
+                case KernelSection.ArmorData:
+                    return ArmorData.Armors[pos].ElementalDefense;
+                case KernelSection.AccessoryData:
+                    return AccessoryData.Accessories[pos].ElementalDefense;
+                default:
+                    return 0;
+            }
+        }
+
+        public DamageModifier GetDamageModifier(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ArmorData:
+                    return ArmorData.Armors[pos].ElementDamageModifier;
+                case KernelSection.AccessoryData:
+                    return AccessoryData.Accessories[pos].ElementalDamageModifier;
+                default:
+                    return 0;
+            }
+        }
+
+        public Statuses GetStatuses(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].Status;
+                case KernelSection.AccessoryData:
+                    return (Statuses)AccessoryData.Accessories[pos].StatusDefense;
+                default:
+                    return 0;
+            }
+        }
+
+        public EquipmentStatus GetEquipmentStatus(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.WeaponData:
+                    return WeaponData.Weapons[pos].Status;
+                case KernelSection.ArmorData:
+                    return ArmorData.Armors[pos].Status;
+                default:
+                    return (EquipmentStatus)0xFF;
             }
         }
 

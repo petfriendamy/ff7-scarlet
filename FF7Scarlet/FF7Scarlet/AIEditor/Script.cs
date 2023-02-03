@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.AIEditor
 {
     public class Script
     {
-        private List<Code> code;
-        private Dictionary<int, ushort> labels;
+        private List<Code> code = new List<Code> { };
+        private Dictionary<int, ushort> labels = new Dictionary<int, ushort> { };
         private bool headersAreCorrect = false;
 
         public bool IsEmpty
@@ -30,10 +30,14 @@ namespace FF7Scarlet
         {
             Parent = parent;
             startingCode.SetParent(this);
-            code = new List<Code> { startingCode };
+            code.Add(startingCode);
             if (startingCode.GetPrimaryOpcode() == (byte)Opcodes.Label)
             {
-                labels = new Dictionary<int, ushort> { { startingCode.GetParameter().ToInt(), startingCode.GetHeader() } };
+                var p = startingCode.GetParameter();
+                if (p != null)
+                {
+                    labels = new Dictionary<int, ushort> { { p.ToInt(), startingCode.GetHeader() } };
+                }
             }
             if (startingCode.GetPrimaryOpcode() != (byte)Opcodes.End)
             {
@@ -67,45 +71,49 @@ namespace FF7Scarlet
                             endOfStream = true;
                         }
                         var parsedLine = new CodeLine(this, pos, opcode);
-                        if (Enum.IsDefined(typeof(Opcodes), opcode))
+                        if (Enum.IsDefined((Opcodes)opcode))
                         {
-                            var type = OpcodeInfo.GetInfo(opcode).ParameterType;
-                            switch (type)
+                            var op = OpcodeInfo.GetInfo(opcode);
+                            if (op != null)
                             {
-                                case ParameterTypes.OneByte:
-                                    parsedLine.Parameter = new FFText(reader.ReadByte().ToString("X2"));
-                                    break;
-                                case ParameterTypes.TwoByte:
-                                    parsedLine.Parameter = new FFText(reader.ReadUInt16().ToString("X4"));
-                                    break;
-                                case ParameterTypes.ThreeByte:
-                                    intParser[0] = reader.ReadByte();
-                                    intParser[1] = reader.ReadByte();
-                                    intParser[2] = reader.ReadByte();
-                                    parsedLine.Parameter = new FFText(BitConverter.ToInt32(intParser, 0).ToString("X6"));
-                                    break;
-                                case ParameterTypes.String:
-                                    stringParser.Clear();
-                                    temp = 0;
-                                    while (temp != 0xFF)
-                                    {
-                                        temp = reader.ReadByte();
-                                        stringParser.Add(temp);
-                                    }
-                                    parsedLine.Parameter = new FFText(stringParser.ToArray());
-                                    break;
-                                case ParameterTypes.Debug:
-                                    parsedLine.PopCount = reader.ReadByte();
-                                    stringParser.Clear();
-                                    temp = 0xFF;
-                                    while (temp != 0)
-                                    {
-                                        temp = reader.ReadByte();
-                                        if (temp != 0) { stringParser.Add(temp); }
-                                    }
-                                    parsedLine.Parameter = new FFText(Encoding.ASCII.GetString(stringParser.ToArray()));
-                                    break;
+                                var type = op.ParameterType;
+                                switch (type)
+                                {
+                                    case ParameterTypes.OneByte:
+                                        parsedLine.Parameter = new FFText(reader.ReadByte().ToString("X2"));
+                                        break;
+                                    case ParameterTypes.TwoByte:
+                                        parsedLine.Parameter = new FFText(reader.ReadUInt16().ToString("X4"));
+                                        break;
+                                    case ParameterTypes.ThreeByte:
+                                        intParser[0] = reader.ReadByte();
+                                        intParser[1] = reader.ReadByte();
+                                        intParser[2] = reader.ReadByte();
+                                        parsedLine.Parameter = new FFText(BitConverter.ToInt32(intParser, 0).ToString("X6"));
+                                        break;
+                                    case ParameterTypes.String:
+                                        stringParser.Clear();
+                                        temp = 0;
+                                        while (temp != 0xFF)
+                                        {
+                                            temp = reader.ReadByte();
+                                            stringParser.Add(temp);
+                                        }
+                                        parsedLine.Parameter = new FFText(stringParser.ToArray());
+                                        break;
+                                    case ParameterTypes.Debug:
+                                        parsedLine.PopCount = reader.ReadByte();
+                                        stringParser.Clear();
+                                        temp = 0xFF;
+                                        while (temp != 0)
+                                        {
+                                            temp = reader.ReadByte();
+                                            if (temp != 0) { stringParser.Add(temp); }
+                                        }
+                                        parsedLine.Parameter = new FFText(Encoding.ASCII.GetString(stringParser.ToArray()));
+                                        break;
 
+                                }
                             }
                         }
                         firstParse.Add(parsedLine);
@@ -120,22 +128,26 @@ namespace FF7Scarlet
             //check for jumps and create labels
             var jumps =
                 from c in firstParse
-                where c.OpcodeInfo.Group == OpcodeGroups.Jump
+                where c.OpcodeInfo?.Group == OpcodeGroups.Jump
                 orderby c.Parameter
                 select c;
 
             var newLabels = new List<int> { };
             int currLabel = 0;
+            var provider = new CultureInfo("en-US");
             foreach (var j in jumps)
             {
-                ushort loc = ushort.Parse(j.Parameter.ToString(), NumberStyles.HexNumber);
-                if (!newLabels.Contains(loc))
+                ushort loc;
+                if (ushort.TryParse(j.Parameter?.ToString(), NumberStyles.HexNumber, provider, out loc))
                 {
-                    newLabels.Add(loc);
-                    currLabel++;
-                    labels.Add(currLabel, loc);
+                    if (!newLabels.Contains(loc))
+                    {
+                        newLabels.Add(loc);
+                        currLabel++;
+                        labels.Add(currLabel, loc);
+                    }
+                    j.Parameter = new FFText((newLabels.IndexOf(loc) + 1).ToString("X4"));
                 }
-                j.Parameter = new FFText((newLabels.IndexOf(loc) + 1).ToString("X4"));
             }
 
             //insert labels into the codelist
@@ -156,39 +168,43 @@ namespace FF7Scarlet
             headersAreCorrect = true;
         }
 
-        public static List<Code> GetParsedCode(List<CodeLine> list, Script parent = null)
+        public static List<Code> GetParsedCode(List<CodeLine> list, Script? parent = null)
         {
             //use a stack to combine values
             var stack = new Stack<Code> { };
             foreach (var c in list)
             {
                 //look for opcodes to combine
-                if (Enum.IsDefined(typeof(Opcodes), c.Opcode))
+                if (Enum.IsDefined((Opcodes)c.Opcode))
                 {
-                    int popCount = OpcodeInfo.GetInfo(c.Opcode).PopCount;
-                    if (OpcodeInfo.GetInfo(c.Opcode).ParameterType == ParameterTypes.Debug)
+                    var op = OpcodeInfo.GetInfo(c.Opcode);
+                    if (op != null)
                     {
-                        popCount = c.PopCount;
-                    }
-                    if (popCount > 0)
-                    {
-                        var block = new CodeBlock(parent, c);
-                        for (int i = 0; i < popCount; ++i)
+                        int popCount = op.PopCount;
+                        if (op.ParameterType == ParameterTypes.Debug)
                         {
-                            try
-                            {
-                                block.AddToTop(stack.Pop());
-                            }
-                            catch (InvalidOperationException ex)
-                            {
-                                throw new InvalidOperationException($"{ex.Message} (opcode: {OpcodeInfo.GetInfo(c.Opcode).Name})");
-                            }
+                            popCount = c.PopCount;
                         }
-                        stack.Push(block);
-                    }
-                    else
-                    {
-                        stack.Push(c);
+                        if (popCount > 0)
+                        {
+                            var block = new CodeBlock(parent, c);
+                            for (int i = 0; i < popCount; ++i)
+                            {
+                                try
+                                {
+                                    block.AddToTop(stack.Pop());
+                                }
+                                catch (InvalidOperationException ex)
+                                {
+                                    throw new InvalidOperationException($"{ex.Message} (opcode: {op.Name})");
+                                }
+                            }
+                            stack.Push(block);
+                        }
+                        else
+                        {
+                            stack.Push(c);
+                        }
                     }
                 }
                 else
@@ -211,7 +227,7 @@ namespace FF7Scarlet
         {
             if (pos < 0 || pos >= code.Count)
             {
-                return null;
+                throw new ArgumentOutOfRangeException();
             }
             return code[pos];
         }
@@ -228,7 +244,11 @@ namespace FF7Scarlet
             }
             if (newCode.GetPrimaryOpcode() == (byte)Opcodes.Label)
             {
-                labels.Add(newCode.GetParameter().ToInt(), newCode.GetHeader());
+                var p = newCode.GetParameter();
+                if (p != null)
+                {
+                    labels.Add(p.ToInt(), newCode.GetHeader());
+                }
             }
             headersAreCorrect = false;
         }
@@ -240,7 +260,11 @@ namespace FF7Scarlet
                 code[pos] = newCode;
                 if (newCode.GetPrimaryOpcode() == (byte)Opcodes.Label)
                 {
-                    labels.Add(newCode.GetParameter().ToInt(), newCode.GetHeader());
+                    var p = newCode.GetParameter();
+                    if (p != null)
+                    {
+                        labels.Add(p.ToInt(), newCode.GetHeader());
+                    }
                 }
                 headersAreCorrect = false;
             }
@@ -252,7 +276,11 @@ namespace FF7Scarlet
             {
                 if (code[pos].GetPrimaryOpcode() == (byte)Opcodes.Label)
                 {
-                    labels.Remove(code[pos].GetParameter().ToInt());
+                    var p = code[pos].GetParameter();
+                    if (p != null)
+                    {
+                        labels.Remove(p.ToInt());
+                    }
                 }
                 code.RemoveAt(pos);
                 headersAreCorrect = false;
@@ -323,7 +351,11 @@ namespace FF7Scarlet
             {
                 if (c.GetPrimaryOpcode() == (byte)Opcodes.Label)
                 {
-                    labels[c.GetParameter().ToInt()] = currPos;
+                    var p = c.GetParameter();
+                    if (p != null)
+                    {
+                        labels[p.ToInt()] = currPos;
+                    }
                 }
                 currPos = c.SetHeader(currPos);
                 c.SetParent(this);

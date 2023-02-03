@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using FF7Scarlet.AIEditor;
 
 namespace FF7Scarlet
 {
@@ -7,11 +8,15 @@ namespace FF7Scarlet
         private const string TEXT_MAP = "ÄÁÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü⌘°¢£ÙÛ¶ß®©™´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»…?ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄¤‹›ﬁﬂ■▪‚„‰ÂÊËÁÈíîïìÓÔ ÒÙÛ";
         private const byte MAP_OFFSET = 0x60, CHAR_OFFSET = 0x20;
 
-        private readonly byte[] data;
+        private readonly byte[]? data;
 
         public int Length
         {
-            get { return data.Length; }
+            get
+            {
+                if (data == null) { return 0; }
+                else { return data.Length; }
+            }
         }
 
         public FFText(byte[] data)
@@ -19,69 +24,84 @@ namespace FF7Scarlet
             this.data = data;
         }
 
-        public FFText(string str, int length = -1)
+        public FFText(string? str, int length = -1)
         {
             int i, j;
-            if (length == -1)
+            if (str == null)
             {
-                length = str.Length;
-            }
-
-            var text = new List<byte> { };
-            var nameList = Enum.GetNames<Characters>();
-            for (i = 0; i < length; ++i)
-            {
-                if (i < str.Length)
+                if (length == -1) { data = null; }
+                else
                 {
-                    byte b = (byte)str[i];
-
-                    if (b == (byte)'{') //check for names
+                    data = new byte[length];
+                    for (i = 0; i < length; ++i)
                     {
-                        string temp = str.Substring(i);
-                        for (j = 0; j < nameList.Length; ++j)
+                        data[i] = 0xFF;
+                    }
+                }
+            }
+            else
+            {
+                if (length == -1)
+                {
+                    length = str.Length;
+                }
+
+                var text = new List<byte> { };
+                var nameList = Enum.GetNames<Characters>();
+                for (i = 0; i < length; ++i)
+                {
+                    if (i < str.Length)
+                    {
+                        byte b = (byte)str[i];
+
+                        if (b == (byte)'{') //check for names
                         {
-                            if (temp.StartsWith(nameList[j].ToUpper()))
+                            string temp = str.Substring(i);
+                            for (j = 0; j < nameList.Length; ++j)
                             {
-                                text.Add(0xEA);
-                                text.Add(0x00);
-                                text.Add((byte)j);
-                                i += nameList[j].Length + 1;
-                                continue;
+                                if (temp.StartsWith(nameList[j].ToUpper()))
+                                {
+                                    text.Add(0xEA);
+                                    text.Add(0x00);
+                                    text.Add((byte)j);
+                                    i += nameList[j].Length + 1;
+                                    continue;
+                                }
+                            }
+
+                            //no matching name found, so assume regular character
+                            text.Add((byte)'{' - CHAR_OFFSET);
+                        }
+                        else if (b < MAP_OFFSET + CHAR_OFFSET)
+                        {
+                            text.Add((byte)(b - CHAR_OFFSET));
+                        }
+                        else
+                        {
+                            int pos = TEXT_MAP.IndexOf(str[i]);
+                            if (pos >= 0)
+                            {
+                                text.Add((byte)(pos + MAP_OFFSET));
                             }
                         }
-
-                        //no matching name found, so assume regular character
-                        text.Add((byte)'{' - CHAR_OFFSET);
-                    }
-                    else if (b < MAP_OFFSET + CHAR_OFFSET)
-                    {
-                        text.Add((byte)(b - CHAR_OFFSET));
                     }
                     else
                     {
-                        int pos = TEXT_MAP.IndexOf(str[i]);
-                        if (pos >= 0)
-                        {
-                            text.Add((byte)(pos + MAP_OFFSET));
-                        }
+                        text.Add(0xFF);
                     }
                 }
-                else
-                {
-                    text.Add(0xFF);
-                }
+                data = text.ToArray();
             }
-            data = text.ToArray();
         }
 
-        public FFText(object value) : this(value.ToString()) { }
+        public FFText(object? value) : this(value?.ToString()) { }
 
         public bool IsEmpty()
         {
             return (ToString() == null);
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             if (data == null)
             {
@@ -104,7 +124,9 @@ namespace FF7Scarlet
                     {
                         int charID = data[i + 2];
                         i += 2;
-                        text.AddRange("{" + Enum.GetName(typeof(Characters), charID).ToUpper() + "}");
+                        var name = Enum.GetName((Characters)charID);
+                        if (name == null) { text.AddRange("{UNKNOWN}"); }
+                        else { text.AddRange("{" + name.ToUpper() + "}"); }
                     }
                     else if ((data[i] - MAP_OFFSET + 1) < TEXT_MAP.Length)
                     {
@@ -135,7 +157,7 @@ namespace FF7Scarlet
             return -1;
         }
 
-        public byte[] GetBytes(ParameterTypes type = ParameterTypes.String)
+        public byte[]? GetBytes(ParameterTypes type = ParameterTypes.String)
         {
             var singleByte = new byte[1];
             var threeByteInt = new byte[3];
@@ -154,15 +176,34 @@ namespace FF7Scarlet
             }
         }
 
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
+            if (obj == null)
+            {
+                if (ToString() == null) { return 0; }
+                else { throw new ArgumentNullException(); }
+            }
             if (obj is FFText)
             {
-                return CompareTo(obj as FFText);
+                var text = obj as FFText;
+                if (text == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                else
+                {
+                    return CompareTo(text);
+                }
             }
             else if (obj is string)
             {
-                return ToString().CompareTo(obj);
+                var str = ToString();
+                if (str == null) { throw new ArgumentNullException(); }
+                return str.CompareTo(obj);
+            }
+            else if (obj is int)
+            {
+                return CompareTo((int)obj);
             }
             else
             {
@@ -172,7 +213,9 @@ namespace FF7Scarlet
 
         public int CompareTo(FFText other)
         {
-            return ToString().CompareTo(other.ToString());
+            var str = ToString();
+            if (str == null) { throw new ArgumentNullException(); }
+            return str.CompareTo(other.ToString());
         }
     }
 }

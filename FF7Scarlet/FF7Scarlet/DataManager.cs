@@ -1,12 +1,8 @@
-﻿using Shojy.FF7.Elena;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.IO.Compression;
+using Shojy.FF7.Elena;
+using FF7Scarlet.KernelEditor;
+using FF7Scarlet.SceneEditor;
+using FF7Scarlet.AIEditor;
 
 namespace FF7Scarlet
 {
@@ -15,9 +11,9 @@ namespace FF7Scarlet
 
     public static class DataManager
     {
-        private static StartupForm startupForm = null;
-        private static KernelForm kernelForm = null;
-        private static BattleAIForm battleAIForm = null;
+        private static StartupForm? startupForm = null;
+        private static KernelForm? kernelForm = null;
+        private static BattleAIForm? battleAIForm = null;
         private static Scene[] sceneList = new Scene[SCENE_COUNT];
         private static byte[] sceneLookupTable = new byte[64];
 
@@ -26,10 +22,10 @@ namespace FF7Scarlet
         public const ushort NULL_OFFSET_16_BIT = 0xFFFF;
         public const uint NULL_OFFSET_32_BIT = 0xFFFFFFFF;
 
-        public static string KernelPath { get; private set; }
-        public static string Kernel2Path { get; private set; }
-        public static string ScenePath { get; private set; }
-        public static Kernel Kernel { get; private set; }
+        public static string? KernelPath { get; private set; }
+        public static string? Kernel2Path { get; private set; }
+        public static string? ScenePath { get; private set; }
+        public static Kernel? Kernel { get; private set; }
 
         public static bool KernelFileIsLoaded
         {
@@ -64,29 +60,41 @@ namespace FF7Scarlet
 
                 if (result == DialogResult.Yes)
                 {
-                    string kernelDir, battleDir;
+                    string? kernelDir = null, battleDir = null;
                     if (fileClass == FileClass.Scene)
                     {
                         battleDir = Path.GetDirectoryName(path);
-                        kernelDir = Directory.GetParent(battleDir).FullName + @"\kernel";
+                        if (battleDir != null)
+                        {
+                            kernelDir = Directory.GetParent(battleDir)?.FullName + @"\kernel";
+                        }
                     }
                     else
                     {
                         kernelDir = Path.GetDirectoryName(path);
-                        battleDir = Directory.GetParent(kernelDir).FullName + @"\battle";
+                        if (kernelDir != null)
+                        {
+                            battleDir = Directory.GetParent(kernelDir)?.FullName + @"\battle";
+                        }
                     }
 
-                    if (fileClass != FileClass.Kernel)
+                    if (kernelDir != null)
                     {
-                        ValidateFile(FileClass.Kernel, kernelDir + @"\KERNEL.BIN");
+                        if (fileClass != FileClass.Kernel)
+                        {
+                            ValidateFile(FileClass.Kernel, kernelDir + @"\KERNEL.BIN");
+                        }
+                        if (fileClass != FileClass.Kernel2)
+                        {
+                            ValidateFile(FileClass.Kernel2, kernelDir + @"\kernel2.bin");
+                        }
                     }
-                    if (fileClass != FileClass.Kernel2)
+                    if (battleDir != null)
                     {
-                        ValidateFile(FileClass.Kernel2, kernelDir + @"\kernel2.bin");
-                    }
-                    if (fileClass != FileClass.Scene)
-                    {
-                        ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
+                        if (fileClass != FileClass.Scene)
+                        {
+                            ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
+                        }
                     }
                 }
             }
@@ -111,8 +119,11 @@ namespace FF7Scarlet
                         }
                         catch { return false; }
                     case FileClass.Kernel2:
-                        Kernel.MergeKernel2Data(path);
-                        Kernel2Path = path;
+                        if (Kernel != null)
+                        {
+                            Kernel.MergeKernel2Data(path);
+                            Kernel2Path = path;
+                        }
                         return true;
                     case FileClass.Scene:
                         try
@@ -162,7 +173,7 @@ namespace FF7Scarlet
                     battleAIForm = null;
                     break;
             }
-            startupForm.EnableFormButton(type);
+            startupForm?.EnableFormButton(type);
         }
 
         public static Scene[] CopySceneList()
@@ -190,7 +201,7 @@ namespace FF7Scarlet
 
         public static bool LookupTableIsCorrect()
         {
-            if (KernelFileIsLoaded && SceneFileIsLoaded)
+            if (KernelFileIsLoaded && SceneFileIsLoaded && Kernel != null)
             {
                 var table = Kernel.GetLookupTable();
                 for (int i = 0; i < 64; ++i)
@@ -206,7 +217,7 @@ namespace FF7Scarlet
 
         public static void SyncLookupTable()
         {
-            if (KernelFileIsLoaded && SceneFileIsLoaded)
+            if (KernelFileIsLoaded && SceneFileIsLoaded && Kernel != null)
             {
                 Kernel.UpdateLookupTable(sceneLookupTable);
                 CreateKernel(false);
@@ -215,7 +226,7 @@ namespace FF7Scarlet
 
         public static void CreateKernel(bool updateKernel2)
         {
-            if (!KernelFileIsLoaded)
+            if (!KernelFileIsLoaded || Kernel == null || KernelPath == null)
             {
                 throw new FileNotFoundException("No kernel.bin file is loaded.");
             }
@@ -326,7 +337,7 @@ namespace FF7Scarlet
         public static void CreateSceneBin()
         {
             //again, based on code from SegaChief
-            if (!SceneFileIsLoaded)
+            if (!SceneFileIsLoaded || ScenePath == null)
             {
                 throw new FileNotFoundException("No scene.bin file is loaded.");
             }

@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet
+﻿namespace FF7Scarlet.KernelEditor
 {
     partial class KernelForm
     {
@@ -47,113 +47,98 @@
             this.tabPageBattleData = new System.Windows.Forms.TabPage();
             this.tabPageInitData = new System.Windows.Forms.TabPage();
             this.tabPageItemData = new System.Windows.Forms.TabPage();
-            this.damageCalculationControlItem = new FF7Scarlet.DamageCalculationControl();
+            this.tabControlItems = new System.Windows.Forms.TabControl();
+            this.tabPageItems1 = new System.Windows.Forms.TabPage();
+            this.labelItemName = new System.Windows.Forms.Label();
+            this.itemRestrictionsItem = new FF7Scarlet.KernelEditor.ItemRestrictionsControl();
+            this.damageCalculationControlItem = new FF7Scarlet.KernelEditor.DamageCalculationControl();
+            this.textBoxItemName = new System.Windows.Forms.TextBox();
+            this.targetDataControlItem = new FF7Scarlet.KernelEditor.TargetDataControl();
+            this.labelItemDescription = new System.Windows.Forms.Label();
+            this.textBoxItemDescription = new System.Windows.Forms.TextBox();
             this.comboBoxItemAttackEffectID = new System.Windows.Forms.ComboBox();
+            this.labelItemCamMovementID = new System.Windows.Forms.Label();
             this.labelItemAttackEffectID = new System.Windows.Forms.Label();
             this.comboBoxItemCamMovementID = new System.Windows.Forms.ComboBox();
-            this.labelItemCamMovementID = new System.Windows.Forms.Label();
-            this.groupBoxItemTargetFlags = new System.Windows.Forms.GroupBox();
-            this.checkBoxItemRandomTarget = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemAllRows = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemShortRange = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemOneRowOnly = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemSingleMultiToggle = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemMultipleTargetDefault = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemStartOnEnemies = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemEnableSelection = new System.Windows.Forms.CheckBox();
-            this.groupBoxItemRestrictions = new System.Windows.Forms.GroupBox();
-            this.checkBoxItemIsSellable = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemUsableInMenu = new System.Windows.Forms.CheckBox();
-            this.checkBoxItemUsableInBattle = new System.Windows.Forms.CheckBox();
-            this.textBoxItemDescription = new System.Windows.Forms.TextBox();
-            this.labelItemDescription = new System.Windows.Forms.Label();
-            this.textBoxItemName = new System.Windows.Forms.TextBox();
-            this.labelItemName = new System.Windows.Forms.Label();
+            this.tabPageItems2 = new System.Windows.Forms.TabPage();
+            this.comboBoxStatusChange = new System.Windows.Forms.ComboBox();
+            this.labelItemStatusChange = new System.Windows.Forms.Label();
+            this.statusesControlItem = new FF7Scarlet.KernelEditor.StatusesControl();
+            this.elementsControlItem = new FF7Scarlet.KernelEditor.ElementsControl();
             this.listBoxItems = new System.Windows.Forms.ListBox();
             this.tabPageWeaponData = new System.Windows.Forms.TabPage();
-            this.damageCalculationControlWeapon = new FF7Scarlet.DamageCalculationControl();
-            this.groupBoxWeaponTargetFlags = new System.Windows.Forms.GroupBox();
-            this.checkBoxWeaponRandomTarget = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponAllRows = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponShortRange = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponOneRowOnly = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponSingleMultiToggle = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponMultipleTargetDefault = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponStartOnEnemies = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponEnableSelection = new System.Windows.Forms.CheckBox();
+            this.tabControlWeapons = new System.Windows.Forms.TabControl();
+            this.tabPageWeapon1 = new System.Windows.Forms.TabPage();
+            this.elementsControlWeapon = new FF7Scarlet.KernelEditor.ElementsControl();
+            this.comboBoxWeaponStatus = new System.Windows.Forms.ComboBox();
+            this.statIncreaseControlWeapon = new FF7Scarlet.KernelEditor.StatIncreaseControl();
+            this.numericWeaponAnimationIndex = new System.Windows.Forms.NumericUpDown();
+            this.labelWeaponAnimationIndex = new System.Windows.Forms.Label();
+            this.labelWeaponStatus = new System.Windows.Forms.Label();
+            this.numericWeaponModelIndex = new System.Windows.Forms.NumericUpDown();
+            this.labelWeaponModelIndex = new System.Windows.Forms.Label();
             this.groupBoxWeaponMateriaSlots = new System.Windows.Forms.GroupBox();
             this.labelWeaponMateriaGrowth = new System.Windows.Forms.Label();
-            this.materiaSlotSelectorWeapon = new FF7Scarlet.MateriaSlotSelectorControl();
+            this.materiaSlotSelectorWeapon = new FF7Scarlet.KernelEditor.MateriaSlotSelectorControl();
             this.comboBoxWeaponMateriaGrowth = new System.Windows.Forms.ComboBox();
-            this.groupBoxWeaponRestrictions = new System.Windows.Forms.GroupBox();
-            this.checkBoxWeaponIsThrowable = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponIsSellable = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponUsableInMenu = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponUsableInBattle = new System.Windows.Forms.CheckBox();
-            this.groupBoxWeaponEquipable = new System.Windows.Forms.GroupBox();
-            this.checkBoxWeaponSephiroth = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponYCloud = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponCid = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponVincent = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponCaitSith = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponYuffie = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponRed = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponAerith = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponTifa = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponBarret = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponCloud = new System.Windows.Forms.CheckBox();
-            this.textBoxWeaponDescription = new System.Windows.Forms.TextBox();
-            this.labelWeaponDescription = new System.Windows.Forms.Label();
+            this.labelWeaponCritChance = new System.Windows.Forms.Label();
+            this.labelWeaponHitChance = new System.Windows.Forms.Label();
             this.textBoxWeaponName = new System.Windows.Forms.TextBox();
             this.labelWeaponName = new System.Windows.Forms.Label();
+            this.labelWeaponDescription = new System.Windows.Forms.Label();
+            this.textBoxWeaponDescription = new System.Windows.Forms.TextBox();
+            this.tabPageWeapon2 = new System.Windows.Forms.TabPage();
+            this.targetDataControlWeapon = new FF7Scarlet.KernelEditor.TargetDataControl();
+            this.damageCalculationControlWeapon = new FF7Scarlet.KernelEditor.DamageCalculationControl();
+            this.equipableListWeapon = new FF7Scarlet.KernelEditor.EquipableListControl();
+            this.itemRestrictionsWeapon = new FF7Scarlet.KernelEditor.ItemRestrictionsControl();
             this.listBoxWeapons = new System.Windows.Forms.ListBox();
             this.tabPageArmorData = new System.Windows.Forms.TabPage();
+            this.tabControlArmor = new System.Windows.Forms.TabControl();
+            this.tabPageArmor1 = new System.Windows.Forms.TabPage();
+            this.labelArmorElementModifier = new System.Windows.Forms.Label();
+            this.numericArmorMagicDefensePercent = new System.Windows.Forms.NumericUpDown();
+            this.labelArmorMagicDefensePercent = new System.Windows.Forms.Label();
+            this.numericArmorMagicDefense = new System.Windows.Forms.NumericUpDown();
+            this.comboBoxArmorElementModifier = new System.Windows.Forms.ComboBox();
+            this.labelArmorMagicDefense = new System.Windows.Forms.Label();
+            this.comboBoxArmorStatus = new System.Windows.Forms.ComboBox();
+            this.numericArmorDefensePercent = new System.Windows.Forms.NumericUpDown();
+            this.elementsControlArmor = new FF7Scarlet.KernelEditor.ElementsControl();
+            this.labelArmorStatus = new System.Windows.Forms.Label();
+            this.labelArmorDefencePercent = new System.Windows.Forms.Label();
+            this.numericArmorDefense = new System.Windows.Forms.NumericUpDown();
+            this.labelArmorDefense = new System.Windows.Forms.Label();
+            this.statIncreaseControlArmor = new FF7Scarlet.KernelEditor.StatIncreaseControl();
+            this.labelArmorName = new System.Windows.Forms.Label();
+            this.textBoxArmorName = new System.Windows.Forms.TextBox();
+            this.labelArmorDescription = new System.Windows.Forms.Label();
             this.groupBoxArmorMateriaSlots = new System.Windows.Forms.GroupBox();
             this.labelArmorMateriaGrowth = new System.Windows.Forms.Label();
-            this.materiaSlotSelectorArmor = new FF7Scarlet.MateriaSlotSelectorControl();
+            this.materiaSlotSelectorArmor = new FF7Scarlet.KernelEditor.MateriaSlotSelectorControl();
             this.comboBoxArmorMateriaGrowth = new System.Windows.Forms.ComboBox();
-            this.groupBoxArmorRestrictions = new System.Windows.Forms.GroupBox();
-            this.checkBoxArmorIsSellable = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorUsableInMenu = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorUsableInBattle = new System.Windows.Forms.CheckBox();
-            this.groupBoxArmorEquipable = new System.Windows.Forms.GroupBox();
-            this.checkBoxArmorSephiroth = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorYCloud = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorCid = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorVincent = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorCaitSith = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorYuffie = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorRed = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorAerith = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorTifa = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorBarret = new System.Windows.Forms.CheckBox();
-            this.checkBoxArmorCloud = new System.Windows.Forms.CheckBox();
             this.textBoxArmorDescription = new System.Windows.Forms.TextBox();
-            this.labelArmorDescription = new System.Windows.Forms.Label();
-            this.textBoxArmorName = new System.Windows.Forms.TextBox();
-            this.labelArmorName = new System.Windows.Forms.Label();
+            this.tabPageArmor2 = new System.Windows.Forms.TabPage();
+            this.itemRestrictionsArmor = new FF7Scarlet.KernelEditor.ItemRestrictionsControl();
+            this.equipableListArmor = new FF7Scarlet.KernelEditor.EquipableListControl();
             this.listBoxArmor = new System.Windows.Forms.ListBox();
             this.tabPageAccessoryData = new System.Windows.Forms.TabPage();
-            this.groupBoxAccessoryRestrictions = new System.Windows.Forms.GroupBox();
-            this.checkBoxAccessoryIsSellable = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryUsableInMenu = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryUsableInBattle = new System.Windows.Forms.CheckBox();
-            this.groupBoxAccessoryEquipable = new System.Windows.Forms.GroupBox();
-            this.checkBoxAccessorySephiroth = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryYCloud = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryCid = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryVincent = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryCaitSith = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryYuffie = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryRed = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryAerith = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryTifa = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryBarret = new System.Windows.Forms.CheckBox();
-            this.checkBoxAccessoryCloud = new System.Windows.Forms.CheckBox();
-            this.textBoxAccessoryDescription = new System.Windows.Forms.TextBox();
-            this.labelAccessoryDescription = new System.Windows.Forms.Label();
-            this.textBoxAccessoryName = new System.Windows.Forms.TextBox();
+            this.tabControlAccessories = new System.Windows.Forms.TabControl();
+            this.tabPageAccessory1 = new System.Windows.Forms.TabPage();
+            this.labelAccessoryElementModifier = new System.Windows.Forms.Label();
+            this.comboBoxAccessoryElementModifier = new System.Windows.Forms.ComboBox();
+            this.statusesControlAccessory = new FF7Scarlet.KernelEditor.StatusesControl();
+            this.elementsControlAccessory = new FF7Scarlet.KernelEditor.ElementsControl();
+            this.statIncreaseControlAccessory = new FF7Scarlet.KernelEditor.StatIncreaseControl();
             this.labelAccessoryName = new System.Windows.Forms.Label();
+            this.textBoxAccessoryName = new System.Windows.Forms.TextBox();
+            this.labelAccessoryDescription = new System.Windows.Forms.Label();
+            this.textBoxAccessoryDescription = new System.Windows.Forms.TextBox();
+            this.tabPageAccessory2 = new System.Windows.Forms.TabPage();
+            this.comboBoxAccessorySpecialEffects = new System.Windows.Forms.ComboBox();
+            this.labelAccessorySpecialEffects = new System.Windows.Forms.Label();
+            this.equipableListAccessory = new FF7Scarlet.KernelEditor.EquipableListControl();
+            this.itemRestrictionsAccessory = new FF7Scarlet.KernelEditor.ItemRestrictionsControl();
             this.listBoxAccessories = new System.Windows.Forms.ListBox();
             this.tabPageMateriaData = new System.Windows.Forms.TabPage();
             this.comboBoxMateriaElement = new System.Windows.Forms.ComboBox();
@@ -175,27 +160,40 @@
             this.buttonImport = new System.Windows.Forms.Button();
             this.buttonExport = new System.Windows.Forms.Button();
             this.panelButtons = new System.Windows.Forms.Panel();
+            this.numericWeaponHitChance = new System.Windows.Forms.NumericUpDown();
+            this.numericWeaponCritChance = new System.Windows.Forms.NumericUpDown();
             this.tabControlMain.SuspendLayout();
             this.tabPageCommandData.SuspendLayout();
             this.tabPageAttackData.SuspendLayout();
             this.tabPageItemData.SuspendLayout();
-            this.groupBoxItemTargetFlags.SuspendLayout();
-            this.groupBoxItemRestrictions.SuspendLayout();
+            this.tabControlItems.SuspendLayout();
+            this.tabPageItems1.SuspendLayout();
+            this.tabPageItems2.SuspendLayout();
             this.tabPageWeaponData.SuspendLayout();
-            this.groupBoxWeaponTargetFlags.SuspendLayout();
+            this.tabControlWeapons.SuspendLayout();
+            this.tabPageWeapon1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponAnimationIndex)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponModelIndex)).BeginInit();
             this.groupBoxWeaponMateriaSlots.SuspendLayout();
-            this.groupBoxWeaponRestrictions.SuspendLayout();
-            this.groupBoxWeaponEquipable.SuspendLayout();
+            this.tabPageWeapon2.SuspendLayout();
             this.tabPageArmorData.SuspendLayout();
+            this.tabControlArmor.SuspendLayout();
+            this.tabPageArmor1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericArmorMagicDefensePercent)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericArmorMagicDefense)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericArmorDefensePercent)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericArmorDefense)).BeginInit();
             this.groupBoxArmorMateriaSlots.SuspendLayout();
-            this.groupBoxArmorRestrictions.SuspendLayout();
-            this.groupBoxArmorEquipable.SuspendLayout();
+            this.tabPageArmor2.SuspendLayout();
             this.tabPageAccessoryData.SuspendLayout();
-            this.groupBoxAccessoryRestrictions.SuspendLayout();
-            this.groupBoxAccessoryEquipable.SuspendLayout();
+            this.tabControlAccessories.SuspendLayout();
+            this.tabPageAccessory1.SuspendLayout();
+            this.tabPageAccessory2.SuspendLayout();
             this.tabPageMateriaData.SuspendLayout();
             this.tabPageKeyItemText.SuspendLayout();
             this.panelButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponHitChance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponCritChance)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControlMain
@@ -283,7 +281,7 @@
             this.listBoxCommands.Location = new System.Drawing.Point(9, 13);
             this.listBoxCommands.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxCommands.Name = "listBoxCommands";
-            this.listBoxCommands.Size = new System.Drawing.Size(174, 454);
+            this.listBoxCommands.Size = new System.Drawing.Size(174, 469);
             this.listBoxCommands.TabIndex = 3;
             this.listBoxCommands.SelectedIndexChanged += new System.EventHandler(this.listBoxCommands_SelectedIndexChanged);
             // 
@@ -375,7 +373,7 @@
             this.listBoxAttacks.Location = new System.Drawing.Point(9, 13);
             this.listBoxAttacks.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxAttacks.Name = "listBoxAttacks";
-            this.listBoxAttacks.Size = new System.Drawing.Size(174, 454);
+            this.listBoxAttacks.Size = new System.Drawing.Size(174, 469);
             this.listBoxAttacks.TabIndex = 0;
             this.listBoxAttacks.SelectedIndexChanged += new System.EventHandler(this.listBoxAttacks_SelectedIndexChanged);
             // 
@@ -401,17 +399,7 @@
             // 
             // tabPageItemData
             // 
-            this.tabPageItemData.Controls.Add(this.damageCalculationControlItem);
-            this.tabPageItemData.Controls.Add(this.comboBoxItemAttackEffectID);
-            this.tabPageItemData.Controls.Add(this.labelItemAttackEffectID);
-            this.tabPageItemData.Controls.Add(this.comboBoxItemCamMovementID);
-            this.tabPageItemData.Controls.Add(this.labelItemCamMovementID);
-            this.tabPageItemData.Controls.Add(this.groupBoxItemTargetFlags);
-            this.tabPageItemData.Controls.Add(this.groupBoxItemRestrictions);
-            this.tabPageItemData.Controls.Add(this.textBoxItemDescription);
-            this.tabPageItemData.Controls.Add(this.labelItemDescription);
-            this.tabPageItemData.Controls.Add(this.textBoxItemName);
-            this.tabPageItemData.Controls.Add(this.labelItemName);
+            this.tabPageItemData.Controls.Add(this.tabControlItems);
             this.tabPageItemData.Controls.Add(this.listBoxItems);
             this.tabPageItemData.Location = new System.Drawing.Point(4, 24);
             this.tabPageItemData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -421,32 +409,134 @@
             this.tabPageItemData.Text = "Items";
             this.tabPageItemData.UseVisualStyleBackColor = true;
             // 
+            // tabControlItems
+            // 
+            this.tabControlItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlItems.Controls.Add(this.tabPageItems1);
+            this.tabControlItems.Controls.Add(this.tabPageItems2);
+            this.tabControlItems.Location = new System.Drawing.Point(190, 13);
+            this.tabControlItems.Name = "tabControlItems";
+            this.tabControlItems.SelectedIndex = 0;
+            this.tabControlItems.Size = new System.Drawing.Size(578, 469);
+            this.tabControlItems.TabIndex = 32;
+            // 
+            // tabPageItems1
+            // 
+            this.tabPageItems1.Controls.Add(this.labelItemName);
+            this.tabPageItems1.Controls.Add(this.itemRestrictionsItem);
+            this.tabPageItems1.Controls.Add(this.damageCalculationControlItem);
+            this.tabPageItems1.Controls.Add(this.textBoxItemName);
+            this.tabPageItems1.Controls.Add(this.targetDataControlItem);
+            this.tabPageItems1.Controls.Add(this.labelItemDescription);
+            this.tabPageItems1.Controls.Add(this.textBoxItemDescription);
+            this.tabPageItems1.Controls.Add(this.comboBoxItemAttackEffectID);
+            this.tabPageItems1.Controls.Add(this.labelItemCamMovementID);
+            this.tabPageItems1.Controls.Add(this.labelItemAttackEffectID);
+            this.tabPageItems1.Controls.Add(this.comboBoxItemCamMovementID);
+            this.tabPageItems1.Location = new System.Drawing.Point(4, 24);
+            this.tabPageItems1.Name = "tabPageItems1";
+            this.tabPageItems1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageItems1.Size = new System.Drawing.Size(570, 441);
+            this.tabPageItems1.TabIndex = 0;
+            this.tabPageItems1.Text = "Page 1";
+            this.tabPageItems1.UseVisualStyleBackColor = true;
+            // 
+            // labelItemName
+            // 
+            this.labelItemName.AutoSize = true;
+            this.labelItemName.Location = new System.Drawing.Point(7, 3);
+            this.labelItemName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelItemName.Name = "labelItemName";
+            this.labelItemName.Size = new System.Drawing.Size(42, 15);
+            this.labelItemName.TabIndex = 9;
+            this.labelItemName.Text = "Name:";
+            // 
+            // itemRestrictionsItem
+            // 
+            this.itemRestrictionsItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemRestrictionsItem.Location = new System.Drawing.Point(352, 310);
+            this.itemRestrictionsItem.Name = "itemRestrictionsItem";
+            this.itemRestrictionsItem.ShowThrowable = false;
+            this.itemRestrictionsItem.Size = new System.Drawing.Size(211, 125);
+            this.itemRestrictionsItem.TabIndex = 31;
+            // 
             // damageCalculationControlItem
             // 
             this.damageCalculationControlItem.AccuracyCalculation = FF7Scarlet.AccuracyCalculation.NoMiss1;
             this.damageCalculationControlItem.ActualValue = ((byte)(0));
-            this.damageCalculationControlItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.damageCalculationControlItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.damageCalculationControlItem.AttackPower = ((byte)(0));
             this.damageCalculationControlItem.CanCrit = false;
+            this.damageCalculationControlItem.DamageFormula = FF7Scarlet.DamageFormulas.NoDamage;
             this.damageCalculationControlItem.DamageType = FF7Scarlet.DamageType.Physical;
-            this.damageCalculationControlItem.Location = new System.Drawing.Point(191, 202);
+            this.damageCalculationControlItem.Location = new System.Drawing.Point(7, 138);
             this.damageCalculationControlItem.Name = "damageCalculationControlItem";
-            this.damageCalculationControlItem.Size = new System.Drawing.Size(576, 150);
+            this.damageCalculationControlItem.Size = new System.Drawing.Size(553, 147);
             this.damageCalculationControlItem.TabIndex = 29;
+            // 
+            // textBoxItemName
+            // 
+            this.textBoxItemName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxItemName.Location = new System.Drawing.Point(7, 21);
+            this.textBoxItemName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxItemName.Name = "textBoxItemName";
+            this.textBoxItemName.Size = new System.Drawing.Size(230, 23);
+            this.textBoxItemName.TabIndex = 10;
+            // 
+            // targetDataControlItem
+            // 
+            this.targetDataControlItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.targetDataControlItem.Location = new System.Drawing.Point(7, 310);
+            this.targetDataControlItem.Name = "targetDataControlItem";
+            this.targetDataControlItem.Size = new System.Drawing.Size(339, 125);
+            this.targetDataControlItem.TabIndex = 30;
+            // 
+            // labelItemDescription
+            // 
+            this.labelItemDescription.AutoSize = true;
+            this.labelItemDescription.Location = new System.Drawing.Point(7, 47);
+            this.labelItemDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelItemDescription.Name = "labelItemDescription";
+            this.labelItemDescription.Size = new System.Drawing.Size(70, 15);
+            this.labelItemDescription.TabIndex = 11;
+            this.labelItemDescription.Text = "Description:";
+            // 
+            // textBoxItemDescription
+            // 
+            this.textBoxItemDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxItemDescription.Location = new System.Drawing.Point(7, 65);
+            this.textBoxItemDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxItemDescription.Name = "textBoxItemDescription";
+            this.textBoxItemDescription.Size = new System.Drawing.Size(556, 23);
+            this.textBoxItemDescription.TabIndex = 12;
             // 
             // comboBoxItemAttackEffectID
             // 
             this.comboBoxItemAttackEffectID.FormattingEnabled = true;
-            this.comboBoxItemAttackEffectID.Location = new System.Drawing.Point(326, 119);
+            this.comboBoxItemAttackEffectID.Location = new System.Drawing.Point(163, 109);
             this.comboBoxItemAttackEffectID.Name = "comboBoxItemAttackEffectID";
             this.comboBoxItemAttackEffectID.Size = new System.Drawing.Size(126, 23);
             this.comboBoxItemAttackEffectID.TabIndex = 28;
             // 
+            // labelItemCamMovementID
+            // 
+            this.labelItemCamMovementID.AutoSize = true;
+            this.labelItemCamMovementID.Location = new System.Drawing.Point(7, 91);
+            this.labelItemCamMovementID.Name = "labelItemCamMovementID";
+            this.labelItemCamMovementID.Size = new System.Drawing.Size(126, 15);
+            this.labelItemCamMovementID.TabIndex = 25;
+            this.labelItemCamMovementID.Text = "Camera movement ID:";
+            // 
             // labelItemAttackEffectID
             // 
             this.labelItemAttackEffectID.AutoSize = true;
-            this.labelItemAttackEffectID.Location = new System.Drawing.Point(326, 101);
+            this.labelItemAttackEffectID.Location = new System.Drawing.Point(163, 91);
             this.labelItemAttackEffectID.Name = "labelItemAttackEffectID";
             this.labelItemAttackEffectID.Size = new System.Drawing.Size(91, 15);
             this.labelItemAttackEffectID.TabIndex = 27;
@@ -455,204 +545,61 @@
             // comboBoxItemCamMovementID
             // 
             this.comboBoxItemCamMovementID.FormattingEnabled = true;
-            this.comboBoxItemCamMovementID.Location = new System.Drawing.Point(191, 119);
+            this.comboBoxItemCamMovementID.Location = new System.Drawing.Point(7, 109);
             this.comboBoxItemCamMovementID.Name = "comboBoxItemCamMovementID";
-            this.comboBoxItemCamMovementID.Size = new System.Drawing.Size(126, 23);
+            this.comboBoxItemCamMovementID.Size = new System.Drawing.Size(150, 23);
             this.comboBoxItemCamMovementID.TabIndex = 26;
             // 
-            // labelItemCamMovementID
+            // tabPageItems2
             // 
-            this.labelItemCamMovementID.AutoSize = true;
-            this.labelItemCamMovementID.Location = new System.Drawing.Point(191, 101);
-            this.labelItemCamMovementID.Name = "labelItemCamMovementID";
-            this.labelItemCamMovementID.Size = new System.Drawing.Size(126, 15);
-            this.labelItemCamMovementID.TabIndex = 25;
-            this.labelItemCamMovementID.Text = "Camera movement ID:";
+            this.tabPageItems2.Controls.Add(this.comboBoxStatusChange);
+            this.tabPageItems2.Controls.Add(this.labelItemStatusChange);
+            this.tabPageItems2.Controls.Add(this.statusesControlItem);
+            this.tabPageItems2.Controls.Add(this.elementsControlItem);
+            this.tabPageItems2.Location = new System.Drawing.Point(4, 24);
+            this.tabPageItems2.Name = "tabPageItems2";
+            this.tabPageItems2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageItems2.Size = new System.Drawing.Size(570, 441);
+            this.tabPageItems2.TabIndex = 1;
+            this.tabPageItems2.Text = "Page 2";
+            this.tabPageItems2.UseVisualStyleBackColor = true;
             // 
-            // groupBoxItemTargetFlags
+            // comboBoxStatusChange
             // 
-            this.groupBoxItemTargetFlags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboBoxStatusChange.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStatusChange.FormattingEnabled = true;
+            this.comboBoxStatusChange.Location = new System.Drawing.Point(6, 363);
+            this.comboBoxStatusChange.Name = "comboBoxStatusChange";
+            this.comboBoxStatusChange.Size = new System.Drawing.Size(185, 23);
+            this.comboBoxStatusChange.TabIndex = 33;
+            // 
+            // labelItemStatusChange
+            // 
+            this.labelItemStatusChange.AutoSize = true;
+            this.labelItemStatusChange.Location = new System.Drawing.Point(6, 345);
+            this.labelItemStatusChange.Name = "labelItemStatusChange";
+            this.labelItemStatusChange.Size = new System.Drawing.Size(84, 15);
+            this.labelItemStatusChange.TabIndex = 32;
+            this.labelItemStatusChange.Text = "Status change:";
+            // 
+            // statusesControlItem
+            // 
+            this.statusesControlItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemRandomTarget);
-            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemAllRows);
-            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemShortRange);
-            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemOneRowOnly);
-            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemSingleMultiToggle);
-            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemMultipleTargetDefault);
-            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemStartOnEnemies);
-            this.groupBoxItemTargetFlags.Controls.Add(this.checkBoxItemEnableSelection);
-            this.groupBoxItemTargetFlags.Location = new System.Drawing.Point(191, 358);
-            this.groupBoxItemTargetFlags.Name = "groupBoxItemTargetFlags";
-            this.groupBoxItemTargetFlags.Size = new System.Drawing.Size(339, 124);
-            this.groupBoxItemTargetFlags.TabIndex = 24;
-            this.groupBoxItemTargetFlags.TabStop = false;
-            this.groupBoxItemTargetFlags.Text = "Target flags";
+            this.statusesControlItem.GroupBoxText = "Inflicts/cures status...";
+            this.statusesControlItem.Location = new System.Drawing.Point(6, 142);
+            this.statusesControlItem.MinimumSize = new System.Drawing.Size(500, 200);
+            this.statusesControlItem.Name = "statusesControlItem";
+            this.statusesControlItem.Size = new System.Drawing.Size(558, 200);
+            this.statusesControlItem.TabIndex = 31;
             // 
-            // checkBoxItemRandomTarget
+            // elementsControlItem
             // 
-            this.checkBoxItemRandomTarget.AutoSize = true;
-            this.checkBoxItemRandomTarget.Location = new System.Drawing.Point(201, 97);
-            this.checkBoxItemRandomTarget.Name = "checkBoxItemRandomTarget";
-            this.checkBoxItemRandomTarget.Size = new System.Drawing.Size(105, 19);
-            this.checkBoxItemRandomTarget.TabIndex = 7;
-            this.checkBoxItemRandomTarget.Text = "Random target";
-            this.checkBoxItemRandomTarget.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemAllRows
-            // 
-            this.checkBoxItemAllRows.AutoSize = true;
-            this.checkBoxItemAllRows.Location = new System.Drawing.Point(201, 72);
-            this.checkBoxItemAllRows.Name = "checkBoxItemAllRows";
-            this.checkBoxItemAllRows.Size = new System.Drawing.Size(68, 19);
-            this.checkBoxItemAllRows.TabIndex = 6;
-            this.checkBoxItemAllRows.Text = "All rows";
-            this.checkBoxItemAllRows.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemShortRange
-            // 
-            this.checkBoxItemShortRange.AutoSize = true;
-            this.checkBoxItemShortRange.Location = new System.Drawing.Point(201, 47);
-            this.checkBoxItemShortRange.Name = "checkBoxItemShortRange";
-            this.checkBoxItemShortRange.Size = new System.Drawing.Size(87, 19);
-            this.checkBoxItemShortRange.TabIndex = 5;
-            this.checkBoxItemShortRange.Text = "Short range";
-            this.checkBoxItemShortRange.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemOneRowOnly
-            // 
-            this.checkBoxItemOneRowOnly.AutoSize = true;
-            this.checkBoxItemOneRowOnly.Location = new System.Drawing.Point(201, 22);
-            this.checkBoxItemOneRowOnly.Name = "checkBoxItemOneRowOnly";
-            this.checkBoxItemOneRowOnly.Size = new System.Drawing.Size(97, 19);
-            this.checkBoxItemOneRowOnly.TabIndex = 4;
-            this.checkBoxItemOneRowOnly.Text = "One row only";
-            this.checkBoxItemOneRowOnly.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemSingleMultiToggle
-            // 
-            this.checkBoxItemSingleMultiToggle.AutoSize = true;
-            this.checkBoxItemSingleMultiToggle.Location = new System.Drawing.Point(6, 97);
-            this.checkBoxItemSingleMultiToggle.Name = "checkBoxItemSingleMultiToggle";
-            this.checkBoxItemSingleMultiToggle.Size = new System.Drawing.Size(183, 19);
-            this.checkBoxItemSingleMultiToggle.TabIndex = 3;
-            this.checkBoxItemSingleMultiToggle.Text = "Toggle single/multiple targets";
-            this.checkBoxItemSingleMultiToggle.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemMultipleTargetDefault
-            // 
-            this.checkBoxItemMultipleTargetDefault.AutoSize = true;
-            this.checkBoxItemMultipleTargetDefault.Location = new System.Drawing.Point(6, 72);
-            this.checkBoxItemMultipleTargetDefault.Name = "checkBoxItemMultipleTargetDefault";
-            this.checkBoxItemMultipleTargetDefault.Size = new System.Drawing.Size(160, 19);
-            this.checkBoxItemMultipleTargetDefault.TabIndex = 2;
-            this.checkBoxItemMultipleTargetDefault.Text = "Multiple target by default";
-            this.checkBoxItemMultipleTargetDefault.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemStartOnEnemies
-            // 
-            this.checkBoxItemStartOnEnemies.AutoSize = true;
-            this.checkBoxItemStartOnEnemies.Location = new System.Drawing.Point(6, 47);
-            this.checkBoxItemStartOnEnemies.Name = "checkBoxItemStartOnEnemies";
-            this.checkBoxItemStartOnEnemies.Size = new System.Drawing.Size(114, 19);
-            this.checkBoxItemStartOnEnemies.TabIndex = 1;
-            this.checkBoxItemStartOnEnemies.Text = "Start on enemies";
-            this.checkBoxItemStartOnEnemies.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemEnableSelection
-            // 
-            this.checkBoxItemEnableSelection.AutoSize = true;
-            this.checkBoxItemEnableSelection.Location = new System.Drawing.Point(6, 22);
-            this.checkBoxItemEnableSelection.Name = "checkBoxItemEnableSelection";
-            this.checkBoxItemEnableSelection.Size = new System.Drawing.Size(111, 19);
-            this.checkBoxItemEnableSelection.TabIndex = 0;
-            this.checkBoxItemEnableSelection.Text = "Enable selection";
-            this.checkBoxItemEnableSelection.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxItemRestrictions
-            // 
-            this.groupBoxItemRestrictions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxItemRestrictions.Controls.Add(this.checkBoxItemIsSellable);
-            this.groupBoxItemRestrictions.Controls.Add(this.checkBoxItemUsableInMenu);
-            this.groupBoxItemRestrictions.Controls.Add(this.checkBoxItemUsableInBattle);
-            this.groupBoxItemRestrictions.Location = new System.Drawing.Point(536, 358);
-            this.groupBoxItemRestrictions.Name = "groupBoxItemRestrictions";
-            this.groupBoxItemRestrictions.Size = new System.Drawing.Size(232, 124);
-            this.groupBoxItemRestrictions.TabIndex = 23;
-            this.groupBoxItemRestrictions.TabStop = false;
-            this.groupBoxItemRestrictions.Text = "Item restrictions";
-            // 
-            // checkBoxItemIsSellable
-            // 
-            this.checkBoxItemIsSellable.AutoSize = true;
-            this.checkBoxItemIsSellable.Location = new System.Drawing.Point(7, 22);
-            this.checkBoxItemIsSellable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxItemIsSellable.Name = "checkBoxItemIsSellable";
-            this.checkBoxItemIsSellable.Size = new System.Drawing.Size(88, 19);
-            this.checkBoxItemIsSellable.TabIndex = 13;
-            this.checkBoxItemIsSellable.Text = "Can be sold";
-            this.checkBoxItemIsSellable.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemUsableInMenu
-            // 
-            this.checkBoxItemUsableInMenu.AutoSize = true;
-            this.checkBoxItemUsableInMenu.Location = new System.Drawing.Point(7, 72);
-            this.checkBoxItemUsableInMenu.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxItemUsableInMenu.Name = "checkBoxItemUsableInMenu";
-            this.checkBoxItemUsableInMenu.Size = new System.Drawing.Size(138, 19);
-            this.checkBoxItemUsableInMenu.TabIndex = 15;
-            this.checkBoxItemUsableInMenu.Text = "Can be used in menu";
-            this.checkBoxItemUsableInMenu.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxItemUsableInBattle
-            // 
-            this.checkBoxItemUsableInBattle.AutoSize = true;
-            this.checkBoxItemUsableInBattle.Location = new System.Drawing.Point(7, 47);
-            this.checkBoxItemUsableInBattle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxItemUsableInBattle.Name = "checkBoxItemUsableInBattle";
-            this.checkBoxItemUsableInBattle.Size = new System.Drawing.Size(137, 19);
-            this.checkBoxItemUsableInBattle.TabIndex = 14;
-            this.checkBoxItemUsableInBattle.Text = "Can be used in battle";
-            this.checkBoxItemUsableInBattle.UseVisualStyleBackColor = true;
-            // 
-            // textBoxItemDescription
-            // 
-            this.textBoxItemDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxItemDescription.Location = new System.Drawing.Point(191, 75);
-            this.textBoxItemDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBoxItemDescription.Name = "textBoxItemDescription";
-            this.textBoxItemDescription.Size = new System.Drawing.Size(576, 23);
-            this.textBoxItemDescription.TabIndex = 12;
-            // 
-            // labelItemDescription
-            // 
-            this.labelItemDescription.AutoSize = true;
-            this.labelItemDescription.Location = new System.Drawing.Point(191, 57);
-            this.labelItemDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelItemDescription.Name = "labelItemDescription";
-            this.labelItemDescription.Size = new System.Drawing.Size(70, 15);
-            this.labelItemDescription.TabIndex = 11;
-            this.labelItemDescription.Text = "Description:";
-            // 
-            // textBoxItemName
-            // 
-            this.textBoxItemName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxItemName.Location = new System.Drawing.Point(191, 31);
-            this.textBoxItemName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBoxItemName.Name = "textBoxItemName";
-            this.textBoxItemName.Size = new System.Drawing.Size(226, 23);
-            this.textBoxItemName.TabIndex = 10;
-            // 
-            // labelItemName
-            // 
-            this.labelItemName.AutoSize = true;
-            this.labelItemName.Location = new System.Drawing.Point(191, 13);
-            this.labelItemName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelItemName.Name = "labelItemName";
-            this.labelItemName.Size = new System.Drawing.Size(42, 15);
-            this.labelItemName.TabIndex = 9;
-            this.labelItemName.Text = "Name:";
+            this.elementsControlItem.Location = new System.Drawing.Point(6, 6);
+            this.elementsControlItem.MinimumSize = new System.Drawing.Size(370, 130);
+            this.elementsControlItem.Name = "elementsControlItem";
+            this.elementsControlItem.Size = new System.Drawing.Size(370, 130);
+            this.elementsControlItem.TabIndex = 30;
             // 
             // listBoxItems
             // 
@@ -669,15 +616,7 @@
             // 
             // tabPageWeaponData
             // 
-            this.tabPageWeaponData.Controls.Add(this.damageCalculationControlWeapon);
-            this.tabPageWeaponData.Controls.Add(this.groupBoxWeaponTargetFlags);
-            this.tabPageWeaponData.Controls.Add(this.groupBoxWeaponMateriaSlots);
-            this.tabPageWeaponData.Controls.Add(this.groupBoxWeaponRestrictions);
-            this.tabPageWeaponData.Controls.Add(this.groupBoxWeaponEquipable);
-            this.tabPageWeaponData.Controls.Add(this.textBoxWeaponDescription);
-            this.tabPageWeaponData.Controls.Add(this.labelWeaponDescription);
-            this.tabPageWeaponData.Controls.Add(this.textBoxWeaponName);
-            this.tabPageWeaponData.Controls.Add(this.labelWeaponName);
+            this.tabPageWeaponData.Controls.Add(this.tabControlWeapons);
             this.tabPageWeaponData.Controls.Add(this.listBoxWeapons);
             this.tabPageWeaponData.Location = new System.Drawing.Point(4, 24);
             this.tabPageWeaponData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -687,126 +626,132 @@
             this.tabPageWeaponData.Text = "Weapons";
             this.tabPageWeaponData.UseVisualStyleBackColor = true;
             // 
-            // damageCalculationControlWeapon
+            // tabControlWeapons
             // 
-            this.damageCalculationControlWeapon.AccuracyCalculation = FF7Scarlet.AccuracyCalculation.NoMiss1;
-            this.damageCalculationControlWeapon.ActualValue = ((byte)(0));
-            this.damageCalculationControlWeapon.AttackPower = ((byte)(0));
-            this.damageCalculationControlWeapon.CanCrit = false;
-            this.damageCalculationControlWeapon.DamageType = FF7Scarlet.DamageType.Physical;
-            this.damageCalculationControlWeapon.Location = new System.Drawing.Point(190, 60);
-            this.damageCalculationControlWeapon.Name = "damageCalculationControlWeapon";
-            this.damageCalculationControlWeapon.Size = new System.Drawing.Size(577, 147);
-            this.damageCalculationControlWeapon.TabIndex = 26;
-            // 
-            // groupBoxWeaponTargetFlags
-            // 
-            this.groupBoxWeaponTargetFlags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabControlWeapons.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponRandomTarget);
-            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponAllRows);
-            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponShortRange);
-            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponOneRowOnly);
-            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponSingleMultiToggle);
-            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponMultipleTargetDefault);
-            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponStartOnEnemies);
-            this.groupBoxWeaponTargetFlags.Controls.Add(this.checkBoxWeaponEnableSelection);
-            this.groupBoxWeaponTargetFlags.Location = new System.Drawing.Point(428, 213);
-            this.groupBoxWeaponTargetFlags.Name = "groupBoxWeaponTargetFlags";
-            this.groupBoxWeaponTargetFlags.Size = new System.Drawing.Size(339, 124);
-            this.groupBoxWeaponTargetFlags.TabIndex = 25;
-            this.groupBoxWeaponTargetFlags.TabStop = false;
-            this.groupBoxWeaponTargetFlags.Text = "Target flags";
+            this.tabControlWeapons.Controls.Add(this.tabPageWeapon1);
+            this.tabControlWeapons.Controls.Add(this.tabPageWeapon2);
+            this.tabControlWeapons.Location = new System.Drawing.Point(190, 13);
+            this.tabControlWeapons.Multiline = true;
+            this.tabControlWeapons.Name = "tabControlWeapons";
+            this.tabControlWeapons.SelectedIndex = 0;
+            this.tabControlWeapons.Size = new System.Drawing.Size(578, 469);
+            this.tabControlWeapons.TabIndex = 27;
             // 
-            // checkBoxWeaponRandomTarget
+            // tabPageWeapon1
             // 
-            this.checkBoxWeaponRandomTarget.AutoSize = true;
-            this.checkBoxWeaponRandomTarget.Location = new System.Drawing.Point(201, 97);
-            this.checkBoxWeaponRandomTarget.Name = "checkBoxWeaponRandomTarget";
-            this.checkBoxWeaponRandomTarget.Size = new System.Drawing.Size(105, 19);
-            this.checkBoxWeaponRandomTarget.TabIndex = 7;
-            this.checkBoxWeaponRandomTarget.Text = "Random target";
-            this.checkBoxWeaponRandomTarget.UseVisualStyleBackColor = true;
+            this.tabPageWeapon1.Controls.Add(this.numericWeaponCritChance);
+            this.tabPageWeapon1.Controls.Add(this.numericWeaponHitChance);
+            this.tabPageWeapon1.Controls.Add(this.elementsControlWeapon);
+            this.tabPageWeapon1.Controls.Add(this.comboBoxWeaponStatus);
+            this.tabPageWeapon1.Controls.Add(this.statIncreaseControlWeapon);
+            this.tabPageWeapon1.Controls.Add(this.numericWeaponAnimationIndex);
+            this.tabPageWeapon1.Controls.Add(this.labelWeaponAnimationIndex);
+            this.tabPageWeapon1.Controls.Add(this.labelWeaponStatus);
+            this.tabPageWeapon1.Controls.Add(this.numericWeaponModelIndex);
+            this.tabPageWeapon1.Controls.Add(this.labelWeaponModelIndex);
+            this.tabPageWeapon1.Controls.Add(this.groupBoxWeaponMateriaSlots);
+            this.tabPageWeapon1.Controls.Add(this.labelWeaponCritChance);
+            this.tabPageWeapon1.Controls.Add(this.labelWeaponHitChance);
+            this.tabPageWeapon1.Controls.Add(this.textBoxWeaponName);
+            this.tabPageWeapon1.Controls.Add(this.labelWeaponName);
+            this.tabPageWeapon1.Controls.Add(this.labelWeaponDescription);
+            this.tabPageWeapon1.Controls.Add(this.textBoxWeaponDescription);
+            this.tabPageWeapon1.Location = new System.Drawing.Point(4, 24);
+            this.tabPageWeapon1.Name = "tabPageWeapon1";
+            this.tabPageWeapon1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageWeapon1.Size = new System.Drawing.Size(570, 441);
+            this.tabPageWeapon1.TabIndex = 0;
+            this.tabPageWeapon1.Text = "Page 1";
+            this.tabPageWeapon1.UseVisualStyleBackColor = true;
             // 
-            // checkBoxWeaponAllRows
+            // elementsControlWeapon
             // 
-            this.checkBoxWeaponAllRows.AutoSize = true;
-            this.checkBoxWeaponAllRows.Location = new System.Drawing.Point(201, 72);
-            this.checkBoxWeaponAllRows.Name = "checkBoxWeaponAllRows";
-            this.checkBoxWeaponAllRows.Size = new System.Drawing.Size(68, 19);
-            this.checkBoxWeaponAllRows.TabIndex = 6;
-            this.checkBoxWeaponAllRows.Text = "All rows";
-            this.checkBoxWeaponAllRows.UseVisualStyleBackColor = true;
+            this.elementsControlWeapon.Location = new System.Drawing.Point(7, 305);
+            this.elementsControlWeapon.MinimumSize = new System.Drawing.Size(370, 130);
+            this.elementsControlWeapon.Name = "elementsControlWeapon";
+            this.elementsControlWeapon.Size = new System.Drawing.Size(370, 130);
+            this.elementsControlWeapon.TabIndex = 29;
             // 
-            // checkBoxWeaponShortRange
+            // comboBoxWeaponStatus
             // 
-            this.checkBoxWeaponShortRange.AutoSize = true;
-            this.checkBoxWeaponShortRange.Location = new System.Drawing.Point(201, 47);
-            this.checkBoxWeaponShortRange.Name = "checkBoxWeaponShortRange";
-            this.checkBoxWeaponShortRange.Size = new System.Drawing.Size(87, 19);
-            this.checkBoxWeaponShortRange.TabIndex = 5;
-            this.checkBoxWeaponShortRange.Text = "Short range";
-            this.checkBoxWeaponShortRange.UseVisualStyleBackColor = true;
+            this.comboBoxWeaponStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxWeaponStatus.FormattingEnabled = true;
+            this.comboBoxWeaponStatus.Location = new System.Drawing.Point(383, 323);
+            this.comboBoxWeaponStatus.Name = "comboBoxWeaponStatus";
+            this.comboBoxWeaponStatus.Size = new System.Drawing.Size(177, 23);
+            this.comboBoxWeaponStatus.TabIndex = 28;
             // 
-            // checkBoxWeaponOneRowOnly
+            // statIncreaseControlWeapon
             // 
-            this.checkBoxWeaponOneRowOnly.AutoSize = true;
-            this.checkBoxWeaponOneRowOnly.Location = new System.Drawing.Point(201, 22);
-            this.checkBoxWeaponOneRowOnly.Name = "checkBoxWeaponOneRowOnly";
-            this.checkBoxWeaponOneRowOnly.Size = new System.Drawing.Size(97, 19);
-            this.checkBoxWeaponOneRowOnly.TabIndex = 4;
-            this.checkBoxWeaponOneRowOnly.Text = "One row only";
-            this.checkBoxWeaponOneRowOnly.UseVisualStyleBackColor = true;
+            this.statIncreaseControlWeapon.Count = 4;
+            this.statIncreaseControlWeapon.Location = new System.Drawing.Point(7, 157);
+            this.statIncreaseControlWeapon.MinimumSize = new System.Drawing.Size(250, 142);
+            this.statIncreaseControlWeapon.Name = "statIncreaseControlWeapon";
+            this.statIncreaseControlWeapon.Size = new System.Drawing.Size(327, 142);
+            this.statIncreaseControlWeapon.TabIndex = 34;
             // 
-            // checkBoxWeaponSingleMultiToggle
+            // numericWeaponAnimationIndex
             // 
-            this.checkBoxWeaponSingleMultiToggle.AutoSize = true;
-            this.checkBoxWeaponSingleMultiToggle.Location = new System.Drawing.Point(6, 97);
-            this.checkBoxWeaponSingleMultiToggle.Name = "checkBoxWeaponSingleMultiToggle";
-            this.checkBoxWeaponSingleMultiToggle.Size = new System.Drawing.Size(183, 19);
-            this.checkBoxWeaponSingleMultiToggle.TabIndex = 3;
-            this.checkBoxWeaponSingleMultiToggle.Text = "Toggle single/multiple targets";
-            this.checkBoxWeaponSingleMultiToggle.UseVisualStyleBackColor = true;
+            this.numericWeaponAnimationIndex.Location = new System.Drawing.Point(325, 109);
+            this.numericWeaponAnimationIndex.Maximum = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+            this.numericWeaponAnimationIndex.Name = "numericWeaponAnimationIndex";
+            this.numericWeaponAnimationIndex.Size = new System.Drawing.Size(100, 23);
+            this.numericWeaponAnimationIndex.TabIndex = 33;
             // 
-            // checkBoxWeaponMultipleTargetDefault
+            // labelWeaponAnimationIndex
             // 
-            this.checkBoxWeaponMultipleTargetDefault.AutoSize = true;
-            this.checkBoxWeaponMultipleTargetDefault.Location = new System.Drawing.Point(6, 72);
-            this.checkBoxWeaponMultipleTargetDefault.Name = "checkBoxWeaponMultipleTargetDefault";
-            this.checkBoxWeaponMultipleTargetDefault.Size = new System.Drawing.Size(160, 19);
-            this.checkBoxWeaponMultipleTargetDefault.TabIndex = 2;
-            this.checkBoxWeaponMultipleTargetDefault.Text = "Multiple target by default";
-            this.checkBoxWeaponMultipleTargetDefault.UseVisualStyleBackColor = true;
+            this.labelWeaponAnimationIndex.AutoSize = true;
+            this.labelWeaponAnimationIndex.Location = new System.Drawing.Point(325, 91);
+            this.labelWeaponAnimationIndex.Name = "labelWeaponAnimationIndex";
+            this.labelWeaponAnimationIndex.Size = new System.Drawing.Size(98, 15);
+            this.labelWeaponAnimationIndex.TabIndex = 32;
+            this.labelWeaponAnimationIndex.Text = "Animation index:";
             // 
-            // checkBoxWeaponStartOnEnemies
+            // labelWeaponStatus
             // 
-            this.checkBoxWeaponStartOnEnemies.AutoSize = true;
-            this.checkBoxWeaponStartOnEnemies.Location = new System.Drawing.Point(6, 47);
-            this.checkBoxWeaponStartOnEnemies.Name = "checkBoxWeaponStartOnEnemies";
-            this.checkBoxWeaponStartOnEnemies.Size = new System.Drawing.Size(114, 19);
-            this.checkBoxWeaponStartOnEnemies.TabIndex = 1;
-            this.checkBoxWeaponStartOnEnemies.Text = "Start on enemies";
-            this.checkBoxWeaponStartOnEnemies.UseVisualStyleBackColor = true;
+            this.labelWeaponStatus.AutoSize = true;
+            this.labelWeaponStatus.Location = new System.Drawing.Point(383, 305);
+            this.labelWeaponStatus.Name = "labelWeaponStatus";
+            this.labelWeaponStatus.Size = new System.Drawing.Size(79, 15);
+            this.labelWeaponStatus.TabIndex = 27;
+            this.labelWeaponStatus.Text = "Inflicts status:";
             // 
-            // checkBoxWeaponEnableSelection
+            // numericWeaponModelIndex
             // 
-            this.checkBoxWeaponEnableSelection.AutoSize = true;
-            this.checkBoxWeaponEnableSelection.Location = new System.Drawing.Point(6, 22);
-            this.checkBoxWeaponEnableSelection.Name = "checkBoxWeaponEnableSelection";
-            this.checkBoxWeaponEnableSelection.Size = new System.Drawing.Size(111, 19);
-            this.checkBoxWeaponEnableSelection.TabIndex = 0;
-            this.checkBoxWeaponEnableSelection.Text = "Enable selection";
-            this.checkBoxWeaponEnableSelection.UseVisualStyleBackColor = true;
+            this.numericWeaponModelIndex.Location = new System.Drawing.Point(219, 109);
+            this.numericWeaponModelIndex.Maximum = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+            this.numericWeaponModelIndex.Name = "numericWeaponModelIndex";
+            this.numericWeaponModelIndex.Size = new System.Drawing.Size(100, 23);
+            this.numericWeaponModelIndex.TabIndex = 31;
+            // 
+            // labelWeaponModelIndex
+            // 
+            this.labelWeaponModelIndex.AutoSize = true;
+            this.labelWeaponModelIndex.Location = new System.Drawing.Point(219, 91);
+            this.labelWeaponModelIndex.Name = "labelWeaponModelIndex";
+            this.labelWeaponModelIndex.Size = new System.Drawing.Size(76, 15);
+            this.labelWeaponModelIndex.TabIndex = 30;
+            this.labelWeaponModelIndex.Text = "Model index:";
             // 
             // groupBoxWeaponMateriaSlots
             // 
-            this.groupBoxWeaponMateriaSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBoxWeaponMateriaSlots.Controls.Add(this.labelWeaponMateriaGrowth);
             this.groupBoxWeaponMateriaSlots.Controls.Add(this.materiaSlotSelectorWeapon);
             this.groupBoxWeaponMateriaSlots.Controls.Add(this.comboBoxWeaponMateriaGrowth);
-            this.groupBoxWeaponMateriaSlots.Location = new System.Drawing.Point(190, 213);
+            this.groupBoxWeaponMateriaSlots.Location = new System.Drawing.Point(341, 188);
             this.groupBoxWeaponMateriaSlots.Name = "groupBoxWeaponMateriaSlots";
-            this.groupBoxWeaponMateriaSlots.Size = new System.Drawing.Size(233, 124);
+            this.groupBoxWeaponMateriaSlots.Size = new System.Drawing.Size(223, 111);
             this.groupBoxWeaponMateriaSlots.TabIndex = 20;
             this.groupBoxWeaponMateriaSlots.TabStop = false;
             this.groupBoxWeaponMateriaSlots.Text = "Materia slots";
@@ -829,7 +774,7 @@
             this.materiaSlotSelectorWeapon.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             this.materiaSlotSelectorWeapon.Location = new System.Drawing.Point(6, 22);
             this.materiaSlotSelectorWeapon.Name = "materiaSlotSelectorWeapon";
-            this.materiaSlotSelectorWeapon.Size = new System.Drawing.Size(221, 35);
+            this.materiaSlotSelectorWeapon.Size = new System.Drawing.Size(211, 35);
             this.materiaSlotSelectorWeapon.TabIndex = 0;
             // 
             // comboBoxWeaponMateriaGrowth
@@ -840,237 +785,118 @@
             this.comboBoxWeaponMateriaGrowth.FormattingEnabled = true;
             this.comboBoxWeaponMateriaGrowth.Location = new System.Drawing.Point(6, 78);
             this.comboBoxWeaponMateriaGrowth.Name = "comboBoxWeaponMateriaGrowth";
-            this.comboBoxWeaponMateriaGrowth.Size = new System.Drawing.Size(221, 23);
+            this.comboBoxWeaponMateriaGrowth.Size = new System.Drawing.Size(211, 23);
             this.comboBoxWeaponMateriaGrowth.TabIndex = 2;
             this.comboBoxWeaponMateriaGrowth.SelectedIndexChanged += new System.EventHandler(this.comboBoxWeaponMateriaGrowth_SelectedIndexChanged);
             // 
-            // groupBoxWeaponRestrictions
+            // labelWeaponCritChance
             // 
-            this.groupBoxWeaponRestrictions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponIsThrowable);
-            this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponIsSellable);
-            this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponUsableInMenu);
-            this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponUsableInBattle);
-            this.groupBoxWeaponRestrictions.Location = new System.Drawing.Point(532, 343);
-            this.groupBoxWeaponRestrictions.Name = "groupBoxWeaponRestrictions";
-            this.groupBoxWeaponRestrictions.Size = new System.Drawing.Size(235, 124);
-            this.groupBoxWeaponRestrictions.TabIndex = 19;
-            this.groupBoxWeaponRestrictions.TabStop = false;
-            this.groupBoxWeaponRestrictions.Text = "Item restrictions";
+            this.labelWeaponCritChance.AutoSize = true;
+            this.labelWeaponCritChance.Location = new System.Drawing.Point(113, 91);
+            this.labelWeaponCritChance.Name = "labelWeaponCritChance";
+            this.labelWeaponCritChance.Size = new System.Drawing.Size(39, 15);
+            this.labelWeaponCritChance.TabIndex = 23;
+            this.labelWeaponCritChance.Text = "Crit%:";
             // 
-            // checkBoxWeaponIsThrowable
+            // labelWeaponHitChance
             // 
-            this.checkBoxWeaponIsThrowable.AutoSize = true;
-            this.checkBoxWeaponIsThrowable.Location = new System.Drawing.Point(7, 97);
-            this.checkBoxWeaponIsThrowable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxWeaponIsThrowable.Name = "checkBoxWeaponIsThrowable";
-            this.checkBoxWeaponIsThrowable.Size = new System.Drawing.Size(104, 19);
-            this.checkBoxWeaponIsThrowable.TabIndex = 19;
-            this.checkBoxWeaponIsThrowable.Text = "Can be thrown";
-            this.checkBoxWeaponIsThrowable.UseVisualStyleBackColor = true;
+            this.labelWeaponHitChance.AutoSize = true;
+            this.labelWeaponHitChance.Location = new System.Drawing.Point(7, 91);
+            this.labelWeaponHitChance.Name = "labelWeaponHitChance";
+            this.labelWeaponHitChance.Size = new System.Drawing.Size(36, 15);
+            this.labelWeaponHitChance.TabIndex = 21;
+            this.labelWeaponHitChance.Text = "Hit%:";
             // 
-            // checkBoxWeaponIsSellable
+            // textBoxWeaponName
             // 
-            this.checkBoxWeaponIsSellable.AutoSize = true;
-            this.checkBoxWeaponIsSellable.Location = new System.Drawing.Point(7, 22);
-            this.checkBoxWeaponIsSellable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxWeaponIsSellable.Name = "checkBoxWeaponIsSellable";
-            this.checkBoxWeaponIsSellable.Size = new System.Drawing.Size(88, 19);
-            this.checkBoxWeaponIsSellable.TabIndex = 16;
-            this.checkBoxWeaponIsSellable.Text = "Can be sold";
-            this.checkBoxWeaponIsSellable.UseVisualStyleBackColor = true;
+            this.textBoxWeaponName.Location = new System.Drawing.Point(7, 21);
+            this.textBoxWeaponName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxWeaponName.Name = "textBoxWeaponName";
+            this.textBoxWeaponName.Size = new System.Drawing.Size(230, 23);
+            this.textBoxWeaponName.TabIndex = 10;
             // 
-            // checkBoxWeaponUsableInMenu
+            // labelWeaponName
             // 
-            this.checkBoxWeaponUsableInMenu.AutoSize = true;
-            this.checkBoxWeaponUsableInMenu.Location = new System.Drawing.Point(7, 72);
-            this.checkBoxWeaponUsableInMenu.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxWeaponUsableInMenu.Name = "checkBoxWeaponUsableInMenu";
-            this.checkBoxWeaponUsableInMenu.Size = new System.Drawing.Size(138, 19);
-            this.checkBoxWeaponUsableInMenu.TabIndex = 18;
-            this.checkBoxWeaponUsableInMenu.Text = "Can be used in menu";
-            this.checkBoxWeaponUsableInMenu.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponUsableInBattle
-            // 
-            this.checkBoxWeaponUsableInBattle.AutoSize = true;
-            this.checkBoxWeaponUsableInBattle.Location = new System.Drawing.Point(7, 47);
-            this.checkBoxWeaponUsableInBattle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxWeaponUsableInBattle.Name = "checkBoxWeaponUsableInBattle";
-            this.checkBoxWeaponUsableInBattle.Size = new System.Drawing.Size(137, 19);
-            this.checkBoxWeaponUsableInBattle.TabIndex = 17;
-            this.checkBoxWeaponUsableInBattle.Text = "Can be used in battle";
-            this.checkBoxWeaponUsableInBattle.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxWeaponEquipable
-            // 
-            this.groupBoxWeaponEquipable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponSephiroth);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponYCloud);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponCid);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponVincent);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponCaitSith);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponYuffie);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponRed);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponAerith);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponTifa);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponBarret);
-            this.groupBoxWeaponEquipable.Controls.Add(this.checkBoxWeaponCloud);
-            this.groupBoxWeaponEquipable.Location = new System.Drawing.Point(191, 343);
-            this.groupBoxWeaponEquipable.Name = "groupBoxWeaponEquipable";
-            this.groupBoxWeaponEquipable.Size = new System.Drawing.Size(335, 124);
-            this.groupBoxWeaponEquipable.TabIndex = 13;
-            this.groupBoxWeaponEquipable.TabStop = false;
-            this.groupBoxWeaponEquipable.Text = "Equipable by...";
-            // 
-            // checkBoxWeaponSephiroth
-            // 
-            this.checkBoxWeaponSephiroth.AutoSize = true;
-            this.checkBoxWeaponSephiroth.Location = new System.Drawing.Point(188, 72);
-            this.checkBoxWeaponSephiroth.Name = "checkBoxWeaponSephiroth";
-            this.checkBoxWeaponSephiroth.Size = new System.Drawing.Size(77, 19);
-            this.checkBoxWeaponSephiroth.TabIndex = 10;
-            this.checkBoxWeaponSephiroth.Text = "Sephiroth";
-            this.checkBoxWeaponSephiroth.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponYCloud
-            // 
-            this.checkBoxWeaponYCloud.AutoSize = true;
-            this.checkBoxWeaponYCloud.Location = new System.Drawing.Point(188, 47);
-            this.checkBoxWeaponYCloud.Name = "checkBoxWeaponYCloud";
-            this.checkBoxWeaponYCloud.Size = new System.Drawing.Size(68, 19);
-            this.checkBoxWeaponYCloud.TabIndex = 9;
-            this.checkBoxWeaponYCloud.Text = "Y.Cloud";
-            this.checkBoxWeaponYCloud.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponCid
-            // 
-            this.checkBoxWeaponCid.AutoSize = true;
-            this.checkBoxWeaponCid.Location = new System.Drawing.Point(188, 22);
-            this.checkBoxWeaponCid.Name = "checkBoxWeaponCid";
-            this.checkBoxWeaponCid.Size = new System.Drawing.Size(44, 19);
-            this.checkBoxWeaponCid.TabIndex = 8;
-            this.checkBoxWeaponCid.Text = "Cid";
-            this.checkBoxWeaponCid.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponVincent
-            // 
-            this.checkBoxWeaponVincent.AutoSize = true;
-            this.checkBoxWeaponVincent.Location = new System.Drawing.Point(96, 97);
-            this.checkBoxWeaponVincent.Name = "checkBoxWeaponVincent";
-            this.checkBoxWeaponVincent.Size = new System.Drawing.Size(66, 19);
-            this.checkBoxWeaponVincent.TabIndex = 7;
-            this.checkBoxWeaponVincent.Text = "Vincent";
-            this.checkBoxWeaponVincent.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponCaitSith
-            // 
-            this.checkBoxWeaponCaitSith.AutoSize = true;
-            this.checkBoxWeaponCaitSith.Location = new System.Drawing.Point(96, 72);
-            this.checkBoxWeaponCaitSith.Name = "checkBoxWeaponCaitSith";
-            this.checkBoxWeaponCaitSith.Size = new System.Drawing.Size(70, 19);
-            this.checkBoxWeaponCaitSith.TabIndex = 6;
-            this.checkBoxWeaponCaitSith.Text = "Cait Sith";
-            this.checkBoxWeaponCaitSith.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponYuffie
-            // 
-            this.checkBoxWeaponYuffie.AutoSize = true;
-            this.checkBoxWeaponYuffie.Location = new System.Drawing.Point(96, 47);
-            this.checkBoxWeaponYuffie.Name = "checkBoxWeaponYuffie";
-            this.checkBoxWeaponYuffie.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxWeaponYuffie.TabIndex = 5;
-            this.checkBoxWeaponYuffie.Text = "Yuffie";
-            this.checkBoxWeaponYuffie.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponRed
-            // 
-            this.checkBoxWeaponRed.AutoSize = true;
-            this.checkBoxWeaponRed.Location = new System.Drawing.Point(96, 22);
-            this.checkBoxWeaponRed.Name = "checkBoxWeaponRed";
-            this.checkBoxWeaponRed.Size = new System.Drawing.Size(65, 19);
-            this.checkBoxWeaponRed.TabIndex = 4;
-            this.checkBoxWeaponRed.Text = "Red XIII";
-            this.checkBoxWeaponRed.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponAerith
-            // 
-            this.checkBoxWeaponAerith.AutoSize = true;
-            this.checkBoxWeaponAerith.Location = new System.Drawing.Point(6, 97);
-            this.checkBoxWeaponAerith.Name = "checkBoxWeaponAerith";
-            this.checkBoxWeaponAerith.Size = new System.Drawing.Size(58, 19);
-            this.checkBoxWeaponAerith.TabIndex = 3;
-            this.checkBoxWeaponAerith.Text = "Aerith";
-            this.checkBoxWeaponAerith.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponTifa
-            // 
-            this.checkBoxWeaponTifa.AutoSize = true;
-            this.checkBoxWeaponTifa.Location = new System.Drawing.Point(6, 72);
-            this.checkBoxWeaponTifa.Name = "checkBoxWeaponTifa";
-            this.checkBoxWeaponTifa.Size = new System.Drawing.Size(45, 19);
-            this.checkBoxWeaponTifa.TabIndex = 2;
-            this.checkBoxWeaponTifa.Text = "Tifa";
-            this.checkBoxWeaponTifa.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponBarret
-            // 
-            this.checkBoxWeaponBarret.AutoSize = true;
-            this.checkBoxWeaponBarret.Location = new System.Drawing.Point(6, 47);
-            this.checkBoxWeaponBarret.Name = "checkBoxWeaponBarret";
-            this.checkBoxWeaponBarret.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxWeaponBarret.TabIndex = 1;
-            this.checkBoxWeaponBarret.Text = "Barret";
-            this.checkBoxWeaponBarret.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxWeaponCloud
-            // 
-            this.checkBoxWeaponCloud.AutoSize = true;
-            this.checkBoxWeaponCloud.Location = new System.Drawing.Point(6, 22);
-            this.checkBoxWeaponCloud.Name = "checkBoxWeaponCloud";
-            this.checkBoxWeaponCloud.Size = new System.Drawing.Size(58, 19);
-            this.checkBoxWeaponCloud.TabIndex = 0;
-            this.checkBoxWeaponCloud.Text = "Cloud";
-            this.checkBoxWeaponCloud.UseVisualStyleBackColor = true;
-            // 
-            // textBoxWeaponDescription
-            // 
-            this.textBoxWeaponDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxWeaponDescription.Location = new System.Drawing.Point(365, 31);
-            this.textBoxWeaponDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBoxWeaponDescription.Name = "textBoxWeaponDescription";
-            this.textBoxWeaponDescription.Size = new System.Drawing.Size(402, 23);
-            this.textBoxWeaponDescription.TabIndex = 12;
+            this.labelWeaponName.AutoSize = true;
+            this.labelWeaponName.Location = new System.Drawing.Point(7, 3);
+            this.labelWeaponName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelWeaponName.Name = "labelWeaponName";
+            this.labelWeaponName.Size = new System.Drawing.Size(42, 15);
+            this.labelWeaponName.TabIndex = 9;
+            this.labelWeaponName.Text = "Name:";
             // 
             // labelWeaponDescription
             // 
             this.labelWeaponDescription.AutoSize = true;
-            this.labelWeaponDescription.Location = new System.Drawing.Point(365, 13);
+            this.labelWeaponDescription.Location = new System.Drawing.Point(7, 47);
             this.labelWeaponDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelWeaponDescription.Name = "labelWeaponDescription";
             this.labelWeaponDescription.Size = new System.Drawing.Size(70, 15);
             this.labelWeaponDescription.TabIndex = 11;
             this.labelWeaponDescription.Text = "Description:";
             // 
-            // textBoxWeaponName
+            // textBoxWeaponDescription
             // 
-            this.textBoxWeaponName.Location = new System.Drawing.Point(191, 31);
-            this.textBoxWeaponName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBoxWeaponName.Name = "textBoxWeaponName";
-            this.textBoxWeaponName.Size = new System.Drawing.Size(166, 23);
-            this.textBoxWeaponName.TabIndex = 10;
+            this.textBoxWeaponDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxWeaponDescription.Location = new System.Drawing.Point(7, 65);
+            this.textBoxWeaponDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxWeaponDescription.Name = "textBoxWeaponDescription";
+            this.textBoxWeaponDescription.Size = new System.Drawing.Size(556, 23);
+            this.textBoxWeaponDescription.TabIndex = 12;
             // 
-            // labelWeaponName
+            // tabPageWeapon2
             // 
-            this.labelWeaponName.AutoSize = true;
-            this.labelWeaponName.Location = new System.Drawing.Point(191, 13);
-            this.labelWeaponName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelWeaponName.Name = "labelWeaponName";
-            this.labelWeaponName.Size = new System.Drawing.Size(42, 15);
-            this.labelWeaponName.TabIndex = 9;
-            this.labelWeaponName.Text = "Name:";
+            this.tabPageWeapon2.Controls.Add(this.targetDataControlWeapon);
+            this.tabPageWeapon2.Controls.Add(this.damageCalculationControlWeapon);
+            this.tabPageWeapon2.Controls.Add(this.equipableListWeapon);
+            this.tabPageWeapon2.Controls.Add(this.itemRestrictionsWeapon);
+            this.tabPageWeapon2.Location = new System.Drawing.Point(4, 24);
+            this.tabPageWeapon2.Name = "tabPageWeapon2";
+            this.tabPageWeapon2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageWeapon2.Size = new System.Drawing.Size(570, 441);
+            this.tabPageWeapon2.TabIndex = 1;
+            this.tabPageWeapon2.Text = "Page 2";
+            this.tabPageWeapon2.UseVisualStyleBackColor = true;
+            // 
+            // targetDataControlWeapon
+            // 
+            this.targetDataControlWeapon.Location = new System.Drawing.Point(6, 156);
+            this.targetDataControlWeapon.Name = "targetDataControlWeapon";
+            this.targetDataControlWeapon.Size = new System.Drawing.Size(328, 138);
+            this.targetDataControlWeapon.TabIndex = 29;
+            // 
+            // damageCalculationControlWeapon
+            // 
+            this.damageCalculationControlWeapon.AccuracyCalculation = FF7Scarlet.AccuracyCalculation.NoMiss1;
+            this.damageCalculationControlWeapon.ActualValue = ((byte)(0));
+            this.damageCalculationControlWeapon.AttackPower = ((byte)(0));
+            this.damageCalculationControlWeapon.CanCrit = false;
+            this.damageCalculationControlWeapon.DamageFormula = FF7Scarlet.DamageFormulas.NoDamage;
+            this.damageCalculationControlWeapon.DamageType = FF7Scarlet.DamageType.Physical;
+            this.damageCalculationControlWeapon.Location = new System.Drawing.Point(6, 3);
+            this.damageCalculationControlWeapon.Name = "damageCalculationControlWeapon";
+            this.damageCalculationControlWeapon.Size = new System.Drawing.Size(553, 147);
+            this.damageCalculationControlWeapon.TabIndex = 26;
+            // 
+            // equipableListWeapon
+            // 
+            this.equipableListWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.equipableListWeapon.Location = new System.Drawing.Point(6, 300);
+            this.equipableListWeapon.MinimumSize = new System.Drawing.Size(280, 125);
+            this.equipableListWeapon.Name = "equipableListWeapon";
+            this.equipableListWeapon.Size = new System.Drawing.Size(328, 125);
+            this.equipableListWeapon.TabIndex = 20;
+            // 
+            // itemRestrictionsWeapon
+            // 
+            this.itemRestrictionsWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemRestrictionsWeapon.Location = new System.Drawing.Point(340, 300);
+            this.itemRestrictionsWeapon.Name = "itemRestrictionsWeapon";
+            this.itemRestrictionsWeapon.ShowThrowable = false;
+            this.itemRestrictionsWeapon.Size = new System.Drawing.Size(223, 125);
+            this.itemRestrictionsWeapon.TabIndex = 25;
             // 
             // listBoxWeapons
             // 
@@ -1081,19 +907,13 @@
             this.listBoxWeapons.Location = new System.Drawing.Point(9, 13);
             this.listBoxWeapons.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxWeapons.Name = "listBoxWeapons";
-            this.listBoxWeapons.Size = new System.Drawing.Size(174, 454);
+            this.listBoxWeapons.Size = new System.Drawing.Size(174, 469);
             this.listBoxWeapons.TabIndex = 1;
             this.listBoxWeapons.SelectedIndexChanged += new System.EventHandler(this.listBoxWeapons_SelectedIndexChanged);
             // 
             // tabPageArmorData
             // 
-            this.tabPageArmorData.Controls.Add(this.groupBoxArmorMateriaSlots);
-            this.tabPageArmorData.Controls.Add(this.groupBoxArmorRestrictions);
-            this.tabPageArmorData.Controls.Add(this.groupBoxArmorEquipable);
-            this.tabPageArmorData.Controls.Add(this.textBoxArmorDescription);
-            this.tabPageArmorData.Controls.Add(this.labelArmorDescription);
-            this.tabPageArmorData.Controls.Add(this.textBoxArmorName);
-            this.tabPageArmorData.Controls.Add(this.labelArmorName);
+            this.tabPageArmorData.Controls.Add(this.tabControlArmor);
             this.tabPageArmorData.Controls.Add(this.listBoxArmor);
             this.tabPageArmorData.Location = new System.Drawing.Point(4, 24);
             this.tabPageArmorData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1103,15 +923,224 @@
             this.tabPageArmorData.Text = "Armor";
             this.tabPageArmorData.UseVisualStyleBackColor = true;
             // 
+            // tabControlArmor
+            // 
+            this.tabControlArmor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlArmor.Controls.Add(this.tabPageArmor1);
+            this.tabControlArmor.Controls.Add(this.tabPageArmor2);
+            this.tabControlArmor.Location = new System.Drawing.Point(190, 13);
+            this.tabControlArmor.Name = "tabControlArmor";
+            this.tabControlArmor.SelectedIndex = 0;
+            this.tabControlArmor.Size = new System.Drawing.Size(578, 469);
+            this.tabControlArmor.TabIndex = 34;
+            // 
+            // tabPageArmor1
+            // 
+            this.tabPageArmor1.Controls.Add(this.labelArmorElementModifier);
+            this.tabPageArmor1.Controls.Add(this.numericArmorMagicDefensePercent);
+            this.tabPageArmor1.Controls.Add(this.labelArmorMagicDefensePercent);
+            this.tabPageArmor1.Controls.Add(this.numericArmorMagicDefense);
+            this.tabPageArmor1.Controls.Add(this.comboBoxArmorElementModifier);
+            this.tabPageArmor1.Controls.Add(this.labelArmorMagicDefense);
+            this.tabPageArmor1.Controls.Add(this.comboBoxArmorStatus);
+            this.tabPageArmor1.Controls.Add(this.numericArmorDefensePercent);
+            this.tabPageArmor1.Controls.Add(this.elementsControlArmor);
+            this.tabPageArmor1.Controls.Add(this.labelArmorStatus);
+            this.tabPageArmor1.Controls.Add(this.labelArmorDefencePercent);
+            this.tabPageArmor1.Controls.Add(this.numericArmorDefense);
+            this.tabPageArmor1.Controls.Add(this.labelArmorDefense);
+            this.tabPageArmor1.Controls.Add(this.statIncreaseControlArmor);
+            this.tabPageArmor1.Controls.Add(this.labelArmorName);
+            this.tabPageArmor1.Controls.Add(this.textBoxArmorName);
+            this.tabPageArmor1.Controls.Add(this.labelArmorDescription);
+            this.tabPageArmor1.Controls.Add(this.groupBoxArmorMateriaSlots);
+            this.tabPageArmor1.Controls.Add(this.textBoxArmorDescription);
+            this.tabPageArmor1.Location = new System.Drawing.Point(4, 24);
+            this.tabPageArmor1.Name = "tabPageArmor1";
+            this.tabPageArmor1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageArmor1.Size = new System.Drawing.Size(570, 441);
+            this.tabPageArmor1.TabIndex = 0;
+            this.tabPageArmor1.Text = "Page 1";
+            this.tabPageArmor1.UseVisualStyleBackColor = true;
+            // 
+            // labelArmorElementModifier
+            // 
+            this.labelArmorElementModifier.AutoSize = true;
+            this.labelArmorElementModifier.Location = new System.Drawing.Point(382, 310);
+            this.labelArmorElementModifier.Name = "labelArmorElementModifier";
+            this.labelArmorElementModifier.Size = new System.Drawing.Size(147, 15);
+            this.labelArmorElementModifier.TabIndex = 34;
+            this.labelArmorElementModifier.Text = "Element damage modifier:";
+            // 
+            // numericArmorMagicDefensePercent
+            // 
+            this.numericArmorMagicDefensePercent.Location = new System.Drawing.Point(325, 109);
+            this.numericArmorMagicDefensePercent.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericArmorMagicDefensePercent.Name = "numericArmorMagicDefensePercent";
+            this.numericArmorMagicDefensePercent.Size = new System.Drawing.Size(100, 23);
+            this.numericArmorMagicDefensePercent.TabIndex = 41;
+            // 
+            // labelArmorMagicDefensePercent
+            // 
+            this.labelArmorMagicDefensePercent.AutoSize = true;
+            this.labelArmorMagicDefensePercent.Location = new System.Drawing.Point(325, 91);
+            this.labelArmorMagicDefensePercent.Name = "labelArmorMagicDefensePercent";
+            this.labelArmorMagicDefensePercent.Size = new System.Drawing.Size(76, 15);
+            this.labelArmorMagicDefensePercent.TabIndex = 40;
+            this.labelArmorMagicDefensePercent.Text = "M.Defense%:";
+            // 
+            // numericArmorMagicDefense
+            // 
+            this.numericArmorMagicDefense.Location = new System.Drawing.Point(219, 109);
+            this.numericArmorMagicDefense.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericArmorMagicDefense.Name = "numericArmorMagicDefense";
+            this.numericArmorMagicDefense.Size = new System.Drawing.Size(100, 23);
+            this.numericArmorMagicDefense.TabIndex = 39;
+            // 
+            // comboBoxArmorElementModifier
+            // 
+            this.comboBoxArmorElementModifier.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxArmorElementModifier.FormattingEnabled = true;
+            this.comboBoxArmorElementModifier.Location = new System.Drawing.Point(382, 328);
+            this.comboBoxArmorElementModifier.Name = "comboBoxArmorElementModifier";
+            this.comboBoxArmorElementModifier.Size = new System.Drawing.Size(181, 23);
+            this.comboBoxArmorElementModifier.TabIndex = 35;
+            // 
+            // labelArmorMagicDefense
+            // 
+            this.labelArmorMagicDefense.AutoSize = true;
+            this.labelArmorMagicDefense.Location = new System.Drawing.Point(219, 91);
+            this.labelArmorMagicDefense.Name = "labelArmorMagicDefense";
+            this.labelArmorMagicDefense.Size = new System.Drawing.Size(66, 15);
+            this.labelArmorMagicDefense.TabIndex = 38;
+            this.labelArmorMagicDefense.Text = "M.Defense:";
+            // 
+            // comboBoxArmorStatus
+            // 
+            this.comboBoxArmorStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxArmorStatus.FormattingEnabled = true;
+            this.comboBoxArmorStatus.Location = new System.Drawing.Point(382, 372);
+            this.comboBoxArmorStatus.Name = "comboBoxArmorStatus";
+            this.comboBoxArmorStatus.Size = new System.Drawing.Size(181, 23);
+            this.comboBoxArmorStatus.TabIndex = 30;
+            // 
+            // numericArmorDefensePercent
+            // 
+            this.numericArmorDefensePercent.Location = new System.Drawing.Point(113, 109);
+            this.numericArmorDefensePercent.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericArmorDefensePercent.Name = "numericArmorDefensePercent";
+            this.numericArmorDefensePercent.Size = new System.Drawing.Size(100, 23);
+            this.numericArmorDefensePercent.TabIndex = 37;
+            // 
+            // elementsControlArmor
+            // 
+            this.elementsControlArmor.Location = new System.Drawing.Point(7, 305);
+            this.elementsControlArmor.MinimumSize = new System.Drawing.Size(370, 130);
+            this.elementsControlArmor.Name = "elementsControlArmor";
+            this.elementsControlArmor.Size = new System.Drawing.Size(370, 130);
+            this.elementsControlArmor.TabIndex = 33;
+            // 
+            // labelArmorStatus
+            // 
+            this.labelArmorStatus.AutoSize = true;
+            this.labelArmorStatus.Location = new System.Drawing.Point(382, 354);
+            this.labelArmorStatus.Name = "labelArmorStatus";
+            this.labelArmorStatus.Size = new System.Drawing.Size(87, 15);
+            this.labelArmorStatus.TabIndex = 29;
+            this.labelArmorStatus.Text = "Protects status:";
+            // 
+            // labelArmorDefencePercent
+            // 
+            this.labelArmorDefencePercent.AutoSize = true;
+            this.labelArmorDefencePercent.Location = new System.Drawing.Point(113, 91);
+            this.labelArmorDefencePercent.Name = "labelArmorDefencePercent";
+            this.labelArmorDefencePercent.Size = new System.Drawing.Size(62, 15);
+            this.labelArmorDefencePercent.TabIndex = 36;
+            this.labelArmorDefencePercent.Text = "Defense%:";
+            // 
+            // numericArmorDefense
+            // 
+            this.numericArmorDefense.Location = new System.Drawing.Point(7, 109);
+            this.numericArmorDefense.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericArmorDefense.Name = "numericArmorDefense";
+            this.numericArmorDefense.Size = new System.Drawing.Size(100, 23);
+            this.numericArmorDefense.TabIndex = 35;
+            // 
+            // labelArmorDefense
+            // 
+            this.labelArmorDefense.AutoSize = true;
+            this.labelArmorDefense.Location = new System.Drawing.Point(7, 91);
+            this.labelArmorDefense.Name = "labelArmorDefense";
+            this.labelArmorDefense.Size = new System.Drawing.Size(52, 15);
+            this.labelArmorDefense.TabIndex = 34;
+            this.labelArmorDefense.Text = "Defense:";
+            // 
+            // statIncreaseControlArmor
+            // 
+            this.statIncreaseControlArmor.Count = 4;
+            this.statIncreaseControlArmor.Location = new System.Drawing.Point(7, 157);
+            this.statIncreaseControlArmor.MinimumSize = new System.Drawing.Size(250, 142);
+            this.statIncreaseControlArmor.Name = "statIncreaseControlArmor";
+            this.statIncreaseControlArmor.Size = new System.Drawing.Size(327, 142);
+            this.statIncreaseControlArmor.TabIndex = 33;
+            // 
+            // labelArmorName
+            // 
+            this.labelArmorName.AutoSize = true;
+            this.labelArmorName.Location = new System.Drawing.Point(7, 3);
+            this.labelArmorName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelArmorName.Name = "labelArmorName";
+            this.labelArmorName.Size = new System.Drawing.Size(42, 15);
+            this.labelArmorName.TabIndex = 9;
+            this.labelArmorName.Text = "Name:";
+            // 
+            // textBoxArmorName
+            // 
+            this.textBoxArmorName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxArmorName.Location = new System.Drawing.Point(7, 21);
+            this.textBoxArmorName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxArmorName.Name = "textBoxArmorName";
+            this.textBoxArmorName.Size = new System.Drawing.Size(230, 23);
+            this.textBoxArmorName.TabIndex = 10;
+            // 
+            // labelArmorDescription
+            // 
+            this.labelArmorDescription.AutoSize = true;
+            this.labelArmorDescription.Location = new System.Drawing.Point(7, 47);
+            this.labelArmorDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelArmorDescription.Name = "labelArmorDescription";
+            this.labelArmorDescription.Size = new System.Drawing.Size(70, 15);
+            this.labelArmorDescription.TabIndex = 11;
+            this.labelArmorDescription.Text = "Description:";
+            // 
             // groupBoxArmorMateriaSlots
             // 
-            this.groupBoxArmorMateriaSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxArmorMateriaSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxArmorMateriaSlots.Controls.Add(this.labelArmorMateriaGrowth);
             this.groupBoxArmorMateriaSlots.Controls.Add(this.materiaSlotSelectorArmor);
             this.groupBoxArmorMateriaSlots.Controls.Add(this.comboBoxArmorMateriaGrowth);
-            this.groupBoxArmorMateriaSlots.Location = new System.Drawing.Point(191, 224);
+            this.groupBoxArmorMateriaSlots.Location = new System.Drawing.Point(341, 188);
             this.groupBoxArmorMateriaSlots.Name = "groupBoxArmorMateriaSlots";
-            this.groupBoxArmorMateriaSlots.Size = new System.Drawing.Size(226, 108);
+            this.groupBoxArmorMateriaSlots.Size = new System.Drawing.Size(223, 111);
             this.groupBoxArmorMateriaSlots.TabIndex = 23;
             this.groupBoxArmorMateriaSlots.TabStop = false;
             this.groupBoxArmorMateriaSlots.Text = "Materia slots";
@@ -1134,7 +1163,7 @@
             this.materiaSlotSelectorArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             this.materiaSlotSelectorArmor.Location = new System.Drawing.Point(6, 22);
             this.materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
-            this.materiaSlotSelectorArmor.Size = new System.Drawing.Size(214, 35);
+            this.materiaSlotSelectorArmor.Size = new System.Drawing.Size(211, 35);
             this.materiaSlotSelectorArmor.TabIndex = 0;
             // 
             // comboBoxArmorMateriaGrowth
@@ -1145,227 +1174,50 @@
             this.comboBoxArmorMateriaGrowth.FormattingEnabled = true;
             this.comboBoxArmorMateriaGrowth.Location = new System.Drawing.Point(6, 78);
             this.comboBoxArmorMateriaGrowth.Name = "comboBoxArmorMateriaGrowth";
-            this.comboBoxArmorMateriaGrowth.Size = new System.Drawing.Size(214, 23);
+            this.comboBoxArmorMateriaGrowth.Size = new System.Drawing.Size(211, 23);
             this.comboBoxArmorMateriaGrowth.TabIndex = 2;
             this.comboBoxArmorMateriaGrowth.SelectedIndexChanged += new System.EventHandler(this.comboBoxArmorMateriaGrowth_SelectedIndexChanged);
-            // 
-            // groupBoxArmorRestrictions
-            // 
-            this.groupBoxArmorRestrictions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxArmorRestrictions.Controls.Add(this.checkBoxArmorIsSellable);
-            this.groupBoxArmorRestrictions.Controls.Add(this.checkBoxArmorUsableInMenu);
-            this.groupBoxArmorRestrictions.Controls.Add(this.checkBoxArmorUsableInBattle);
-            this.groupBoxArmorRestrictions.Location = new System.Drawing.Point(532, 343);
-            this.groupBoxArmorRestrictions.Name = "groupBoxArmorRestrictions";
-            this.groupBoxArmorRestrictions.Size = new System.Drawing.Size(232, 124);
-            this.groupBoxArmorRestrictions.TabIndex = 22;
-            this.groupBoxArmorRestrictions.TabStop = false;
-            this.groupBoxArmorRestrictions.Text = "Item restrictions";
-            // 
-            // checkBoxArmorIsSellable
-            // 
-            this.checkBoxArmorIsSellable.AutoSize = true;
-            this.checkBoxArmorIsSellable.Location = new System.Drawing.Point(7, 22);
-            this.checkBoxArmorIsSellable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxArmorIsSellable.Name = "checkBoxArmorIsSellable";
-            this.checkBoxArmorIsSellable.Size = new System.Drawing.Size(88, 19);
-            this.checkBoxArmorIsSellable.TabIndex = 19;
-            this.checkBoxArmorIsSellable.Text = "Can be sold";
-            this.checkBoxArmorIsSellable.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorUsableInMenu
-            // 
-            this.checkBoxArmorUsableInMenu.AutoSize = true;
-            this.checkBoxArmorUsableInMenu.Location = new System.Drawing.Point(7, 72);
-            this.checkBoxArmorUsableInMenu.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxArmorUsableInMenu.Name = "checkBoxArmorUsableInMenu";
-            this.checkBoxArmorUsableInMenu.Size = new System.Drawing.Size(138, 19);
-            this.checkBoxArmorUsableInMenu.TabIndex = 21;
-            this.checkBoxArmorUsableInMenu.Text = "Can be used in menu";
-            this.checkBoxArmorUsableInMenu.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorUsableInBattle
-            // 
-            this.checkBoxArmorUsableInBattle.AutoSize = true;
-            this.checkBoxArmorUsableInBattle.Location = new System.Drawing.Point(7, 47);
-            this.checkBoxArmorUsableInBattle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxArmorUsableInBattle.Name = "checkBoxArmorUsableInBattle";
-            this.checkBoxArmorUsableInBattle.Size = new System.Drawing.Size(137, 19);
-            this.checkBoxArmorUsableInBattle.TabIndex = 20;
-            this.checkBoxArmorUsableInBattle.Text = "Can be used in battle";
-            this.checkBoxArmorUsableInBattle.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxArmorEquipable
-            // 
-            this.groupBoxArmorEquipable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorSephiroth);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorYCloud);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorCid);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorVincent);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorCaitSith);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorYuffie);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorRed);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorAerith);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorTifa);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorBarret);
-            this.groupBoxArmorEquipable.Controls.Add(this.checkBoxArmorCloud);
-            this.groupBoxArmorEquipable.Location = new System.Drawing.Point(191, 343);
-            this.groupBoxArmorEquipable.Name = "groupBoxArmorEquipable";
-            this.groupBoxArmorEquipable.Size = new System.Drawing.Size(335, 124);
-            this.groupBoxArmorEquipable.TabIndex = 14;
-            this.groupBoxArmorEquipable.TabStop = false;
-            this.groupBoxArmorEquipable.Text = "Equipable by...";
-            // 
-            // checkBoxArmorSephiroth
-            // 
-            this.checkBoxArmorSephiroth.AutoSize = true;
-            this.checkBoxArmorSephiroth.Location = new System.Drawing.Point(188, 72);
-            this.checkBoxArmorSephiroth.Name = "checkBoxArmorSephiroth";
-            this.checkBoxArmorSephiroth.Size = new System.Drawing.Size(77, 19);
-            this.checkBoxArmorSephiroth.TabIndex = 10;
-            this.checkBoxArmorSephiroth.Text = "Sephiroth";
-            this.checkBoxArmorSephiroth.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorYCloud
-            // 
-            this.checkBoxArmorYCloud.AutoSize = true;
-            this.checkBoxArmorYCloud.Location = new System.Drawing.Point(188, 47);
-            this.checkBoxArmorYCloud.Name = "checkBoxArmorYCloud";
-            this.checkBoxArmorYCloud.Size = new System.Drawing.Size(68, 19);
-            this.checkBoxArmorYCloud.TabIndex = 9;
-            this.checkBoxArmorYCloud.Text = "Y.Cloud";
-            this.checkBoxArmorYCloud.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorCid
-            // 
-            this.checkBoxArmorCid.AutoSize = true;
-            this.checkBoxArmorCid.Location = new System.Drawing.Point(188, 22);
-            this.checkBoxArmorCid.Name = "checkBoxArmorCid";
-            this.checkBoxArmorCid.Size = new System.Drawing.Size(44, 19);
-            this.checkBoxArmorCid.TabIndex = 8;
-            this.checkBoxArmorCid.Text = "Cid";
-            this.checkBoxArmorCid.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorVincent
-            // 
-            this.checkBoxArmorVincent.AutoSize = true;
-            this.checkBoxArmorVincent.Location = new System.Drawing.Point(96, 97);
-            this.checkBoxArmorVincent.Name = "checkBoxArmorVincent";
-            this.checkBoxArmorVincent.Size = new System.Drawing.Size(66, 19);
-            this.checkBoxArmorVincent.TabIndex = 7;
-            this.checkBoxArmorVincent.Text = "Vincent";
-            this.checkBoxArmorVincent.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorCaitSith
-            // 
-            this.checkBoxArmorCaitSith.AutoSize = true;
-            this.checkBoxArmorCaitSith.Location = new System.Drawing.Point(96, 72);
-            this.checkBoxArmorCaitSith.Name = "checkBoxArmorCaitSith";
-            this.checkBoxArmorCaitSith.Size = new System.Drawing.Size(70, 19);
-            this.checkBoxArmorCaitSith.TabIndex = 6;
-            this.checkBoxArmorCaitSith.Text = "Cait Sith";
-            this.checkBoxArmorCaitSith.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorYuffie
-            // 
-            this.checkBoxArmorYuffie.AutoSize = true;
-            this.checkBoxArmorYuffie.Location = new System.Drawing.Point(96, 47);
-            this.checkBoxArmorYuffie.Name = "checkBoxArmorYuffie";
-            this.checkBoxArmorYuffie.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxArmorYuffie.TabIndex = 5;
-            this.checkBoxArmorYuffie.Text = "Yuffie";
-            this.checkBoxArmorYuffie.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorRed
-            // 
-            this.checkBoxArmorRed.AutoSize = true;
-            this.checkBoxArmorRed.Location = new System.Drawing.Point(96, 22);
-            this.checkBoxArmorRed.Name = "checkBoxArmorRed";
-            this.checkBoxArmorRed.Size = new System.Drawing.Size(65, 19);
-            this.checkBoxArmorRed.TabIndex = 4;
-            this.checkBoxArmorRed.Text = "Red XIII";
-            this.checkBoxArmorRed.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorAerith
-            // 
-            this.checkBoxArmorAerith.AutoSize = true;
-            this.checkBoxArmorAerith.Location = new System.Drawing.Point(6, 97);
-            this.checkBoxArmorAerith.Name = "checkBoxArmorAerith";
-            this.checkBoxArmorAerith.Size = new System.Drawing.Size(58, 19);
-            this.checkBoxArmorAerith.TabIndex = 3;
-            this.checkBoxArmorAerith.Text = "Aerith";
-            this.checkBoxArmorAerith.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorTifa
-            // 
-            this.checkBoxArmorTifa.AutoSize = true;
-            this.checkBoxArmorTifa.Location = new System.Drawing.Point(6, 72);
-            this.checkBoxArmorTifa.Name = "checkBoxArmorTifa";
-            this.checkBoxArmorTifa.Size = new System.Drawing.Size(45, 19);
-            this.checkBoxArmorTifa.TabIndex = 2;
-            this.checkBoxArmorTifa.Text = "Tifa";
-            this.checkBoxArmorTifa.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorBarret
-            // 
-            this.checkBoxArmorBarret.AutoSize = true;
-            this.checkBoxArmorBarret.Location = new System.Drawing.Point(6, 47);
-            this.checkBoxArmorBarret.Name = "checkBoxArmorBarret";
-            this.checkBoxArmorBarret.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxArmorBarret.TabIndex = 1;
-            this.checkBoxArmorBarret.Text = "Barret";
-            this.checkBoxArmorBarret.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxArmorCloud
-            // 
-            this.checkBoxArmorCloud.AutoSize = true;
-            this.checkBoxArmorCloud.Location = new System.Drawing.Point(6, 22);
-            this.checkBoxArmorCloud.Name = "checkBoxArmorCloud";
-            this.checkBoxArmorCloud.Size = new System.Drawing.Size(58, 19);
-            this.checkBoxArmorCloud.TabIndex = 0;
-            this.checkBoxArmorCloud.Text = "Cloud";
-            this.checkBoxArmorCloud.UseVisualStyleBackColor = true;
             // 
             // textBoxArmorDescription
             // 
             this.textBoxArmorDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxArmorDescription.Location = new System.Drawing.Point(191, 75);
+            this.textBoxArmorDescription.Location = new System.Drawing.Point(7, 65);
             this.textBoxArmorDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxArmorDescription.Name = "textBoxArmorDescription";
-            this.textBoxArmorDescription.Size = new System.Drawing.Size(573, 23);
+            this.textBoxArmorDescription.Size = new System.Drawing.Size(556, 23);
             this.textBoxArmorDescription.TabIndex = 12;
             // 
-            // labelArmorDescription
+            // tabPageArmor2
             // 
-            this.labelArmorDescription.AutoSize = true;
-            this.labelArmorDescription.Location = new System.Drawing.Point(191, 57);
-            this.labelArmorDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelArmorDescription.Name = "labelArmorDescription";
-            this.labelArmorDescription.Size = new System.Drawing.Size(70, 15);
-            this.labelArmorDescription.TabIndex = 11;
-            this.labelArmorDescription.Text = "Description:";
+            this.tabPageArmor2.Controls.Add(this.itemRestrictionsArmor);
+            this.tabPageArmor2.Controls.Add(this.equipableListArmor);
+            this.tabPageArmor2.Location = new System.Drawing.Point(4, 24);
+            this.tabPageArmor2.Name = "tabPageArmor2";
+            this.tabPageArmor2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageArmor2.Size = new System.Drawing.Size(570, 441);
+            this.tabPageArmor2.TabIndex = 1;
+            this.tabPageArmor2.Text = "Page 2";
+            this.tabPageArmor2.UseVisualStyleBackColor = true;
             // 
-            // textBoxArmorName
+            // itemRestrictionsArmor
             // 
-            this.textBoxArmorName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.itemRestrictionsArmor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemRestrictionsArmor.Location = new System.Drawing.Point(339, 6);
+            this.itemRestrictionsArmor.Name = "itemRestrictionsArmor";
+            this.itemRestrictionsArmor.ShowThrowable = false;
+            this.itemRestrictionsArmor.Size = new System.Drawing.Size(224, 125);
+            this.itemRestrictionsArmor.TabIndex = 32;
+            // 
+            // equipableListArmor
+            // 
+            this.equipableListArmor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxArmorName.Location = new System.Drawing.Point(191, 31);
-            this.textBoxArmorName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBoxArmorName.Name = "textBoxArmorName";
-            this.textBoxArmorName.Size = new System.Drawing.Size(226, 23);
-            this.textBoxArmorName.TabIndex = 10;
-            // 
-            // labelArmorName
-            // 
-            this.labelArmorName.AutoSize = true;
-            this.labelArmorName.Location = new System.Drawing.Point(191, 13);
-            this.labelArmorName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelArmorName.Name = "labelArmorName";
-            this.labelArmorName.Size = new System.Drawing.Size(42, 15);
-            this.labelArmorName.TabIndex = 9;
-            this.labelArmorName.Text = "Name:";
+            this.equipableListArmor.Location = new System.Drawing.Point(6, 6);
+            this.equipableListArmor.MinimumSize = new System.Drawing.Size(280, 125);
+            this.equipableListArmor.Name = "equipableListArmor";
+            this.equipableListArmor.Size = new System.Drawing.Size(327, 125);
+            this.equipableListArmor.TabIndex = 31;
             // 
             // listBoxArmor
             // 
@@ -1376,18 +1228,13 @@
             this.listBoxArmor.Location = new System.Drawing.Point(9, 13);
             this.listBoxArmor.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxArmor.Name = "listBoxArmor";
-            this.listBoxArmor.Size = new System.Drawing.Size(174, 454);
+            this.listBoxArmor.Size = new System.Drawing.Size(174, 469);
             this.listBoxArmor.TabIndex = 2;
             this.listBoxArmor.SelectedIndexChanged += new System.EventHandler(this.listBoxArmor_SelectedIndexChanged);
             // 
             // tabPageAccessoryData
             // 
-            this.tabPageAccessoryData.Controls.Add(this.groupBoxAccessoryRestrictions);
-            this.tabPageAccessoryData.Controls.Add(this.groupBoxAccessoryEquipable);
-            this.tabPageAccessoryData.Controls.Add(this.textBoxAccessoryDescription);
-            this.tabPageAccessoryData.Controls.Add(this.labelAccessoryDescription);
-            this.tabPageAccessoryData.Controls.Add(this.textBoxAccessoryName);
-            this.tabPageAccessoryData.Controls.Add(this.labelAccessoryName);
+            this.tabPageAccessoryData.Controls.Add(this.tabControlAccessories);
             this.tabPageAccessoryData.Controls.Add(this.listBoxAccessories);
             this.tabPageAccessoryData.Location = new System.Drawing.Point(4, 24);
             this.tabPageAccessoryData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1397,223 +1244,182 @@
             this.tabPageAccessoryData.Text = "Accessories";
             this.tabPageAccessoryData.UseVisualStyleBackColor = true;
             // 
-            // groupBoxAccessoryRestrictions
+            // tabControlAccessories
             // 
-            this.groupBoxAccessoryRestrictions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxAccessoryRestrictions.Controls.Add(this.checkBoxAccessoryIsSellable);
-            this.groupBoxAccessoryRestrictions.Controls.Add(this.checkBoxAccessoryUsableInMenu);
-            this.groupBoxAccessoryRestrictions.Controls.Add(this.checkBoxAccessoryUsableInBattle);
-            this.groupBoxAccessoryRestrictions.Location = new System.Drawing.Point(532, 343);
-            this.groupBoxAccessoryRestrictions.Name = "groupBoxAccessoryRestrictions";
-            this.groupBoxAccessoryRestrictions.Size = new System.Drawing.Size(232, 124);
-            this.groupBoxAccessoryRestrictions.TabIndex = 22;
-            this.groupBoxAccessoryRestrictions.TabStop = false;
-            this.groupBoxAccessoryRestrictions.Text = "Item restrictions";
-            // 
-            // checkBoxAccessoryIsSellable
-            // 
-            this.checkBoxAccessoryIsSellable.AutoSize = true;
-            this.checkBoxAccessoryIsSellable.Location = new System.Drawing.Point(7, 22);
-            this.checkBoxAccessoryIsSellable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxAccessoryIsSellable.Name = "checkBoxAccessoryIsSellable";
-            this.checkBoxAccessoryIsSellable.Size = new System.Drawing.Size(88, 19);
-            this.checkBoxAccessoryIsSellable.TabIndex = 19;
-            this.checkBoxAccessoryIsSellable.Text = "Can be sold";
-            this.checkBoxAccessoryIsSellable.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryUsableInMenu
-            // 
-            this.checkBoxAccessoryUsableInMenu.AutoSize = true;
-            this.checkBoxAccessoryUsableInMenu.Location = new System.Drawing.Point(7, 72);
-            this.checkBoxAccessoryUsableInMenu.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxAccessoryUsableInMenu.Name = "checkBoxAccessoryUsableInMenu";
-            this.checkBoxAccessoryUsableInMenu.Size = new System.Drawing.Size(138, 19);
-            this.checkBoxAccessoryUsableInMenu.TabIndex = 21;
-            this.checkBoxAccessoryUsableInMenu.Text = "Can be used in menu";
-            this.checkBoxAccessoryUsableInMenu.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryUsableInBattle
-            // 
-            this.checkBoxAccessoryUsableInBattle.AutoSize = true;
-            this.checkBoxAccessoryUsableInBattle.Location = new System.Drawing.Point(7, 47);
-            this.checkBoxAccessoryUsableInBattle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxAccessoryUsableInBattle.Name = "checkBoxAccessoryUsableInBattle";
-            this.checkBoxAccessoryUsableInBattle.Size = new System.Drawing.Size(137, 19);
-            this.checkBoxAccessoryUsableInBattle.TabIndex = 20;
-            this.checkBoxAccessoryUsableInBattle.Text = "Can be used in battle";
-            this.checkBoxAccessoryUsableInBattle.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxAccessoryEquipable
-            // 
-            this.groupBoxAccessoryEquipable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabControlAccessories.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessorySephiroth);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryYCloud);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryCid);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryVincent);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryCaitSith);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryYuffie);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryRed);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryAerith);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryTifa);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryBarret);
-            this.groupBoxAccessoryEquipable.Controls.Add(this.checkBoxAccessoryCloud);
-            this.groupBoxAccessoryEquipable.Location = new System.Drawing.Point(191, 343);
-            this.groupBoxAccessoryEquipable.Name = "groupBoxAccessoryEquipable";
-            this.groupBoxAccessoryEquipable.Size = new System.Drawing.Size(335, 124);
-            this.groupBoxAccessoryEquipable.TabIndex = 14;
-            this.groupBoxAccessoryEquipable.TabStop = false;
-            this.groupBoxAccessoryEquipable.Text = "Equipable by...";
+            this.tabControlAccessories.Controls.Add(this.tabPageAccessory1);
+            this.tabControlAccessories.Controls.Add(this.tabPageAccessory2);
+            this.tabControlAccessories.Location = new System.Drawing.Point(190, 13);
+            this.tabControlAccessories.Name = "tabControlAccessories";
+            this.tabControlAccessories.SelectedIndex = 0;
+            this.tabControlAccessories.Size = new System.Drawing.Size(578, 469);
+            this.tabControlAccessories.TabIndex = 25;
             // 
-            // checkBoxAccessorySephiroth
+            // tabPageAccessory1
             // 
-            this.checkBoxAccessorySephiroth.AutoSize = true;
-            this.checkBoxAccessorySephiroth.Location = new System.Drawing.Point(188, 72);
-            this.checkBoxAccessorySephiroth.Name = "checkBoxAccessorySephiroth";
-            this.checkBoxAccessorySephiroth.Size = new System.Drawing.Size(77, 19);
-            this.checkBoxAccessorySephiroth.TabIndex = 10;
-            this.checkBoxAccessorySephiroth.Text = "Sephiroth";
-            this.checkBoxAccessorySephiroth.UseVisualStyleBackColor = true;
+            this.tabPageAccessory1.Controls.Add(this.labelAccessoryElementModifier);
+            this.tabPageAccessory1.Controls.Add(this.comboBoxAccessoryElementModifier);
+            this.tabPageAccessory1.Controls.Add(this.statusesControlAccessory);
+            this.tabPageAccessory1.Controls.Add(this.elementsControlAccessory);
+            this.tabPageAccessory1.Controls.Add(this.statIncreaseControlAccessory);
+            this.tabPageAccessory1.Controls.Add(this.labelAccessoryName);
+            this.tabPageAccessory1.Controls.Add(this.textBoxAccessoryName);
+            this.tabPageAccessory1.Controls.Add(this.labelAccessoryDescription);
+            this.tabPageAccessory1.Controls.Add(this.textBoxAccessoryDescription);
+            this.tabPageAccessory1.Location = new System.Drawing.Point(4, 24);
+            this.tabPageAccessory1.Name = "tabPageAccessory1";
+            this.tabPageAccessory1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageAccessory1.Size = new System.Drawing.Size(570, 441);
+            this.tabPageAccessory1.TabIndex = 0;
+            this.tabPageAccessory1.Text = "Page 1";
+            this.tabPageAccessory1.UseVisualStyleBackColor = true;
             // 
-            // checkBoxAccessoryYCloud
+            // labelAccessoryElementModifier
             // 
-            this.checkBoxAccessoryYCloud.AutoSize = true;
-            this.checkBoxAccessoryYCloud.Location = new System.Drawing.Point(188, 47);
-            this.checkBoxAccessoryYCloud.Name = "checkBoxAccessoryYCloud";
-            this.checkBoxAccessoryYCloud.Size = new System.Drawing.Size(68, 19);
-            this.checkBoxAccessoryYCloud.TabIndex = 9;
-            this.checkBoxAccessoryYCloud.Text = "Y.Cloud";
-            this.checkBoxAccessoryYCloud.UseVisualStyleBackColor = true;
+            this.labelAccessoryElementModifier.AutoSize = true;
+            this.labelAccessoryElementModifier.Location = new System.Drawing.Point(383, 94);
+            this.labelAccessoryElementModifier.Name = "labelAccessoryElementModifier";
+            this.labelAccessoryElementModifier.Size = new System.Drawing.Size(147, 15);
+            this.labelAccessoryElementModifier.TabIndex = 36;
+            this.labelAccessoryElementModifier.Text = "Element damage modifier:";
             // 
-            // checkBoxAccessoryCid
+            // comboBoxAccessoryElementModifier
             // 
-            this.checkBoxAccessoryCid.AutoSize = true;
-            this.checkBoxAccessoryCid.Location = new System.Drawing.Point(188, 22);
-            this.checkBoxAccessoryCid.Name = "checkBoxAccessoryCid";
-            this.checkBoxAccessoryCid.Size = new System.Drawing.Size(44, 19);
-            this.checkBoxAccessoryCid.TabIndex = 8;
-            this.checkBoxAccessoryCid.Text = "Cid";
-            this.checkBoxAccessoryCid.UseVisualStyleBackColor = true;
+            this.comboBoxAccessoryElementModifier.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxAccessoryElementModifier.FormattingEnabled = true;
+            this.comboBoxAccessoryElementModifier.Location = new System.Drawing.Point(383, 112);
+            this.comboBoxAccessoryElementModifier.Name = "comboBoxAccessoryElementModifier";
+            this.comboBoxAccessoryElementModifier.Size = new System.Drawing.Size(180, 23);
+            this.comboBoxAccessoryElementModifier.TabIndex = 37;
             // 
-            // checkBoxAccessoryVincent
+            // statusesControlAccessory
             // 
-            this.checkBoxAccessoryVincent.AutoSize = true;
-            this.checkBoxAccessoryVincent.Location = new System.Drawing.Point(96, 97);
-            this.checkBoxAccessoryVincent.Name = "checkBoxAccessoryVincent";
-            this.checkBoxAccessoryVincent.Size = new System.Drawing.Size(66, 19);
-            this.checkBoxAccessoryVincent.TabIndex = 7;
-            this.checkBoxAccessoryVincent.Text = "Vincent";
-            this.checkBoxAccessoryVincent.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryCaitSith
-            // 
-            this.checkBoxAccessoryCaitSith.AutoSize = true;
-            this.checkBoxAccessoryCaitSith.Location = new System.Drawing.Point(96, 72);
-            this.checkBoxAccessoryCaitSith.Name = "checkBoxAccessoryCaitSith";
-            this.checkBoxAccessoryCaitSith.Size = new System.Drawing.Size(70, 19);
-            this.checkBoxAccessoryCaitSith.TabIndex = 6;
-            this.checkBoxAccessoryCaitSith.Text = "Cait Sith";
-            this.checkBoxAccessoryCaitSith.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryYuffie
-            // 
-            this.checkBoxAccessoryYuffie.AutoSize = true;
-            this.checkBoxAccessoryYuffie.Location = new System.Drawing.Point(96, 47);
-            this.checkBoxAccessoryYuffie.Name = "checkBoxAccessoryYuffie";
-            this.checkBoxAccessoryYuffie.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxAccessoryYuffie.TabIndex = 5;
-            this.checkBoxAccessoryYuffie.Text = "Yuffie";
-            this.checkBoxAccessoryYuffie.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryRed
-            // 
-            this.checkBoxAccessoryRed.AutoSize = true;
-            this.checkBoxAccessoryRed.Location = new System.Drawing.Point(96, 22);
-            this.checkBoxAccessoryRed.Name = "checkBoxAccessoryRed";
-            this.checkBoxAccessoryRed.Size = new System.Drawing.Size(65, 19);
-            this.checkBoxAccessoryRed.TabIndex = 4;
-            this.checkBoxAccessoryRed.Text = "Red XIII";
-            this.checkBoxAccessoryRed.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryAerith
-            // 
-            this.checkBoxAccessoryAerith.AutoSize = true;
-            this.checkBoxAccessoryAerith.Location = new System.Drawing.Point(6, 97);
-            this.checkBoxAccessoryAerith.Name = "checkBoxAccessoryAerith";
-            this.checkBoxAccessoryAerith.Size = new System.Drawing.Size(58, 19);
-            this.checkBoxAccessoryAerith.TabIndex = 3;
-            this.checkBoxAccessoryAerith.Text = "Aerith";
-            this.checkBoxAccessoryAerith.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryTifa
-            // 
-            this.checkBoxAccessoryTifa.AutoSize = true;
-            this.checkBoxAccessoryTifa.Location = new System.Drawing.Point(6, 72);
-            this.checkBoxAccessoryTifa.Name = "checkBoxAccessoryTifa";
-            this.checkBoxAccessoryTifa.Size = new System.Drawing.Size(45, 19);
-            this.checkBoxAccessoryTifa.TabIndex = 2;
-            this.checkBoxAccessoryTifa.Text = "Tifa";
-            this.checkBoxAccessoryTifa.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryBarret
-            // 
-            this.checkBoxAccessoryBarret.AutoSize = true;
-            this.checkBoxAccessoryBarret.Location = new System.Drawing.Point(6, 47);
-            this.checkBoxAccessoryBarret.Name = "checkBoxAccessoryBarret";
-            this.checkBoxAccessoryBarret.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxAccessoryBarret.TabIndex = 1;
-            this.checkBoxAccessoryBarret.Text = "Barret";
-            this.checkBoxAccessoryBarret.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAccessoryCloud
-            // 
-            this.checkBoxAccessoryCloud.AutoSize = true;
-            this.checkBoxAccessoryCloud.Location = new System.Drawing.Point(6, 22);
-            this.checkBoxAccessoryCloud.Name = "checkBoxAccessoryCloud";
-            this.checkBoxAccessoryCloud.Size = new System.Drawing.Size(58, 19);
-            this.checkBoxAccessoryCloud.TabIndex = 0;
-            this.checkBoxAccessoryCloud.Text = "Cloud";
-            this.checkBoxAccessoryCloud.UseVisualStyleBackColor = true;
-            // 
-            // textBoxAccessoryDescription
-            // 
-            this.textBoxAccessoryDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.statusesControlAccessory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAccessoryDescription.Location = new System.Drawing.Point(191, 75);
-            this.textBoxAccessoryDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBoxAccessoryDescription.Name = "textBoxAccessoryDescription";
-            this.textBoxAccessoryDescription.Size = new System.Drawing.Size(573, 23);
-            this.textBoxAccessoryDescription.TabIndex = 12;
+            this.statusesControlAccessory.GroupBoxText = "Protects from status...";
+            this.statusesControlAccessory.Location = new System.Drawing.Point(7, 235);
+            this.statusesControlAccessory.MinimumSize = new System.Drawing.Size(500, 200);
+            this.statusesControlAccessory.Name = "statusesControlAccessory";
+            this.statusesControlAccessory.Size = new System.Drawing.Size(556, 200);
+            this.statusesControlAccessory.TabIndex = 23;
+            // 
+            // elementsControlAccessory
+            // 
+            this.elementsControlAccessory.Location = new System.Drawing.Point(7, 94);
+            this.elementsControlAccessory.MinimumSize = new System.Drawing.Size(370, 130);
+            this.elementsControlAccessory.Name = "elementsControlAccessory";
+            this.elementsControlAccessory.Size = new System.Drawing.Size(370, 131);
+            this.elementsControlAccessory.TabIndex = 26;
+            // 
+            // statIncreaseControlAccessory
+            // 
+            this.statIncreaseControlAccessory.Count = 4;
+            this.statIncreaseControlAccessory.Location = new System.Drawing.Point(384, 141);
+            this.statIncreaseControlAccessory.Name = "statIncreaseControlAccessory";
+            this.statIncreaseControlAccessory.Size = new System.Drawing.Size(179, 84);
+            this.statIncreaseControlAccessory.TabIndex = 26;
+            // 
+            // labelAccessoryName
+            // 
+            this.labelAccessoryName.AutoSize = true;
+            this.labelAccessoryName.Location = new System.Drawing.Point(7, 3);
+            this.labelAccessoryName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAccessoryName.Name = "labelAccessoryName";
+            this.labelAccessoryName.Size = new System.Drawing.Size(42, 15);
+            this.labelAccessoryName.TabIndex = 9;
+            this.labelAccessoryName.Text = "Name:";
+            // 
+            // textBoxAccessoryName
+            // 
+            this.textBoxAccessoryName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxAccessoryName.Location = new System.Drawing.Point(7, 21);
+            this.textBoxAccessoryName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxAccessoryName.Name = "textBoxAccessoryName";
+            this.textBoxAccessoryName.Size = new System.Drawing.Size(230, 23);
+            this.textBoxAccessoryName.TabIndex = 10;
             // 
             // labelAccessoryDescription
             // 
             this.labelAccessoryDescription.AutoSize = true;
-            this.labelAccessoryDescription.Location = new System.Drawing.Point(191, 57);
+            this.labelAccessoryDescription.Location = new System.Drawing.Point(7, 47);
             this.labelAccessoryDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelAccessoryDescription.Name = "labelAccessoryDescription";
             this.labelAccessoryDescription.Size = new System.Drawing.Size(70, 15);
             this.labelAccessoryDescription.TabIndex = 11;
             this.labelAccessoryDescription.Text = "Description:";
             // 
-            // textBoxAccessoryName
+            // textBoxAccessoryDescription
             // 
-            this.textBoxAccessoryName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxAccessoryDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAccessoryName.Location = new System.Drawing.Point(191, 31);
-            this.textBoxAccessoryName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBoxAccessoryName.Name = "textBoxAccessoryName";
-            this.textBoxAccessoryName.Size = new System.Drawing.Size(226, 23);
-            this.textBoxAccessoryName.TabIndex = 10;
+            this.textBoxAccessoryDescription.Location = new System.Drawing.Point(7, 65);
+            this.textBoxAccessoryDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxAccessoryDescription.Name = "textBoxAccessoryDescription";
+            this.textBoxAccessoryDescription.Size = new System.Drawing.Size(556, 23);
+            this.textBoxAccessoryDescription.TabIndex = 12;
             // 
-            // labelAccessoryName
+            // tabPageAccessory2
             // 
-            this.labelAccessoryName.AutoSize = true;
-            this.labelAccessoryName.Location = new System.Drawing.Point(191, 13);
-            this.labelAccessoryName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelAccessoryName.Name = "labelAccessoryName";
-            this.labelAccessoryName.Size = new System.Drawing.Size(42, 15);
-            this.labelAccessoryName.TabIndex = 9;
-            this.labelAccessoryName.Text = "Name:";
+            this.tabPageAccessory2.Controls.Add(this.comboBoxAccessorySpecialEffects);
+            this.tabPageAccessory2.Controls.Add(this.labelAccessorySpecialEffects);
+            this.tabPageAccessory2.Controls.Add(this.equipableListAccessory);
+            this.tabPageAccessory2.Controls.Add(this.itemRestrictionsAccessory);
+            this.tabPageAccessory2.Location = new System.Drawing.Point(4, 24);
+            this.tabPageAccessory2.Name = "tabPageAccessory2";
+            this.tabPageAccessory2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageAccessory2.Size = new System.Drawing.Size(570, 441);
+            this.tabPageAccessory2.TabIndex = 1;
+            this.tabPageAccessory2.Text = "Page 2";
+            this.tabPageAccessory2.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxAccessorySpecialEffects
+            // 
+            this.comboBoxAccessorySpecialEffects.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxAccessorySpecialEffects.FormattingEnabled = true;
+            this.comboBoxAccessorySpecialEffects.Items.AddRange(new object[] {
+            "None",
+            "Start battle with Haste",
+            "Start battle with Berserk",
+            "All stats increased, but apply Death Sentence",
+            "Start battle with Reflect",
+            "Increase stealing rate",
+            "Increase manipulation rate",
+            "Start battle with Barrier+MBarrier"});
+            this.comboBoxAccessorySpecialEffects.Location = new System.Drawing.Point(6, 21);
+            this.comboBoxAccessorySpecialEffects.Name = "comboBoxAccessorySpecialEffects";
+            this.comboBoxAccessorySpecialEffects.Size = new System.Drawing.Size(311, 23);
+            this.comboBoxAccessorySpecialEffects.TabIndex = 27;
+            // 
+            // labelAccessorySpecialEffects
+            // 
+            this.labelAccessorySpecialEffects.AutoSize = true;
+            this.labelAccessorySpecialEffects.Location = new System.Drawing.Point(6, 3);
+            this.labelAccessorySpecialEffects.Name = "labelAccessorySpecialEffects";
+            this.labelAccessorySpecialEffects.Size = new System.Drawing.Size(80, 15);
+            this.labelAccessorySpecialEffects.TabIndex = 26;
+            this.labelAccessorySpecialEffects.Text = "Special effect:";
+            // 
+            // equipableListAccessory
+            // 
+            this.equipableListAccessory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.equipableListAccessory.Location = new System.Drawing.Point(6, 50);
+            this.equipableListAccessory.MinimumSize = new System.Drawing.Size(280, 125);
+            this.equipableListAccessory.Name = "equipableListAccessory";
+            this.equipableListAccessory.Size = new System.Drawing.Size(311, 125);
+            this.equipableListAccessory.TabIndex = 24;
+            // 
+            // itemRestrictionsAccessory
+            // 
+            this.itemRestrictionsAccessory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemRestrictionsAccessory.Location = new System.Drawing.Point(323, 50);
+            this.itemRestrictionsAccessory.Name = "itemRestrictionsAccessory";
+            this.itemRestrictionsAccessory.ShowThrowable = false;
+            this.itemRestrictionsAccessory.Size = new System.Drawing.Size(240, 125);
+            this.itemRestrictionsAccessory.TabIndex = 25;
             // 
             // listBoxAccessories
             // 
@@ -1624,7 +1430,7 @@
             this.listBoxAccessories.Location = new System.Drawing.Point(9, 13);
             this.listBoxAccessories.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxAccessories.Name = "listBoxAccessories";
-            this.listBoxAccessories.Size = new System.Drawing.Size(174, 454);
+            this.listBoxAccessories.Size = new System.Drawing.Size(174, 469);
             this.listBoxAccessories.TabIndex = 2;
             this.listBoxAccessories.SelectedIndexChanged += new System.EventHandler(this.listBoxAccessories_SelectedIndexChanged);
             // 
@@ -1736,7 +1542,7 @@
             this.listBoxMateria.Location = new System.Drawing.Point(9, 13);
             this.listBoxMateria.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxMateria.Name = "listBoxMateria";
-            this.listBoxMateria.Size = new System.Drawing.Size(174, 454);
+            this.listBoxMateria.Size = new System.Drawing.Size(174, 469);
             this.listBoxMateria.TabIndex = 2;
             this.listBoxMateria.SelectedIndexChanged += new System.EventHandler(this.listBoxMateria_SelectedIndexChanged);
             // 
@@ -1804,7 +1610,7 @@
             this.listBoxKeyItems.Location = new System.Drawing.Point(9, 13);
             this.listBoxKeyItems.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listBoxKeyItems.Name = "listBoxKeyItems";
-            this.listBoxKeyItems.Size = new System.Drawing.Size(174, 454);
+            this.listBoxKeyItems.Size = new System.Drawing.Size(174, 469);
             this.listBoxKeyItems.TabIndex = 1;
             this.listBoxKeyItems.SelectedIndexChanged += new System.EventHandler(this.listBoxKeyItems_SelectedIndexChanged);
             // 
@@ -1855,6 +1661,30 @@
             this.panelButtons.Size = new System.Drawing.Size(784, 46);
             this.panelButtons.TabIndex = 4;
             // 
+            // numericWeaponHitChance
+            // 
+            this.numericWeaponHitChance.Location = new System.Drawing.Point(7, 109);
+            this.numericWeaponHitChance.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericWeaponHitChance.Name = "numericWeaponHitChance";
+            this.numericWeaponHitChance.Size = new System.Drawing.Size(100, 23);
+            this.numericWeaponHitChance.TabIndex = 35;
+            // 
+            // numericWeaponCritChance
+            // 
+            this.numericWeaponCritChance.Location = new System.Drawing.Point(113, 109);
+            this.numericWeaponCritChance.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericWeaponCritChance.Name = "numericWeaponCritChance";
+            this.numericWeaponCritChance.Size = new System.Drawing.Size(100, 23);
+            this.numericWeaponCritChance.TabIndex = 36;
+            // 
             // KernelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1875,40 +1705,44 @@
             this.tabPageAttackData.ResumeLayout(false);
             this.tabPageAttackData.PerformLayout();
             this.tabPageItemData.ResumeLayout(false);
-            this.tabPageItemData.PerformLayout();
-            this.groupBoxItemTargetFlags.ResumeLayout(false);
-            this.groupBoxItemTargetFlags.PerformLayout();
-            this.groupBoxItemRestrictions.ResumeLayout(false);
-            this.groupBoxItemRestrictions.PerformLayout();
+            this.tabControlItems.ResumeLayout(false);
+            this.tabPageItems1.ResumeLayout(false);
+            this.tabPageItems1.PerformLayout();
+            this.tabPageItems2.ResumeLayout(false);
+            this.tabPageItems2.PerformLayout();
             this.tabPageWeaponData.ResumeLayout(false);
-            this.tabPageWeaponData.PerformLayout();
-            this.groupBoxWeaponTargetFlags.ResumeLayout(false);
-            this.groupBoxWeaponTargetFlags.PerformLayout();
+            this.tabControlWeapons.ResumeLayout(false);
+            this.tabPageWeapon1.ResumeLayout(false);
+            this.tabPageWeapon1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponAnimationIndex)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponModelIndex)).EndInit();
             this.groupBoxWeaponMateriaSlots.ResumeLayout(false);
             this.groupBoxWeaponMateriaSlots.PerformLayout();
-            this.groupBoxWeaponRestrictions.ResumeLayout(false);
-            this.groupBoxWeaponRestrictions.PerformLayout();
-            this.groupBoxWeaponEquipable.ResumeLayout(false);
-            this.groupBoxWeaponEquipable.PerformLayout();
+            this.tabPageWeapon2.ResumeLayout(false);
             this.tabPageArmorData.ResumeLayout(false);
-            this.tabPageArmorData.PerformLayout();
+            this.tabControlArmor.ResumeLayout(false);
+            this.tabPageArmor1.ResumeLayout(false);
+            this.tabPageArmor1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericArmorMagicDefensePercent)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericArmorMagicDefense)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericArmorDefensePercent)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericArmorDefense)).EndInit();
             this.groupBoxArmorMateriaSlots.ResumeLayout(false);
             this.groupBoxArmorMateriaSlots.PerformLayout();
-            this.groupBoxArmorRestrictions.ResumeLayout(false);
-            this.groupBoxArmorRestrictions.PerformLayout();
-            this.groupBoxArmorEquipable.ResumeLayout(false);
-            this.groupBoxArmorEquipable.PerformLayout();
+            this.tabPageArmor2.ResumeLayout(false);
             this.tabPageAccessoryData.ResumeLayout(false);
-            this.tabPageAccessoryData.PerformLayout();
-            this.groupBoxAccessoryRestrictions.ResumeLayout(false);
-            this.groupBoxAccessoryRestrictions.PerformLayout();
-            this.groupBoxAccessoryEquipable.ResumeLayout(false);
-            this.groupBoxAccessoryEquipable.PerformLayout();
+            this.tabControlAccessories.ResumeLayout(false);
+            this.tabPageAccessory1.ResumeLayout(false);
+            this.tabPageAccessory1.PerformLayout();
+            this.tabPageAccessory2.ResumeLayout(false);
+            this.tabPageAccessory2.PerformLayout();
             this.tabPageMateriaData.ResumeLayout(false);
             this.tabPageMateriaData.PerformLayout();
             this.tabPageKeyItemText.ResumeLayout(false);
             this.tabPageKeyItemText.PerformLayout();
             this.panelButtons.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponHitChance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponCritChance)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1972,63 +1806,10 @@
         private System.Windows.Forms.Label labelCommandDescription;
         private System.Windows.Forms.TextBox textBoxCommandName;
         private System.Windows.Forms.Label labelCommandName;
-        private System.Windows.Forms.CheckBox checkBoxItemUsableInMenu;
-        private System.Windows.Forms.CheckBox checkBoxItemUsableInBattle;
-        private System.Windows.Forms.CheckBox checkBoxItemIsSellable;
         private ComboBox comboBoxMateriaType;
         private Label labelMateriaType;
         private ComboBox comboBoxMateriaElement;
         private Label labelMateriaElement;
-        private GroupBox groupBoxWeaponEquipable;
-        private CheckBox checkBoxWeaponSephiroth;
-        private CheckBox checkBoxWeaponYCloud;
-        private CheckBox checkBoxWeaponCid;
-        private CheckBox checkBoxWeaponVincent;
-        private CheckBox checkBoxWeaponCaitSith;
-        private CheckBox checkBoxWeaponYuffie;
-        private CheckBox checkBoxWeaponRed;
-        private CheckBox checkBoxWeaponAerith;
-        private CheckBox checkBoxWeaponTifa;
-        private CheckBox checkBoxWeaponBarret;
-        private CheckBox checkBoxWeaponCloud;
-        private GroupBox groupBoxArmorEquipable;
-        private CheckBox checkBoxArmorSephiroth;
-        private CheckBox checkBoxArmorYCloud;
-        private CheckBox checkBoxArmorCid;
-        private CheckBox checkBoxArmorVincent;
-        private CheckBox checkBoxArmorCaitSith;
-        private CheckBox checkBoxArmorYuffie;
-        private CheckBox checkBoxArmorRed;
-        private CheckBox checkBoxArmorAerith;
-        private CheckBox checkBoxArmorTifa;
-        private CheckBox checkBoxArmorBarret;
-        private CheckBox checkBoxArmorCloud;
-        private GroupBox groupBoxAccessoryEquipable;
-        private CheckBox checkBoxAccessorySephiroth;
-        private CheckBox checkBoxAccessoryYCloud;
-        private CheckBox checkBoxAccessoryCid;
-        private CheckBox checkBoxAccessoryVincent;
-        private CheckBox checkBoxAccessoryCaitSith;
-        private CheckBox checkBoxAccessoryYuffie;
-        private CheckBox checkBoxAccessoryRed;
-        private CheckBox checkBoxAccessoryAerith;
-        private CheckBox checkBoxAccessoryTifa;
-        private CheckBox checkBoxAccessoryBarret;
-        private CheckBox checkBoxAccessoryCloud;
-        private CheckBox checkBoxWeaponUsableInMenu;
-        private CheckBox checkBoxWeaponUsableInBattle;
-        private CheckBox checkBoxWeaponIsSellable;
-        private CheckBox checkBoxArmorUsableInMenu;
-        private CheckBox checkBoxArmorUsableInBattle;
-        private CheckBox checkBoxArmorIsSellable;
-        private CheckBox checkBoxAccessoryUsableInMenu;
-        private CheckBox checkBoxAccessoryUsableInBattle;
-        private CheckBox checkBoxAccessoryIsSellable;
-        private GroupBox groupBoxAccessoryRestrictions;
-        private GroupBox groupBoxArmorRestrictions;
-        private GroupBox groupBoxWeaponRestrictions;
-        private CheckBox checkBoxWeaponIsThrowable;
-        private GroupBox groupBoxItemRestrictions;
         private GroupBox groupBoxWeaponMateriaSlots;
         private MateriaSlotSelectorControl materiaSlotSelectorWeapon;
         private Label labelWeaponMateriaGrowth;
@@ -2037,29 +1818,69 @@
         private Label labelArmorMateriaGrowth;
         private MateriaSlotSelectorControl materiaSlotSelectorArmor;
         private ComboBox comboBoxArmorMateriaGrowth;
-        private GroupBox groupBoxItemTargetFlags;
-        private CheckBox checkBoxItemRandomTarget;
-        private CheckBox checkBoxItemAllRows;
-        private CheckBox checkBoxItemShortRange;
-        private CheckBox checkBoxItemOneRowOnly;
-        private CheckBox checkBoxItemSingleMultiToggle;
-        private CheckBox checkBoxItemMultipleTargetDefault;
-        private CheckBox checkBoxItemStartOnEnemies;
-        private CheckBox checkBoxItemEnableSelection;
-        private GroupBox groupBoxWeaponTargetFlags;
-        private CheckBox checkBoxWeaponRandomTarget;
-        private CheckBox checkBoxWeaponAllRows;
-        private CheckBox checkBoxWeaponShortRange;
-        private CheckBox checkBoxWeaponOneRowOnly;
-        private CheckBox checkBoxWeaponSingleMultiToggle;
-        private CheckBox checkBoxWeaponMultipleTargetDefault;
-        private CheckBox checkBoxWeaponStartOnEnemies;
-        private CheckBox checkBoxWeaponEnableSelection;
         private ComboBox comboBoxItemCamMovementID;
         private Label labelItemCamMovementID;
         private ComboBox comboBoxItemAttackEffectID;
         private Label labelItemAttackEffectID;
         private DamageCalculationControl damageCalculationControlItem;
         private DamageCalculationControl damageCalculationControlWeapon;
+        private TabControl tabControlWeapons;
+        private TabPage tabPageWeapon1;
+        private TabPage tabPageWeapon2;
+        private ComboBox comboBoxWeaponStatus;
+        private Label labelWeaponStatus;
+        private ComboBox comboBoxArmorStatus;
+        private Label labelArmorStatus;
+        private StatusesControl statusesControlAccessory;
+        private EquipableListControl equipableListAccessory;
+        private EquipableListControl equipableListArmor;
+        private EquipableListControl equipableListWeapon;
+        private TargetDataControl targetDataControlItem;
+        private TargetDataControl targetDataControlWeapon;
+        private TabControl tabControlAccessories;
+        private TabPage tabPageAccessory1;
+        private TabPage tabPageAccessory2;
+        private Label labelWeaponCritChance;
+        private Label labelWeaponHitChance;
+        private ItemRestrictionsControl itemRestrictionsWeapon;
+        private ItemRestrictionsControl itemRestrictionsItem;
+        private ItemRestrictionsControl itemRestrictionsArmor;
+        private ItemRestrictionsControl itemRestrictionsAccessory;
+        private ElementsControl elementsControlWeapon;
+        private ElementsControl elementsControlArmor;
+        private ElementsControl elementsControlAccessory;
+        private TabControl tabControlItems;
+        private TabPage tabPageItems1;
+        private TabPage tabPageItems2;
+        private ElementsControl elementsControlItem;
+        private TabControl tabControlArmor;
+        private TabPage tabPageArmor1;
+        private TabPage tabPageArmor2;
+        private StatusesControl statusesControlItem;
+        private Label labelWeaponModelIndex;
+        private NumericUpDown numericWeaponModelIndex;
+        private NumericUpDown numericWeaponAnimationIndex;
+        private Label labelWeaponAnimationIndex;
+        private StatIncreaseControl statIncreaseControlWeapon;
+        private StatIncreaseControl statIncreaseControlArmor;
+        private StatIncreaseControl statIncreaseControlAccessory;
+        private ComboBox comboBoxStatusChange;
+        private Label labelItemStatusChange;
+        private Label labelArmorElementModifier;
+        private ComboBox comboBoxArmorElementModifier;
+        private NumericUpDown numericArmorDefense;
+        private Label labelArmorDefense;
+        private NumericUpDown numericArmorMagicDefensePercent;
+        private Label labelArmorMagicDefensePercent;
+        private NumericUpDown numericArmorMagicDefense;
+        private Label labelArmorMagicDefense;
+        private NumericUpDown numericArmorDefensePercent;
+        private Label labelArmorDefencePercent;
+        private ComboBox comboBoxAccessorySpecialEffects;
+        private Label labelAccessorySpecialEffects;
+        private Label labelAccessoryElementModifier;
+        private ComboBox comboBoxAccessoryElementModifier;
+        private NumericUpDown numericWeaponCritChance;
+        private NumericUpDown numericWeaponHitChance;
     }
 }
