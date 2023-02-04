@@ -1,6 +1,6 @@
 ﻿using Shojy.FF7.Elena.Battle;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class TargetDataControl : UserControl
     {

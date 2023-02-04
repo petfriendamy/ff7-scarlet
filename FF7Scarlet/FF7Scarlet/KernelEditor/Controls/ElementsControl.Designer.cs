@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet.KernelEditor
+﻿namespace FF7Scarlet.KernelEditor.Controls
 {
     partial class ElementsControl
     {

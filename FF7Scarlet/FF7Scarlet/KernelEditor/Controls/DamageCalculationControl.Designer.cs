@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet.KernelEditor
+﻿namespace FF7Scarlet.KernelEditor.Controls
 {
     partial class DamageCalculationControl
     {
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBoxMain = new System.Windows.Forms.GroupBox();
+            this.numericAttackPower = new System.Windows.Forms.NumericUpDown();
             this.checkBoxIsNull = new System.Windows.Forms.CheckBox();
             this.comboBoxDamageFormula = new System.Windows.Forms.ComboBox();
             this.labelDamageFormula = new System.Windows.Forms.Label();
@@ -40,7 +41,6 @@
             this.labelPower = new System.Windows.Forms.Label();
             this.textBoxActualValue = new System.Windows.Forms.TextBox();
             this.labelActualValue = new System.Windows.Forms.Label();
-            this.numericAttackPower = new System.Windows.Forms.NumericUpDown();
             this.groupBoxMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericAttackPower)).BeginInit();
             this.SuspendLayout();
@@ -67,6 +67,19 @@
             this.groupBoxMain.TabIndex = 0;
             this.groupBoxMain.TabStop = false;
             this.groupBoxMain.Text = "Damage formula";
+            // 
+            // numericAttackPower
+            // 
+            this.numericAttackPower.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.numericAttackPower.Location = new System.Drawing.Point(7, 66);
+            this.numericAttackPower.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericAttackPower.Name = "numericAttackPower";
+            this.numericAttackPower.Size = new System.Drawing.Size(79, 23);
+            this.numericAttackPower.TabIndex = 12;
             // 
             // checkBoxIsNull
             // 
@@ -187,18 +200,6 @@
             this.labelActualValue.Size = new System.Drawing.Size(78, 15);
             this.labelActualValue.TabIndex = 0;
             this.labelActualValue.Text = "Actual value:";
-            // 
-            // numericAttackPower
-            // 
-            this.numericAttackPower.Location = new System.Drawing.Point(7, 66);
-            this.numericAttackPower.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericAttackPower.Name = "numericAttackPower";
-            this.numericAttackPower.Size = new System.Drawing.Size(79, 23);
-            this.numericAttackPower.TabIndex = 12;
             // 
             // DamageCalculationControl
             // 

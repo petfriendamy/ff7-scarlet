@@ -165,6 +165,15 @@ namespace FF7Scarlet.KernelEditor
         {
             switch (section)
             {
+                case KernelSection.WeaponData:
+                    var weapon = WeaponData.Weapons[pos];
+                    return new StatIncrease[4]
+                    {
+                        new StatIncrease(weapon.BoostedStat1, weapon.BoostedStat1Bonus),
+                        new StatIncrease(weapon.BoostedStat2, weapon.BoostedStat2Bonus),
+                        new StatIncrease(weapon.BoostedStat3, weapon.BoostedStat3Bonus),
+                        new StatIncrease(weapon.BoostedStat4, weapon.BoostedStat4Bonus)
+                    };
                 case KernelSection.ArmorData:
                     var armor = ArmorData.Armors[pos];
                     return new StatIncrease[4]
@@ -319,7 +328,9 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].Status;
                 case KernelSection.AccessoryData:
-                    return (Statuses)AccessoryData.Accessories[pos].StatusDefense;
+                    return AccessoryData.Accessories[pos].StatusDefense;
+                case KernelSection.MateriaData:
+                    return MateriaData.Materias[pos].Status;
                 default:
                     return 0;
             }
@@ -334,7 +345,7 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.ArmorData:
                     return ArmorData.Armors[pos].Status;
                 default:
-                    return (EquipmentStatus)0xFF;
+                    return EquipmentStatus.None;
             }
         }
 

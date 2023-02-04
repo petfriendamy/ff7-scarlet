@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shojy.FF7.Elena" Version="0.3.0-pre" />
+    <PackageReference Include="Shojy.FF7.Elena" Version="0.4.0-pre" />
   </ItemGroup>
 
   <ItemGroup>

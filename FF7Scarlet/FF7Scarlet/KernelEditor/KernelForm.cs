@@ -2,6 +2,7 @@
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Materias;
+using FF7Scarlet.KernelEditor.Controls;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -71,7 +72,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.WeaponData, listBoxWeapons);
             nameTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponName);
             descriptionTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponDescription);
-            //statIncreases.Add(KernelSection.WeaponData, statIncreaseControlWeapon);
+            statIncreases.Add(KernelSection.WeaponData, statIncreaseControlWeapon);
             targetData.Add(KernelSection.WeaponData, targetDataControlWeapon);
             damageCalculationControls.Add(KernelSection.WeaponData, damageCalculationControlWeapon);
             itemRestrictionLists.Add(KernelSection.WeaponData, itemRestrictionsWeapon);
@@ -112,6 +113,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.MateriaData, listBoxMateria);
             nameTextBoxes.Add(KernelSection.MateriaData, textBoxMateriaName);
             descriptionTextBoxes.Add(KernelSection.MateriaData, textBoxMateriaDescription);
+            statusLists.Add(KernelSection.MateriaData, statusesControlMateria);
 
             //key items
             tabPages.Add(KernelSection.KeyItemNames, tabPageKeyItemText);
@@ -152,7 +154,7 @@ namespace FF7Scarlet.KernelEditor
                     {
                         cb.Items.Add("M.Barrier");
                     }
-                    else
+                    else if (s != EquipmentStatus.None)
                     {
                         string final = s.ToString();
                         for (int i = 1; i < final.Length; ++i)
@@ -188,6 +190,7 @@ namespace FF7Scarlet.KernelEditor
             //show/hide controls that are invalid
             itemRestrictionsWeapon.ShowThrowable = true;
             statIncreaseControlAccessory.Count = 2;
+            statusesControlMateria.FullList = false;
 
             //disable all the controls while there's no data in them
             foreach (var tab in tabPages)
@@ -398,7 +401,7 @@ namespace FF7Scarlet.KernelEditor
                         //materia data
                         case KernelSection.MateriaData:
                             var materia = kernel.MateriaData.Materias[i];
-                            if (Enum.IsDefined<MateriaElements>(materia.Element)){
+                            if (Enum.IsDefined(materia.Element)){
                                 comboBoxMateriaElement.SelectedIndex = (int)materia.Element;
                             }
                             else
@@ -406,6 +409,9 @@ namespace FF7Scarlet.KernelEditor
                                 comboBoxMateriaElement.SelectedIndex = -1;
                             }
                             comboBoxMateriaType.SelectedIndex = (int)materia.MateriaType;
+                            materiaLevelControl.SetAPLevels(materia.Level2AP, materia.Level3AP, materia.Level4AP,
+                                materia.Level5AP);
+                            comboBoxMateriaEquipAttributes.Text = materia.EquipEffect.ToString("X2");
                             break;
                     }
                 }

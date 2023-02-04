@@ -1,6 +1,6 @@
 ﻿using Shojy.FF7.Elena.Equipment;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class MateriaSlotSelectorControl : UserControl
     {

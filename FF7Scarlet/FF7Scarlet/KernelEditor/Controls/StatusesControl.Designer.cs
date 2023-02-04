@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet.KernelEditor
+﻿namespace FF7Scarlet.KernelEditor.Controls
 {
     partial class StatusesControl
     {
@@ -169,7 +169,7 @@
             // checkBoxParalysis
             // 
             this.checkBoxParalysis.AutoSize = true;
-            this.checkBoxParalysis.Location = new System.Drawing.Point(279, 122);
+            this.checkBoxParalysis.Location = new System.Drawing.Point(279, 97);
             this.checkBoxParalysis.Name = "checkBoxParalysis";
             this.checkBoxParalysis.Size = new System.Drawing.Size(71, 19);
             this.checkBoxParalysis.TabIndex = 25;
@@ -179,7 +179,7 @@
             // checkBoxPeerless
             // 
             this.checkBoxPeerless.AutoSize = true;
-            this.checkBoxPeerless.Location = new System.Drawing.Point(279, 97);
+            this.checkBoxPeerless.Location = new System.Drawing.Point(279, 122);
             this.checkBoxPeerless.Name = "checkBoxPeerless";
             this.checkBoxPeerless.Size = new System.Drawing.Size(68, 19);
             this.checkBoxPeerless.TabIndex = 24;
@@ -431,7 +431,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBoxMain);
-            this.MinimumSize = new System.Drawing.Size(500, 200);
+            this.MinimumSize = new System.Drawing.Size(380, 200);
             this.Name = "StatusesControl";
             this.Size = new System.Drawing.Size(500, 200);
             this.groupBoxMain.ResumeLayout(false);

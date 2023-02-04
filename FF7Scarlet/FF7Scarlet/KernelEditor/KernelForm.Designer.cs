@@ -69,6 +69,8 @@
             this.tabPageWeaponData = new System.Windows.Forms.TabPage();
             this.tabControlWeapons = new System.Windows.Forms.TabControl();
             this.tabPageWeapon1 = new System.Windows.Forms.TabPage();
+            this.numericWeaponCritChance = new System.Windows.Forms.NumericUpDown();
+            this.numericWeaponHitChance = new System.Windows.Forms.NumericUpDown();
             this.elementsControlWeapon = new FF7Scarlet.KernelEditor.ElementsControl();
             this.comboBoxWeaponStatus = new System.Windows.Forms.ComboBox();
             this.statIncreaseControlWeapon = new FF7Scarlet.KernelEditor.StatIncreaseControl();
@@ -141,6 +143,12 @@
             this.itemRestrictionsAccessory = new FF7Scarlet.KernelEditor.ItemRestrictionsControl();
             this.listBoxAccessories = new System.Windows.Forms.ListBox();
             this.tabPageMateriaData = new System.Windows.Forms.TabPage();
+            this.comboBoxMateriaEquipAttributes = new System.Windows.Forms.ComboBox();
+            this.labelMateriaEquipAttributes = new System.Windows.Forms.Label();
+            this.statusesControlMateria = new FF7Scarlet.KernelEditor.StatusesControl();
+            this.comboBoxMateriaSubtype = new System.Windows.Forms.ComboBox();
+            this.labelMateriaSubtype = new System.Windows.Forms.Label();
+            this.materiaLevelControl = new FF7Scarlet.KernelEditor.MateriaLevelControl();
             this.comboBoxMateriaElement = new System.Windows.Forms.ComboBox();
             this.labelMateriaElement = new System.Windows.Forms.Label();
             this.comboBoxMateriaType = new System.Windows.Forms.ComboBox();
@@ -160,8 +168,6 @@
             this.buttonImport = new System.Windows.Forms.Button();
             this.buttonExport = new System.Windows.Forms.Button();
             this.panelButtons = new System.Windows.Forms.Panel();
-            this.numericWeaponHitChance = new System.Windows.Forms.NumericUpDown();
-            this.numericWeaponCritChance = new System.Windows.Forms.NumericUpDown();
             this.tabControlMain.SuspendLayout();
             this.tabPageCommandData.SuspendLayout();
             this.tabPageAttackData.SuspendLayout();
@@ -172,6 +178,8 @@
             this.tabPageWeaponData.SuspendLayout();
             this.tabControlWeapons.SuspendLayout();
             this.tabPageWeapon1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponCritChance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponHitChance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWeaponAnimationIndex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWeaponModelIndex)).BeginInit();
             this.groupBoxWeaponMateriaSlots.SuspendLayout();
@@ -192,8 +200,6 @@
             this.tabPageMateriaData.SuspendLayout();
             this.tabPageKeyItemText.SuspendLayout();
             this.panelButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponHitChance)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponCritChance)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControlMain
@@ -586,6 +592,7 @@
             // 
             this.statusesControlItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.statusesControlItem.FullList = true;
             this.statusesControlItem.GroupBoxText = "Inflicts/cures status...";
             this.statusesControlItem.Location = new System.Drawing.Point(6, 142);
             this.statusesControlItem.MinimumSize = new System.Drawing.Size(500, 200);
@@ -666,6 +673,30 @@
             this.tabPageWeapon1.TabIndex = 0;
             this.tabPageWeapon1.Text = "Page 1";
             this.tabPageWeapon1.UseVisualStyleBackColor = true;
+            // 
+            // numericWeaponCritChance
+            // 
+            this.numericWeaponCritChance.Location = new System.Drawing.Point(113, 109);
+            this.numericWeaponCritChance.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericWeaponCritChance.Name = "numericWeaponCritChance";
+            this.numericWeaponCritChance.Size = new System.Drawing.Size(100, 23);
+            this.numericWeaponCritChance.TabIndex = 36;
+            // 
+            // numericWeaponHitChance
+            // 
+            this.numericWeaponHitChance.Location = new System.Drawing.Point(7, 109);
+            this.numericWeaponHitChance.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericWeaponHitChance.Name = "numericWeaponHitChance";
+            this.numericWeaponHitChance.Size = new System.Drawing.Size(100, 23);
+            this.numericWeaponHitChance.TabIndex = 35;
             // 
             // elementsControlWeapon
             // 
@@ -968,7 +999,7 @@
             // labelArmorElementModifier
             // 
             this.labelArmorElementModifier.AutoSize = true;
-            this.labelArmorElementModifier.Location = new System.Drawing.Point(382, 310);
+            this.labelArmorElementModifier.Location = new System.Drawing.Point(382, 305);
             this.labelArmorElementModifier.Name = "labelArmorElementModifier";
             this.labelArmorElementModifier.Size = new System.Drawing.Size(147, 15);
             this.labelArmorElementModifier.TabIndex = 34;
@@ -1011,7 +1042,7 @@
             // 
             this.comboBoxArmorElementModifier.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxArmorElementModifier.FormattingEnabled = true;
-            this.comboBoxArmorElementModifier.Location = new System.Drawing.Point(382, 328);
+            this.comboBoxArmorElementModifier.Location = new System.Drawing.Point(382, 323);
             this.comboBoxArmorElementModifier.Name = "comboBoxArmorElementModifier";
             this.comboBoxArmorElementModifier.Size = new System.Drawing.Size(181, 23);
             this.comboBoxArmorElementModifier.TabIndex = 35;
@@ -1029,7 +1060,7 @@
             // 
             this.comboBoxArmorStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxArmorStatus.FormattingEnabled = true;
-            this.comboBoxArmorStatus.Location = new System.Drawing.Point(382, 372);
+            this.comboBoxArmorStatus.Location = new System.Drawing.Point(382, 367);
             this.comboBoxArmorStatus.Name = "comboBoxArmorStatus";
             this.comboBoxArmorStatus.Size = new System.Drawing.Size(181, 23);
             this.comboBoxArmorStatus.TabIndex = 30;
@@ -1057,7 +1088,7 @@
             // labelArmorStatus
             // 
             this.labelArmorStatus.AutoSize = true;
-            this.labelArmorStatus.Location = new System.Drawing.Point(382, 354);
+            this.labelArmorStatus.Location = new System.Drawing.Point(382, 349);
             this.labelArmorStatus.Name = "labelArmorStatus";
             this.labelArmorStatus.Size = new System.Drawing.Size(87, 15);
             this.labelArmorStatus.TabIndex = 29;
@@ -1298,6 +1329,7 @@
             // 
             this.statusesControlAccessory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.statusesControlAccessory.FullList = true;
             this.statusesControlAccessory.GroupBoxText = "Protects from status...";
             this.statusesControlAccessory.Location = new System.Drawing.Point(7, 235);
             this.statusesControlAccessory.MinimumSize = new System.Drawing.Size(500, 200);
@@ -1436,6 +1468,12 @@
             // 
             // tabPageMateriaData
             // 
+            this.tabPageMateriaData.Controls.Add(this.comboBoxMateriaEquipAttributes);
+            this.tabPageMateriaData.Controls.Add(this.labelMateriaEquipAttributes);
+            this.tabPageMateriaData.Controls.Add(this.statusesControlMateria);
+            this.tabPageMateriaData.Controls.Add(this.comboBoxMateriaSubtype);
+            this.tabPageMateriaData.Controls.Add(this.labelMateriaSubtype);
+            this.tabPageMateriaData.Controls.Add(this.materiaLevelControl);
             this.tabPageMateriaData.Controls.Add(this.comboBoxMateriaElement);
             this.tabPageMateriaData.Controls.Add(this.labelMateriaElement);
             this.tabPageMateriaData.Controls.Add(this.comboBoxMateriaType);
@@ -1453,21 +1491,80 @@
             this.tabPageMateriaData.Text = "Materia";
             this.tabPageMateriaData.UseVisualStyleBackColor = true;
             // 
+            // comboBoxMateriaEquipAttributes
+            // 
+            this.comboBoxMateriaEquipAttributes.FormattingEnabled = true;
+            this.comboBoxMateriaEquipAttributes.Location = new System.Drawing.Point(191, 163);
+            this.comboBoxMateriaEquipAttributes.Name = "comboBoxMateriaEquipAttributes";
+            this.comboBoxMateriaEquipAttributes.Size = new System.Drawing.Size(306, 23);
+            this.comboBoxMateriaEquipAttributes.TabIndex = 22;
+            // 
+            // labelMateriaEquipAttributes
+            // 
+            this.labelMateriaEquipAttributes.AutoSize = true;
+            this.labelMateriaEquipAttributes.Location = new System.Drawing.Point(191, 145);
+            this.labelMateriaEquipAttributes.Name = "labelMateriaEquipAttributes";
+            this.labelMateriaEquipAttributes.Size = new System.Drawing.Size(93, 15);
+            this.labelMateriaEquipAttributes.TabIndex = 21;
+            this.labelMateriaEquipAttributes.Text = "Equip attributes:";
+            // 
+            // statusesControlMateria
+            // 
+            this.statusesControlMateria.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.statusesControlMateria.FullList = true;
+            this.statusesControlMateria.GroupBoxText = "Statuses";
+            this.statusesControlMateria.Location = new System.Drawing.Point(190, 282);
+            this.statusesControlMateria.MinimumSize = new System.Drawing.Size(380, 200);
+            this.statusesControlMateria.Name = "statusesControlMateria";
+            this.statusesControlMateria.Size = new System.Drawing.Size(380, 200);
+            this.statusesControlMateria.TabIndex = 20;
+            // 
+            // comboBoxMateriaSubtype
+            // 
+            this.comboBoxMateriaSubtype.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxMateriaSubtype.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMateriaSubtype.FormattingEnabled = true;
+            this.comboBoxMateriaSubtype.Location = new System.Drawing.Point(503, 119);
+            this.comboBoxMateriaSubtype.Name = "comboBoxMateriaSubtype";
+            this.comboBoxMateriaSubtype.Size = new System.Drawing.Size(261, 23);
+            this.comboBoxMateriaSubtype.TabIndex = 19;
+            // 
+            // labelMateriaSubtype
+            // 
+            this.labelMateriaSubtype.AutoSize = true;
+            this.labelMateriaSubtype.Location = new System.Drawing.Point(503, 101);
+            this.labelMateriaSubtype.Name = "labelMateriaSubtype";
+            this.labelMateriaSubtype.Size = new System.Drawing.Size(53, 15);
+            this.labelMateriaSubtype.TabIndex = 18;
+            this.labelMateriaSubtype.Text = "Subtype:";
+            // 
+            // materiaLevelControl
+            // 
+            this.materiaLevelControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.materiaLevelControl.Location = new System.Drawing.Point(577, 230);
+            this.materiaLevelControl.Lvl2APValue = 0;
+            this.materiaLevelControl.Lvl3APValue = 0;
+            this.materiaLevelControl.Lvl4APValue = 0;
+            this.materiaLevelControl.Lvl5APValue = 0;
+            this.materiaLevelControl.MaxLevel = 5;
+            this.materiaLevelControl.Name = "materiaLevelControl";
+            this.materiaLevelControl.Size = new System.Drawing.Size(187, 252);
+            this.materiaLevelControl.TabIndex = 17;
+            // 
             // comboBoxMateriaElement
             // 
-            this.comboBoxMateriaElement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxMateriaElement.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxMateriaElement.FormattingEnabled = true;
             this.comboBoxMateriaElement.Location = new System.Drawing.Point(191, 119);
             this.comboBoxMateriaElement.Name = "comboBoxMateriaElement";
-            this.comboBoxMateriaElement.Size = new System.Drawing.Size(226, 23);
+            this.comboBoxMateriaElement.Size = new System.Drawing.Size(150, 23);
             this.comboBoxMateriaElement.TabIndex = 16;
             // 
             // labelMateriaElement
             // 
             this.labelMateriaElement.AutoSize = true;
-            this.labelMateriaElement.Location = new System.Drawing.Point(195, 101);
+            this.labelMateriaElement.Location = new System.Drawing.Point(191, 101);
             this.labelMateriaElement.Name = "labelMateriaElement";
             this.labelMateriaElement.Size = new System.Drawing.Size(53, 15);
             this.labelMateriaElement.TabIndex = 15;
@@ -1475,19 +1572,17 @@
             // 
             // comboBoxMateriaType
             // 
-            this.comboBoxMateriaType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxMateriaType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxMateriaType.FormattingEnabled = true;
-            this.comboBoxMateriaType.Location = new System.Drawing.Point(423, 119);
+            this.comboBoxMateriaType.Location = new System.Drawing.Point(347, 119);
             this.comboBoxMateriaType.Name = "comboBoxMateriaType";
-            this.comboBoxMateriaType.Size = new System.Drawing.Size(221, 23);
+            this.comboBoxMateriaType.Size = new System.Drawing.Size(150, 23);
             this.comboBoxMateriaType.TabIndex = 14;
             // 
             // labelMateriaType
             // 
-            this.labelMateriaType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelMateriaType.AutoSize = true;
-            this.labelMateriaType.Location = new System.Drawing.Point(423, 101);
+            this.labelMateriaType.Location = new System.Drawing.Point(347, 101);
             this.labelMateriaType.Name = "labelMateriaType";
             this.labelMateriaType.Size = new System.Drawing.Size(76, 15);
             this.labelMateriaType.TabIndex = 13;
@@ -1661,30 +1756,6 @@
             this.panelButtons.Size = new System.Drawing.Size(784, 46);
             this.panelButtons.TabIndex = 4;
             // 
-            // numericWeaponHitChance
-            // 
-            this.numericWeaponHitChance.Location = new System.Drawing.Point(7, 109);
-            this.numericWeaponHitChance.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericWeaponHitChance.Name = "numericWeaponHitChance";
-            this.numericWeaponHitChance.Size = new System.Drawing.Size(100, 23);
-            this.numericWeaponHitChance.TabIndex = 35;
-            // 
-            // numericWeaponCritChance
-            // 
-            this.numericWeaponCritChance.Location = new System.Drawing.Point(113, 109);
-            this.numericWeaponCritChance.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericWeaponCritChance.Name = "numericWeaponCritChance";
-            this.numericWeaponCritChance.Size = new System.Drawing.Size(100, 23);
-            this.numericWeaponCritChance.TabIndex = 36;
-            // 
             // KernelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1714,6 +1785,8 @@
             this.tabControlWeapons.ResumeLayout(false);
             this.tabPageWeapon1.ResumeLayout(false);
             this.tabPageWeapon1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponCritChance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponHitChance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWeaponAnimationIndex)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWeaponModelIndex)).EndInit();
             this.groupBoxWeaponMateriaSlots.ResumeLayout(false);
@@ -1741,8 +1814,6 @@
             this.tabPageKeyItemText.ResumeLayout(false);
             this.tabPageKeyItemText.PerformLayout();
             this.panelButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponHitChance)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericWeaponCritChance)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1882,5 +1953,11 @@
         private ComboBox comboBoxAccessoryElementModifier;
         private NumericUpDown numericWeaponCritChance;
         private NumericUpDown numericWeaponHitChance;
+        private MateriaLevelControl materiaLevelControl;
+        private ComboBox comboBoxMateriaSubtype;
+        private Label labelMateriaSubtype;
+        private StatusesControl statusesControlMateria;
+        private Label labelMateriaEquipAttributes;
+        private ComboBox comboBoxMateriaEquipAttributes;
     }
 }

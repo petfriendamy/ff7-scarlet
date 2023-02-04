@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Media;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class DamageCalculationControl : UserControl
     {

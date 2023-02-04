@@ -1,6 +1,6 @@
 ﻿using Shojy.FF7.Elena.Items;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class ItemRestrictionsControl : UserControl
     {
@@ -20,7 +20,7 @@ namespace FF7Scarlet.KernelEditor
             checkBoxWeaponIsSellable.Checked = restrictions.HasFlag(Restrictions.CanBeSold);
             checkBoxWeaponUsableInBattle.Checked = restrictions.HasFlag(Restrictions.CanBeUsedInBattle);
             checkBoxWeaponUsableInMenu.Checked = restrictions.HasFlag(Restrictions.CanBeUsedInMenu);
-            checkBoxWeaponIsThrowable.Checked = ((int)restrictions & 0x08) != 0;
+            checkBoxWeaponIsThrowable.Checked = restrictions.HasFlag(Restrictions.CanBeThrown);
         }
     }
 }

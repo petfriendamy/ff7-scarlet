@@ -1,23 +1,48 @@
 ﻿using Shojy.FF7.Elena.Battle;
 using System.ComponentModel;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class StatusesControl : UserControl
     {
-        [
-            Category("Appearance"),
-            Description("The text for the GroupBox.")
-        ]
+        private CheckBox[] checkBoxes;
+        private const int FULL_LIST_LENGTH = 31, PARTIAL_LIST_LENGTH = 24;
+        private bool fullList = true;
+
+        [Description("The text for the GroupBox.")]
         public string GroupBoxText
         {
             get { return groupBoxMain.Text; }
             set { groupBoxMain.Text = value; }
         }
 
+        [Description("Show the full list of status effects.")]
+        public bool FullList
+        {
+            get { return fullList; }
+            set
+            {
+                fullList = value;
+                for (int i = PARTIAL_LIST_LENGTH; i < FULL_LIST_LENGTH; ++i)
+                {
+                    checkBoxes[i].Visible = value;
+                }
+            }
+        }
+
         public StatusesControl()
         {
             InitializeComponent();
+            checkBoxes = new CheckBox[FULL_LIST_LENGTH]
+            {
+                checkBoxDeath, checkBoxNearDeath, checkBoxSleep, checkBoxPoison, checkBoxSadness,
+                checkBoxFury, checkBoxConfu, checkBoxSilence, checkBoxHaste, checkBoxSlow,
+                checkBoxStop, checkBoxFrog, checkBoxSmall, checkBoxSlowNumb, checkBoxPetrify,
+                checkBoxRegen, checkBoxBarrier, checkBoxMBarrier, checkBoxReflect, checkBoxDual,
+                checkBoxShield, checkBoxDeathSentence, checkBoxManipulate, checkBoxBerserk,
+                checkBoxPeerless, checkBoxDarkness, checkBoxDualDrain, checkBoxDeathForce,
+                checkBoxResist, checkBoxLuckyGirl, checkBoxImprisoned
+            };
         }
 
         public void SetStatuses(Statuses statuses)
