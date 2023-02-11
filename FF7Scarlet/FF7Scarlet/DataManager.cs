@@ -3,6 +3,7 @@ using Shojy.FF7.Elena;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.AIEditor;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet
 {
@@ -16,15 +17,16 @@ namespace FF7Scarlet
         private static BattleAIForm? battleAIForm = null;
         private static Scene[] sceneList = new Scene[SCENE_COUNT];
         private static byte[] sceneLookupTable = new byte[64];
+        private static Dictionary<ushort, Attack> syncedAttacks = new();
 
         public const int SCENE_COUNT = 256;
         private const int COMPRESSED_BLOCK_SIZE = 0x2000, UNCOMPRESSED_BLOCK_SIZE = 7808, HEADER_COUNT = 16;
         public const ushort NULL_OFFSET_16_BIT = 0xFFFF;
         public const uint NULL_OFFSET_32_BIT = 0xFFFFFFFF;
 
-        public static string? KernelPath { get; private set; }
-        public static string? Kernel2Path { get; private set; }
-        public static string? ScenePath { get; private set; }
+        public static string KernelPath { get; private set; } = string.Empty;
+        public static string Kernel2Path { get; private set; } = string.Empty;
+        public static string ScenePath { get; private set; } = string.Empty;
         public static Kernel? Kernel { get; private set; }
 
         public static bool KernelFileIsLoaded
@@ -153,7 +155,7 @@ namespace FF7Scarlet
                 case FormType.BattleAIEditor:
                     if (battleAIForm == null)
                     {
-                        battleAIForm = new BattleAIForm();
+                        battleAIForm = new BattleAIForm(syncedAttacks);
                         battleAIForm.Show();
                     }
                     break;
@@ -174,6 +176,45 @@ namespace FF7Scarlet
                     break;
             }
             startupForm?.EnableFormButton(type);
+        }
+
+        public static bool FormIsOpen(FormType type)
+        {
+            switch (type)
+            {
+                case FormType.KernelEditor:
+                    return kernelForm != null;
+                case FormType.BattleDataEditor:
+                    return false;
+                case FormType.BattleAIEditor:
+                    return battleAIForm != null;
+            }
+            return false;
+        }
+
+        public static Kernel CopyKernel()
+        {
+            if (!KernelFileIsLoaded)
+            {
+                throw new FileNotFoundException("No kernel file is loaded.");
+            }
+            else
+            {
+                var k = new Kernel(KernelPath);
+                if (BothKernelFilesLoaded)
+                {
+                    k.MergeKernel2Data(Kernel2Path);
+                }
+                for (int i = 0; i < Kernel.ATTACK_COUNT; ++i)
+                {
+                    ushort id = k.Attacks[i].ID;
+                    if (AttackIsSynced(id))
+                    {
+                        k.Attacks[i] = syncedAttacks[id];
+                    }
+                }
+                return k;
+            }
         }
 
         public static Scene[] CopySceneList()
@@ -222,6 +263,58 @@ namespace FF7Scarlet
                 Kernel.UpdateLookupTable(sceneLookupTable);
                 CreateKernel(false);
             }
+        }
+
+        public static int SyncAttack(Attack attack, bool syncInternal)
+        {
+            //make a copy of the attack to keep in the sync list
+            var newAtk = new Attack(attack.ID, attack.Name, attack.GetRawData());
+            if (syncedAttacks.ContainsKey(attack.ID)) { syncedAttacks[attack.ID] = newAtk; } 
+            else { syncedAttacks.Add(attack.ID, newAtk); }
+
+            //if one of the scene editors is open, sync data over there
+            if (battleAIForm != null)
+            {
+
+            }
+
+            if (syncInternal)
+            {
+                //make another copy of the attack to keep separate from unsaved data
+                var newAtkInner = new Attack(attack.ID, attack.Name, attack.GetRawData());
+                int count = 0;
+                foreach (var s in sceneList)
+                {
+                    s.SyncAttack(newAtkInner);
+                    count++;
+                }
+                return count;
+            }
+            return 1;
+        }
+
+        public static void UnsyncAttack(ushort id)
+        {
+            syncedAttacks.Remove(id);
+        }
+
+        public static bool AttackIsSynced(ushort id)
+        {
+            if (syncedAttacks.ContainsKey(id))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static Dictionary<ushort, Attack> CopySyncedAttacks()
+        {
+            var copy = new Dictionary<ushort, Attack>();
+            foreach (var s in syncedAttacks)
+            {
+                copy.Add(s.Key, s.Value);
+            }
+            return copy;
         }
 
         public static void CreateKernel(bool updateKernel2)

@@ -21,11 +21,11 @@ namespace FF7Scarlet.AIEditor
             scripts[pos] = new Script(this, startingCode);
         }
 
-        public Script GetScriptAtPosition(int pos)
+        public Script? GetScriptAtPosition(int pos)
         {
             if (pos < 0 || pos >= SCRIPT_NUMBER)
             {
-                throw new ArgumentOutOfRangeException();
+                return null;
             }
             return scripts[pos];
         }
@@ -39,7 +39,7 @@ namespace FF7Scarlet.AIEditor
             return false;
         }
 
-        public void ParseScripts(ref byte[] data, int headerSize, int offset, int nextOffset)
+        public void ParseScripts(byte[] data, int headerSize, int offset, int nextOffset)
         {
             int i, j, next, start, length;
 

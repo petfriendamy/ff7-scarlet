@@ -1,4 +1,5 @@
 ﻿using FF7Scarlet.SceneEditor;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -14,6 +15,7 @@ namespace FF7Scarlet.AIEditor
         };
         private Scene currScene;
         private Scene[] sceneList;
+        private Dictionary<ushort, Attack> syncedAttacks;
         private List<Code>? clipboard;
         private bool loading = false, unsavedChanges = false, processing = false;
 
@@ -50,16 +52,24 @@ namespace FF7Scarlet.AIEditor
             get { return listBoxCurrScript.SelectedIndex; }
         }
 
-        public BattleAIForm()
+        public BattleAIForm(Dictionary<ushort, Attack> syncedAttacks)
         {
             InitializeComponent();
 
             //create private version of scene data that can be edited freely
             sceneList = DataManager.CopySceneList();
+            this.syncedAttacks = syncedAttacks;
             currScene = sceneList[0];
             for (int i = 0; i < DataManager.SCENE_COUNT; ++i)
             {
                 comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
+                if (syncedAttacks.Count > 0)
+                {
+                    foreach (var a in syncedAttacks.Values)
+                    {
+                        sceneList[i].SyncAttack(a);
+                    }
+                }
             }
             comboBoxSceneList.SelectedIndex = 0;
         }
@@ -84,7 +94,9 @@ namespace FF7Scarlet.AIEditor
                 }
                 else
                 {
-                    listBoxEnemies.Items.Add(enemy.Name.ToString());
+                    var name = enemy.Name.ToString();
+                    if (name == null) { listBoxEnemies.Items.Add("(no name)"); }
+                    else { listBoxEnemies.Items.Add(name); }
                 }
             }
             listBoxEnemies.SelectedIndex = 0;

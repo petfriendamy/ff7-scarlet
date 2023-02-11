@@ -1,26 +1,21 @@
 ﻿using FF7Scarlet.AIEditor;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.SceneEditor
 {
     public class Scene
     {
         public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ATTACK_COUNT = 32,
-            NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152, ATTACK_BLOCK_SIZE = 28,
+            NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152,
             FORMATION_BLOCK_SIZE = 504, ENEMY_AI_BLOCK_SIZE = 4090, SCRIPT_NUMBER = 16;
         private readonly Enemy[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
-        private Attack[] attackList = new Attack[ATTACK_COUNT];
+        private readonly Attack?[] attackList = new Attack?[ATTACK_COUNT];
+
         private ushort[] formationAIoffset = new ushort[FORMATION_COUNT];
         private ushort[] enemyAIoffset = new ushort[ENEMY_COUNT];
-        private byte[]? formationAIRaw;
-        private byte[]? enemyAIraw;
+        private readonly byte[] formationAIRaw = new byte[FORMATION_BLOCK_SIZE];
+        private readonly byte[] enemyAIraw = new byte[ENEMY_AI_BLOCK_SIZE];
         private byte[] rawData;
 
         public bool ScriptsLoaded { get; private set; } = false;
@@ -155,7 +150,7 @@ namespace FF7Scarlet.SceneEditor
                     //attack data
                     for (i = 0; i < ATTACK_COUNT; ++i)
                     {
-                        attackData.Add(reader.ReadBytes(ATTACK_BLOCK_SIZE));
+                        attackData.Add(reader.ReadBytes(Attack.BLOCK_SIZE));
                     }
 
                     //attack IDs
@@ -172,6 +167,7 @@ namespace FF7Scarlet.SceneEditor
                         {
                             attackList[i] = new Attack(attackID[i], attackName[i], attackData[i]);
                         }
+                        else { attackList[i] = null; }
                     }
                 }
                 catch (Exception ex)
@@ -192,7 +188,7 @@ namespace FF7Scarlet.SceneEditor
                     }
 
                     //formations
-                    formationAIRaw = reader.ReadBytes(FORMATION_BLOCK_SIZE);
+                    Array.Copy(reader.ReadBytes(FORMATION_BLOCK_SIZE), formationAIRaw, FORMATION_BLOCK_SIZE);
 
                     //enemy A.I. offsets
                     for (i = 0; i < ENEMY_COUNT; ++i)
@@ -201,7 +197,7 @@ namespace FF7Scarlet.SceneEditor
                     }
 
                     //enemy A.I. scripts
-                    enemyAIraw = reader.ReadBytes(ENEMY_AI_BLOCK_SIZE);
+                    Array.Copy(reader.ReadBytes(ENEMY_AI_BLOCK_SIZE), enemyAIraw, ENEMY_AI_BLOCK_SIZE);
                 }
             }
         }
@@ -230,7 +226,7 @@ namespace FF7Scarlet.SceneEditor
                     try
                     {
                         formations[i] = new Formation();
-                        formations[i].ParseScripts(ref formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
+                        formations[i].ParseScripts(formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
                     }
                     catch (Exception ex)
                     {
@@ -254,7 +250,7 @@ namespace FF7Scarlet.SceneEditor
                     }
                     try
                     {
-                        enemies[i].ParseScripts(ref enemyAIraw, ENEMY_COUNT * 2, enemyAIoffset[i], next);
+                        enemies[i].ParseScripts(enemyAIraw, ENEMY_COUNT * 2, enemyAIoffset[i], next);
                     }
                     catch (Exception ex)
                     {
@@ -263,6 +259,20 @@ namespace FF7Scarlet.SceneEditor
                 }
             }
             ScriptsLoaded = true;
+        }
+
+        public int SyncAttack(Attack attack)
+        {
+            int count = 0;
+            for (int i = 0; i < ATTACK_COUNT; ++i)
+            {
+                if (attackList[i]?.ID == attack.ID)
+                {
+                    attackList[i] = attack;
+                    count++;
+                }
+            }
+            return count;
         }
 
         public void UpdateRawData()
@@ -294,22 +304,26 @@ namespace FF7Scarlet.SceneEditor
                     //attack data
                     try
                     {
+                        Attack? atk;
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            if (attackList[i] == null) { writer.Write(GetNullBlock(ATTACK_BLOCK_SIZE)); }
-                            else { writer.Write(attackList[i].GetRawData()); }
+                            atk = attackList[i];
+                            if (atk == null) { writer.Write(GetNullBlock(Attack.BLOCK_SIZE)); }
+                            else { writer.Write(atk.GetRawData()); }
                         }
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            if (attackList[i] == null) { writer.Write((ushort)0xFFFF); }
-                            else { writer.Write(attackList[i].ID); }
+                            atk = attackList[i];
+                            if (atk == null) { writer.Write((ushort)0xFFFF); }
+                            else { writer.Write(atk.ID); }
                         }
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            if (attackList[i] == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
+                            atk = attackList[i];
+                            if (atk == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
                             else
                             {
-                                var name = attackList[i].Name.GetBytes();
+                                var name = atk.Name.GetBytes();
                                 if (name == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
                                 else { writer.Write(name); }
                             }
@@ -325,8 +339,8 @@ namespace FF7Scarlet.SceneEditor
                         //formation data
                         try
                         {
-                            formationAIRaw = GetRawScriptData(FORMATION_COUNT, FORMATION_BLOCK_SIZE, formations,
-                                ref formationAIoffset);
+                            Array.Copy(GetRawScriptData(FORMATION_COUNT, FORMATION_BLOCK_SIZE, formations,
+                                ref formationAIoffset), formationAIRaw, FORMATION_BLOCK_SIZE);
 
                             foreach (var o in formationAIoffset)
                             {
@@ -346,8 +360,8 @@ namespace FF7Scarlet.SceneEditor
                         //enemy A.I. data
                         try
                         {
-                            enemyAIraw = GetRawScriptData(ENEMY_COUNT, ENEMY_AI_BLOCK_SIZE, enemies,
-                                ref enemyAIoffset);
+                            Array.Copy(GetRawScriptData(ENEMY_COUNT, ENEMY_AI_BLOCK_SIZE, enemies,
+                                ref enemyAIoffset), enemyAIraw, ENEMY_AI_BLOCK_SIZE);
 
                             foreach (var o in enemyAIoffset)
                             {
@@ -388,7 +402,9 @@ namespace FF7Scarlet.SceneEditor
 
         public byte[] GetRawData()
         {
-            return rawData;
+            var copy = new byte[rawData.Length];
+            Array.Copy(rawData, copy, rawData.Length);
+            return copy;
         }
 
         private byte[] GetRawScriptData(int containerCount, int blockSize, AIContainer[] aiContainers,

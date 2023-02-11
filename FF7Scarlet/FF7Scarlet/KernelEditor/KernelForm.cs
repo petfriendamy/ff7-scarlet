@@ -3,41 +3,44 @@ using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Materias;
 using FF7Scarlet.KernelEditor.Controls;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.KernelEditor
 {
     public partial class KernelForm : Form
     {
-        private Kernel kernel;
+        private const string WINDOW_TITLE = "Scarlet - Kernel Editor";
+        private readonly Kernel kernel;
         private const int SUMMON_OFFSET = 56;
+        private List<ushort> syncedAttackIDs = new();
         private bool unsavedChanges = false, loading = true;
 
-        private Dictionary<KernelSection, TabPage> tabPages = new Dictionary<KernelSection, TabPage> { };
-        private Dictionary<KernelSection, ListBox> listBoxes = new Dictionary<KernelSection, ListBox> { };
-        private Dictionary<KernelSection, TextBox> nameTextBoxes = new Dictionary<KernelSection, TextBox> { };
-        private Dictionary<KernelSection, TextBox> descriptionTextBoxes = new Dictionary<KernelSection, TextBox> { };
-        private Dictionary<KernelSection, StatIncreaseControl> statIncreases = new Dictionary<KernelSection, StatIncreaseControl> { };
-        private Dictionary<KernelSection, TargetDataControl> targetData = new Dictionary<KernelSection, TargetDataControl> { };
-        private Dictionary<KernelSection, DamageCalculationControl> damageCalculationControls = new Dictionary<KernelSection, DamageCalculationControl> { };
-        private Dictionary<KernelSection, ItemRestrictionsControl> itemRestrictionLists = new Dictionary<KernelSection, ItemRestrictionsControl> { };
-        private Dictionary<KernelSection, EquipableListControl> equipableLists = new Dictionary<KernelSection, EquipableListControl> { };
-        private Dictionary<KernelSection, MateriaSlotSelectorControl> materiaSlots = new Dictionary<KernelSection, MateriaSlotSelectorControl> { };
-        private Dictionary<KernelSection, ComboBox> materiaGrowthComboBoxes = new Dictionary<KernelSection, ComboBox> { };
-        private Dictionary<KernelSection, ElementsControl> elementLists = new Dictionary<KernelSection, ElementsControl> { };
-        private Dictionary<KernelSection, ComboBox> elementDamageModifiers = new Dictionary<KernelSection, ComboBox> { };
-        private Dictionary<KernelSection, StatusesControl> statusLists = new Dictionary<KernelSection, StatusesControl> { };
-        private Dictionary<KernelSection, ComboBox> equipmentStatus = new Dictionary<KernelSection, ComboBox> { };
+        private readonly Dictionary<KernelSection, TabPage> tabPages = new();
+        private readonly Dictionary<KernelSection, bool> tabPageIsEnabled = new();
+        private readonly Dictionary<KernelSection, ListBox> listBoxes = new();
+        private readonly Dictionary<KernelSection, TextBox> nameTextBoxes = new();
+        private readonly Dictionary<KernelSection, TextBox> descriptionTextBoxes = new();
+        private readonly Dictionary<KernelSection, ComboBox> cameraMovementSingle = new();
+        private readonly Dictionary<KernelSection, ComboBox> cameraMovementMulti = new();
+        private readonly Dictionary<KernelSection, StatIncreaseControl> statIncreases = new();
+        private readonly Dictionary<KernelSection, TargetDataControl> targetData = new();
+        private readonly Dictionary<KernelSection, DamageCalculationControl> damageCalculationControls = new();
+        private readonly Dictionary<KernelSection, ItemRestrictionsControl> itemRestrictionLists = new();
+        private readonly Dictionary<KernelSection, EquipableListControl> equipableLists = new();
+        private readonly Dictionary<KernelSection, MateriaSlotSelectorControl> materiaSlots = new();
+        private readonly Dictionary<KernelSection, ComboBox> materiaGrowthComboBoxes = new();
+        private readonly Dictionary<KernelSection, ElementsControl> elementLists = new();
+        private readonly Dictionary<KernelSection, ComboBox> elementDamageModifiers = new();
+        private readonly Dictionary<KernelSection, StatusesControl> statusLists = new();
+        private readonly Dictionary<KernelSection, ComboBox> equipmentStatus = new();
 
         public KernelForm()
         {
             InitializeComponent();
-
-            //create private version of kernel data that can be edited freely
-            if (DataManager.KernelPath == null) { throw new ArgumentNullException(); }
-            kernel = new Kernel(DataManager.KernelPath);
-            if (DataManager.BothKernelFilesLoaded)
+            kernel = DataManager.CopyKernel();
+            foreach (var a in kernel.Attacks)
             {
-                kernel.MergeKernel2Data(DataManager.Kernel2Path);
+                if (DataManager.AttackIsSynced(a.ID)) { syncedAttackIDs.Add(a.ID); }
             }
         }
 
@@ -49,18 +52,27 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.CommandData, listBoxCommands);
             nameTextBoxes.Add(KernelSection.CommandData, textBoxCommandName);
             descriptionTextBoxes.Add(KernelSection.CommandData, textBoxCommandDescription);
+            cameraMovementSingle.Add(KernelSection.CommandData, comboBoxCommandCameraMovementIDSingle);
+            cameraMovementMulti.Add(KernelSection.CommandData, comboBoxCommandCamMovementIDMulti);
+            targetData.Add(KernelSection.CommandData, targetDataControlCommand);
 
             //attack data
             tabPages.Add(KernelSection.AttackData, tabPageAttackData);
             listBoxes.Add(KernelSection.AttackData, listBoxAttacks);
             nameTextBoxes.Add(KernelSection.AttackData, textBoxAttackName);
             descriptionTextBoxes.Add(KernelSection.AttackData, textBoxAttackDescription);
+            cameraMovementSingle.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDSingle);
+            cameraMovementMulti.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDMulti);
+            damageCalculationControls.Add(KernelSection.AttackData, damageCalculationControlAttack);
+            elementLists.Add(KernelSection.AttackData, elementsControlAttack);
+            statusLists.Add(KernelSection.AttackData, statusesControlAttack);
 
             //item data
             tabPages.Add(KernelSection.ItemData, tabPageItemData);
             listBoxes.Add(KernelSection.ItemData, listBoxItems);
             nameTextBoxes.Add(KernelSection.ItemData, textBoxItemName);
             descriptionTextBoxes.Add(KernelSection.ItemData, textBoxItemDescription);
+            cameraMovementSingle.Add(KernelSection.ItemData, comboBoxItemCamMovementID);
             targetData.Add(KernelSection.ItemData, targetDataControlItem);
             damageCalculationControls.Add(KernelSection.ItemData, damageCalculationControlItem);
             itemRestrictionLists.Add(KernelSection.ItemData, itemRestrictionsItem);
@@ -134,6 +146,12 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
 
+            //initial cursor command
+            foreach (var c in InitialCursorActionInfo.ACTION_LIST)
+            {
+                comboBoxCommandInitialCursorAction.Items.Add(c.Description);
+            }
+
             //element modifiers
             foreach (var cb in elementDamageModifiers.Values)
             {
@@ -169,6 +187,11 @@ namespace FF7Scarlet.KernelEditor
                     }
                 }
             }
+            comboBoxAttackStatusChange.Items.Add("None");
+            foreach (var s in Enum.GetNames<StatusChange>())
+            {
+                comboBoxAttackStatusChange.Items.Add(s);
+            }
 
             //materia info
             foreach (var g in Enum.GetNames<GrowthRate>())
@@ -178,13 +201,24 @@ namespace FF7Scarlet.KernelEditor
                     cb.Items.Add(g);
                 }
             }
-            foreach (var el in Enum.GetNames<MateriaElements>())
+            foreach (var el in Enum.GetValues<MateriaElements>())
             {
-                comboBoxMateriaElement.Items.Add(el);
+                if (el == MateriaElements.Bolt) { comboBoxMateriaElement.Items.Add("Lightning"); }
+                else { comboBoxMateriaElement.Items.Add(el); }
             }
             foreach (var mt in Enum.GetNames<MateriaType>())
             {
                 comboBoxMateriaType.Items.Add(mt);
+            }
+
+            //condition sub-menu
+            comboBoxAttackConditionSubMenu.Items.Add("None");
+            foreach (var c in Enum.GetValues<AttackConditions>())
+            {
+                if (c != AttackConditions.None)
+                {
+                    comboBoxAttackConditionSubMenu.Items.Add(c);
+                }
             }
 
             //show/hide controls that are invalid
@@ -199,54 +233,70 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private void KernelForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void SetUnsaved(bool unsaved)
         {
-            DataManager.CloseForm(FormType.KernelEditor);
-        }
-
-        private void buttonSave_Click(object sender, EventArgs e)
-        {
-            DataManager.CreateKernel(true);
-        }
-
-        private void buttonExport_Click(object sender, EventArgs e)
-        {
-            using (var exportDialog = new KernelChunkExportForm(kernel))
-            {
-                exportDialog.ShowDialog();
-            }
+            unsavedChanges = unsaved;
+            Text = $"{(unsaved ? "*" : "")}{WINDOW_TITLE}";
         }
 
         private void EnableOrDisableTabPageControls(KernelSection section, bool enabled)
         {
-            if (tabPages.ContainsKey(section))
+            if (!tabPageIsEnabled.ContainsKey(section))
             {
-                var page = tabPages[section];
-                EnableOrDisableInner(page, enabled, listBoxes[section]);
+                tabPageIsEnabled.Add(section, !enabled);
+            }
+            if (tabPages.ContainsKey(section) && tabPageIsEnabled[section] != enabled)
+            {
+                EnableOrDisableInner(section, tabPages[section], enabled);
+                tabPageIsEnabled[section] = enabled;
             }
         }
 
-        private void EnableOrDisableInner(TabPage page, bool enabled, Control? ignore)
+        private void EnableOrDisableInner(KernelSection section, Control group, bool enabled)
         {
-            for (int i = 0; i < page.Controls.Count; ++i)
+            for (int i = 0; i < group.Controls.Count; ++i)
             {
-                var c = page.Controls[i];
-                if (c != ignore)
+                var c = group.Controls[i];
+                if (c != null)
                 {
-                    if (c is TabControl)
+                    if (ShouldIgnoreControl(section, c))
                     {
-                        var innerTab = c as TabControl;
-                        if (innerTab != null)
+                        if (c != listBoxes[section]) { c.Enabled = false; }
+                    }
+                    else
+                    {
+                        if (c is TabControl)
                         {
-                            for (int j = 0; j < innerTab.TabCount; ++j)
+                            var innerTab = c as TabControl;
+                            if (innerTab != null)
                             {
-                                EnableOrDisableInner(innerTab.TabPages[j], enabled, null);
+                                for (int j = 0; j < innerTab.TabCount; ++j)
+                                {
+                                    EnableOrDisableInner(section, innerTab.TabPages[j], enabled);
+                                }
                             }
                         }
+                        else if (c is GroupBox)
+                        {
+                            var groupBox = c as GroupBox;
+                            if (groupBox != null)
+                            {
+                                EnableOrDisableInner(section, groupBox, enabled);
+                            }
+                        }
+                        else { c.Enabled = enabled; }
                     }
-                    else { c.Enabled = enabled; }
                 }
             }
+        }
+
+        private bool ShouldIgnoreControl(KernelSection section, Control c)
+        {
+            if (c == listBoxes[section]) { return true; }
+            if (!DataManager.BothKernelFilesLoaded &&
+                (c == nameTextBoxes[section] || c == descriptionTextBoxes[section])) { return true; }
+            if (!DataManager.SceneFileIsLoaded && c == checkBoxAttackSyncWithSceneBin) { return true; }
+            return false;
         }
 
         //fills the current tab with data from the selected item
@@ -261,6 +311,16 @@ namespace FF7Scarlet.KernelEditor
                     EnableOrDisableTabPageControls(section, true);
                     nameTextBoxes[section].Text = kernel.GetAssociatedNames(section)[i];
                     descriptionTextBoxes[section].Text = kernel.GetAssociatedDescriptions(section)[i];
+
+                    //check for camera movement ID(s)
+                    if (cameraMovementSingle.ContainsKey(section))
+                    {
+                        cameraMovementSingle[section].Text = kernel.GetCameraMovementIDSingle(section, i).ToString("X4");
+                    }
+                    if (cameraMovementMulti.ContainsKey(section))
+                    {
+                        cameraMovementMulti[section].Text = kernel.GetCameraMovementIDMulti(section, i).ToString("X4");
+                    }
 
                     //check for stat increases
                     if (statIncreases.ContainsKey(section))
@@ -309,7 +369,7 @@ namespace FF7Scarlet.KernelEditor
                     //check for elements
                     if (elementLists.ContainsKey(section))
                     {
-                        elementLists[section].SetElements(kernel.GetElements(section, i));
+                        elementLists[section].SetElements(kernel.GetElement(section, i));
                     }
                     if (elementDamageModifiers.ContainsKey(section))
                     {
@@ -347,6 +407,7 @@ namespace FF7Scarlet.KernelEditor
                     {
                         //attack data
                         case KernelSection.AttackData:
+                            var attack = kernel.Attacks[i];
                             j = i - SUMMON_OFFSET;
                             if (j >= 0 && j < kernel.SummonAttackNames.Strings.Length)
                             {
@@ -358,12 +419,39 @@ namespace FF7Scarlet.KernelEditor
                                 textBoxSummonText.Enabled = false;
                                 textBoxSummonText.Clear();
                             }
+                            numericAttackMPCost.Value = attack.MPCost;
+                            comboBoxAttackAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
+                            comboBoxAttackImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
+                            comboBoxAttackHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
+                            if (attack.AttackConditions == AttackConditions.None)
+                            {
+                                comboBoxAttackConditionSubMenu.SelectedIndex = 0;
+                            }
+                            else
+                            {
+                                comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
+                            }
+                            specialAttackFlagsControlAttack.SetFlags(attack.SpecialAttackFlags);
+                            numericAttackStatusChangeChance.Value = attack.StatusChangeChance;
+                            if (attack.StatusChange == StatusChange.None)
+                            {
+                                comboBoxAttackStatusChange.SelectedIndex = 0;
+                                numericAttackStatusChangeChance.Enabled = false;
+                                statusesControlAttack.Enabled = false;
+                            }
+                            else
+                            {
+                                var s = Enum.GetValues<StatusChange>().ToList();
+                                comboBoxAttackStatusChange.SelectedIndex = s.IndexOf(attack.StatusChange) + 1;
+                                numericAttackStatusChangeChance.Enabled = true;
+                                statusesControlAttack.Enabled = true;
+                            }
+                            checkBoxAttackSyncWithSceneBin.Checked = syncedAttackIDs.Contains(attack.ID);
                             break;
 
                         //item data
                         case KernelSection.ItemData:
                             var item = kernel.ItemData.Items[i];
-                            comboBoxItemCamMovementID.Text = item.CameraMovementId.ToString("X4");
                             comboBoxItemAttackEffectID.Text = item.AttackEffectId.ToString("X2");
                             break;
 
@@ -415,8 +503,90 @@ namespace FF7Scarlet.KernelEditor
                             break;
                     }
                 }
+                else
+                {
+                    EnableOrDisableTabPageControls(section, false);
+                    if (section == KernelSection.AttackData && i > 0)
+                    {
+                        var names = kernel.GetAssociatedNames(section);
+                        var descs = kernel.GetAssociatedDescriptions(section);
+                        if (i < names.Length && i < descs.Length)
+                        {
+                            textBoxAttackName.Text = names[i];
+                            textBoxAttackDescription.Text = descs[i];
+                            textBoxAttackName.Enabled = textBoxAttackDescription.Enabled = true;
+                        }
+                    }
+                }
             }
             loading = false;
+        }
+
+        private void checkBoxAttackSyncWithSceneBin_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                bool isChecked = checkBoxAttackSyncWithSceneBin.Checked;
+                var selected = listBoxAttacks.SelectedIndex;
+                if (selected >= 0 && selected < kernel.GetCount(KernelSection.AttackData))
+                {
+                    var atk = kernel.Attacks[selected];
+                    loading = true;
+                    if (isChecked)
+                    {
+                        bool result = MessageBox.Show("All instances of this attack in scene.bin will be synced with this one. Is that okay?",
+                            "Sync Attack?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                        if (result)
+                        {
+                            SyncAttack(atk.ID);
+                            SetUnsaved(true);
+                        }
+                        checkBoxAttackSyncWithSceneBin.Checked = result;
+                    }
+                    else
+                    {
+                        if (DataManager.AttackIsSynced(atk.ID))
+                        {
+                            bool result = MessageBox.Show("This will desync this attack from every instance of this attack in scene.bin. Are you sure you want to do this?",
+                                "Desync Attack?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                            if (result)
+                            {
+                                syncedAttackIDs.Remove(atk.ID);
+                                DataManager.UnsyncAttack(atk.ID);
+                                kernel.Attacks[selected] = new Attack(atk.ID, atk.Name, atk.GetRawData());
+                                SetUnsaved(true);
+                            }
+                            checkBoxAttackSyncWithSceneBin.Checked = result;
+                        }
+                    }
+                    loading = false;
+                }
+            }
+        }
+
+        private void buttonAttackSyncAll_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show("This will sync EVERY attack shared between kernel.bin and scene.bin. Are you sure you want to do this?",
+                "Sync All?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                loading = true;
+                foreach (var a in kernel.Attacks)
+                {
+                    SyncAttack(a.ID);
+                }
+                checkBoxAttackSyncWithSceneBin.Checked = true;
+                loading = false;
+            }
+        }
+
+        private void SyncAttack(ushort id)
+        {
+            if (!syncedAttackIDs.Contains(id))
+            {
+                syncedAttackIDs.Add(id);
+            }
         }
 
         private void listBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
@@ -465,7 +635,7 @@ namespace FF7Scarlet.KernelEditor
             if (!loading)
             {
                 var rate = (GrowthRate)comboBoxWeaponMateriaGrowth.SelectedIndex;
-                if (Enum.IsDefined<GrowthRate>(rate))
+                if (Enum.IsDefined(rate))
                 {
                     materiaSlotSelectorWeapon.GrowthRate = rate;
                 }
@@ -477,11 +647,92 @@ namespace FF7Scarlet.KernelEditor
             if (!loading)
             {
                 var rate = (GrowthRate)comboBoxArmorMateriaGrowth.SelectedIndex;
-                if (Enum.IsDefined<GrowthRate>(rate))
+                if (Enum.IsDefined(rate))
                 {
                     materiaSlotSelectorArmor.GrowthRate = rate;
                 }
             }
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                bool result = false,
+                    saveSceneBin = false,
+                    otherFormsOpen = (DataManager.FormIsOpen(FormType.BattleDataEditor) ||
+                        DataManager.FormIsOpen(FormType.BattleAIEditor));
+
+                //check if there are any attacks that need to be synced
+                if (syncedAttackIDs.Count > 0)
+                {
+                    //if no other forms are open, offer to save scene.bin as well
+                    if (!otherFormsOpen)
+                    {
+                        var dialogResult = MessageBox.Show("Update scene.bin also?", "Update scene.bin?", MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question);
+
+                        if (dialogResult == DialogResult.Cancel) { return; }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            result = true;
+                        }
+                        else
+                        {
+                            saveSceneBin = true;
+                        }
+                    }
+
+                    //sync the attack data
+                    int count = 0;
+                    foreach (var i in syncedAttackIDs)
+                    {
+                        var atk = kernel.GetAttackByID(i);
+                        if (atk != null)
+                        {
+                            count += DataManager.SyncAttack(atk, saveSceneBin);
+                        }
+                    }
+
+                    //display a message
+                    if (saveSceneBin)
+                    {
+                        MessageBox.Show($"{count} attack(s) updated.", "Attacks synced", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        if (count > 0) { DataManager.CreateSceneBin(); }
+                    }
+                }
+                DataManager.CreateKernel(true);
+                SetUnsaved(result);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonExport_Click(object sender, EventArgs e)
+        {
+            using (var exportDialog = new KernelChunkExportForm(kernel))
+            {
+                exportDialog.ShowDialog();
+            }
+        }
+
+        private void KernelForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (unsavedChanges)
+            {
+                var result = MessageBox.Show("Unsaved changes will be lost. Are you sure?", "Unsaved changes",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                e.Cancel = result == DialogResult.No;
+            }
+        }
+
+        private void KernelForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DataManager.CloseForm(FormType.KernelEditor);
         }
     }
 }

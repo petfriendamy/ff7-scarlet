@@ -209,9 +209,9 @@
             this.checkBoxBolt.AutoSize = true;
             this.checkBoxBolt.Location = new System.Drawing.Point(6, 72);
             this.checkBoxBolt.Name = "checkBoxBolt";
-            this.checkBoxBolt.Size = new System.Drawing.Size(47, 19);
+            this.checkBoxBolt.Size = new System.Drawing.Size(77, 19);
             this.checkBoxBolt.TabIndex = 2;
-            this.checkBoxBolt.Text = "Bolt";
+            this.checkBoxBolt.Text = "Lightning";
             this.checkBoxBolt.UseVisualStyleBackColor = true;
             // 
             // checkBoxIce

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FF7Scarlet.AIEditor
+﻿namespace FF7Scarlet.AIEditor
 {
     public enum OpcodeGroups
     {
@@ -88,11 +82,16 @@ namespace FF7Scarlet.AIEditor
         {
             get { return (byte)EnumValue; }
         }
-        public string? Name
+        public string Name
         {
-            get { return Enum.GetName(EnumValue); }
+            get
+            {
+                var name = Enum.GetName(EnumValue);
+                if (name == null) { return ""; }
+                else { return name; }
+            }
         }
-        public string? ShortName
+        public string ShortName
         {
             get
             {
@@ -140,7 +139,7 @@ namespace FF7Scarlet.AIEditor
         public bool IsParameter()
         {
             return Group == OpcodeGroups.Push || Group == OpcodeGroups.Jump
-                || Code == (byte)Opcodes.RandomWord || ParameterType == ParameterTypes.String
+                || EnumValue == Opcodes.RandomWord || ParameterType == ParameterTypes.String
                 || ParameterType == ParameterTypes.Debug;
         }
     }
