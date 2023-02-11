@@ -266,10 +266,14 @@ namespace FF7Scarlet.SceneEditor
             int count = 0;
             for (int i = 0; i < ATTACK_COUNT; ++i)
             {
-                if (attackList[i]?.ID == attack.ID)
+                var atk = attackList[i];
+                if (atk != null)
                 {
-                    attackList[i] = attack;
-                    count++;
+                    if (atk.ID == attack.ID)
+                    {
+                        attackList[i] = attack;
+                        count++;
+                    }
                 }
             }
             return count;

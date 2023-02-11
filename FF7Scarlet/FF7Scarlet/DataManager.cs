@@ -275,7 +275,7 @@ namespace FF7Scarlet
             //if one of the scene editors is open, sync data over there
             if (battleAIForm != null)
             {
-
+                syncInternal = false;
             }
 
             if (syncInternal)
@@ -285,8 +285,7 @@ namespace FF7Scarlet
                 int count = 0;
                 foreach (var s in sceneList)
                 {
-                    s.SyncAttack(newAtkInner);
-                    count++;
+                    count += s.SyncAttack(newAtkInner);
                 }
                 return count;
             }
