@@ -1,24 +1,65 @@
 ﻿using Shojy.FF7.Elena.Equipment;
+using Shojy.FF7.Elena.Materias;
 
 namespace FF7Scarlet.KernelEditor.Controls
 {
+    public enum SlotSelectorType { Slots, Equips }
+
     public partial class MateriaSlotSelectorControl : UserControl
     {
         private const int SLOT_COUNT = 8;
+        private SlotSelectorType slotSelectorType;
         private readonly MateriaSlot[] slots = new MateriaSlot[SLOT_COUNT];
+        private readonly Materia?[] equippedMateria = new Materia?[SLOT_COUNT];
         private GrowthRate growthRate;
         private PictureBox[] pictureBoxes;
-        private readonly Dictionary<MateriaSlot, Bitmap> ImageLookupTable = new Dictionary<MateriaSlot, Bitmap>
-        {
-            { MateriaSlot.None, Properties.Resources.materia_slot0 },
-            { MateriaSlot.NormalUnlinkedSlot, Properties.Resources.materia_slot1 },
-            { MateriaSlot.NormalLeftLinkedSlot, Properties.Resources.materia_slot2 },
-            { MateriaSlot.NormalRightLinkedSlot, Properties.Resources.materia_slot3 },
-            { MateriaSlot.EmptyUnlinkedSlot, Properties.Resources.materia_slot4 },
-            { MateriaSlot.EmptyLeftLinkedSlot, Properties.Resources.materia_slot5 },
-            { MateriaSlot.EmptyRightLinkedSlot, Properties.Resources.materia_slot6 }
-        };
         private ContextMenuStrip[] menuStrips = new ContextMenuStrip[SLOT_COUNT];
+        private int selectedSlot = -1;
+
+        public SlotSelectorType SlotSelectorType
+        {
+            get { return slotSelectorType; }
+            set
+            {
+                slotSelectorType = value;
+                if (value == SlotSelectorType.Slots)
+                {
+                    //create the context menu strips for each slot
+                    for (int i = 0; i < SLOT_COUNT; ++i)
+                    {
+                        menuStrips[i] = new ContextMenuStrip();
+
+                        var menuItem = new ToolStripMenuItem("No slot");
+                        menuItem.Click += new EventHandler(EmptySlotMenu_Clicked);
+                        menuStrips[i].Items.Add(menuItem);
+
+                        menuItem = new ToolStripMenuItem("Unlinked slot");
+                        menuItem.Click += new EventHandler(UnlinkedSlotMenu_Clicked);
+                        menuStrips[i].Items.Add(menuItem);
+
+                        menuItem = new ToolStripMenuItem("Left linked slot");
+                        menuItem.Click += new EventHandler(LeftLinkedSlotMenu_Clicked);
+                        if (i == SLOT_COUNT - 1) { menuItem.Enabled = false; }
+                        menuStrips[i].Items.Add(menuItem);
+
+                        menuItem = new ToolStripMenuItem("Right linked slot");
+                        menuItem.Click += new EventHandler(RightLinkedSlotMenu_Clicked);
+                        if (i == 0) { menuItem.Enabled = false; }
+                        menuStrips[i].Items.Add(menuItem);
+
+                        pictureBoxes[i].ContextMenuStrip = menuStrips[i];
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < SLOT_COUNT; ++i)
+                    {
+                        pictureBoxes[i].ContextMenuStrip = null;
+                        pictureBoxes[i].Click += new EventHandler(Slot_Clicked);
+                    }
+                }
+            }
+        }
 
         public GrowthRate GrowthRate
         {
@@ -33,6 +74,26 @@ namespace FF7Scarlet.KernelEditor.Controls
             }
         }
 
+        public int SelectedSlot
+        {
+            get { return selectedSlot; }
+            set
+            {
+                selectedSlot = value;
+                for (int i = 0; i < SLOT_COUNT; ++i)
+                {
+                    if (i == value)
+                    {
+                        pictureBoxes[i].BackColor = Color.LightBlue;
+                    }
+                    else
+                    {
+                        pictureBoxes[i].BackColor = Color.Transparent;
+                    }
+                }
+            }
+        }
+
         public MateriaSlotSelectorControl()
         {
             InitializeComponent();
@@ -41,32 +102,109 @@ namespace FF7Scarlet.KernelEditor.Controls
                 pictureBoxSlot1, pictureBoxSlot2, pictureBoxSlot3, pictureBoxSlot4, pictureBoxSlot5,
                 pictureBoxSlot6, pictureBoxSlot7, pictureBoxSlot8
             };
+        }
 
-            //create the context menu strips for each slot
+        private Image GetMatchingImage(MateriaSlot slot, Materia? equipped)
+        {
+            if (equipped != null) //materia is equipped
+            {
+                var fixedSlot = GetMatchingSlot(GrowthRate.Normal, slot);
+                switch (fixedSlot)
+                {
+                    case MateriaSlot.NormalUnlinkedSlot:
+                        switch (equipped.MateriaType)
+                        {
+                            case MateriaType.Independent:
+                                return Properties.Resources.materia_slot_independent1;
+                            case MateriaType.Support:
+                                return Properties.Resources.materia_slot_support1;
+                            case MateriaType.Magic:
+                                return Properties.Resources.materia_slot_magic1;
+                            case MateriaType.Summon:
+                                return Properties.Resources.materia_slot_summon1;
+                            case MateriaType.Command:
+                                return Properties.Resources.materia_slot_command1;
+                        }
+                        break;
+                    case MateriaSlot.NormalLeftLinkedSlot:
+                        switch (equipped.MateriaType)
+                        {
+                            case MateriaType.Independent:
+                                return Properties.Resources.materia_slot_independent2;
+                            case MateriaType.Support:
+                                return Properties.Resources.materia_slot_support2;
+                            case MateriaType.Magic:
+                                return Properties.Resources.materia_slot_magic2;
+                            case MateriaType.Summon:
+                                return Properties.Resources.materia_slot_summon2;
+                            case MateriaType.Command:
+                                return Properties.Resources.materia_slot_command2;
+                        }
+                        break;
+                    case MateriaSlot.NormalRightLinkedSlot:
+                        switch (equipped.MateriaType)
+                        {
+                            case MateriaType.Independent:
+                                return Properties.Resources.materia_slot_independent3;
+                            case MateriaType.Support:
+                                return Properties.Resources.materia_slot_support3;
+                            case MateriaType.Magic:
+                                return Properties.Resources.materia_slot_magic3;
+                            case MateriaType.Summon:
+                                return Properties.Resources.materia_slot_summon3;
+                            case MateriaType.Command:
+                                return Properties.Resources.materia_slot_command3;
+                        }
+                        break;
+                }
+            }
+            else //no materia equipped
+            {
+                switch (slot)
+                {
+                    case MateriaSlot.NormalUnlinkedSlot:
+                        return Properties.Resources.materia_slot1;
+                    case MateriaSlot.NormalLeftLinkedSlot:
+                        return Properties.Resources.materia_slot2;
+                    case MateriaSlot.NormalRightLinkedSlot:
+                        return Properties.Resources.materia_slot3;
+                    case MateriaSlot.EmptyUnlinkedSlot:
+                        return Properties.Resources.materia_slot4;
+                    case MateriaSlot.EmptyLeftLinkedSlot:
+                        return Properties.Resources.materia_slot5;
+                    case MateriaSlot.EmptyRightLinkedSlot:
+                        return Properties.Resources.materia_slot6;
+                }
+            }
+            return Properties.Resources.materia_slot0;
+        }
+
+        public bool SetSlotsFromWeapon(Weapon weapon)
+        {
+            bool success = true;
+            GrowthRate = weapon.GrowthRate;
             for (int i = 0; i < SLOT_COUNT; ++i)
             {
-                menuStrips[i] = new ContextMenuStrip();
-
-                var menuItem = new ToolStripMenuItem("No slot");
-                menuItem.Click += new EventHandler(EmptySlotMenu_Clicked);
-                menuStrips[i].Items.Add(menuItem);
-
-                menuItem = new ToolStripMenuItem("Unlinked slot");
-                menuItem.Click += new EventHandler(UnlinkedSlotMenu_Clicked);
-                menuStrips[i].Items.Add(menuItem);
-
-                menuItem = new ToolStripMenuItem("Left linked slot");
-                menuItem.Click += new EventHandler(LeftLinkedSlotMenu_Clicked);
-                if (i == SLOT_COUNT - 1) { menuItem.Enabled = false; }
-                menuStrips[i].Items.Add(menuItem);
-
-                menuItem = new ToolStripMenuItem("Right linked slot");
-                menuItem.Click += new EventHandler(RightLinkedSlotMenu_Clicked);
-                if (i == 0) { menuItem.Enabled = false; }
-                menuStrips[i].Items.Add(menuItem);
-
-                pictureBoxes[i].ContextMenuStrip = menuStrips[i];
+                if (!SetSlotInner(i, weapon.MateriaSlots[i], weapon.GrowthRate, true, true))
+                {
+                    success = false;
+                }
             }
+            return success;
+        }
+
+        public bool SetSlotsFromArmor(Armor armor)
+        {
+            bool success = true;
+            GrowthRate = armor.GrowthRate;
+            for (int i = 0; i < SLOT_COUNT; ++i)
+            {
+                if (!SetSlotInner(i, armor.MateriaSlots[i], armor.GrowthRate, true, true))
+                {
+                    success = false;
+                }
+            }
+            return success;
         }
 
         public bool SetSlot(int slot, MateriaSlot value)
@@ -84,7 +222,7 @@ namespace FF7Scarlet.KernelEditor.Controls
                     //update slot value
                     var currentValue = GetMatchingSlot(rate, slots[slot]);
                     var pb = pictureBoxes[slot];
-                    pb.Image = ImageLookupTable[newValue];
+                    pb.Image = GetMatchingImage(newValue, equippedMateria[slot]);
                     slots[slot] = newValue;
                     for (int i = 0; i < 4; ++i)
                     {
@@ -127,6 +265,12 @@ namespace FF7Scarlet.KernelEditor.Controls
                 }
             }
             return false;
+        }
+
+        public void SetMateria(int slot, Materia? materia)
+        {
+            equippedMateria[slot] = materia;
+            pictureBoxes[slot].Image = GetMatchingImage(slots[slot], materia);
         }
 
         private bool SlotIsUnlinked (MateriaSlot slot)
@@ -174,10 +318,20 @@ namespace FF7Scarlet.KernelEditor.Controls
 
         private int GetSlotFromSender(object sender)
         {
-            var menuItem = sender as ToolStripMenuItem;
-            var toolStrip = menuItem?.GetCurrentParent() as ContextMenuStrip;
-            if (toolStrip == null) { return -1; }
-            return menuStrips.ToList().IndexOf(toolStrip);
+            if (sender is ToolStripMenuItem)
+            {
+                var menuItem = sender as ToolStripMenuItem;
+                var toolStrip = menuItem?.GetCurrentParent() as ContextMenuStrip;
+                if (toolStrip == null) { return -1; }
+                return menuStrips.ToList().IndexOf(toolStrip);
+            }
+            else if (sender is PictureBox)
+            {
+                var picture = sender as PictureBox;
+                if (picture == null) { return -1; }
+                return pictureBoxes.ToList().IndexOf(picture);
+            }
+            else { return -1; }
         }
 
         private void EmptySlotMenu_Clicked(object? sender, EventArgs e)
@@ -213,6 +367,14 @@ namespace FF7Scarlet.KernelEditor.Controls
             {
                 int slot = GetSlotFromSender(sender);
                 SetSlot(slot, GetMatchingSlot(MateriaSlot.NormalRightLinkedSlot));
+            }
+        }
+
+        private void Slot_Clicked(object? sender, EventArgs e)
+        {
+            if (sender != null)
+            {
+                SelectedSlot = GetSlotFromSender(sender);
             }
         }
     }

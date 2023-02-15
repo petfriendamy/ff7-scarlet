@@ -4,11 +4,14 @@ using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Materias;
 using FF7Scarlet.KernelEditor.Controls;
 using FF7Scarlet.Shared;
+using System.Collections.ObjectModel;
 
 namespace FF7Scarlet.KernelEditor
 {
     public partial class KernelForm : Form
     {
+        #region Properties
+
         private const string WINDOW_TITLE = "Scarlet - Kernel Editor";
         private readonly Kernel kernel;
         private const int SUMMON_OFFSET = 56;
@@ -16,7 +19,7 @@ namespace FF7Scarlet.KernelEditor
         private bool unsavedChanges = false, loading = true;
 
         private readonly Dictionary<KernelSection, TabPage> tabPages = new();
-        private readonly Dictionary<KernelSection, bool> tabPageIsEnabled = new();
+        private readonly Dictionary<TabPage, bool> tabPageIsEnabled = new();
         private readonly Dictionary<KernelSection, ListBox> listBoxes = new();
         private readonly Dictionary<KernelSection, TextBox> nameTextBoxes = new();
         private readonly Dictionary<KernelSection, TextBox> descriptionTextBoxes = new();
@@ -33,6 +36,11 @@ namespace FF7Scarlet.KernelEditor
         private readonly Dictionary<KernelSection, ComboBox> elementDamageModifiers = new();
         private readonly Dictionary<KernelSection, StatusesControl> statusLists = new();
         private readonly Dictionary<KernelSection, ComboBox> equipmentStatus = new();
+        private readonly Dictionary<KernelSection, SpecialAttackFlagsControl> specialAttackFlags = new();
+
+        #endregion
+
+        #region Constructors
 
         public KernelForm()
         {
@@ -44,194 +52,9 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private void KernelForm_Load(object sender, EventArgs e)
-        {
-            //associate controls with kernel data
-            //command data
-            tabPages.Add(KernelSection.CommandData, tabPageCommandData);
-            listBoxes.Add(KernelSection.CommandData, listBoxCommands);
-            nameTextBoxes.Add(KernelSection.CommandData, textBoxCommandName);
-            descriptionTextBoxes.Add(KernelSection.CommandData, textBoxCommandDescription);
-            cameraMovementSingle.Add(KernelSection.CommandData, comboBoxCommandCameraMovementIDSingle);
-            cameraMovementMulti.Add(KernelSection.CommandData, comboBoxCommandCamMovementIDMulti);
-            targetData.Add(KernelSection.CommandData, targetDataControlCommand);
+        #endregion
 
-            //attack data
-            tabPages.Add(KernelSection.AttackData, tabPageAttackData);
-            listBoxes.Add(KernelSection.AttackData, listBoxAttacks);
-            nameTextBoxes.Add(KernelSection.AttackData, textBoxAttackName);
-            descriptionTextBoxes.Add(KernelSection.AttackData, textBoxAttackDescription);
-            cameraMovementSingle.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDSingle);
-            cameraMovementMulti.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDMulti);
-            damageCalculationControls.Add(KernelSection.AttackData, damageCalculationControlAttack);
-            elementLists.Add(KernelSection.AttackData, elementsControlAttack);
-            statusLists.Add(KernelSection.AttackData, statusesControlAttack);
-
-            //item data
-            tabPages.Add(KernelSection.ItemData, tabPageItemData);
-            listBoxes.Add(KernelSection.ItemData, listBoxItems);
-            nameTextBoxes.Add(KernelSection.ItemData, textBoxItemName);
-            descriptionTextBoxes.Add(KernelSection.ItemData, textBoxItemDescription);
-            cameraMovementSingle.Add(KernelSection.ItemData, comboBoxItemCamMovementID);
-            targetData.Add(KernelSection.ItemData, targetDataControlItem);
-            damageCalculationControls.Add(KernelSection.ItemData, damageCalculationControlItem);
-            itemRestrictionLists.Add(KernelSection.ItemData, itemRestrictionsItem);
-            elementLists.Add(KernelSection.ItemData, elementsControlItem);
-            statusLists.Add(KernelSection.ItemData, statusesControlItem);
-
-            //weapon data
-            tabPages.Add(KernelSection.WeaponData, tabPageWeaponData);
-            listBoxes.Add(KernelSection.WeaponData, listBoxWeapons);
-            nameTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponName);
-            descriptionTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponDescription);
-            statIncreases.Add(KernelSection.WeaponData, statIncreaseControlWeapon);
-            targetData.Add(KernelSection.WeaponData, targetDataControlWeapon);
-            damageCalculationControls.Add(KernelSection.WeaponData, damageCalculationControlWeapon);
-            itemRestrictionLists.Add(KernelSection.WeaponData, itemRestrictionsWeapon);
-            equipableLists.Add(KernelSection.WeaponData, equipableListWeapon);
-            materiaSlots.Add(KernelSection.WeaponData, materiaSlotSelectorWeapon);
-            materiaGrowthComboBoxes.Add(KernelSection.WeaponData, comboBoxWeaponMateriaGrowth);
-            elementLists.Add(KernelSection.WeaponData, elementsControlWeapon);
-            equipmentStatus.Add(KernelSection.WeaponData, comboBoxWeaponStatus);
-
-            //armor data
-            tabPages.Add(KernelSection.ArmorData, tabPageArmorData);
-            listBoxes.Add(KernelSection.ArmorData, listBoxArmor);
-            nameTextBoxes.Add(KernelSection.ArmorData, textBoxArmorName);
-            descriptionTextBoxes.Add(KernelSection.ArmorData, textBoxArmorDescription);
-            statIncreases.Add(KernelSection.ArmorData, statIncreaseControlArmor);
-            itemRestrictionLists.Add(KernelSection.ArmorData, itemRestrictionsArmor);
-            equipableLists.Add(KernelSection.ArmorData, equipableListArmor);
-            materiaSlots.Add(KernelSection.ArmorData, materiaSlotSelectorArmor);
-            materiaGrowthComboBoxes.Add(KernelSection.ArmorData, comboBoxArmorMateriaGrowth);
-            elementLists.Add(KernelSection.ArmorData, elementsControlArmor);
-            elementDamageModifiers.Add(KernelSection.ArmorData, comboBoxArmorElementModifier);
-            equipmentStatus.Add(KernelSection.ArmorData, comboBoxArmorStatus);
-
-            //accessory data
-            tabPages.Add(KernelSection.AccessoryData, tabPageAccessoryData);
-            listBoxes.Add(KernelSection.AccessoryData, listBoxAccessories);
-            nameTextBoxes.Add(KernelSection.AccessoryData, textBoxAccessoryName);
-            descriptionTextBoxes.Add(KernelSection.AccessoryData, textBoxAccessoryDescription);
-            statIncreases.Add(KernelSection.AccessoryData, statIncreaseControlAccessory);
-            itemRestrictionLists.Add(KernelSection.AccessoryData, itemRestrictionsAccessory);
-            equipableLists.Add(KernelSection.AccessoryData, equipableListAccessory);
-            elementLists.Add(KernelSection.AccessoryData, elementsControlAccessory);
-            elementDamageModifiers.Add(KernelSection.AccessoryData, comboBoxAccessoryElementModifier);
-            statusLists.Add(KernelSection.AccessoryData, statusesControlAccessory);
-
-            //materia data
-            tabPages.Add(KernelSection.MateriaData, tabPageMateriaData);
-            listBoxes.Add(KernelSection.MateriaData, listBoxMateria);
-            nameTextBoxes.Add(KernelSection.MateriaData, textBoxMateriaName);
-            descriptionTextBoxes.Add(KernelSection.MateriaData, textBoxMateriaDescription);
-            statusLists.Add(KernelSection.MateriaData, statusesControlMateria);
-
-            //key items
-            tabPages.Add(KernelSection.KeyItemNames, tabPageKeyItemText);
-            listBoxes.Add(KernelSection.KeyItemNames, listBoxKeyItems);
-            nameTextBoxes.Add(KernelSection.KeyItemNames, textBoxKeyItemName);
-            descriptionTextBoxes.Add(KernelSection.KeyItemNames, textBoxKeyItemDescription);
-
-            //add names to listboxes
-            foreach (var lb in listBoxes)
-            {
-                var names = kernel.GetAssociatedNames(lb.Key);
-                if (names != null)
-                {
-                    foreach (var n in names)
-                    {
-                        lb.Value.Items.Add(n);
-                    }
-                }
-            }
-
-            //initial cursor command
-            foreach (var c in InitialCursorActionInfo.ACTION_LIST)
-            {
-                comboBoxCommandInitialCursorAction.Items.Add(c.Description);
-            }
-
-            //element modifiers
-            foreach (var cb in elementDamageModifiers.Values)
-            {
-                cb.Items.Add("None");
-                foreach (var m in Enum.GetValues<DamageModifier>())
-                {
-                    if (m != DamageModifier.Normal) { cb.Items.Add(m); }
-                }
-            }
-
-            //status effects
-            foreach (var cb in equipmentStatus.Values)
-            {
-                cb.Items.Add("None");
-                foreach (var s in Enum.GetValues<EquipmentStatus>())
-                {
-                    if (s == EquipmentStatus.MBarrier)
-                    {
-                        cb.Items.Add("M.Barrier");
-                    }
-                    else if (s != EquipmentStatus.None)
-                    {
-                        string final = s.ToString();
-                        for (int i = 1; i < final.Length; ++i)
-                        {
-                            if (char.IsUpper(final[i]))
-                            {
-                                final = final.Substring(0, i) + ' ' + final.Substring(i);
-                                break;
-                            }
-                        }
-                        cb.Items.Add(final);
-                    }
-                }
-            }
-            comboBoxAttackStatusChange.Items.Add("None");
-            foreach (var s in Enum.GetNames<StatusChange>())
-            {
-                comboBoxAttackStatusChange.Items.Add(s);
-            }
-
-            //materia info
-            foreach (var g in Enum.GetNames<GrowthRate>())
-            {
-                foreach (var cb in materiaGrowthComboBoxes.Values)
-                {
-                    cb.Items.Add(g);
-                }
-            }
-            foreach (var el in Enum.GetValues<MateriaElements>())
-            {
-                if (el == MateriaElements.Bolt) { comboBoxMateriaElement.Items.Add("Lightning"); }
-                else { comboBoxMateriaElement.Items.Add(el); }
-            }
-            foreach (var mt in Enum.GetNames<MateriaType>())
-            {
-                comboBoxMateriaType.Items.Add(mt);
-            }
-
-            //condition sub-menu
-            comboBoxAttackConditionSubMenu.Items.Add("None");
-            foreach (var c in Enum.GetValues<AttackConditions>())
-            {
-                if (c != AttackConditions.None)
-                {
-                    comboBoxAttackConditionSubMenu.Items.Add(c);
-                }
-            }
-
-            //show/hide controls that are invalid
-            itemRestrictionsWeapon.ShowThrowable = true;
-            statIncreaseControlAccessory.Count = 2;
-            statusesControlMateria.FullList = false;
-
-            //disable all the controls while there's no data in them
-            foreach (var tab in tabPages)
-            {
-                EnableOrDisableTabPageControls(tab.Key, false);
-            }
-        }
+        #region User Methods
 
         private void SetUnsaved(bool unsaved)
         {
@@ -241,27 +64,27 @@ namespace FF7Scarlet.KernelEditor
 
         private void EnableOrDisableTabPageControls(KernelSection section, bool enabled)
         {
-            if (!tabPageIsEnabled.ContainsKey(section))
+            if (!tabPageIsEnabled.ContainsKey(tabPages[section]))
             {
-                tabPageIsEnabled.Add(section, !enabled);
+                tabPageIsEnabled.Add(tabPages[section], !enabled);
             }
-            if (tabPages.ContainsKey(section) && tabPageIsEnabled[section] != enabled)
+            if (tabPages.ContainsKey(section) && tabPageIsEnabled[tabPages[section]] != enabled)
             {
-                EnableOrDisableInner(section, tabPages[section], enabled);
-                tabPageIsEnabled[section] = enabled;
+                EnableOrDisableInner(tabPages[section], enabled, GetIgnoreListForSection(section));
+                tabPageIsEnabled[tabPages[section]] = enabled;
             }
         }
 
-        private void EnableOrDisableInner(KernelSection section, Control group, bool enabled)
+        private void EnableOrDisableInner(Control group, bool enabled, ReadOnlyCollection<Control>? ignoreList)
         {
             for (int i = 0; i < group.Controls.Count; ++i)
             {
                 var c = group.Controls[i];
                 if (c != null)
                 {
-                    if (ShouldIgnoreControl(section, c))
+                    if (ignoreList != null && ignoreList.Contains(c))
                     {
-                        if (c != listBoxes[section]) { c.Enabled = false; }
+                        if (!(c is ListBox)) { c.Enabled = false; }
                     }
                     else
                     {
@@ -272,7 +95,7 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 for (int j = 0; j < innerTab.TabCount; ++j)
                                 {
-                                    EnableOrDisableInner(section, innerTab.TabPages[j], enabled);
+                                    EnableOrDisableInner(innerTab.TabPages[j], enabled, ignoreList);
                                 }
                             }
                         }
@@ -281,7 +104,7 @@ namespace FF7Scarlet.KernelEditor
                             var groupBox = c as GroupBox;
                             if (groupBox != null)
                             {
-                                EnableOrDisableInner(section, groupBox, enabled);
+                                EnableOrDisableInner(groupBox, enabled, ignoreList);
                             }
                         }
                         else { c.Enabled = enabled; }
@@ -290,13 +113,74 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private bool ShouldIgnoreControl(KernelSection section, Control c)
+        private void EnableOrDisableSingleIgnore(Control group, bool enable, Control ignore)
         {
-            if (c == listBoxes[section]) { return true; }
-            if (!DataManager.BothKernelFilesLoaded &&
-                (c == nameTextBoxes[section] || c == descriptionTextBoxes[section])) { return true; }
-            if (!DataManager.SceneFileIsLoaded && c == checkBoxAttackSyncWithSceneBin) { return true; }
-            return false;
+            var list = new List<Control> { ignore };
+            EnableOrDisableInner(group, enable, list.AsReadOnly());
+        }
+
+        private ReadOnlyCollection<Control> GetIgnoreListForSection(KernelSection section)
+        {
+            var list = new List<Control>();
+            if (tabPages.ContainsKey(section))
+            {
+                list.Add(listBoxes[section]);
+                if (!DataManager.BothKernelFilesLoaded)
+                {
+                    list.Add(nameTextBoxes[section]);
+                    list.Add(descriptionTextBoxes[section]);
+                }
+                if (!DataManager.SceneFileIsLoaded)
+                {
+                    list.Add(checkBoxAttackSyncWithSceneBin);
+                }
+            }
+            return list.AsReadOnly();
+        }
+
+        private void LoadItemLists()
+        {
+            loading = true;
+
+            //items
+            comboBoxInitItem.Items.Add("None");
+            foreach (var item in kernel.ItemData.Items)
+            {
+                comboBoxInitItem.Items.Add(item.Name);
+            }
+
+            //weapons
+            foreach (var wpn in kernel.WeaponData.Weapons)
+            {
+                comboBoxCharacterWeapon.Items.Add(wpn.Name);
+                comboBoxInitItem.Items.Add(wpn.Name);
+            }
+
+            //armor
+            foreach (var armor in kernel.ArmorData.Armors)
+            {
+                comboBoxCharacterArmor.Items.Add(armor.Name);
+                comboBoxInitItem.Items.Add(armor.Name);
+            }
+
+            //accessories
+            comboBoxCharacterAccessory.Items.Add("None");
+            foreach (var acc in kernel.AccessoryData.Accessories)
+            {
+                comboBoxCharacterAccessory.Items.Add(acc.Name);
+                comboBoxInitItem.Items.Add(acc.Name);
+            }
+
+            //materia
+            comboBoxInitMateria.Items.Add("None");
+            comboBoxInitMateriaStolen.Items.Add("None");
+            foreach (var mat in kernel.MateriaData.Materias)
+            {
+                comboBoxInitMateria.Items.Add(mat.Name);
+                comboBoxInitMateriaStolen.Items.Add(mat.Name);
+            }
+
+            loading = true;
         }
 
         //fills the current tab with data from the selected item
@@ -402,9 +286,28 @@ namespace FF7Scarlet.KernelEditor
                         }
                     }
 
+                    //special attack flags
+                    if (specialAttackFlags.ContainsKey(section))
+                    {
+                        specialAttackFlags[section].SetFlags(kernel.GetSpecialEffects(section, i));
+                    }
+
                     //get data specific to this section
                     switch (section)
                     {
+                        //command data
+                        case KernelSection.CommandData:
+                            var command = kernel.Commands[i];
+                            if (command.InitialCursorAction == 0xFF)
+                            {
+                                comboBoxCommandInitialCursorAction.SelectedIndex = 0;
+                            }
+                            else
+                            {
+                                comboBoxCommandInitialCursorAction.SelectedIndex = command.InitialCursorAction + 1;
+                            }
+                            break;
+
                         //attack data
                         case KernelSection.AttackData:
                             var attack = kernel.Attacks[i];
@@ -419,6 +322,7 @@ namespace FF7Scarlet.KernelEditor
                                 textBoxSummonText.Enabled = false;
                                 textBoxSummonText.Clear();
                             }
+                            numericAttackAttackPercent.Value = attack.AccuracyRate;
                             numericAttackMPCost.Value = attack.MPCost;
                             comboBoxAttackAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
                             comboBoxAttackImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
@@ -431,7 +335,6 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
                             }
-                            specialAttackFlagsControlAttack.SetFlags(attack.SpecialAttackFlags);
                             numericAttackStatusChangeChance.Value = attack.StatusChangeChance;
                             if (attack.StatusChange == StatusChange.None)
                             {
@@ -522,6 +425,614 @@ namespace FF7Scarlet.KernelEditor
             loading = false;
         }
 
+        private void PopulateInitCharacterDataTab(int charIndex)
+        {
+            if (charIndex >= 0 && charIndex < 9)
+            {
+                if (!tabPageIsEnabled.ContainsKey(tabPageInitCharacterStats))
+                {
+                    EnableOrDisableInner(tabPageInitCharacterStats, true, null);
+                    tabPageIsEnabled.Add(tabPageInitCharacterStats, true);
+                }
+
+                var character = kernel.InitialData.Characters[charIndex];
+
+                textBoxCharacterName.Text = character.Name.ToString();
+                numericCharacterID.Value = character.ID;
+                numericCharacterLevel.Value = character.Level;
+                numericCharacterCurrentEXP.Value = character.CurrentEXP;
+                numericCharacterEXPtoNext.Value = character.EXPtoNextLevel;
+
+                numericCharacterCurrHP.Value = character.CurrentHP;
+                numericCharacterBaseHP.Value = character.BaseHP;
+                numericCharacterMaxHP.Value = character.MaxHP;
+                numericCharacterCurrMP.Value = character.CurrentMP;
+                numericCharacterBaseMP.Value = character.BaseMP;
+                numericCharacterMaxMP.Value = character.MaxMP;
+
+                var temp = Enum.GetValues<CharacterFlags>().ToList();
+                comboBoxCharacterFlags.SelectedIndex = temp.IndexOf(character.CharacterFlags);
+                checkBoxCharacterBackRow.Checked = character.IsBackRow;
+                characterLimitControl.LimitLevel = character.LimitLevel;
+                characterLimitControl.LearnedLimits = character.LearnedLimits;
+                characterLimitControl.LimitBar = character.CurrentLimitBar;
+
+                var wpn = kernel.GetWeaponByID(character.WeaponID);
+                if (wpn != null)
+                {
+                    comboBoxCharacterWeapon.SelectedIndex = character.WeaponID;
+                    materiaSlotSelectorCharacterWeapon.SetSlotsFromWeapon(wpn);
+                    for (int i = 0; i < 8; ++i)
+                    {
+                        var mat = kernel.GetMateriaByID(character.WeaponMateria[i].Index);
+                        materiaSlotSelectorCharacterWeapon.SetMateria(i, mat);
+                        materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
+                    }
+                }
+                var armor = kernel.GetArmorByID(character.ArmorID);
+                if (armor != null)
+                {
+                    comboBoxCharacterArmor.SelectedIndex = character.ArmorID;
+                    materiaSlotSelectorCharacterArmor.SetSlotsFromArmor(armor);
+                    for (int i = 0; i < 8; ++i)
+                    {
+                        var mat = kernel.GetMateriaByID(character.ArmorMateria[i].Index);
+                        materiaSlotSelectorCharacterArmor.SetMateria(i, mat);
+                        materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
+                    }
+                }
+                var acc = kernel.GetAccessoryByID(character.AccessoryID);
+                if (acc == null)
+                {
+                    comboBoxCharacterAccessory.SelectedIndex = 0;
+                }
+                else
+                {
+                    comboBoxCharacterAccessory.SelectedIndex = character.AccessoryID + 1;
+                }
+                characterStatsControl.SetStats(character);
+            }
+        }
+
+        private void PopulateInitInventoryBox(int i)
+        {
+            if (i >= 0 && i < InitialData.INVENTORY_SIZE)
+            {
+                var item = kernel.InitialData.InventoryItems[i];
+                loading = true;
+                comboBoxInitItem.Enabled = true;
+                switch (item.Type)
+                {
+                    case ItemType.Item:
+                        comboBoxInitItem.SelectedIndex = item.Index + 1;
+                        break;
+                    case ItemType.Weapon:
+                        comboBoxInitItem.SelectedIndex = item.Index + InventoryItem.WEAPON_START + 1;
+                        break;
+                    case ItemType.Armor:
+                        comboBoxInitItem.SelectedIndex = item.Index + InventoryItem.ARMOR_START + 1;
+                        break;
+                    case ItemType.Accessory:
+                        comboBoxInitItem.SelectedIndex = item.Index + InventoryItem.ACCESSORY_START + 1;
+                        break;
+                    default:
+                        comboBoxInitItem.SelectedIndex = 0;
+                        break;
+                }
+
+                if (item.Type == ItemType.None)
+                {
+                    numericInitItemAmount.Value = 0;
+                    numericInitItemAmount.Enabled = false;
+                }
+                else
+                {
+                    numericInitItemAmount.Value = item.Amount;
+                    numericInitItemAmount.Enabled = true;
+                }
+                loading = false;
+            }
+        }
+
+        private void PopulateInitMateriaBox(bool isStolen)
+        {
+            //get index + max
+            int i, max;
+            if (isStolen)
+            {
+                i = listBoxInitMateriaStolen.SelectedIndex;
+                max = InitialData.STOLEN_MATERIA_COUNT;
+            }
+            else
+            {
+                i = listBoxInitMateria.SelectedIndex;
+                max = InitialData.MATERIA_INVENTORY_SIZE;
+            }
+
+            if (i >= 0 && i < max)
+            {
+                loading = true;
+
+                //get data to edit
+                InventoryMateria materia;
+                ComboBox comboBox;
+                Button editButton;
+
+                if (isStolen)
+                {
+                    materia = kernel.InitialData.StolenMateria[i];
+                    comboBox = comboBoxInitMateriaStolen;
+                    editButton = buttonInitMateriaStolenEdit;
+                }
+                else
+                {
+                    materia = kernel.InitialData.InventoryMateria[i];
+                    comboBox = comboBoxInitMateria;
+                    editButton = buttonInitMateriaEdit;
+                }
+
+                comboBox.Enabled = true;
+                if (materia.Index == 0xFF)
+                {
+                    comboBox.SelectedIndex = 0;
+                    editButton.Enabled = false;
+                }
+                else
+                {
+                    comboBox.SelectedIndex = materia.Index + 1;
+                    editButton.Enabled = true;
+                }
+                loading = false;
+            }
+        }
+
+        private void SetInventoryItem()
+        {
+            int selectedItem = listBoxInitInventory.SelectedIndex,
+                newItemIndex = comboBoxInitItem.SelectedIndex,
+                amount = (int)numericInitItemAmount.Value;
+
+            if (selectedItem >= 0 && selectedItem < InitialData.INVENTORY_SIZE)
+            {
+                loading = true;
+                var item = kernel.InitialData.InventoryItems[selectedItem];
+                if (newItemIndex == 0) //none
+                {
+                    item.SetItem(ItemType.None, 0);
+                    listBoxInitInventory.Items[selectedItem] = "(empty)";
+                    numericInitItemAmount.Value = 0;
+                    numericInitItemAmount.Enabled = false;
+                }
+                else //get selected item
+                {
+                    if (amount == 0)
+                    {
+                        amount = 1;
+                        numericInitItemAmount.Value = amount;
+                    }
+                    numericInitItemAmount.Enabled = true;
+
+                    var type = item.GetType(newItemIndex - 1);
+                    byte index = item.GetIndex(newItemIndex - 1);
+
+                    item.SetItem(type, index);
+                    item.Amount = amount;
+                    var name = kernel.GetInventoryItemName(item);
+                    listBoxInitInventory.Items[selectedItem] = $"{name} x{amount}";
+                }
+                loading = false;
+                SetUnsaved(true);
+            }
+        }
+
+        private void SetInitMateria(bool isStolen)
+        {
+            //get data to check/edit
+            int selectedMateria, newMateriaIndex, max;
+            ListBox listBox;
+            ComboBox comboBox;
+            Button editButton;
+
+            if (isStolen)
+            {
+                max = InitialData.STOLEN_MATERIA_COUNT;
+                listBox = listBoxInitMateriaStolen;
+                comboBox = comboBoxInitMateriaStolen;
+                editButton = buttonInitMateriaStolenEdit;
+            }
+            else
+            {
+                max = InitialData.MATERIA_INVENTORY_SIZE;
+                listBox = listBoxInitMateria;
+                comboBox = comboBoxInitMateria;
+                editButton = buttonInitMateriaEdit;
+            }
+            selectedMateria = listBox.SelectedIndex;
+            newMateriaIndex = comboBox.SelectedIndex;
+            
+            if (selectedMateria >= 0 && selectedMateria < max)
+            {
+                loading = true;
+
+                InventoryMateria materia;
+                if (isStolen) { materia = kernel.InitialData.StolenMateria[newMateriaIndex]; }
+                else { materia = kernel.InitialData.InventoryMateria[newMateriaIndex]; }
+
+                if (newMateriaIndex == 0) //no materia
+                {
+                    materia.Index = 0xFF;
+                    listBox.Items[selectedMateria] = "(empty)";
+                    editButton.Enabled = false;
+                }
+                else //get materia index
+                {
+                    materia.Index = (byte)(newMateriaIndex - 1);
+                    var md = kernel.GetMateriaByID(materia.Index);
+                    if (md == null)
+                    {
+                        listBox.Items[selectedMateria] = "(unknown)";
+                    }
+                    else
+                    {
+                        listBox.Items[selectedMateria] = md.Name;
+                    }
+                    editButton.Enabled = true;
+                }
+                loading = false;
+                SetUnsaved(true);
+            }
+        }
+
+        private void SyncAttack(ushort id)
+        {
+            if (!syncedAttackIDs.Contains(id))
+            {
+                syncedAttackIDs.Add(id);
+            }
+        }
+
+        public void UpdateLookupTable(byte[] table)
+        {
+            kernel.UpdateLookupTable(table);
+        }
+
+        #endregion
+
+        #region Event Methods
+
+        private void KernelForm_Load(object sender, EventArgs e)
+        {
+            //associate controls with kernel data
+            //initial data
+            foreach (var c in kernel.InitialData.Characters)
+            {
+                var n = c.Name.ToString();
+                if (n == null) { listBoxInitCharacters.Items.Add(""); }
+                else { listBoxInitCharacters.Items.Add(n); }
+            }
+            LoadItemLists();
+            foreach (var f in Enum.GetNames<CharacterFlags>())
+            {
+                comboBoxCharacterFlags.Items.Add(f);
+            }
+            foreach (var inv in kernel.InitialData.InventoryItems)
+            {
+                if (inv.Type == ItemType.None)
+                {
+                    listBoxInitInventory.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv)} x{inv.Amount}");
+                }
+            }
+            foreach (var invm in kernel.InitialData.InventoryMateria)
+            {
+                var m = kernel.GetMateriaByID(invm.Index);
+                if (m == null)
+                {
+                    listBoxInitMateria.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitMateria.Items.Add(m.Name);
+                }
+            }
+            foreach (var sm in kernel.InitialData.StolenMateria)
+            {
+                var m = kernel.GetMateriaByID(sm.Index);
+                if (m == null)
+                {
+                    listBoxInitMateriaStolen.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitMateriaStolen.Items.Add(m.Name);
+                }
+            }
+
+            //command data
+            tabPages.Add(KernelSection.CommandData, tabPageCommandData);
+            listBoxes.Add(KernelSection.CommandData, listBoxCommands);
+            nameTextBoxes.Add(KernelSection.CommandData, textBoxCommandName);
+            descriptionTextBoxes.Add(KernelSection.CommandData, textBoxCommandDescription);
+            cameraMovementSingle.Add(KernelSection.CommandData, comboBoxCommandCameraMovementIDSingle);
+            cameraMovementMulti.Add(KernelSection.CommandData, comboBoxCommandCamMovementIDMulti);
+            targetData.Add(KernelSection.CommandData, targetDataControlCommand);
+
+            //attack data
+            tabPages.Add(KernelSection.AttackData, tabPageAttackData);
+            listBoxes.Add(KernelSection.AttackData, listBoxAttacks);
+            nameTextBoxes.Add(KernelSection.AttackData, textBoxAttackName);
+            descriptionTextBoxes.Add(KernelSection.AttackData, textBoxAttackDescription);
+            cameraMovementSingle.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDSingle);
+            cameraMovementMulti.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDMulti);
+            damageCalculationControls.Add(KernelSection.AttackData, damageCalculationControlAttack);
+            elementLists.Add(KernelSection.AttackData, elementsControlAttack);
+            statusLists.Add(KernelSection.AttackData, statusesControlAttack);
+            specialAttackFlags.Add(KernelSection.AttackData, specialAttackFlagsControlAttack);
+
+            //item data
+            tabPages.Add(KernelSection.ItemData, tabPageItemData);
+            listBoxes.Add(KernelSection.ItemData, listBoxItems);
+            nameTextBoxes.Add(KernelSection.ItemData, textBoxItemName);
+            descriptionTextBoxes.Add(KernelSection.ItemData, textBoxItemDescription);
+            cameraMovementSingle.Add(KernelSection.ItemData, comboBoxItemCamMovementID);
+            targetData.Add(KernelSection.ItemData, targetDataControlItem);
+            damageCalculationControls.Add(KernelSection.ItemData, damageCalculationControlItem);
+            itemRestrictionLists.Add(KernelSection.ItemData, itemRestrictionsItem);
+            elementLists.Add(KernelSection.ItemData, elementsControlItem);
+            statusLists.Add(KernelSection.ItemData, statusesControlItem);
+            specialAttackFlags.Add(KernelSection.ItemData, specialAttackFlagsControlItem);
+
+            //weapon data
+            tabPages.Add(KernelSection.WeaponData, tabPageWeaponData);
+            listBoxes.Add(KernelSection.WeaponData, listBoxWeapons);
+            nameTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponName);
+            descriptionTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponDescription);
+            statIncreases.Add(KernelSection.WeaponData, statIncreaseControlWeapon);
+            targetData.Add(KernelSection.WeaponData, targetDataControlWeapon);
+            damageCalculationControls.Add(KernelSection.WeaponData, damageCalculationControlWeapon);
+            itemRestrictionLists.Add(KernelSection.WeaponData, itemRestrictionsWeapon);
+            equipableLists.Add(KernelSection.WeaponData, equipableListWeapon);
+            materiaSlots.Add(KernelSection.WeaponData, materiaSlotSelectorWeapon);
+            materiaGrowthComboBoxes.Add(KernelSection.WeaponData, comboBoxWeaponMateriaGrowth);
+            elementLists.Add(KernelSection.WeaponData, elementsControlWeapon);
+            equipmentStatus.Add(KernelSection.WeaponData, comboBoxWeaponStatus);
+
+            //armor data
+            tabPages.Add(KernelSection.ArmorData, tabPageArmorData);
+            listBoxes.Add(KernelSection.ArmorData, listBoxArmor);
+            nameTextBoxes.Add(KernelSection.ArmorData, textBoxArmorName);
+            descriptionTextBoxes.Add(KernelSection.ArmorData, textBoxArmorDescription);
+            statIncreases.Add(KernelSection.ArmorData, statIncreaseControlArmor);
+            itemRestrictionLists.Add(KernelSection.ArmorData, itemRestrictionsArmor);
+            equipableLists.Add(KernelSection.ArmorData, equipableListArmor);
+            materiaSlots.Add(KernelSection.ArmorData, materiaSlotSelectorArmor);
+            materiaGrowthComboBoxes.Add(KernelSection.ArmorData, comboBoxArmorMateriaGrowth);
+            elementLists.Add(KernelSection.ArmorData, elementsControlArmor);
+            elementDamageModifiers.Add(KernelSection.ArmorData, comboBoxArmorElementModifier);
+            equipmentStatus.Add(KernelSection.ArmorData, comboBoxArmorStatus);
+
+            //accessory data
+            tabPages.Add(KernelSection.AccessoryData, tabPageAccessoryData);
+            listBoxes.Add(KernelSection.AccessoryData, listBoxAccessories);
+            nameTextBoxes.Add(KernelSection.AccessoryData, textBoxAccessoryName);
+            descriptionTextBoxes.Add(KernelSection.AccessoryData, textBoxAccessoryDescription);
+            statIncreases.Add(KernelSection.AccessoryData, statIncreaseControlAccessory);
+            itemRestrictionLists.Add(KernelSection.AccessoryData, itemRestrictionsAccessory);
+            equipableLists.Add(KernelSection.AccessoryData, equipableListAccessory);
+            elementLists.Add(KernelSection.AccessoryData, elementsControlAccessory);
+            elementDamageModifiers.Add(KernelSection.AccessoryData, comboBoxAccessoryElementModifier);
+            statusLists.Add(KernelSection.AccessoryData, statusesControlAccessory);
+
+            //materia data
+            tabPages.Add(KernelSection.MateriaData, tabPageMateriaData);
+            listBoxes.Add(KernelSection.MateriaData, listBoxMateria);
+            nameTextBoxes.Add(KernelSection.MateriaData, textBoxMateriaName);
+            descriptionTextBoxes.Add(KernelSection.MateriaData, textBoxMateriaDescription);
+            statusLists.Add(KernelSection.MateriaData, statusesControlMateria);
+
+            //key items
+            tabPages.Add(KernelSection.KeyItemNames, tabPageKeyItemText);
+            listBoxes.Add(KernelSection.KeyItemNames, listBoxKeyItems);
+            nameTextBoxes.Add(KernelSection.KeyItemNames, textBoxKeyItemName);
+            descriptionTextBoxes.Add(KernelSection.KeyItemNames, textBoxKeyItemDescription);
+
+            //add names to listboxes
+            foreach (var lb in listBoxes)
+            {
+                var names = kernel.GetAssociatedNames(lb.Key);
+                if (names != null)
+                {
+                    foreach (var n in names)
+                    {
+                        lb.Value.Items.Add(n);
+                    }
+                }
+            }
+
+            //initial cursor command
+            comboBoxCommandInitialCursorAction.Items.Add("None");
+            foreach (var c in InitialCursorActionInfo.ACTION_LIST)
+            {
+                comboBoxCommandInitialCursorAction.Items.Add(c.Description);
+            }
+
+            //element modifiers
+            foreach (var cb in elementDamageModifiers.Values)
+            {
+                cb.Items.Add("None");
+                foreach (var m in Enum.GetValues<DamageModifier>())
+                {
+                    if (m != DamageModifier.Normal) { cb.Items.Add(m); }
+                }
+            }
+
+            //status effects
+            foreach (var cb in equipmentStatus.Values)
+            {
+                cb.Items.Add("None");
+                foreach (var s in Enum.GetValues<EquipmentStatus>())
+                {
+                    if (s == EquipmentStatus.MBarrier)
+                    {
+                        cb.Items.Add("M.Barrier");
+                    }
+                    else if (s != EquipmentStatus.None)
+                    {
+                        cb.Items.Add(StringParser.AddSpace(s.ToString()));
+                    }
+                }
+            }
+            comboBoxAttackStatusChange.Items.Add("None");
+            foreach (var s in Enum.GetNames<StatusChange>())
+            {
+                comboBoxAttackStatusChange.Items.Add(s);
+            }
+
+            //materia info
+            foreach (var g in Enum.GetNames<GrowthRate>())
+            {
+                foreach (var cb in materiaGrowthComboBoxes.Values)
+                {
+                    cb.Items.Add(g);
+                }
+            }
+            foreach (var el in Enum.GetValues<MateriaElements>())
+            {
+                if (el == MateriaElements.Bolt) { comboBoxMateriaElement.Items.Add("Lightning"); }
+                else { comboBoxMateriaElement.Items.Add(el); }
+            }
+            foreach (var mt in Enum.GetNames<MateriaType>())
+            {
+                comboBoxMateriaType.Items.Add(mt);
+            }
+
+            //condition sub-menu
+            comboBoxAttackConditionSubMenu.Items.Add("None");
+            foreach (var c in Enum.GetValues<AttackConditions>())
+            {
+                if (c != AttackConditions.None)
+                {
+                    comboBoxAttackConditionSubMenu.Items.Add(c);
+                }
+            }
+
+            //set max value for uint controls
+            numericCharacterCurrentEXP.Maximum = uint.MaxValue;
+            numericCharacterEXPtoNext.Maximum = uint.MaxValue;
+
+            //show/hide controls that are invalid
+            itemRestrictionsWeapon.ShowThrowable = true;
+            materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Equips;
+            materiaSlotSelectorCharacterArmor.SlotSelectorType = SlotSelectorType.Equips;
+            materiaSlotSelectorWeapon.SlotSelectorType = SlotSelectorType.Slots;
+            materiaSlotSelectorArmor.SlotSelectorType = SlotSelectorType.Slots;
+            statIncreaseControlAccessory.Count = 2;
+            statusesControlMateria.FullList = false;
+
+            //disable all the controls while there's no data in them
+            foreach (var tab in tabPages)
+            {
+                EnableOrDisableTabPageControls(tab.Key, false);
+            }
+            EnableOrDisableSingleIgnore(tabPageInitCharacterStats, false, listBoxInitCharacters);
+            loading = false;
+        }
+
+        private void listBoxInitCharacters_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                PopulateInitCharacterDataTab(listBoxInitCharacters.SelectedIndex);
+            }
+        }
+
+        private void buttonCharacterWeaponChangeMateria_Click(object sender, EventArgs e)
+        {
+            int chara = listBoxInitCharacters.SelectedIndex,
+                slot = materiaSlotSelectorCharacterWeapon.SelectedSlot;
+            if (slot != -1)
+            {
+                var mat = kernel.GetMateriaByID(kernel.InitialData.Characters[chara].WeaponMateria[slot].Index);
+                if (mat != null)
+                {
+                    MessageBox.Show(mat.Name);
+                }
+            }
+        }
+
+        private void buttonCharacterArmorChangeMateria_Click(object sender, EventArgs e)
+        {
+            int chara = listBoxInitCharacters.SelectedIndex,
+                slot = materiaSlotSelectorCharacterArmor.SelectedSlot;
+            if (slot != -1)
+            {
+                var mat = kernel.GetMateriaByID(kernel.InitialData.Characters[chara].ArmorMateria[slot].Index);
+                if (mat != null)
+                {
+                    MessageBox.Show(mat.Name);
+                }
+            }
+        }
+
+        private void listBoxInitInventory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                PopulateInitInventoryBox(listBoxInitInventory.SelectedIndex);
+            }
+        }
+
+        private void comboBoxInitItem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                SetInventoryItem();
+            }
+        }
+
+        private void numericInitItemAmount_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                SetInventoryItem();
+            }
+        }
+
+        private void listBoxInitMateria_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                PopulateInitMateriaBox(false);
+            }
+        }
+
+        private void comboBoxInitMateria_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                SetInitMateria(false);
+            }
+        }
+
+        private void listBoxInitMateriaStolen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                PopulateInitMateriaBox(true);
+            }
+        }
+
+        private void comboBoxInitMateriaStolen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                SetInitMateria(true);
+            }
+        }
+
         private void checkBoxAttackSyncWithSceneBin_CheckedChanged(object sender, EventArgs e)
         {
             if (!loading)
@@ -578,14 +1089,6 @@ namespace FF7Scarlet.KernelEditor
                 }
                 checkBoxAttackSyncWithSceneBin.Checked = true;
                 loading = false;
-            }
-        }
-
-        private void SyncAttack(ushort id)
-        {
-            if (!syncedAttackIDs.Contains(id))
-            {
-                syncedAttackIDs.Add(id);
             }
         }
 
@@ -699,7 +1202,10 @@ namespace FF7Scarlet.KernelEditor
                     {
                         MessageBox.Show($"{count} attack(s) updated.", "Attacks synced", MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
-                        if (count > 0) { DataManager.CreateSceneBin(); }
+                        if (count > 0)
+                        {
+                            DataManager.CreateSceneBin();
+                        }
                     }
                 }
                 DataManager.CreateKernel(true);
@@ -734,5 +1240,7 @@ namespace FF7Scarlet.KernelEditor
         {
             DataManager.CloseForm(FormType.KernelEditor);
         }
+
+        #endregion
     }
 }

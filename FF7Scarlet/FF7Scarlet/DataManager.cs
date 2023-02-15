@@ -261,7 +261,14 @@ namespace FF7Scarlet
             if (KernelFileIsLoaded && SceneFileIsLoaded && Kernel != null)
             {
                 Kernel.UpdateLookupTable(sceneLookupTable);
-                CreateKernel(false);
+                if (kernelForm == null) //kernel form is not open, so update lookup table quietly
+                {
+                    CreateKernel(false);
+                }
+                else //kernel form is open, so sync the lookup table over there
+                {
+                    kernelForm.UpdateLookupTable(sceneLookupTable);
+                }
             }
         }
 
@@ -272,7 +279,7 @@ namespace FF7Scarlet
             if (syncedAttacks.ContainsKey(attack.ID)) { syncedAttacks[attack.ID] = newAtk; } 
             else { syncedAttacks.Add(attack.ID, newAtk); }
 
-            //if one of the scene editors is open, sync data over there
+            //if either of the scene editors are open, sync data over there
             if (battleAIForm != null)
             {
                 syncInternal = false;

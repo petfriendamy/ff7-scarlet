@@ -1,9 +1,12 @@
 ﻿using FF7Scarlet.Shared;
 using Shojy.FF7.Elena;
+using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Items;
+using Shojy.FF7.Elena.Materias;
 using Shojy.FF7.Elena.Sections;
+using System.Windows.Forms.Design;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -24,7 +27,9 @@ namespace FF7Scarlet.KernelEditor
         public const int SECTION_COUNT = 27, KERNEL1_END = 9, ATTACK_COUNT = 128;
         private Dictionary<KernelSection, byte[]> kernel1TextSections =
             new Dictionary<KernelSection, byte[]> { };
+        public readonly MenuCommand[] Commands;
         public readonly Attack[] Attacks;
+        public InitialData InitialData { get; }
 
         public Kernel(string file) : base(file, KernelType.KernelBin)
         {
@@ -36,22 +41,29 @@ namespace FF7Scarlet.KernelEditor
                 Array.Copy(KernelData[s], kernel1TextSections[s], length);
             }
 
+            //get menu commands
+            Commands = new MenuCommand[GetCount(KernelSection.CommandData)];
+            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.CommandData)))
+            using (var reader = new BinaryReader(ms))
+            {
+                for (int i = 0; i < Commands.Length; ++i)
+                {
+                    Commands[i] = new MenuCommand(reader.ReadBytes(8));
+                }
+            }
+
+            //get initial data
+            InitialData = new InitialData(GetSectionRawData(KernelSection.InitData));
+
             //get attack data
             Attacks = new Attack[ATTACK_COUNT];
             using (var ms = new MemoryStream(GetSectionRawData(KernelSection.AttackData)))
             using (var reader = new BinaryReader(ms))
             {
-                try
+                for (int i = 0; i < ATTACK_COUNT; ++i)
                 {
-                    for (int i = 0; i < ATTACK_COUNT; ++i)
-                    {
-                        Attacks[i] = new Attack((ushort)i, new FFText(MagicNames.Strings[i]),
-                            reader.ReadBytes(Attack.BLOCK_SIZE));
-                    }
-                }
-                catch (EndOfStreamException)
-                {
-                    //nothing
+                    Attacks[i] = new Attack((ushort)i, new FFText(MagicNames.Strings[i]),
+                        reader.ReadBytes(Attack.BLOCK_SIZE));
                 }
             }
         }
@@ -91,6 +103,51 @@ namespace FF7Scarlet.KernelEditor
             foreach (var atk in Attacks)
             {
                 if (atk.ID == id) { return atk; }
+            }
+            return null;
+        }
+
+        public Item? GetItemByID(int id)
+        {
+            foreach (var item in ItemData.Items)
+            {
+                if (item.Index == id) { return item; }
+            }
+            return null;
+        }
+
+        public Weapon? GetWeaponByID(byte id)
+        {
+            foreach (var wpn in WeaponData.Weapons)
+            {
+                if (wpn.Index == id) { return wpn; }
+            }
+            return null;
+        }
+
+        public Armor? GetArmorByID(byte id)
+        {
+            foreach (var armor in ArmorData.Armors)
+            {
+                if (armor.Index == id) { return armor; }
+            }
+            return null;
+        }
+
+        public Accessory? GetAccessoryByID(byte id)
+        {
+            foreach (var acc in AccessoryData.Accessories)
+            {
+                if (acc.Index == id) { return acc; }
+            }
+            return null;
+        }
+
+        public Materia? GetMateriaByID(byte id)
+        {
+            foreach (var mat in MateriaData.Materias)
+            {
+                if (mat.Index == id) { return mat; }
             }
             return null;
         }
@@ -173,11 +230,37 @@ namespace FF7Scarlet.KernelEditor
             return new string[0];
         }
 
+        public string GetInventoryItemName(InventoryItem item)
+        {
+            switch (item.Type)
+            {
+                case ItemType.Item:
+                    var i = GetItemByID(item.Index);
+                    if (i == null) { return "(unknown)"; }
+                    else { return i.Name; }
+                case ItemType.Weapon:
+                    var w = GetWeaponByID(item.Index);
+                    if (w == null) { return "(unknown)"; }
+                    else { return w.Name; }
+                case ItemType.Armor:
+                    var ar = GetArmorByID(item.Index);
+                    if (ar == null) { return "(unknown)"; }
+                    else { return ar.Name; }
+                case ItemType.Accessory:
+                    var acc = GetAccessoryByID(item.Index);
+                    if (acc == null) { return "(unknown)"; }
+                    else { return acc.Name; }
+                default:
+                    return "(none)";
+            }
+        }
+
         public ushort GetCameraMovementIDSingle(KernelSection section, int pos)
         {
             switch (section)
             {
-                //case KernelSection.CommandData:
+                case KernelSection.CommandData:
+                    return Commands[pos].CameraMovementIDSingle;
                 case KernelSection.AttackData:
                     return Attacks[pos].CameraMovementIDSingle;
                 case KernelSection.ItemData:
@@ -191,7 +274,8 @@ namespace FF7Scarlet.KernelEditor
         {
             switch (section)
             {
-                //case KernelSection.CommandData:
+                case KernelSection.CommandData:
+                    return Commands[pos].CameraMovementIDMulti;
                 case KernelSection.AttackData:
                     return Attacks[pos].CameraMovementIDMulti;
                 default:
@@ -250,6 +334,8 @@ namespace FF7Scarlet.KernelEditor
         {
             switch (section)
             {
+                case KernelSection.CommandData:
+                    return Commands[pos].TargetFlags;
                 case KernelSection.AttackData:
                     return Attacks[pos].TargetFlags;
                 case KernelSection.ItemData:
@@ -407,6 +493,19 @@ namespace FF7Scarlet.KernelEditor
                     return ArmorData.Armors[pos].Status;
                 default:
                     return EquipmentStatus.None;
+            }
+        }
+
+        public SpecialEffects GetSpecialEffects(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.AttackData:
+                    return Attacks[pos].SpecialAttackFlags;
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].Special;
+                default:
+                    return 0;
             }
         }
 

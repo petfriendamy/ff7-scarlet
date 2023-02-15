@@ -83,6 +83,67 @@
             this.listBoxAttacks = new System.Windows.Forms.ListBox();
             this.tabPageBattleData = new System.Windows.Forms.TabPage();
             this.tabPageInitData = new System.Windows.Forms.TabPage();
+            this.tabControlInitialData = new System.Windows.Forms.TabControl();
+            this.tabPageInitCharacterStats = new System.Windows.Forms.TabPage();
+            this.groupBoxCharacterMP = new System.Windows.Forms.GroupBox();
+            this.numericCharacterMaxMP = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterMaxMP = new System.Windows.Forms.Label();
+            this.numericCharacterBaseMP = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterBaseMP = new System.Windows.Forms.Label();
+            this.numericCharacterCurrMP = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterCurrMP = new System.Windows.Forms.Label();
+            this.groupBoxCharacterHP = new System.Windows.Forms.GroupBox();
+            this.numericCharacterMaxHP = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterMaxHP = new System.Windows.Forms.Label();
+            this.numericCharacterBaseHP = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterBaseHP = new System.Windows.Forms.Label();
+            this.numericCharacterCurrHP = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterCurrHP = new System.Windows.Forms.Label();
+            this.numericCharacterEXPtoNext = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterEXPtoNext = new System.Windows.Forms.Label();
+            this.numericCharacterKillCount = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterKillCount = new System.Windows.Forms.Label();
+            this.comboBoxCharacterFlags = new System.Windows.Forms.ComboBox();
+            this.labelCharacterFlags = new System.Windows.Forms.Label();
+            this.characterLimitControl = new FF7Scarlet.KernelEditor.Controls.CharacterLimitControl();
+            this.numericCharacterCurrentEXP = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterCurrentEXP = new System.Windows.Forms.Label();
+            this.groupBoxCharacterArmor = new System.Windows.Forms.GroupBox();
+            this.buttonCharacterArmorChangeMateria = new System.Windows.Forms.Button();
+            this.materiaSlotSelectorCharacterArmor = new FF7Scarlet.KernelEditor.Controls.MateriaSlotSelectorControl();
+            this.comboBoxCharacterArmor = new System.Windows.Forms.ComboBox();
+            this.groupBoxCharacterWeapon = new System.Windows.Forms.GroupBox();
+            this.buttonCharacterWeaponChangeMateria = new System.Windows.Forms.Button();
+            this.materiaSlotSelectorCharacterWeapon = new FF7Scarlet.KernelEditor.Controls.MateriaSlotSelectorControl();
+            this.comboBoxCharacterWeapon = new System.Windows.Forms.ComboBox();
+            this.characterStatsControl = new FF7Scarlet.KernelEditor.Controls.CharacterStatsControl();
+            this.checkBoxCharacterBackRow = new System.Windows.Forms.CheckBox();
+            this.numericCharacterLevel = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterLevel = new System.Windows.Forms.Label();
+            this.comboBoxCharacterAccessory = new System.Windows.Forms.ComboBox();
+            this.labelCharacterAccessory = new System.Windows.Forms.Label();
+            this.numericCharacterID = new System.Windows.Forms.NumericUpDown();
+            this.labelCharacterID = new System.Windows.Forms.Label();
+            this.textBoxCharacterName = new System.Windows.Forms.TextBox();
+            this.labelCharacterName = new System.Windows.Forms.Label();
+            this.listBoxInitCharacters = new System.Windows.Forms.ListBox();
+            this.tabPageInitInventory = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.listBoxInitMateriaStolen = new System.Windows.Forms.ListBox();
+            this.buttonInitMateriaStolenEdit = new System.Windows.Forms.Button();
+            this.comboBoxInitMateriaStolen = new System.Windows.Forms.ComboBox();
+            this.labelInitMateriaStolen = new System.Windows.Forms.Label();
+            this.groupBoxInitMateria = new System.Windows.Forms.GroupBox();
+            this.buttonInitMateriaEdit = new System.Windows.Forms.Button();
+            this.comboBoxInitMateria = new System.Windows.Forms.ComboBox();
+            this.labelInitMateria = new System.Windows.Forms.Label();
+            this.listBoxInitMateria = new System.Windows.Forms.ListBox();
+            this.groupBoxInitInventory = new System.Windows.Forms.GroupBox();
+            this.numericInitItemAmount = new System.Windows.Forms.NumericUpDown();
+            this.labelInitItemAmount = new System.Windows.Forms.Label();
+            this.comboBoxInitItem = new System.Windows.Forms.ComboBox();
+            this.labelInitItem = new System.Windows.Forms.Label();
+            this.listBoxInitInventory = new System.Windows.Forms.ListBox();
             this.tabPageItemData = new System.Windows.Forms.TabPage();
             this.tabControlItems = new System.Windows.Forms.TabControl();
             this.tabPageItems1 = new System.Windows.Forms.TabPage();
@@ -102,6 +163,8 @@
             this.labelItemStatusChange = new System.Windows.Forms.Label();
             this.statusesControlItem = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
             this.elementsControlItem = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
+            this.tabPageItems3 = new System.Windows.Forms.TabPage();
+            this.specialAttackFlagsControlItem = new FF7Scarlet.Shared.SpecialAttackFlagsControl();
             this.listBoxItems = new System.Windows.Forms.ListBox();
             this.tabPageWeaponData = new System.Windows.Forms.TabPage();
             this.tabControlWeapons = new System.Windows.Forms.TabControl();
@@ -117,8 +180,8 @@
             this.numericWeaponModelIndex = new System.Windows.Forms.NumericUpDown();
             this.labelWeaponModelIndex = new System.Windows.Forms.Label();
             this.groupBoxWeaponMateriaSlots = new System.Windows.Forms.GroupBox();
-            this.labelWeaponMateriaGrowth = new System.Windows.Forms.Label();
             this.materiaSlotSelectorWeapon = new FF7Scarlet.KernelEditor.Controls.MateriaSlotSelectorControl();
+            this.labelWeaponMateriaGrowth = new System.Windows.Forms.Label();
             this.comboBoxWeaponMateriaGrowth = new System.Windows.Forms.ComboBox();
             this.labelWeaponCritChance = new System.Windows.Forms.Label();
             this.labelWeaponHitChance = new System.Windows.Forms.Label();
@@ -154,8 +217,8 @@
             this.textBoxArmorName = new System.Windows.Forms.TextBox();
             this.labelArmorDescription = new System.Windows.Forms.Label();
             this.groupBoxArmorMateriaSlots = new System.Windows.Forms.GroupBox();
-            this.labelArmorMateriaGrowth = new System.Windows.Forms.Label();
             this.materiaSlotSelectorArmor = new FF7Scarlet.KernelEditor.Controls.MateriaSlotSelectorControl();
+            this.labelArmorMateriaGrowth = new System.Windows.Forms.Label();
             this.comboBoxArmorMateriaGrowth = new System.Windows.Forms.ComboBox();
             this.textBoxArmorDescription = new System.Windows.Forms.TextBox();
             this.tabPageArmor2 = new System.Windows.Forms.TabPage();
@@ -216,10 +279,34 @@
             this.tabPageAttacks2.SuspendLayout();
             this.groupBoxAttackSpecialActions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericAttackStatusChangeChance)).BeginInit();
+            this.tabPageInitData.SuspendLayout();
+            this.tabControlInitialData.SuspendLayout();
+            this.tabPageInitCharacterStats.SuspendLayout();
+            this.groupBoxCharacterMP.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterMaxMP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterBaseMP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterCurrMP)).BeginInit();
+            this.groupBoxCharacterHP.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterMaxHP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterBaseHP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterCurrHP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterEXPtoNext)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterKillCount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterCurrentEXP)).BeginInit();
+            this.groupBoxCharacterArmor.SuspendLayout();
+            this.groupBoxCharacterWeapon.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterLevel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterID)).BeginInit();
+            this.tabPageInitInventory.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBoxInitMateria.SuspendLayout();
+            this.groupBoxInitInventory.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericInitItemAmount)).BeginInit();
             this.tabPageItemData.SuspendLayout();
             this.tabControlItems.SuspendLayout();
             this.tabPageItems1.SuspendLayout();
             this.tabPageItems2.SuspendLayout();
+            this.tabPageItems3.SuspendLayout();
             this.tabPageWeaponData.SuspendLayout();
             this.tabControlWeapons.SuspendLayout();
             this.tabPageWeapon1.SuspendLayout();
@@ -835,6 +922,7 @@
             // 
             // tabPageInitData
             // 
+            this.tabPageInitData.Controls.Add(this.tabControlInitialData);
             this.tabPageInitData.Location = new System.Drawing.Point(4, 24);
             this.tabPageInitData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageInitData.Name = "tabPageInitData";
@@ -842,6 +930,708 @@
             this.tabPageInitData.TabIndex = 3;
             this.tabPageInitData.Text = "Initial Data";
             this.tabPageInitData.UseVisualStyleBackColor = true;
+            // 
+            // tabControlInitialData
+            // 
+            this.tabControlInitialData.Controls.Add(this.tabPageInitCharacterStats);
+            this.tabControlInitialData.Controls.Add(this.tabPageInitInventory);
+            this.tabControlInitialData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlInitialData.Location = new System.Drawing.Point(0, 0);
+            this.tabControlInitialData.Name = "tabControlInitialData";
+            this.tabControlInitialData.SelectedIndex = 0;
+            this.tabControlInitialData.Size = new System.Drawing.Size(776, 533);
+            this.tabControlInitialData.TabIndex = 0;
+            // 
+            // tabPageInitCharacterStats
+            // 
+            this.tabPageInitCharacterStats.Controls.Add(this.groupBoxCharacterMP);
+            this.tabPageInitCharacterStats.Controls.Add(this.groupBoxCharacterHP);
+            this.tabPageInitCharacterStats.Controls.Add(this.numericCharacterEXPtoNext);
+            this.tabPageInitCharacterStats.Controls.Add(this.labelCharacterEXPtoNext);
+            this.tabPageInitCharacterStats.Controls.Add(this.numericCharacterKillCount);
+            this.tabPageInitCharacterStats.Controls.Add(this.labelCharacterKillCount);
+            this.tabPageInitCharacterStats.Controls.Add(this.comboBoxCharacterFlags);
+            this.tabPageInitCharacterStats.Controls.Add(this.labelCharacterFlags);
+            this.tabPageInitCharacterStats.Controls.Add(this.characterLimitControl);
+            this.tabPageInitCharacterStats.Controls.Add(this.numericCharacterCurrentEXP);
+            this.tabPageInitCharacterStats.Controls.Add(this.labelCharacterCurrentEXP);
+            this.tabPageInitCharacterStats.Controls.Add(this.groupBoxCharacterArmor);
+            this.tabPageInitCharacterStats.Controls.Add(this.groupBoxCharacterWeapon);
+            this.tabPageInitCharacterStats.Controls.Add(this.characterStatsControl);
+            this.tabPageInitCharacterStats.Controls.Add(this.checkBoxCharacterBackRow);
+            this.tabPageInitCharacterStats.Controls.Add(this.numericCharacterLevel);
+            this.tabPageInitCharacterStats.Controls.Add(this.labelCharacterLevel);
+            this.tabPageInitCharacterStats.Controls.Add(this.comboBoxCharacterAccessory);
+            this.tabPageInitCharacterStats.Controls.Add(this.labelCharacterAccessory);
+            this.tabPageInitCharacterStats.Controls.Add(this.numericCharacterID);
+            this.tabPageInitCharacterStats.Controls.Add(this.labelCharacterID);
+            this.tabPageInitCharacterStats.Controls.Add(this.textBoxCharacterName);
+            this.tabPageInitCharacterStats.Controls.Add(this.labelCharacterName);
+            this.tabPageInitCharacterStats.Controls.Add(this.listBoxInitCharacters);
+            this.tabPageInitCharacterStats.Location = new System.Drawing.Point(4, 24);
+            this.tabPageInitCharacterStats.Name = "tabPageInitCharacterStats";
+            this.tabPageInitCharacterStats.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageInitCharacterStats.Size = new System.Drawing.Size(768, 505);
+            this.tabPageInitCharacterStats.TabIndex = 0;
+            this.tabPageInitCharacterStats.Text = "Character Stats";
+            this.tabPageInitCharacterStats.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxCharacterMP
+            // 
+            this.groupBoxCharacterMP.Controls.Add(this.numericCharacterMaxMP);
+            this.groupBoxCharacterMP.Controls.Add(this.labelCharacterMaxMP);
+            this.groupBoxCharacterMP.Controls.Add(this.numericCharacterBaseMP);
+            this.groupBoxCharacterMP.Controls.Add(this.labelCharacterBaseMP);
+            this.groupBoxCharacterMP.Controls.Add(this.numericCharacterCurrMP);
+            this.groupBoxCharacterMP.Controls.Add(this.labelCharacterCurrMP);
+            this.groupBoxCharacterMP.Location = new System.Drawing.Point(158, 177);
+            this.groupBoxCharacterMP.Name = "groupBoxCharacterMP";
+            this.groupBoxCharacterMP.Size = new System.Drawing.Size(373, 71);
+            this.groupBoxCharacterMP.TabIndex = 30;
+            this.groupBoxCharacterMP.TabStop = false;
+            this.groupBoxCharacterMP.Text = "MP";
+            // 
+            // numericCharacterMaxMP
+            // 
+            this.numericCharacterMaxMP.Location = new System.Drawing.Point(248, 37);
+            this.numericCharacterMaxMP.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numericCharacterMaxMP.Name = "numericCharacterMaxMP";
+            this.numericCharacterMaxMP.Size = new System.Drawing.Size(115, 23);
+            this.numericCharacterMaxMP.TabIndex = 5;
+            // 
+            // labelCharacterMaxMP
+            // 
+            this.labelCharacterMaxMP.AutoSize = true;
+            this.labelCharacterMaxMP.Location = new System.Drawing.Point(248, 19);
+            this.labelCharacterMaxMP.Name = "labelCharacterMaxMP";
+            this.labelCharacterMaxMP.Size = new System.Drawing.Size(57, 15);
+            this.labelCharacterMaxMP.TabIndex = 4;
+            this.labelCharacterMaxMP.Text = "Adjusted:";
+            // 
+            // numericCharacterBaseMP
+            // 
+            this.numericCharacterBaseMP.Location = new System.Drawing.Point(127, 37);
+            this.numericCharacterBaseMP.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numericCharacterBaseMP.Name = "numericCharacterBaseMP";
+            this.numericCharacterBaseMP.Size = new System.Drawing.Size(115, 23);
+            this.numericCharacterBaseMP.TabIndex = 3;
+            // 
+            // labelCharacterBaseMP
+            // 
+            this.labelCharacterBaseMP.AutoSize = true;
+            this.labelCharacterBaseMP.Location = new System.Drawing.Point(127, 19);
+            this.labelCharacterBaseMP.Name = "labelCharacterBaseMP";
+            this.labelCharacterBaseMP.Size = new System.Drawing.Size(33, 15);
+            this.labelCharacterBaseMP.TabIndex = 2;
+            this.labelCharacterBaseMP.Text = "Max:";
+            // 
+            // numericCharacterCurrMP
+            // 
+            this.numericCharacterCurrMP.Location = new System.Drawing.Point(6, 37);
+            this.numericCharacterCurrMP.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numericCharacterCurrMP.Name = "numericCharacterCurrMP";
+            this.numericCharacterCurrMP.Size = new System.Drawing.Size(115, 23);
+            this.numericCharacterCurrMP.TabIndex = 1;
+            // 
+            // labelCharacterCurrMP
+            // 
+            this.labelCharacterCurrMP.AutoSize = true;
+            this.labelCharacterCurrMP.Location = new System.Drawing.Point(6, 19);
+            this.labelCharacterCurrMP.Name = "labelCharacterCurrMP";
+            this.labelCharacterCurrMP.Size = new System.Drawing.Size(50, 15);
+            this.labelCharacterCurrMP.TabIndex = 0;
+            this.labelCharacterCurrMP.Text = "Current:";
+            // 
+            // groupBoxCharacterHP
+            // 
+            this.groupBoxCharacterHP.Controls.Add(this.numericCharacterMaxHP);
+            this.groupBoxCharacterHP.Controls.Add(this.labelCharacterMaxHP);
+            this.groupBoxCharacterHP.Controls.Add(this.numericCharacterBaseHP);
+            this.groupBoxCharacterHP.Controls.Add(this.labelCharacterBaseHP);
+            this.groupBoxCharacterHP.Controls.Add(this.numericCharacterCurrHP);
+            this.groupBoxCharacterHP.Controls.Add(this.labelCharacterCurrHP);
+            this.groupBoxCharacterHP.Location = new System.Drawing.Point(158, 100);
+            this.groupBoxCharacterHP.Name = "groupBoxCharacterHP";
+            this.groupBoxCharacterHP.Size = new System.Drawing.Size(373, 71);
+            this.groupBoxCharacterHP.TabIndex = 29;
+            this.groupBoxCharacterHP.TabStop = false;
+            this.groupBoxCharacterHP.Text = "HP";
+            // 
+            // numericCharacterMaxHP
+            // 
+            this.numericCharacterMaxHP.Location = new System.Drawing.Point(248, 37);
+            this.numericCharacterMaxHP.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numericCharacterMaxHP.Name = "numericCharacterMaxHP";
+            this.numericCharacterMaxHP.Size = new System.Drawing.Size(115, 23);
+            this.numericCharacterMaxHP.TabIndex = 5;
+            // 
+            // labelCharacterMaxHP
+            // 
+            this.labelCharacterMaxHP.AutoSize = true;
+            this.labelCharacterMaxHP.Location = new System.Drawing.Point(248, 19);
+            this.labelCharacterMaxHP.Name = "labelCharacterMaxHP";
+            this.labelCharacterMaxHP.Size = new System.Drawing.Size(57, 15);
+            this.labelCharacterMaxHP.TabIndex = 4;
+            this.labelCharacterMaxHP.Text = "Adjusted:";
+            // 
+            // numericCharacterBaseHP
+            // 
+            this.numericCharacterBaseHP.Location = new System.Drawing.Point(127, 37);
+            this.numericCharacterBaseHP.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numericCharacterBaseHP.Name = "numericCharacterBaseHP";
+            this.numericCharacterBaseHP.Size = new System.Drawing.Size(115, 23);
+            this.numericCharacterBaseHP.TabIndex = 3;
+            // 
+            // labelCharacterBaseHP
+            // 
+            this.labelCharacterBaseHP.AutoSize = true;
+            this.labelCharacterBaseHP.Location = new System.Drawing.Point(127, 19);
+            this.labelCharacterBaseHP.Name = "labelCharacterBaseHP";
+            this.labelCharacterBaseHP.Size = new System.Drawing.Size(33, 15);
+            this.labelCharacterBaseHP.TabIndex = 2;
+            this.labelCharacterBaseHP.Text = "Max:";
+            // 
+            // numericCharacterCurrHP
+            // 
+            this.numericCharacterCurrHP.Location = new System.Drawing.Point(6, 37);
+            this.numericCharacterCurrHP.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numericCharacterCurrHP.Name = "numericCharacterCurrHP";
+            this.numericCharacterCurrHP.Size = new System.Drawing.Size(115, 23);
+            this.numericCharacterCurrHP.TabIndex = 1;
+            // 
+            // labelCharacterCurrHP
+            // 
+            this.labelCharacterCurrHP.AutoSize = true;
+            this.labelCharacterCurrHP.Location = new System.Drawing.Point(6, 19);
+            this.labelCharacterCurrHP.Name = "labelCharacterCurrHP";
+            this.labelCharacterCurrHP.Size = new System.Drawing.Size(50, 15);
+            this.labelCharacterCurrHP.TabIndex = 0;
+            this.labelCharacterCurrHP.Text = "Current:";
+            // 
+            // numericCharacterEXPtoNext
+            // 
+            this.numericCharacterEXPtoNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericCharacterEXPtoNext.Location = new System.Drawing.Point(642, 72);
+            this.numericCharacterEXPtoNext.Name = "numericCharacterEXPtoNext";
+            this.numericCharacterEXPtoNext.Size = new System.Drawing.Size(120, 23);
+            this.numericCharacterEXPtoNext.TabIndex = 28;
+            // 
+            // labelCharacterEXPtoNext
+            // 
+            this.labelCharacterEXPtoNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelCharacterEXPtoNext.AutoSize = true;
+            this.labelCharacterEXPtoNext.Location = new System.Drawing.Point(642, 53);
+            this.labelCharacterEXPtoNext.Name = "labelCharacterEXPtoNext";
+            this.labelCharacterEXPtoNext.Size = new System.Drawing.Size(75, 15);
+            this.labelCharacterEXPtoNext.TabIndex = 27;
+            this.labelCharacterEXPtoNext.Text = "To next level:";
+            // 
+            // numericCharacterKillCount
+            // 
+            this.numericCharacterKillCount.Location = new System.Drawing.Point(401, 269);
+            this.numericCharacterKillCount.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numericCharacterKillCount.Name = "numericCharacterKillCount";
+            this.numericCharacterKillCount.Size = new System.Drawing.Size(128, 23);
+            this.numericCharacterKillCount.TabIndex = 26;
+            // 
+            // labelCharacterKillCount
+            // 
+            this.labelCharacterKillCount.AutoSize = true;
+            this.labelCharacterKillCount.Location = new System.Drawing.Point(401, 251);
+            this.labelCharacterKillCount.Name = "labelCharacterKillCount";
+            this.labelCharacterKillCount.Size = new System.Drawing.Size(60, 15);
+            this.labelCharacterKillCount.TabIndex = 25;
+            this.labelCharacterKillCount.Text = "Kill count:";
+            // 
+            // comboBoxCharacterFlags
+            // 
+            this.comboBoxCharacterFlags.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCharacterFlags.FormattingEnabled = true;
+            this.comboBoxCharacterFlags.Location = new System.Drawing.Point(158, 269);
+            this.comboBoxCharacterFlags.Name = "comboBoxCharacterFlags";
+            this.comboBoxCharacterFlags.Size = new System.Drawing.Size(157, 23);
+            this.comboBoxCharacterFlags.TabIndex = 24;
+            // 
+            // labelCharacterFlags
+            // 
+            this.labelCharacterFlags.AutoSize = true;
+            this.labelCharacterFlags.Location = new System.Drawing.Point(158, 251);
+            this.labelCharacterFlags.Name = "labelCharacterFlags";
+            this.labelCharacterFlags.Size = new System.Drawing.Size(89, 15);
+            this.labelCharacterFlags.TabIndex = 23;
+            this.labelCharacterFlags.Text = "Character flags:";
+            // 
+            // characterLimitControl
+            // 
+            this.characterLimitControl.LimitBar = ((byte)(0));
+            this.characterLimitControl.LimitLevel = ((byte)(0));
+            this.characterLimitControl.Location = new System.Drawing.Point(158, 298);
+            this.characterLimitControl.Name = "characterLimitControl";
+            this.characterLimitControl.Size = new System.Drawing.Size(373, 148);
+            this.characterLimitControl.TabIndex = 22;
+            // 
+            // numericCharacterCurrentEXP
+            // 
+            this.numericCharacterCurrentEXP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericCharacterCurrentEXP.Location = new System.Drawing.Point(516, 71);
+            this.numericCharacterCurrentEXP.Name = "numericCharacterCurrentEXP";
+            this.numericCharacterCurrentEXP.Size = new System.Drawing.Size(120, 23);
+            this.numericCharacterCurrentEXP.TabIndex = 21;
+            // 
+            // labelCharacterCurrentEXP
+            // 
+            this.labelCharacterCurrentEXP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelCharacterCurrentEXP.AutoSize = true;
+            this.labelCharacterCurrentEXP.Location = new System.Drawing.Point(516, 52);
+            this.labelCharacterCurrentEXP.Name = "labelCharacterCurrentEXP";
+            this.labelCharacterCurrentEXP.Size = new System.Drawing.Size(30, 15);
+            this.labelCharacterCurrentEXP.TabIndex = 20;
+            this.labelCharacterCurrentEXP.Text = "EXP:";
+            // 
+            // groupBoxCharacterArmor
+            // 
+            this.groupBoxCharacterArmor.Controls.Add(this.buttonCharacterArmorChangeMateria);
+            this.groupBoxCharacterArmor.Controls.Add(this.materiaSlotSelectorCharacterArmor);
+            this.groupBoxCharacterArmor.Controls.Add(this.comboBoxCharacterArmor);
+            this.groupBoxCharacterArmor.Location = new System.Drawing.Point(539, 235);
+            this.groupBoxCharacterArmor.Name = "groupBoxCharacterArmor";
+            this.groupBoxCharacterArmor.Size = new System.Drawing.Size(223, 128);
+            this.groupBoxCharacterArmor.TabIndex = 17;
+            this.groupBoxCharacterArmor.TabStop = false;
+            this.groupBoxCharacterArmor.Text = "Armor";
+            // 
+            // buttonCharacterArmorChangeMateria
+            // 
+            this.buttonCharacterArmorChangeMateria.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCharacterArmorChangeMateria.Location = new System.Drawing.Point(6, 99);
+            this.buttonCharacterArmorChangeMateria.Name = "buttonCharacterArmorChangeMateria";
+            this.buttonCharacterArmorChangeMateria.Size = new System.Drawing.Size(211, 23);
+            this.buttonCharacterArmorChangeMateria.TabIndex = 18;
+            this.buttonCharacterArmorChangeMateria.Text = "Change selected materia...";
+            this.buttonCharacterArmorChangeMateria.UseVisualStyleBackColor = true;
+            this.buttonCharacterArmorChangeMateria.Click += new System.EventHandler(this.buttonCharacterArmorChangeMateria_Click);
+            // 
+            // materiaSlotSelectorCharacterArmor
+            // 
+            this.materiaSlotSelectorCharacterArmor.BackColor = System.Drawing.Color.LightSlateGray;
+            this.materiaSlotSelectorCharacterArmor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.materiaSlotSelectorCharacterArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
+            this.materiaSlotSelectorCharacterArmor.Location = new System.Drawing.Point(6, 58);
+            this.materiaSlotSelectorCharacterArmor.Name = "materiaSlotSelectorCharacterArmor";
+            this.materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
+            this.materiaSlotSelectorCharacterArmor.Size = new System.Drawing.Size(211, 35);
+            this.materiaSlotSelectorCharacterArmor.SlotSelectorType = FF7Scarlet.KernelEditor.Controls.SlotSelectorType.Slots;
+            this.materiaSlotSelectorCharacterArmor.TabIndex = 15;
+            // 
+            // comboBoxCharacterArmor
+            // 
+            this.comboBoxCharacterArmor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCharacterArmor.FormattingEnabled = true;
+            this.comboBoxCharacterArmor.Location = new System.Drawing.Point(6, 21);
+            this.comboBoxCharacterArmor.Name = "comboBoxCharacterArmor";
+            this.comboBoxCharacterArmor.Size = new System.Drawing.Size(211, 23);
+            this.comboBoxCharacterArmor.TabIndex = 8;
+            // 
+            // groupBoxCharacterWeapon
+            // 
+            this.groupBoxCharacterWeapon.Controls.Add(this.buttonCharacterWeaponChangeMateria);
+            this.groupBoxCharacterWeapon.Controls.Add(this.materiaSlotSelectorCharacterWeapon);
+            this.groupBoxCharacterWeapon.Controls.Add(this.comboBoxCharacterWeapon);
+            this.groupBoxCharacterWeapon.Location = new System.Drawing.Point(539, 101);
+            this.groupBoxCharacterWeapon.Name = "groupBoxCharacterWeapon";
+            this.groupBoxCharacterWeapon.Size = new System.Drawing.Size(223, 128);
+            this.groupBoxCharacterWeapon.TabIndex = 16;
+            this.groupBoxCharacterWeapon.TabStop = false;
+            this.groupBoxCharacterWeapon.Text = "Weapon";
+            // 
+            // buttonCharacterWeaponChangeMateria
+            // 
+            this.buttonCharacterWeaponChangeMateria.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCharacterWeaponChangeMateria.Location = new System.Drawing.Point(6, 99);
+            this.buttonCharacterWeaponChangeMateria.Name = "buttonCharacterWeaponChangeMateria";
+            this.buttonCharacterWeaponChangeMateria.Size = new System.Drawing.Size(211, 23);
+            this.buttonCharacterWeaponChangeMateria.TabIndex = 16;
+            this.buttonCharacterWeaponChangeMateria.Text = "Change selected materia...";
+            this.buttonCharacterWeaponChangeMateria.UseVisualStyleBackColor = true;
+            this.buttonCharacterWeaponChangeMateria.Click += new System.EventHandler(this.buttonCharacterWeaponChangeMateria_Click);
+            // 
+            // materiaSlotSelectorCharacterWeapon
+            // 
+            this.materiaSlotSelectorCharacterWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.materiaSlotSelectorCharacterWeapon.BackColor = System.Drawing.Color.LightSlateGray;
+            this.materiaSlotSelectorCharacterWeapon.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.materiaSlotSelectorCharacterWeapon.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
+            this.materiaSlotSelectorCharacterWeapon.Location = new System.Drawing.Point(6, 58);
+            this.materiaSlotSelectorCharacterWeapon.Name = "materiaSlotSelectorCharacterWeapon";
+            this.materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
+            this.materiaSlotSelectorCharacterWeapon.Size = new System.Drawing.Size(211, 35);
+            this.materiaSlotSelectorCharacterWeapon.SlotSelectorType = FF7Scarlet.KernelEditor.Controls.SlotSelectorType.Slots;
+            this.materiaSlotSelectorCharacterWeapon.TabIndex = 15;
+            // 
+            // comboBoxCharacterWeapon
+            // 
+            this.comboBoxCharacterWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxCharacterWeapon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCharacterWeapon.FormattingEnabled = true;
+            this.comboBoxCharacterWeapon.Location = new System.Drawing.Point(6, 21);
+            this.comboBoxCharacterWeapon.Name = "comboBoxCharacterWeapon";
+            this.comboBoxCharacterWeapon.Size = new System.Drawing.Size(211, 23);
+            this.comboBoxCharacterWeapon.TabIndex = 6;
+            // 
+            // characterStatsControl
+            // 
+            this.characterStatsControl.Location = new System.Drawing.Point(6, 151);
+            this.characterStatsControl.Name = "characterStatsControl";
+            this.characterStatsControl.Size = new System.Drawing.Size(146, 295);
+            this.characterStatsControl.TabIndex = 14;
+            // 
+            // checkBoxCharacterBackRow
+            // 
+            this.checkBoxCharacterBackRow.AutoSize = true;
+            this.checkBoxCharacterBackRow.Location = new System.Drawing.Point(321, 271);
+            this.checkBoxCharacterBackRow.Name = "checkBoxCharacterBackRow";
+            this.checkBoxCharacterBackRow.Size = new System.Drawing.Size(74, 19);
+            this.checkBoxCharacterBackRow.TabIndex = 13;
+            this.checkBoxCharacterBackRow.Text = "Back row";
+            this.checkBoxCharacterBackRow.UseVisualStyleBackColor = true;
+            // 
+            // numericCharacterLevel
+            // 
+            this.numericCharacterLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericCharacterLevel.Location = new System.Drawing.Point(435, 71);
+            this.numericCharacterLevel.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.numericCharacterLevel.Name = "numericCharacterLevel";
+            this.numericCharacterLevel.Size = new System.Drawing.Size(75, 23);
+            this.numericCharacterLevel.TabIndex = 12;
+            this.numericCharacterLevel.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // labelCharacterLevel
+            // 
+            this.labelCharacterLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelCharacterLevel.AutoSize = true;
+            this.labelCharacterLevel.Location = new System.Drawing.Point(435, 51);
+            this.labelCharacterLevel.Name = "labelCharacterLevel";
+            this.labelCharacterLevel.Size = new System.Drawing.Size(37, 15);
+            this.labelCharacterLevel.TabIndex = 11;
+            this.labelCharacterLevel.Text = "Level:";
+            // 
+            // comboBoxCharacterAccessory
+            // 
+            this.comboBoxCharacterAccessory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCharacterAccessory.FormattingEnabled = true;
+            this.comboBoxCharacterAccessory.Location = new System.Drawing.Point(545, 384);
+            this.comboBoxCharacterAccessory.Name = "comboBoxCharacterAccessory";
+            this.comboBoxCharacterAccessory.Size = new System.Drawing.Size(211, 23);
+            this.comboBoxCharacterAccessory.TabIndex = 10;
+            // 
+            // labelCharacterAccessory
+            // 
+            this.labelCharacterAccessory.AutoSize = true;
+            this.labelCharacterAccessory.Location = new System.Drawing.Point(545, 366);
+            this.labelCharacterAccessory.Name = "labelCharacterAccessory";
+            this.labelCharacterAccessory.Size = new System.Drawing.Size(63, 15);
+            this.labelCharacterAccessory.TabIndex = 9;
+            this.labelCharacterAccessory.Text = "Accessory:";
+            // 
+            // numericCharacterID
+            // 
+            this.numericCharacterID.Location = new System.Drawing.Point(158, 26);
+            this.numericCharacterID.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericCharacterID.Name = "numericCharacterID";
+            this.numericCharacterID.Size = new System.Drawing.Size(75, 23);
+            this.numericCharacterID.TabIndex = 4;
+            // 
+            // labelCharacterID
+            // 
+            this.labelCharacterID.AutoSize = true;
+            this.labelCharacterID.Location = new System.Drawing.Point(158, 6);
+            this.labelCharacterID.Name = "labelCharacterID";
+            this.labelCharacterID.Size = new System.Drawing.Size(75, 15);
+            this.labelCharacterID.TabIndex = 3;
+            this.labelCharacterID.Text = "Character ID:";
+            // 
+            // textBoxCharacterName
+            // 
+            this.textBoxCharacterName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCharacterName.Location = new System.Drawing.Point(158, 71);
+            this.textBoxCharacterName.Name = "textBoxCharacterName";
+            this.textBoxCharacterName.Size = new System.Drawing.Size(271, 23);
+            this.textBoxCharacterName.TabIndex = 2;
+            // 
+            // labelCharacterName
+            // 
+            this.labelCharacterName.AutoSize = true;
+            this.labelCharacterName.Location = new System.Drawing.Point(158, 52);
+            this.labelCharacterName.Name = "labelCharacterName";
+            this.labelCharacterName.Size = new System.Drawing.Size(42, 15);
+            this.labelCharacterName.TabIndex = 1;
+            this.labelCharacterName.Text = "Name:";
+            // 
+            // listBoxInitCharacters
+            // 
+            this.listBoxInitCharacters.FormattingEnabled = true;
+            this.listBoxInitCharacters.ItemHeight = 15;
+            this.listBoxInitCharacters.Location = new System.Drawing.Point(6, 6);
+            this.listBoxInitCharacters.Name = "listBoxInitCharacters";
+            this.listBoxInitCharacters.Size = new System.Drawing.Size(146, 139);
+            this.listBoxInitCharacters.TabIndex = 0;
+            this.listBoxInitCharacters.SelectedIndexChanged += new System.EventHandler(this.listBoxInitCharacters_SelectedIndexChanged);
+            // 
+            // tabPageInitInventory
+            // 
+            this.tabPageInitInventory.Controls.Add(this.groupBox1);
+            this.tabPageInitInventory.Controls.Add(this.groupBoxInitMateria);
+            this.tabPageInitInventory.Controls.Add(this.groupBoxInitInventory);
+            this.tabPageInitInventory.Location = new System.Drawing.Point(4, 24);
+            this.tabPageInitInventory.Name = "tabPageInitInventory";
+            this.tabPageInitInventory.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageInitInventory.Size = new System.Drawing.Size(768, 505);
+            this.tabPageInitInventory.TabIndex = 1;
+            this.tabPageInitInventory.Text = "Inventory";
+            this.tabPageInitInventory.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.listBoxInitMateriaStolen);
+            this.groupBox1.Controls.Add(this.buttonInitMateriaStolenEdit);
+            this.groupBox1.Controls.Add(this.comboBoxInitMateriaStolen);
+            this.groupBox1.Controls.Add(this.labelInitMateriaStolen);
+            this.groupBox1.Location = new System.Drawing.Point(513, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(249, 455);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Materia stolen by Yuffie";
+            // 
+            // listBoxInitMateriaStolen
+            // 
+            this.listBoxInitMateriaStolen.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxInitMateriaStolen.FormattingEnabled = true;
+            this.listBoxInitMateriaStolen.ItemHeight = 15;
+            this.listBoxInitMateriaStolen.Location = new System.Drawing.Point(6, 22);
+            this.listBoxInitMateriaStolen.Name = "listBoxInitMateriaStolen";
+            this.listBoxInitMateriaStolen.Size = new System.Drawing.Size(237, 334);
+            this.listBoxInitMateriaStolen.TabIndex = 7;
+            this.listBoxInitMateriaStolen.SelectedIndexChanged += new System.EventHandler(this.listBoxInitMateriaStolen_SelectedIndexChanged);
+            // 
+            // buttonInitMateriaStolenEdit
+            // 
+            this.buttonInitMateriaStolenEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonInitMateriaStolenEdit.Enabled = false;
+            this.buttonInitMateriaStolenEdit.Location = new System.Drawing.Point(6, 426);
+            this.buttonInitMateriaStolenEdit.Name = "buttonInitMateriaStolenEdit";
+            this.buttonInitMateriaStolenEdit.Size = new System.Drawing.Size(237, 23);
+            this.buttonInitMateriaStolenEdit.TabIndex = 6;
+            this.buttonInitMateriaStolenEdit.Text = "Edit details...";
+            this.buttonInitMateriaStolenEdit.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxInitMateriaStolen
+            // 
+            this.comboBoxInitMateriaStolen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxInitMateriaStolen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxInitMateriaStolen.Enabled = false;
+            this.comboBoxInitMateriaStolen.FormattingEnabled = true;
+            this.comboBoxInitMateriaStolen.Location = new System.Drawing.Point(6, 382);
+            this.comboBoxInitMateriaStolen.Name = "comboBoxInitMateriaStolen";
+            this.comboBoxInitMateriaStolen.Size = new System.Drawing.Size(237, 23);
+            this.comboBoxInitMateriaStolen.TabIndex = 5;
+            this.comboBoxInitMateriaStolen.SelectedIndexChanged += new System.EventHandler(this.comboBoxInitMateriaStolen_SelectedIndexChanged);
+            // 
+            // labelInitMateriaStolen
+            // 
+            this.labelInitMateriaStolen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelInitMateriaStolen.AutoSize = true;
+            this.labelInitMateriaStolen.Location = new System.Drawing.Point(6, 364);
+            this.labelInitMateriaStolen.Name = "labelInitMateriaStolen";
+            this.labelInitMateriaStolen.Size = new System.Drawing.Size(50, 15);
+            this.labelInitMateriaStolen.TabIndex = 4;
+            this.labelInitMateriaStolen.Text = "Materia:";
+            // 
+            // groupBoxInitMateria
+            // 
+            this.groupBoxInitMateria.Controls.Add(this.buttonInitMateriaEdit);
+            this.groupBoxInitMateria.Controls.Add(this.comboBoxInitMateria);
+            this.groupBoxInitMateria.Controls.Add(this.labelInitMateria);
+            this.groupBoxInitMateria.Controls.Add(this.listBoxInitMateria);
+            this.groupBoxInitMateria.Location = new System.Drawing.Point(257, 6);
+            this.groupBoxInitMateria.Name = "groupBoxInitMateria";
+            this.groupBoxInitMateria.Size = new System.Drawing.Size(250, 455);
+            this.groupBoxInitMateria.TabIndex = 2;
+            this.groupBoxInitMateria.TabStop = false;
+            this.groupBoxInitMateria.Text = "Materia";
+            // 
+            // buttonInitMateriaEdit
+            // 
+            this.buttonInitMateriaEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonInitMateriaEdit.Enabled = false;
+            this.buttonInitMateriaEdit.Location = new System.Drawing.Point(6, 426);
+            this.buttonInitMateriaEdit.Name = "buttonInitMateriaEdit";
+            this.buttonInitMateriaEdit.Size = new System.Drawing.Size(238, 23);
+            this.buttonInitMateriaEdit.TabIndex = 3;
+            this.buttonInitMateriaEdit.Text = "Edit details...";
+            this.buttonInitMateriaEdit.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxInitMateria
+            // 
+            this.comboBoxInitMateria.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxInitMateria.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxInitMateria.Enabled = false;
+            this.comboBoxInitMateria.FormattingEnabled = true;
+            this.comboBoxInitMateria.Location = new System.Drawing.Point(6, 382);
+            this.comboBoxInitMateria.Name = "comboBoxInitMateria";
+            this.comboBoxInitMateria.Size = new System.Drawing.Size(238, 23);
+            this.comboBoxInitMateria.TabIndex = 2;
+            this.comboBoxInitMateria.SelectedIndexChanged += new System.EventHandler(this.comboBoxInitMateria_SelectedIndexChanged);
+            // 
+            // labelInitMateria
+            // 
+            this.labelInitMateria.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelInitMateria.AutoSize = true;
+            this.labelInitMateria.Location = new System.Drawing.Point(6, 364);
+            this.labelInitMateria.Name = "labelInitMateria";
+            this.labelInitMateria.Size = new System.Drawing.Size(50, 15);
+            this.labelInitMateria.TabIndex = 1;
+            this.labelInitMateria.Text = "Materia:";
+            // 
+            // listBoxInitMateria
+            // 
+            this.listBoxInitMateria.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxInitMateria.FormattingEnabled = true;
+            this.listBoxInitMateria.ItemHeight = 15;
+            this.listBoxInitMateria.Location = new System.Drawing.Point(6, 22);
+            this.listBoxInitMateria.Name = "listBoxInitMateria";
+            this.listBoxInitMateria.Size = new System.Drawing.Size(238, 334);
+            this.listBoxInitMateria.TabIndex = 0;
+            this.listBoxInitMateria.SelectedIndexChanged += new System.EventHandler(this.listBoxInitMateria_SelectedIndexChanged);
+            // 
+            // groupBoxInitInventory
+            // 
+            this.groupBoxInitInventory.Controls.Add(this.numericInitItemAmount);
+            this.groupBoxInitInventory.Controls.Add(this.labelInitItemAmount);
+            this.groupBoxInitInventory.Controls.Add(this.comboBoxInitItem);
+            this.groupBoxInitInventory.Controls.Add(this.labelInitItem);
+            this.groupBoxInitInventory.Controls.Add(this.listBoxInitInventory);
+            this.groupBoxInitInventory.Location = new System.Drawing.Point(6, 6);
+            this.groupBoxInitInventory.Name = "groupBoxInitInventory";
+            this.groupBoxInitInventory.Size = new System.Drawing.Size(245, 455);
+            this.groupBoxInitInventory.TabIndex = 1;
+            this.groupBoxInitInventory.TabStop = false;
+            this.groupBoxInitInventory.Text = "Inventory";
+            // 
+            // numericInitItemAmount
+            // 
+            this.numericInitItemAmount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericInitItemAmount.Enabled = false;
+            this.numericInitItemAmount.Location = new System.Drawing.Point(6, 426);
+            this.numericInitItemAmount.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.numericInitItemAmount.Name = "numericInitItemAmount";
+            this.numericInitItemAmount.Size = new System.Drawing.Size(233, 23);
+            this.numericInitItemAmount.TabIndex = 4;
+            this.numericInitItemAmount.ValueChanged += new System.EventHandler(this.numericInitItemAmount_ValueChanged);
+            // 
+            // labelInitItemAmount
+            // 
+            this.labelInitItemAmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelInitItemAmount.AutoSize = true;
+            this.labelInitItemAmount.Location = new System.Drawing.Point(6, 408);
+            this.labelInitItemAmount.Name = "labelInitItemAmount";
+            this.labelInitItemAmount.Size = new System.Drawing.Size(54, 15);
+            this.labelInitItemAmount.TabIndex = 3;
+            this.labelInitItemAmount.Text = "Amount:";
+            // 
+            // comboBoxInitItem
+            // 
+            this.comboBoxInitItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxInitItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxInitItem.Enabled = false;
+            this.comboBoxInitItem.FormattingEnabled = true;
+            this.comboBoxInitItem.Location = new System.Drawing.Point(6, 382);
+            this.comboBoxInitItem.Name = "comboBoxInitItem";
+            this.comboBoxInitItem.Size = new System.Drawing.Size(233, 23);
+            this.comboBoxInitItem.TabIndex = 2;
+            this.comboBoxInitItem.SelectedIndexChanged += new System.EventHandler(this.comboBoxInitItem_SelectedIndexChanged);
+            // 
+            // labelInitItem
+            // 
+            this.labelInitItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelInitItem.AutoSize = true;
+            this.labelInitItem.Location = new System.Drawing.Point(6, 364);
+            this.labelInitItem.Name = "labelInitItem";
+            this.labelInitItem.Size = new System.Drawing.Size(34, 15);
+            this.labelInitItem.TabIndex = 1;
+            this.labelInitItem.Text = "Item:";
+            // 
+            // listBoxInitInventory
+            // 
+            this.listBoxInitInventory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxInitInventory.FormattingEnabled = true;
+            this.listBoxInitInventory.ItemHeight = 15;
+            this.listBoxInitInventory.Location = new System.Drawing.Point(6, 22);
+            this.listBoxInitInventory.Name = "listBoxInitInventory";
+            this.listBoxInitInventory.Size = new System.Drawing.Size(233, 334);
+            this.listBoxInitInventory.TabIndex = 0;
+            this.listBoxInitInventory.SelectedIndexChanged += new System.EventHandler(this.listBoxInitInventory_SelectedIndexChanged);
             // 
             // tabPageItemData
             // 
@@ -862,6 +1652,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlItems.Controls.Add(this.tabPageItems1);
             this.tabControlItems.Controls.Add(this.tabPageItems2);
+            this.tabControlItems.Controls.Add(this.tabPageItems3);
             this.tabControlItems.Location = new System.Drawing.Point(190, 13);
             this.tabControlItems.Name = "tabControlItems";
             this.tabControlItems.SelectedIndex = 0;
@@ -1050,6 +1841,25 @@
             this.elementsControlItem.Size = new System.Drawing.Size(558, 130);
             this.elementsControlItem.TabIndex = 30;
             // 
+            // tabPageItems3
+            // 
+            this.tabPageItems3.Controls.Add(this.specialAttackFlagsControlItem);
+            this.tabPageItems3.Location = new System.Drawing.Point(4, 24);
+            this.tabPageItems3.Name = "tabPageItems3";
+            this.tabPageItems3.Size = new System.Drawing.Size(570, 441);
+            this.tabPageItems3.TabIndex = 2;
+            this.tabPageItems3.Text = "Page 3";
+            this.tabPageItems3.UseVisualStyleBackColor = true;
+            // 
+            // specialAttackFlagsControlItem
+            // 
+            this.specialAttackFlagsControlItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.specialAttackFlagsControlItem.Location = new System.Drawing.Point(3, 3);
+            this.specialAttackFlagsControlItem.Name = "specialAttackFlagsControlItem";
+            this.specialAttackFlagsControlItem.Size = new System.Drawing.Size(558, 100);
+            this.specialAttackFlagsControlItem.TabIndex = 44;
+            // 
             // listBoxItems
             // 
             this.listBoxItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1226,8 +2036,8 @@
             // groupBoxWeaponMateriaSlots
             // 
             this.groupBoxWeaponMateriaSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxWeaponMateriaSlots.Controls.Add(this.labelWeaponMateriaGrowth);
             this.groupBoxWeaponMateriaSlots.Controls.Add(this.materiaSlotSelectorWeapon);
+            this.groupBoxWeaponMateriaSlots.Controls.Add(this.labelWeaponMateriaGrowth);
             this.groupBoxWeaponMateriaSlots.Controls.Add(this.comboBoxWeaponMateriaGrowth);
             this.groupBoxWeaponMateriaSlots.Location = new System.Drawing.Point(341, 188);
             this.groupBoxWeaponMateriaSlots.Name = "groupBoxWeaponMateriaSlots";
@@ -1235,6 +2045,18 @@
             this.groupBoxWeaponMateriaSlots.TabIndex = 20;
             this.groupBoxWeaponMateriaSlots.TabStop = false;
             this.groupBoxWeaponMateriaSlots.Text = "Materia slots";
+            // 
+            // materiaSlotSelectorWeapon
+            // 
+            this.materiaSlotSelectorWeapon.BackColor = System.Drawing.Color.LightSlateGray;
+            this.materiaSlotSelectorWeapon.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.materiaSlotSelectorWeapon.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
+            this.materiaSlotSelectorWeapon.Location = new System.Drawing.Point(6, 22);
+            this.materiaSlotSelectorWeapon.Name = "materiaSlotSelectorWeapon";
+            this.materiaSlotSelectorWeapon.SelectedSlot = -1;
+            this.materiaSlotSelectorWeapon.Size = new System.Drawing.Size(211, 35);
+            this.materiaSlotSelectorWeapon.SlotSelectorType = FF7Scarlet.KernelEditor.Controls.SlotSelectorType.Slots;
+            this.materiaSlotSelectorWeapon.TabIndex = 3;
             // 
             // labelWeaponMateriaGrowth
             // 
@@ -1244,18 +2066,6 @@
             this.labelWeaponMateriaGrowth.Size = new System.Drawing.Size(49, 15);
             this.labelWeaponMateriaGrowth.TabIndex = 1;
             this.labelWeaponMateriaGrowth.Text = "Growth:";
-            // 
-            // materiaSlotSelectorWeapon
-            // 
-            this.materiaSlotSelectorWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.materiaSlotSelectorWeapon.BackColor = System.Drawing.Color.LightSlateGray;
-            this.materiaSlotSelectorWeapon.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.materiaSlotSelectorWeapon.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
-            this.materiaSlotSelectorWeapon.Location = new System.Drawing.Point(6, 22);
-            this.materiaSlotSelectorWeapon.Name = "materiaSlotSelectorWeapon";
-            this.materiaSlotSelectorWeapon.Size = new System.Drawing.Size(211, 35);
-            this.materiaSlotSelectorWeapon.TabIndex = 0;
             // 
             // comboBoxWeaponMateriaGrowth
             // 
@@ -1638,8 +2448,8 @@
             // groupBoxArmorMateriaSlots
             // 
             this.groupBoxArmorMateriaSlots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxArmorMateriaSlots.Controls.Add(this.labelArmorMateriaGrowth);
             this.groupBoxArmorMateriaSlots.Controls.Add(this.materiaSlotSelectorArmor);
+            this.groupBoxArmorMateriaSlots.Controls.Add(this.labelArmorMateriaGrowth);
             this.groupBoxArmorMateriaSlots.Controls.Add(this.comboBoxArmorMateriaGrowth);
             this.groupBoxArmorMateriaSlots.Location = new System.Drawing.Point(341, 188);
             this.groupBoxArmorMateriaSlots.Name = "groupBoxArmorMateriaSlots";
@@ -1647,6 +2457,18 @@
             this.groupBoxArmorMateriaSlots.TabIndex = 23;
             this.groupBoxArmorMateriaSlots.TabStop = false;
             this.groupBoxArmorMateriaSlots.Text = "Materia slots";
+            // 
+            // materiaSlotSelectorArmor
+            // 
+            this.materiaSlotSelectorArmor.BackColor = System.Drawing.Color.LightSlateGray;
+            this.materiaSlotSelectorArmor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.materiaSlotSelectorArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
+            this.materiaSlotSelectorArmor.Location = new System.Drawing.Point(6, 22);
+            this.materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
+            this.materiaSlotSelectorArmor.SelectedSlot = -1;
+            this.materiaSlotSelectorArmor.Size = new System.Drawing.Size(211, 35);
+            this.materiaSlotSelectorArmor.SlotSelectorType = FF7Scarlet.KernelEditor.Controls.SlotSelectorType.Slots;
+            this.materiaSlotSelectorArmor.TabIndex = 4;
             // 
             // labelArmorMateriaGrowth
             // 
@@ -1656,18 +2478,6 @@
             this.labelArmorMateriaGrowth.Size = new System.Drawing.Size(49, 15);
             this.labelArmorMateriaGrowth.TabIndex = 1;
             this.labelArmorMateriaGrowth.Text = "Growth:";
-            // 
-            // materiaSlotSelectorArmor
-            // 
-            this.materiaSlotSelectorArmor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.materiaSlotSelectorArmor.BackColor = System.Drawing.Color.LightSlateGray;
-            this.materiaSlotSelectorArmor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.materiaSlotSelectorArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
-            this.materiaSlotSelectorArmor.Location = new System.Drawing.Point(6, 22);
-            this.materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
-            this.materiaSlotSelectorArmor.Size = new System.Drawing.Size(211, 35);
-            this.materiaSlotSelectorArmor.TabIndex = 0;
             // 
             // comboBoxArmorMateriaGrowth
             // 
@@ -2265,12 +3075,42 @@
             this.groupBoxAttackSpecialActions.ResumeLayout(false);
             this.groupBoxAttackSpecialActions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericAttackStatusChangeChance)).EndInit();
+            this.tabPageInitData.ResumeLayout(false);
+            this.tabControlInitialData.ResumeLayout(false);
+            this.tabPageInitCharacterStats.ResumeLayout(false);
+            this.tabPageInitCharacterStats.PerformLayout();
+            this.groupBoxCharacterMP.ResumeLayout(false);
+            this.groupBoxCharacterMP.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterMaxMP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterBaseMP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterCurrMP)).EndInit();
+            this.groupBoxCharacterHP.ResumeLayout(false);
+            this.groupBoxCharacterHP.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterMaxHP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterBaseHP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterCurrHP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterEXPtoNext)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterKillCount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterCurrentEXP)).EndInit();
+            this.groupBoxCharacterArmor.ResumeLayout(false);
+            this.groupBoxCharacterWeapon.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterLevel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCharacterID)).EndInit();
+            this.tabPageInitInventory.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBoxInitMateria.ResumeLayout(false);
+            this.groupBoxInitMateria.PerformLayout();
+            this.groupBoxInitInventory.ResumeLayout(false);
+            this.groupBoxInitInventory.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericInitItemAmount)).EndInit();
             this.tabPageItemData.ResumeLayout(false);
             this.tabControlItems.ResumeLayout(false);
             this.tabPageItems1.ResumeLayout(false);
             this.tabPageItems1.PerformLayout();
             this.tabPageItems2.ResumeLayout(false);
             this.tabPageItems2.PerformLayout();
+            this.tabPageItems3.ResumeLayout(false);
             this.tabPageWeaponData.ResumeLayout(false);
             this.tabControlWeapons.ResumeLayout(false);
             this.tabPageWeapon1.ResumeLayout(false);
@@ -2372,12 +3212,10 @@
         private ComboBox comboBoxMateriaElement;
         private Label labelMateriaElement;
         private GroupBox groupBoxWeaponMateriaSlots;
-        private Controls.MateriaSlotSelectorControl materiaSlotSelectorWeapon;
         private Label labelWeaponMateriaGrowth;
         private ComboBox comboBoxWeaponMateriaGrowth;
         private GroupBox groupBoxArmorMateriaSlots;
         private Label labelArmorMateriaGrowth;
-        private Controls.MateriaSlotSelectorControl materiaSlotSelectorArmor;
         private ComboBox comboBoxArmorMateriaGrowth;
         private ComboBox comboBoxItemCamMovementID;
         private Label labelItemCamMovementID;
@@ -2487,5 +3325,70 @@
         private GroupBox groupBoxAttackSpecialActions;
         private CheckBox checkBoxAttackSyncWithSceneBin;
         private Button buttonAttackSyncAll;
+        private TabPage tabPageItems3;
+        private Shared.SpecialAttackFlagsControl specialAttackFlagsControlItem;
+        private TabControl tabControlInitialData;
+        private TabPage tabPageInitCharacterStats;
+        private TabPage tabPageInitInventory;
+        private ListBox listBoxInitCharacters;
+        private TextBox textBoxCharacterName;
+        private Label labelCharacterName;
+        private NumericUpDown numericCharacterID;
+        private Label labelCharacterID;
+        private CheckBox checkBoxCharacterBackRow;
+        private NumericUpDown numericCharacterLevel;
+        private Label labelCharacterLevel;
+        private ComboBox comboBoxCharacterAccessory;
+        private Label labelCharacterAccessory;
+        private ComboBox comboBoxCharacterArmor;
+        private ComboBox comboBoxCharacterWeapon;
+        private Controls.CharacterStatsControl characterStatsControl;
+        private GroupBox groupBoxInitInventory;
+        private NumericUpDown numericInitItemAmount;
+        private Label labelInitItemAmount;
+        private ComboBox comboBoxInitItem;
+        private Label labelInitItem;
+        private ListBox listBoxInitInventory;
+        private GroupBox groupBoxInitMateria;
+        private ListBox listBoxInitMateria;
+        private Button buttonInitMateriaEdit;
+        private ComboBox comboBoxInitMateria;
+        private Label labelInitMateria;
+        private Controls.MateriaSlotSelectorControl materiaSlotSelectorWeapon;
+        private Controls.MateriaSlotSelectorControl materiaSlotSelectorArmor;
+        private GroupBox groupBoxCharacterArmor;
+        private Controls.MateriaSlotSelectorControl materiaSlotSelectorCharacterArmor;
+        private GroupBox groupBoxCharacterWeapon;
+        private Controls.MateriaSlotSelectorControl materiaSlotSelectorCharacterWeapon;
+        private Button buttonCharacterArmorChangeMateria;
+        private Button buttonCharacterWeaponChangeMateria;
+        private NumericUpDown numericCharacterCurrentEXP;
+        private Label labelCharacterCurrentEXP;
+        private Controls.CharacterLimitControl characterLimitControl;
+        private ComboBox comboBoxCharacterFlags;
+        private Label labelCharacterFlags;
+        private NumericUpDown numericCharacterKillCount;
+        private Label labelCharacterKillCount;
+        private NumericUpDown numericCharacterEXPtoNext;
+        private Label labelCharacterEXPtoNext;
+        private GroupBox groupBoxCharacterMP;
+        private NumericUpDown numericCharacterMaxMP;
+        private Label labelCharacterMaxMP;
+        private NumericUpDown numericCharacterBaseMP;
+        private Label labelCharacterBaseMP;
+        private NumericUpDown numericCharacterCurrMP;
+        private Label labelCharacterCurrMP;
+        private GroupBox groupBoxCharacterHP;
+        private NumericUpDown numericCharacterMaxHP;
+        private Label labelCharacterMaxHP;
+        private NumericUpDown numericCharacterBaseHP;
+        private Label labelCharacterBaseHP;
+        private NumericUpDown numericCharacterCurrHP;
+        private Label labelCharacterCurrHP;
+        private GroupBox groupBox1;
+        private Button buttonInitMateriaStolenEdit;
+        private ComboBox comboBoxInitMateriaStolen;
+        private Label labelInitMateriaStolen;
+        private ListBox listBoxInitMateriaStolen;
     }
 }

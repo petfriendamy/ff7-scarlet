@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using FF7Scarlet.AIEditor;
+using FF7Scarlet.KernelEditor;
 
 namespace FF7Scarlet
 {
@@ -47,7 +48,7 @@ namespace FF7Scarlet
                 }
 
                 var text = new List<byte> { };
-                var nameList = Enum.GetNames<Characters>();
+                var nameList = Enum.GetNames<CharacterNames>();
                 for (i = 0; i < length; ++i)
                 {
                     if (i < str.Length)
@@ -124,7 +125,7 @@ namespace FF7Scarlet
                     {
                         int charID = data[i + 2];
                         i += 2;
-                        var name = Enum.GetName((Characters)charID);
+                        var name = Enum.GetName((CharacterNames)charID);
                         if (name == null) { text.AddRange("{UNKNOWN}"); }
                         else { text.AddRange("{" + name.ToUpper() + "}"); }
                     }
