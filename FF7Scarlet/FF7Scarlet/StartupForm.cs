@@ -6,7 +6,7 @@
         {
             InitializeComponent();
             DataManager.SetStartupForm(this);
-            toolTip1.SetToolTip(groupBoxKernel2, "kernel2 cannot be loaded without kernel.bin.");
+            toolTipHoverText.SetToolTip(groupBoxKernel2, "kernel2 cannot be loaded without kernel.bin.");
         }
 
         private void UpdateTextBoxes()
@@ -18,7 +18,7 @@
             {
                 textBoxKernel2.Enabled = true;
                 buttonKernel2Browse.Enabled = true;
-                toolTip1.RemoveAll();
+                toolTipHoverText.RemoveAll();
             }
 
             if (DataManager.KernelFileIsLoaded)

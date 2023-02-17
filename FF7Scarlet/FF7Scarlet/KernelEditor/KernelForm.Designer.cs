@@ -89,6 +89,7 @@
             this.labelBattleText = new System.Windows.Forms.Label();
             this.tabPageBattleRNGTable = new System.Windows.Forms.TabPage();
             this.rngTableControl = new FF7Scarlet.KernelEditor.Controls.RNGTableControl();
+            this.tabPageMagicOrder = new System.Windows.Forms.TabPage();
             this.tabPageCharacters = new System.Windows.Forms.TabPage();
             this.tabControlCharacters = new System.Windows.Forms.TabControl();
             this.tabPageInitCharacterStats = new System.Windows.Forms.TabPage();
@@ -946,6 +947,7 @@
             // 
             this.tabControlBattleData.Controls.Add(this.tabPageBattleText);
             this.tabControlBattleData.Controls.Add(this.tabPageBattleRNGTable);
+            this.tabControlBattleData.Controls.Add(this.tabPageMagicOrder);
             this.tabControlBattleData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlBattleData.Location = new System.Drawing.Point(0, 0);
             this.tabControlBattleData.Name = "tabControlBattleData";
@@ -1020,6 +1022,15 @@
             this.rngTableControl.Name = "rngTableControl";
             this.rngTableControl.Size = new System.Drawing.Size(757, 340);
             this.rngTableControl.TabIndex = 0;
+            // 
+            // tabPageMagicOrder
+            // 
+            this.tabPageMagicOrder.Location = new System.Drawing.Point(4, 24);
+            this.tabPageMagicOrder.Name = "tabPageMagicOrder";
+            this.tabPageMagicOrder.Size = new System.Drawing.Size(768, 505);
+            this.tabPageMagicOrder.TabIndex = 2;
+            this.tabPageMagicOrder.Text = "Magic Order";
+            this.tabPageMagicOrder.UseVisualStyleBackColor = true;
             // 
             // tabPageCharacters
             // 
@@ -3637,5 +3648,6 @@
         private TabPage tabPageBattleText;
         private TabPage tabPageBattleRNGTable;
         private Controls.RNGTableControl rngTableControl;
+        private TabPage tabPageMagicOrder;
     }
 }

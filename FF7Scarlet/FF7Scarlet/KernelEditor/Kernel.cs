@@ -6,7 +6,6 @@ using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Materias;
 using Shojy.FF7.Elena.Sections;
-using System.Windows.Forms.Design;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -81,11 +80,7 @@ namespace FF7Scarlet.KernelEditor
 
         public void UpdateLookupTable(byte[] table)
         {
-            if (table.Length != 64)
-            {
-                throw new ArgumentException("Incorrect table length.");
-            }
-            Array.Copy(table, 0, KernelData[KernelSection.BattleAndGrowthData], 0xF1C, 64);
+            BattleAndGrowthData.UpdateLookupTable(table);
         }
 
         public int GetCount(KernelSection section)

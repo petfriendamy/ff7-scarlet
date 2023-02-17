@@ -40,7 +40,6 @@ namespace FF7Scarlet.AIEditor
             this.labelScenes = new System.Windows.Forms.Label();
             this.buttonExportMulti = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.scriptControl = new FF7Scarlet.AIEditor.ScriptControl();
             this.groupBoxScripts.SuspendLayout();
             this.groupBoxEnemies.SuspendLayout();
             this.SuspendLayout();
@@ -180,24 +179,11 @@ namespace FF7Scarlet.AIEditor
             this.progressBar1.Size = new System.Drawing.Size(728, 27);
             this.progressBar1.TabIndex = 9;
             // 
-            // scriptControl
-            // 
-            this.scriptControl.AIContainer = null;
-            this.scriptControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.scriptControl.Location = new System.Drawing.Point(192, 46);
-            this.scriptControl.Name = "scriptControl";
-            this.scriptControl.SelectedScriptIndex = -1;
-            this.scriptControl.Size = new System.Drawing.Size(524, 453);
-            this.scriptControl.TabIndex = 10;
-            // 
             // BattleAIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(728, 532);
-            this.Controls.Add(this.scriptControl);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.buttonExportMulti);
             this.Controls.Add(this.labelScenes);

@@ -34,10 +34,7 @@ namespace FF7Scarlet.AIEditor
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
-            this.parameterControl2 = new FF7Scarlet.AIEditor.ParameterControl();
-            this.parameterControl1 = new FF7Scarlet.AIEditor.ParameterControl();
             this.panelButtons.SuspendLayout();
-            this.panelMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelButtons
@@ -45,17 +42,19 @@ namespace FF7Scarlet.AIEditor
             this.panelButtons.Controls.Add(this.buttonOK);
             this.panelButtons.Controls.Add(this.buttonCancel);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 148);
+            this.panelButtons.Location = new System.Drawing.Point(0, 171);
+            this.panelButtons.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(464, 40);
+            this.panelButtons.Size = new System.Drawing.Size(541, 46);
             this.panelButtons.TabIndex = 7;
             // 
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(377, 8);
+            this.buttonOK.Location = new System.Drawing.Point(440, 9);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(75, 23);
+            this.buttonOK.Size = new System.Drawing.Size(88, 27);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -65,9 +64,10 @@ namespace FF7Scarlet.AIEditor
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(296, 8);
+            this.buttonCancel.Location = new System.Drawing.Point(345, 9);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.Size = new System.Drawing.Size(88, 27);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -75,46 +75,27 @@ namespace FF7Scarlet.AIEditor
             // panelMain
             // 
             this.panelMain.AutoScroll = true;
-            this.panelMain.Controls.Add(this.parameterControl2);
-            this.panelMain.Controls.Add(this.parameterControl1);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
+            this.panelMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(464, 148);
+            this.panelMain.Size = new System.Drawing.Size(541, 171);
             this.panelMain.TabIndex = 10;
-            // 
-            // parameterControl2
-            // 
-            this.parameterControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.parameterControl2.Location = new System.Drawing.Point(6, 40);
-            this.parameterControl2.Name = "parameterControl2";
-            this.parameterControl2.Size = new System.Drawing.Size(432, 27);
-            this.parameterControl2.TabIndex = 18;
-            // 
-            // parameterControl1
-            // 
-            this.parameterControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.parameterControl1.Location = new System.Drawing.Point(6, 7);
-            this.parameterControl1.Name = "parameterControl1";
-            this.parameterControl1.Size = new System.Drawing.Size(432, 27);
-            this.parameterControl1.TabIndex = 17;
             // 
             // ParameterForm
             // 
             this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(464, 188);
+            this.ClientSize = new System.Drawing.Size(541, 217);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelButtons);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "ParameterForm";
             this.Text = "Add/edit parameter";
             this.panelButtons.ResumeLayout(false);
-            this.panelMain.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

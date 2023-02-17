@@ -1,4 +1,6 @@
-﻿namespace FF7Scarlet.KernelEditor
+﻿using Shojy.FF7.Elena;
+
+namespace FF7Scarlet.KernelEditor
 {
     public class BattleAndGrowthData
     {
@@ -131,6 +133,18 @@
                 }
             }
             ScriptsLoaded = true;
+        }
+
+        public void UpdateLookupTable(byte[] table)
+        {
+            if (table.Length != 64)
+            {
+                throw new ArgumentException("Incorrect table length.");
+            }
+            for (int i = 0; i < 64; ++i)
+            {
+                sceneLookupTable[i] = table[i];
+            }
         }
     }
 }
