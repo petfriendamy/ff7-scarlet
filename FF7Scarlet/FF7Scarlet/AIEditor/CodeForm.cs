@@ -47,39 +47,39 @@ namespace FF7Scarlet.AIEditor
 
             if (command != null)
             {
-                var cb = Code as CodeBlock;
-                if (cb != null)
+                comboBoxCommands.SelectedIndex = CommandInfo.COMMAND_LIST.ToList().IndexOf(command);
+                var ptype = command.ParameterType1;
+                var param = Code.GetParameter();
+                for (int i = 1; i <= 2; ++i)
                 {
-                    comboBoxCommands.SelectedIndex = CommandInfo.COMMAND_LIST.ToList().IndexOf(command);
-                    var ptype = command.ParameterType1;
-                    var param = Code.GetParameter();
-                    for (int i = 1; i <= 2; ++i)
+                    switch (ptype)
                     {
-                        switch (ptype)
-                        {
-                            case ParameterTypes.None:
-                                break;
-                            case ParameterTypes.Debug:
-                                popCount = Code.GetPopCount();
-                                break;
-                            case ParameterTypes.String:
-                                strText = param;
-                                break;
-                            case ParameterTypes.Label:
-                                if (param != null)
-                                {
-                                    label = param.ToInt();
-                                }
-                                break;
-                            default:
+                        case ParameterTypes.None:
+                            break;
+                        case ParameterTypes.Debug:
+                            popCount = Code.GetPopCount();
+                            break;
+                        case ParameterTypes.String:
+                            strText = param;
+                            break;
+                        case ParameterTypes.Label:
+                            if (param != null)
+                            {
+                                label = param.ToInt();
+                            }
+                            break;
+                        default:
+                            var cb = Code as CodeBlock;
+                            if (cb != null)
+                            {
                                 if (i == 1) { param1 = cb.GetCodeAtPosition(0); }
                                 else { param2 = cb.GetCodeAtPosition(1); }
-                                break;
-                        }
-                        ptype = command.ParameterType2;
+                            }
+                            break;
                     }
-                    UpdateCommandParameters();
+                    ptype = command.ParameterType2;
                 }
+                UpdateCommandParameters();
             }
             else if (Code is CodeLine)
             {
@@ -396,7 +396,7 @@ namespace FF7Scarlet.AIEditor
                     {
                         if (command != null && param1 != null)
                         {
-                            if (command.OpcodeInfo.PopCount > 0)
+                            if (command.OpcodeInfo?.PopCount > 0)
                             {
                                 FFText? p = null;
                                 if (command.ParameterType2 == ParameterTypes.Label)

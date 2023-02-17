@@ -8,7 +8,6 @@ namespace FF7Scarlet.AIEditor
         private AIContainer? aiContainer;
         private int selectedScriptIndex = -1;
         private List<Code>? clipboard;
-        //private bool loading = false;
 
         public event EventHandler? DataChanged, ScriptAdded, ScriptRemoved;
 
