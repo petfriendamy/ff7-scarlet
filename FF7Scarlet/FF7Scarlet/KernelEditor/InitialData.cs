@@ -8,9 +8,8 @@ namespace FF7Scarlet.KernelEditor
 {
     public class InitialData
     {
-        public const int CHAR_COUNT = 9, INVENTORY_SIZE = 320, MATERIA_INVENTORY_SIZE = 200,
-            STOLEN_MATERIA_COUNT = 48;
-        private readonly Character[] characters = new Character[CHAR_COUNT];
+        public const int INVENTORY_SIZE = 320, MATERIA_INVENTORY_SIZE = 200, STOLEN_MATERIA_COUNT = 48;
+        private readonly Character[] characters = new Character[Character.PLAYABLE_CHARACTER_COUNT];
         private readonly InventoryItem[] inventoryItems = new InventoryItem[INVENTORY_SIZE];
         private readonly InventoryMateria[] inventoryMateria = new InventoryMateria[MATERIA_INVENTORY_SIZE];
         private readonly InventoryMateria[] stolenMateria = new InventoryMateria[STOLEN_MATERIA_COUNT];
@@ -41,8 +40,7 @@ namespace FF7Scarlet.KernelEditor
             using (var ms = new MemoryStream(data))
             using (var reader = new BinaryReader(ms))
             {
-
-                for (i = 0; i < CHAR_COUNT; ++i)
+                for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
                 {
                     Characters[i] = new Character(reader.ReadBytes(132));
                 }

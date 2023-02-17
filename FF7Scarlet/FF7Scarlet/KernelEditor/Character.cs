@@ -8,7 +8,7 @@ namespace FF7Scarlet.KernelEditor
 {
     public enum CharacterNames
     {
-        Cloud, Barret, Tifa, Aerith, RedXIII, Yuffie, CaitSith, Vincent, Cid
+        Cloud, Barret, Tifa, Aerith, RedXIII, Yuffie, CaitSith, Vincent, Cid, YoungCloud, Sephiroth
     }
 
     public enum CharacterFlags
@@ -32,6 +32,8 @@ namespace FF7Scarlet.KernelEditor
 
     public class Character
     {
+        public const int CHARACTER_COUNT = 11, PLAYABLE_CHARACTER_COUNT = 9;
+
         private readonly InventoryMateria[] weaponMateria = new InventoryMateria[8];
         private readonly InventoryMateria[] armorMateria = new InventoryMateria[8];
 

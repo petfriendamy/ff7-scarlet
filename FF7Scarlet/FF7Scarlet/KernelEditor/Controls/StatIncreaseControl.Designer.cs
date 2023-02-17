@@ -163,6 +163,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBoxMain);
+            this.DoubleBuffered = true;
             this.Name = "StatIncreaseControl";
             this.Size = new System.Drawing.Size(250, 142);
             this.groupBoxMain.ResumeLayout(false);

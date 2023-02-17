@@ -30,6 +30,7 @@ namespace FF7Scarlet.KernelEditor
         public readonly MenuCommand[] Commands;
         public readonly Attack[] Attacks;
         public InitialData InitialData { get; }
+        public BattleAndGrowthData BattleAndGrowthData { get; }
 
         public Kernel(string file) : base(file, KernelType.KernelBin)
         {
@@ -52,9 +53,6 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
 
-            //get initial data
-            InitialData = new InitialData(GetSectionRawData(KernelSection.InitData));
-
             //get attack data
             Attacks = new Attack[ATTACK_COUNT];
             using (var ms = new MemoryStream(GetSectionRawData(KernelSection.AttackData)))
@@ -66,6 +64,12 @@ namespace FF7Scarlet.KernelEditor
                         reader.ReadBytes(Attack.BLOCK_SIZE));
                 }
             }
+
+            //get battle and growth data
+            BattleAndGrowthData = new BattleAndGrowthData(GetSectionRawData(KernelSection.BattleAndGrowthData));
+
+            //get initial data
+            InitialData = new InitialData(GetSectionRawData(KernelSection.InitData));
         }
 
         public byte[] GetLookupTable()
@@ -87,6 +91,7 @@ namespace FF7Scarlet.KernelEditor
         public int GetCount(KernelSection section)
         {
             if (section == KernelSection.AttackData) { return ATTACK_COUNT; }
+            else if (section == KernelSection.BattleText) { return BattleText.Strings.Length; }
             else
             {
                 var temp = GetAssociatedNames(section);

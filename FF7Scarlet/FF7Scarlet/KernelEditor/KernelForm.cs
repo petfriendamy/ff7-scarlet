@@ -1,10 +1,11 @@
-﻿using Shojy.FF7.Elena;
+﻿using System.Collections.ObjectModel;
+using Shojy.FF7.Elena;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Materias;
 using FF7Scarlet.KernelEditor.Controls;
+using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
-using System.Collections.ObjectModel;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -13,6 +14,13 @@ namespace FF7Scarlet.KernelEditor
         #region Properties
 
         private const string WINDOW_TITLE = "Scarlet - Kernel Editor";
+        private readonly string[] SCRIPT_LIST = new string[Script.SCRIPT_COUNT]
+        {
+            "Pre-Battle", "Main", "General Counter", "Death Counter", "Physical Counter",
+            "Magic Counter", "Ally Death", "Post-Attack", "Custom Event 1",
+            "Custom Event 2", "Custom Event 3", "Custom Event 4", "Custom Event 5",
+            "Custom Event 6", "Custom Event 7", "Post-Battle"
+        };
         private readonly Kernel kernel;
         private const int SUMMON_OFFSET = 56;
         private List<ushort> syncedAttackIDs = new();
@@ -50,6 +58,9 @@ namespace FF7Scarlet.KernelEditor
             {
                 if (DataManager.AttackIsSynced(a.ID)) { syncedAttackIDs.Add(a.ID); }
             }
+            scriptControlCharacterAI.DataChanged += new EventHandler(scriptControlCharacterAI_DataChanged);
+            scriptControlCharacterAI.ScriptAdded += new EventHandler(scriptControlCharacterAI_ScriptAddedOrRemoved);
+            scriptControlCharacterAI.ScriptRemoved += new EventHandler(scriptControlCharacterAI_ScriptAddedOrRemoved);
         }
 
         #endregion
@@ -586,6 +597,52 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void UpdateCharacterAIScripts(int selectedChar)
+        {
+            if (selectedChar >= 0 && selectedChar < BattleAndGrowthData.AI_BLOCK_COUNT)
+            {
+                try
+                {
+                    if (!kernel.BattleAndGrowthData.ScriptsLoaded)
+                    {
+                        kernel.BattleAndGrowthData.ParseAIScripts();
+                        groupBoxCharacterScripts.Enabled = true;
+                        scriptControlCharacterAI.Enabled = true;
+                    }
+                    var chara = kernel.BattleAndGrowthData.CharacterAI[selectedChar];
+                    for (int i = 0; i < Script.SCRIPT_COUNT; ++i)
+                    {
+                        listBoxCharacterScripts.Items[i] = SCRIPT_LIST[i];
+                        if (chara != null)
+                        {
+                            var script = chara.GetScriptAtPosition(i);
+                            if (script != null && !script.IsEmpty)
+                            {
+                                listBoxCharacterScripts.Items[i] += "*";
+                            }
+                        }
+                    }
+                    //select first script
+                    if (listBoxCharacterScripts.SelectedIndex == -1)
+                    {
+                        listBoxCharacterScripts.SelectedIndex = 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error in A.I. data: {ex.Message}", "Error", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void DisplayScript(int charID, int scriptID)
+        {
+            var chara = kernel.BattleAndGrowthData.CharacterAI[charID];
+            scriptControlCharacterAI.AIContainer = chara;
+            scriptControlCharacterAI.SelectedScriptIndex = scriptID;
+        }
+
         private void SetInventoryItem()
         {
             int selectedItem = listBoxInitInventory.SelectedIndex,
@@ -655,8 +712,8 @@ namespace FF7Scarlet.KernelEditor
                 loading = true;
 
                 InventoryMateria materia;
-                if (isStolen) { materia = kernel.InitialData.StolenMateria[newMateriaIndex]; }
-                else { materia = kernel.InitialData.InventoryMateria[newMateriaIndex]; }
+                if (isStolen) { materia = kernel.InitialData.StolenMateria[selectedMateria]; }
+                else { materia = kernel.InitialData.InventoryMateria[selectedMateria]; }
 
                 if (newMateriaIndex == 0) //no materia
                 {
@@ -703,54 +760,6 @@ namespace FF7Scarlet.KernelEditor
         private void KernelForm_Load(object sender, EventArgs e)
         {
             //associate controls with kernel data
-            //initial data
-            foreach (var c in kernel.InitialData.Characters)
-            {
-                var n = c.Name.ToString();
-                if (n == null) { listBoxInitCharacters.Items.Add(""); }
-                else { listBoxInitCharacters.Items.Add(n); }
-            }
-            LoadItemLists();
-            foreach (var f in Enum.GetNames<CharacterFlags>())
-            {
-                comboBoxCharacterFlags.Items.Add(f);
-            }
-            foreach (var inv in kernel.InitialData.InventoryItems)
-            {
-                if (inv.Type == ItemType.None)
-                {
-                    listBoxInitInventory.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv)} x{inv.Amount}");
-                }
-            }
-            foreach (var invm in kernel.InitialData.InventoryMateria)
-            {
-                var m = kernel.GetMateriaByID(invm.Index);
-                if (m == null)
-                {
-                    listBoxInitMateria.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitMateria.Items.Add(m.Name);
-                }
-            }
-            foreach (var sm in kernel.InitialData.StolenMateria)
-            {
-                var m = kernel.GetMateriaByID(sm.Index);
-                if (m == null)
-                {
-                    listBoxInitMateriaStolen.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitMateriaStolen.Items.Add(m.Name);
-                }
-            }
-
             //command data
             tabPages.Add(KernelSection.CommandData, tabPageCommandData);
             listBoxes.Add(KernelSection.CommandData, listBoxCommands);
@@ -851,12 +860,89 @@ namespace FF7Scarlet.KernelEditor
                     }
                 }
             }
+            foreach (var t in kernel.BattleText.Strings)
+            {
+                listBoxBattleText.Items.Add(t);
+            }
 
             //initial cursor command
             comboBoxCommandInitialCursorAction.Items.Add("None");
             foreach (var c in InitialCursorActionInfo.ACTION_LIST)
             {
                 comboBoxCommandInitialCursorAction.Items.Add(c.Description);
+            }
+
+            //character data
+            for (int i = 0; i < Character.CHARACTER_COUNT; ++i)
+            {
+                var name = Enum.GetName((CharacterNames)i);
+                if (name != null)
+                {
+                    var parsedName = StringParser.AddSpace(name);
+                    listBoxCharacterAI.Items.Add(parsedName);
+
+                    //playable characters
+                    if (i < Character.PLAYABLE_CHARACTER_COUNT)
+                    {
+                        listBoxCharacterGrowth.Items.Add(parsedName);
+
+                        if (i == 6 || i == 7) //Cait/Vincent
+                        {
+                            var name2 = Enum.GetName((CharacterNames)(i + 3));
+                            if (name2 != null)
+                            {
+                                parsedName += $"/{StringParser.AddSpace(name2)}";
+                            }
+                        }
+                        listBoxInitCharacters.Items.Add(parsedName);
+                    }
+                }
+            }
+            listBoxCharacterAI.Items.Add("(unknown)");
+            LoadItemLists();
+            foreach (var f in Enum.GetNames<CharacterFlags>())
+            {
+                comboBoxCharacterFlags.Items.Add(f);
+            }
+
+            //battle data
+            rngTableControl.SetValues(kernel.BattleAndGrowthData.RNGTable);
+
+            //inventory
+            foreach (var inv in kernel.InitialData.InventoryItems)
+            {
+                if (inv.Type == ItemType.None)
+                {
+                    listBoxInitInventory.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv)} x{inv.Amount}");
+                }
+            }
+            foreach (var invm in kernel.InitialData.InventoryMateria)
+            {
+                var m = kernel.GetMateriaByID(invm.Index);
+                if (m == null)
+                {
+                    listBoxInitMateria.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitMateria.Items.Add(m.Name);
+                }
+            }
+            foreach (var sm in kernel.InitialData.StolenMateria)
+            {
+                var m = kernel.GetMateriaByID(sm.Index);
+                if (m == null)
+                {
+                    listBoxInitMateriaStolen.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitMateriaStolen.Items.Add(m.Name);
+                }
             }
 
             //element modifiers
@@ -955,10 +1041,13 @@ namespace FF7Scarlet.KernelEditor
                 slot = materiaSlotSelectorCharacterWeapon.SelectedSlot;
             if (slot != -1)
             {
-                var mat = kernel.GetMateriaByID(kernel.InitialData.Characters[chara].WeaponMateria[slot].Index);
-                if (mat != null)
+                var mat = kernel.InitialData.Characters[chara].WeaponMateria[slot].Copy();
+                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
                 {
-                    MessageBox.Show(mat.Name);
+                    if (edit.ShowDialog() == DialogResult.OK)
+                    {
+                        kernel.InitialData.Characters[chara].WeaponMateria[slot] = mat;
+                    }
                 }
             }
         }
@@ -969,12 +1058,42 @@ namespace FF7Scarlet.KernelEditor
                 slot = materiaSlotSelectorCharacterArmor.SelectedSlot;
             if (slot != -1)
             {
-                var mat = kernel.GetMateriaByID(kernel.InitialData.Characters[chara].ArmorMateria[slot].Index);
-                if (mat != null)
+                var mat = kernel.InitialData.Characters[chara].ArmorMateria[slot].Copy();
+                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
                 {
-                    MessageBox.Show(mat.Name);
+                    if (edit.ShowDialog() == DialogResult.OK)
+                    {
+                        kernel.InitialData.Characters[chara].ArmorMateria[slot] = mat;
+                    }
                 }
             }
+        }
+
+        private void listBoxCharacterAI_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                UpdateCharacterAIScripts(listBoxCharacterAI.SelectedIndex);
+            }
+        }
+
+        private void listBoxCharacterScripts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int selectedChar = listBoxCharacterAI.SelectedIndex;
+            if (!loading && selectedChar >= 0 && selectedChar < BattleAndGrowthData.AI_BLOCK_COUNT)
+            {
+                DisplayScript(selectedChar, listBoxCharacterScripts.SelectedIndex);
+            }
+        }
+
+        private void scriptControlCharacterAI_DataChanged(object? sender, EventArgs e)
+        {
+            SetUnsaved(true);
+        }
+
+        private void scriptControlCharacterAI_ScriptAddedOrRemoved(object? sender, EventArgs e)
+        {
+            UpdateCharacterAIScripts(listBoxCharacterScripts.SelectedIndex);
         }
 
         private void listBoxInitInventory_SelectedIndexChanged(object sender, EventArgs e)
@@ -1017,6 +1136,22 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void buttonInitMateriaEdit_Click(object sender, EventArgs e)
+        {
+            int slot = listBoxInitMateria.SelectedIndex;
+            if (slot != -1)
+            {
+                var mat = kernel.InitialData.InventoryMateria[slot].Copy();
+                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
+                {
+                    if (edit.ShowDialog() == DialogResult.OK)
+                    {
+                        kernel.InitialData.InventoryMateria[slot] = mat;
+                    }
+                }
+            }
+        }
+
         private void listBoxInitMateriaStolen_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!loading)
@@ -1030,6 +1165,22 @@ namespace FF7Scarlet.KernelEditor
             if (!loading)
             {
                 SetInitMateria(true);
+            }
+        }
+
+        private void buttonInitMateriaStolenEdit_Click(object sender, EventArgs e)
+        {
+            int slot = listBoxInitMateriaStolen.SelectedIndex;
+            if (slot != -1)
+            {
+                var mat = kernel.InitialData.StolenMateria[slot].Copy();
+                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
+                {
+                    if (edit.ShowDialog() == DialogResult.OK)
+                    {
+                        kernel.InitialData.StolenMateria[slot] = mat;
+                    }
+                }
             }
         }
 
@@ -1094,43 +1245,81 @@ namespace FF7Scarlet.KernelEditor
 
         private void listBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateTabWithSelected(KernelSection.CommandData);
+            if (!loading)
+            {
+                PopulateTabWithSelected(KernelSection.CommandData);
+            }
         }
 
         private void listBoxAttacks_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateTabWithSelected(KernelSection.AttackData);
+            if (!loading)
+            {
+                PopulateTabWithSelected(KernelSection.AttackData);
+            }
         }
 
         private void listBoxItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateTabWithSelected(KernelSection.ItemData);
+            if (!loading)
+            {
+                PopulateTabWithSelected(KernelSection.ItemData);
+            }
             
         }
 
         private void listBoxWeapons_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateTabWithSelected(KernelSection.WeaponData);
+            if (!loading)
+            {
+                PopulateTabWithSelected(KernelSection.WeaponData);
+            }
         }
 
         private void listBoxArmor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateTabWithSelected(KernelSection.ArmorData);
+            if (!loading)
+            {
+                PopulateTabWithSelected(KernelSection.ArmorData);
+            }
         }
 
         private void listBoxAccessories_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateTabWithSelected(KernelSection.AccessoryData);
+            if (!loading)
+            {
+                PopulateTabWithSelected(KernelSection.AccessoryData);
+            }
         }
 
         private void listBoxMateria_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateTabWithSelected(KernelSection.MateriaData);
+            if (!loading)
+            {
+                PopulateTabWithSelected(KernelSection.MateriaData);
+            }
         }
 
         private void listBoxKeyItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateTabWithSelected(KernelSection.KeyItemNames);
+            if (!loading)
+            {
+                PopulateTabWithSelected(KernelSection.KeyItemNames);
+            }
+        }
+
+        private void listBoxBattleText_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = listBoxBattleText.SelectedIndex;
+                if (i >= 0 && i < kernel.GetCount(KernelSection.BattleText))
+                {
+                    labelBattleText.Enabled = true;
+                    textBoxBattleText.Enabled = true;
+                    textBoxBattleText.Text = kernel.BattleText.Strings[i];
+                }
+            }
         }
 
         private void comboBoxWeaponMateriaGrowth_SelectedIndexChanged(object sender, EventArgs e)

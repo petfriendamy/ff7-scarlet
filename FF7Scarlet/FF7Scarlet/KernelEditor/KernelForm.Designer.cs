@@ -82,8 +82,15 @@
             this.elementsControlAttack = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
             this.listBoxAttacks = new System.Windows.Forms.ListBox();
             this.tabPageBattleData = new System.Windows.Forms.TabPage();
-            this.tabPageInitData = new System.Windows.Forms.TabPage();
-            this.tabControlInitialData = new System.Windows.Forms.TabControl();
+            this.tabControlBattleData = new System.Windows.Forms.TabControl();
+            this.tabPageBattleText = new System.Windows.Forms.TabPage();
+            this.listBoxBattleText = new System.Windows.Forms.ListBox();
+            this.textBoxBattleText = new System.Windows.Forms.TextBox();
+            this.labelBattleText = new System.Windows.Forms.Label();
+            this.tabPageBattleRNGTable = new System.Windows.Forms.TabPage();
+            this.rngTableControl = new FF7Scarlet.KernelEditor.Controls.RNGTableControl();
+            this.tabPageCharacters = new System.Windows.Forms.TabPage();
+            this.tabControlCharacters = new System.Windows.Forms.TabControl();
             this.tabPageInitCharacterStats = new System.Windows.Forms.TabPage();
             this.groupBoxCharacterMP = new System.Windows.Forms.GroupBox();
             this.numericCharacterMaxMP = new System.Windows.Forms.NumericUpDown();
@@ -127,8 +134,16 @@
             this.textBoxCharacterName = new System.Windows.Forms.TextBox();
             this.labelCharacterName = new System.Windows.Forms.Label();
             this.listBoxInitCharacters = new System.Windows.Forms.ListBox();
+            this.tabPageCharacterGrowth = new System.Windows.Forms.TabPage();
+            this.listBoxCharacterGrowth = new System.Windows.Forms.ListBox();
+            this.tabPageCharacterAI = new System.Windows.Forms.TabPage();
+            this.scriptControlCharacterAI = new FF7Scarlet.AIEditor.ScriptControl();
+            this.groupBoxCharacterAI = new System.Windows.Forms.GroupBox();
+            this.listBoxCharacterAI = new System.Windows.Forms.ListBox();
+            this.groupBoxCharacterScripts = new System.Windows.Forms.GroupBox();
+            this.listBoxCharacterScripts = new System.Windows.Forms.ListBox();
             this.tabPageInitInventory = new System.Windows.Forms.TabPage();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBoxInitMateriaStolen = new System.Windows.Forms.GroupBox();
             this.listBoxInitMateriaStolen = new System.Windows.Forms.ListBox();
             this.buttonInitMateriaStolenEdit = new System.Windows.Forms.Button();
             this.comboBoxInitMateriaStolen = new System.Windows.Forms.ComboBox();
@@ -279,8 +294,12 @@
             this.tabPageAttacks2.SuspendLayout();
             this.groupBoxAttackSpecialActions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericAttackStatusChangeChance)).BeginInit();
-            this.tabPageInitData.SuspendLayout();
-            this.tabControlInitialData.SuspendLayout();
+            this.tabPageBattleData.SuspendLayout();
+            this.tabControlBattleData.SuspendLayout();
+            this.tabPageBattleText.SuspendLayout();
+            this.tabPageBattleRNGTable.SuspendLayout();
+            this.tabPageCharacters.SuspendLayout();
+            this.tabControlCharacters.SuspendLayout();
             this.tabPageInitCharacterStats.SuspendLayout();
             this.groupBoxCharacterMP.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericCharacterMaxMP)).BeginInit();
@@ -297,8 +316,12 @@
             this.groupBoxCharacterWeapon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericCharacterLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericCharacterID)).BeginInit();
+            this.tabPageCharacterGrowth.SuspendLayout();
+            this.tabPageCharacterAI.SuspendLayout();
+            this.groupBoxCharacterAI.SuspendLayout();
+            this.groupBoxCharacterScripts.SuspendLayout();
             this.tabPageInitInventory.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.groupBoxInitMateriaStolen.SuspendLayout();
             this.groupBoxInitMateria.SuspendLayout();
             this.groupBoxInitInventory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericInitItemAmount)).BeginInit();
@@ -339,7 +362,8 @@
             this.tabControlMain.Controls.Add(this.tabPageCommandData);
             this.tabControlMain.Controls.Add(this.tabPageAttackData);
             this.tabControlMain.Controls.Add(this.tabPageBattleData);
-            this.tabControlMain.Controls.Add(this.tabPageInitData);
+            this.tabControlMain.Controls.Add(this.tabPageCharacters);
+            this.tabControlMain.Controls.Add(this.tabPageInitInventory);
             this.tabControlMain.Controls.Add(this.tabPageItemData);
             this.tabControlMain.Controls.Add(this.tabPageWeaponData);
             this.tabControlMain.Controls.Add(this.tabPageArmorData);
@@ -462,8 +486,6 @@
             // 
             // textBoxCommandName
             // 
-            this.textBoxCommandName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxCommandName.Location = new System.Drawing.Point(191, 31);
             this.textBoxCommandName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxCommandName.Name = "textBoxCommandName";
@@ -912,35 +934,115 @@
             // 
             // tabPageBattleData
             // 
+            this.tabPageBattleData.Controls.Add(this.tabControlBattleData);
             this.tabPageBattleData.Location = new System.Drawing.Point(4, 24);
-            this.tabPageBattleData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageBattleData.Name = "tabPageBattleData";
             this.tabPageBattleData.Size = new System.Drawing.Size(776, 533);
-            this.tabPageBattleData.TabIndex = 2;
-            this.tabPageBattleData.Text = "Battle/Growth";
+            this.tabPageBattleData.TabIndex = 10;
+            this.tabPageBattleData.Text = "Battle Data";
             this.tabPageBattleData.UseVisualStyleBackColor = true;
             // 
-            // tabPageInitData
+            // tabControlBattleData
             // 
-            this.tabPageInitData.Controls.Add(this.tabControlInitialData);
-            this.tabPageInitData.Location = new System.Drawing.Point(4, 24);
-            this.tabPageInitData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPageInitData.Name = "tabPageInitData";
-            this.tabPageInitData.Size = new System.Drawing.Size(776, 533);
-            this.tabPageInitData.TabIndex = 3;
-            this.tabPageInitData.Text = "Initial Data";
-            this.tabPageInitData.UseVisualStyleBackColor = true;
+            this.tabControlBattleData.Controls.Add(this.tabPageBattleText);
+            this.tabControlBattleData.Controls.Add(this.tabPageBattleRNGTable);
+            this.tabControlBattleData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlBattleData.Location = new System.Drawing.Point(0, 0);
+            this.tabControlBattleData.Name = "tabControlBattleData";
+            this.tabControlBattleData.SelectedIndex = 0;
+            this.tabControlBattleData.Size = new System.Drawing.Size(776, 533);
+            this.tabControlBattleData.TabIndex = 11;
             // 
-            // tabControlInitialData
+            // tabPageBattleText
             // 
-            this.tabControlInitialData.Controls.Add(this.tabPageInitCharacterStats);
-            this.tabControlInitialData.Controls.Add(this.tabPageInitInventory);
-            this.tabControlInitialData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControlInitialData.Location = new System.Drawing.Point(0, 0);
-            this.tabControlInitialData.Name = "tabControlInitialData";
-            this.tabControlInitialData.SelectedIndex = 0;
-            this.tabControlInitialData.Size = new System.Drawing.Size(776, 533);
-            this.tabControlInitialData.TabIndex = 0;
+            this.tabPageBattleText.Controls.Add(this.listBoxBattleText);
+            this.tabPageBattleText.Controls.Add(this.textBoxBattleText);
+            this.tabPageBattleText.Controls.Add(this.labelBattleText);
+            this.tabPageBattleText.Location = new System.Drawing.Point(4, 24);
+            this.tabPageBattleText.Name = "tabPageBattleText";
+            this.tabPageBattleText.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageBattleText.Size = new System.Drawing.Size(768, 505);
+            this.tabPageBattleText.TabIndex = 0;
+            this.tabPageBattleText.Text = "Battle Text";
+            this.tabPageBattleText.UseVisualStyleBackColor = true;
+            // 
+            // listBoxBattleText
+            // 
+            this.listBoxBattleText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.listBoxBattleText.FormattingEnabled = true;
+            this.listBoxBattleText.ItemHeight = 15;
+            this.listBoxBattleText.Location = new System.Drawing.Point(7, 6);
+            this.listBoxBattleText.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.listBoxBattleText.Name = "listBoxBattleText";
+            this.listBoxBattleText.Size = new System.Drawing.Size(174, 454);
+            this.listBoxBattleText.TabIndex = 2;
+            this.listBoxBattleText.SelectedIndexChanged += new System.EventHandler(this.listBoxBattleText_SelectedIndexChanged);
+            // 
+            // textBoxBattleText
+            // 
+            this.textBoxBattleText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxBattleText.Enabled = false;
+            this.textBoxBattleText.Location = new System.Drawing.Point(189, 24);
+            this.textBoxBattleText.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxBattleText.Name = "textBoxBattleText";
+            this.textBoxBattleText.Size = new System.Drawing.Size(572, 23);
+            this.textBoxBattleText.TabIndex = 10;
+            // 
+            // labelBattleText
+            // 
+            this.labelBattleText.AutoSize = true;
+            this.labelBattleText.Enabled = false;
+            this.labelBattleText.Location = new System.Drawing.Point(189, 6);
+            this.labelBattleText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelBattleText.Name = "labelBattleText";
+            this.labelBattleText.Size = new System.Drawing.Size(31, 15);
+            this.labelBattleText.TabIndex = 9;
+            this.labelBattleText.Text = "Text:";
+            // 
+            // tabPageBattleRNGTable
+            // 
+            this.tabPageBattleRNGTable.Controls.Add(this.rngTableControl);
+            this.tabPageBattleRNGTable.Location = new System.Drawing.Point(4, 24);
+            this.tabPageBattleRNGTable.Name = "tabPageBattleRNGTable";
+            this.tabPageBattleRNGTable.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageBattleRNGTable.Size = new System.Drawing.Size(768, 505);
+            this.tabPageBattleRNGTable.TabIndex = 1;
+            this.tabPageBattleRNGTable.Text = "RNG Table";
+            this.tabPageBattleRNGTable.UseVisualStyleBackColor = true;
+            // 
+            // rngTableControl
+            // 
+            this.rngTableControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rngTableControl.Location = new System.Drawing.Point(6, 6);
+            this.rngTableControl.Name = "rngTableControl";
+            this.rngTableControl.Size = new System.Drawing.Size(757, 340);
+            this.rngTableControl.TabIndex = 0;
+            // 
+            // tabPageCharacters
+            // 
+            this.tabPageCharacters.Controls.Add(this.tabControlCharacters);
+            this.tabPageCharacters.Location = new System.Drawing.Point(4, 24);
+            this.tabPageCharacters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tabPageCharacters.Name = "tabPageCharacters";
+            this.tabPageCharacters.Size = new System.Drawing.Size(776, 533);
+            this.tabPageCharacters.TabIndex = 2;
+            this.tabPageCharacters.Text = "Characters";
+            this.tabPageCharacters.UseVisualStyleBackColor = true;
+            // 
+            // tabControlCharacters
+            // 
+            this.tabControlCharacters.Controls.Add(this.tabPageInitCharacterStats);
+            this.tabControlCharacters.Controls.Add(this.tabPageCharacterGrowth);
+            this.tabControlCharacters.Controls.Add(this.tabPageCharacterAI);
+            this.tabControlCharacters.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlCharacters.Location = new System.Drawing.Point(0, 0);
+            this.tabControlCharacters.Name = "tabControlCharacters";
+            this.tabControlCharacters.SelectedIndex = 0;
+            this.tabControlCharacters.Size = new System.Drawing.Size(776, 533);
+            this.tabControlCharacters.TabIndex = 0;
             // 
             // tabPageInitCharacterStats
             // 
@@ -973,11 +1075,13 @@
             this.tabPageInitCharacterStats.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageInitCharacterStats.Size = new System.Drawing.Size(768, 505);
             this.tabPageInitCharacterStats.TabIndex = 0;
-            this.tabPageInitCharacterStats.Text = "Character Stats";
+            this.tabPageInitCharacterStats.Text = "Initial Stats";
             this.tabPageInitCharacterStats.UseVisualStyleBackColor = true;
             // 
             // groupBoxCharacterMP
             // 
+            this.groupBoxCharacterMP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxCharacterMP.Controls.Add(this.numericCharacterMaxMP);
             this.groupBoxCharacterMP.Controls.Add(this.labelCharacterMaxMP);
             this.groupBoxCharacterMP.Controls.Add(this.numericCharacterBaseMP);
@@ -1056,6 +1160,8 @@
             // 
             // groupBoxCharacterHP
             // 
+            this.groupBoxCharacterHP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxCharacterHP.Controls.Add(this.numericCharacterMaxHP);
             this.groupBoxCharacterHP.Controls.Add(this.labelCharacterMaxHP);
             this.groupBoxCharacterHP.Controls.Add(this.numericCharacterBaseHP);
@@ -1152,6 +1258,7 @@
             // 
             // numericCharacterKillCount
             // 
+            this.numericCharacterKillCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.numericCharacterKillCount.Location = new System.Drawing.Point(401, 269);
             this.numericCharacterKillCount.Maximum = new decimal(new int[] {
             65535,
@@ -1164,6 +1271,7 @@
             // 
             // labelCharacterKillCount
             // 
+            this.labelCharacterKillCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelCharacterKillCount.AutoSize = true;
             this.labelCharacterKillCount.Location = new System.Drawing.Point(401, 251);
             this.labelCharacterKillCount.Name = "labelCharacterKillCount";
@@ -1173,6 +1281,8 @@
             // 
             // comboBoxCharacterFlags
             // 
+            this.comboBoxCharacterFlags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxCharacterFlags.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCharacterFlags.FormattingEnabled = true;
             this.comboBoxCharacterFlags.Location = new System.Drawing.Point(158, 269);
@@ -1191,6 +1301,8 @@
             // 
             // characterLimitControl
             // 
+            this.characterLimitControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.characterLimitControl.LimitBar = ((byte)(0));
             this.characterLimitControl.LimitLevel = ((byte)(0));
             this.characterLimitControl.Location = new System.Drawing.Point(158, 298);
@@ -1218,6 +1330,7 @@
             // 
             // groupBoxCharacterArmor
             // 
+            this.groupBoxCharacterArmor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxCharacterArmor.Controls.Add(this.buttonCharacterArmorChangeMateria);
             this.groupBoxCharacterArmor.Controls.Add(this.materiaSlotSelectorCharacterArmor);
             this.groupBoxCharacterArmor.Controls.Add(this.comboBoxCharacterArmor);
@@ -1263,6 +1376,7 @@
             // 
             // groupBoxCharacterWeapon
             // 
+            this.groupBoxCharacterWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxCharacterWeapon.Controls.Add(this.buttonCharacterWeaponChangeMateria);
             this.groupBoxCharacterWeapon.Controls.Add(this.materiaSlotSelectorCharacterWeapon);
             this.groupBoxCharacterWeapon.Controls.Add(this.comboBoxCharacterWeapon);
@@ -1319,6 +1433,7 @@
             // 
             // checkBoxCharacterBackRow
             // 
+            this.checkBoxCharacterBackRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxCharacterBackRow.AutoSize = true;
             this.checkBoxCharacterBackRow.Location = new System.Drawing.Point(321, 271);
             this.checkBoxCharacterBackRow.Name = "checkBoxCharacterBackRow";
@@ -1357,6 +1472,7 @@
             // 
             // comboBoxCharacterAccessory
             // 
+            this.comboBoxCharacterAccessory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxCharacterAccessory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCharacterAccessory.FormattingEnabled = true;
             this.comboBoxCharacterAccessory.Location = new System.Drawing.Point(545, 384);
@@ -1366,6 +1482,7 @@
             // 
             // labelCharacterAccessory
             // 
+            this.labelCharacterAccessory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelCharacterAccessory.AutoSize = true;
             this.labelCharacterAccessory.Location = new System.Drawing.Point(545, 366);
             this.labelCharacterAccessory.Name = "labelCharacterAccessory";
@@ -1422,31 +1539,139 @@
             this.listBoxInitCharacters.TabIndex = 0;
             this.listBoxInitCharacters.SelectedIndexChanged += new System.EventHandler(this.listBoxInitCharacters_SelectedIndexChanged);
             // 
+            // tabPageCharacterGrowth
+            // 
+            this.tabPageCharacterGrowth.Controls.Add(this.listBoxCharacterGrowth);
+            this.tabPageCharacterGrowth.Location = new System.Drawing.Point(4, 24);
+            this.tabPageCharacterGrowth.Name = "tabPageCharacterGrowth";
+            this.tabPageCharacterGrowth.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageCharacterGrowth.Size = new System.Drawing.Size(768, 505);
+            this.tabPageCharacterGrowth.TabIndex = 0;
+            this.tabPageCharacterGrowth.Text = "Growth Curves";
+            this.tabPageCharacterGrowth.UseVisualStyleBackColor = true;
+            // 
+            // listBoxCharacterGrowth
+            // 
+            this.listBoxCharacterGrowth.FormattingEnabled = true;
+            this.listBoxCharacterGrowth.ItemHeight = 15;
+            this.listBoxCharacterGrowth.Location = new System.Drawing.Point(6, 6);
+            this.listBoxCharacterGrowth.Name = "listBoxCharacterGrowth";
+            this.listBoxCharacterGrowth.Size = new System.Drawing.Size(146, 139);
+            this.listBoxCharacterGrowth.TabIndex = 1;
+            // 
+            // tabPageCharacterAI
+            // 
+            this.tabPageCharacterAI.Controls.Add(this.scriptControlCharacterAI);
+            this.tabPageCharacterAI.Controls.Add(this.groupBoxCharacterAI);
+            this.tabPageCharacterAI.Controls.Add(this.groupBoxCharacterScripts);
+            this.tabPageCharacterAI.Location = new System.Drawing.Point(4, 24);
+            this.tabPageCharacterAI.Name = "tabPageCharacterAI";
+            this.tabPageCharacterAI.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageCharacterAI.Size = new System.Drawing.Size(768, 505);
+            this.tabPageCharacterAI.TabIndex = 1;
+            this.tabPageCharacterAI.Text = "Character A.I.";
+            this.tabPageCharacterAI.UseVisualStyleBackColor = true;
+            // 
+            // scriptControlCharacterAI
+            // 
+            this.scriptControlCharacterAI.AIContainer = null;
+            this.scriptControlCharacterAI.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.scriptControlCharacterAI.Enabled = false;
+            this.scriptControlCharacterAI.Location = new System.Drawing.Point(187, 6);
+            this.scriptControlCharacterAI.Name = "scriptControlCharacterAI";
+            this.scriptControlCharacterAI.SelectedScriptIndex = -1;
+            this.scriptControlCharacterAI.Size = new System.Drawing.Size(575, 455);
+            this.scriptControlCharacterAI.TabIndex = 5;
+            // 
+            // groupBoxCharacterAI
+            // 
+            this.groupBoxCharacterAI.Controls.Add(this.listBoxCharacterAI);
+            this.groupBoxCharacterAI.Location = new System.Drawing.Point(9, 6);
+            this.groupBoxCharacterAI.Name = "groupBoxCharacterAI";
+            this.groupBoxCharacterAI.Size = new System.Drawing.Size(172, 211);
+            this.groupBoxCharacterAI.TabIndex = 4;
+            this.groupBoxCharacterAI.TabStop = false;
+            this.groupBoxCharacterAI.Text = "Characters";
+            // 
+            // listBoxCharacterAI
+            // 
+            this.listBoxCharacterAI.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxCharacterAI.FormattingEnabled = true;
+            this.listBoxCharacterAI.ItemHeight = 15;
+            this.listBoxCharacterAI.Location = new System.Drawing.Point(3, 19);
+            this.listBoxCharacterAI.Name = "listBoxCharacterAI";
+            this.listBoxCharacterAI.Size = new System.Drawing.Size(166, 189);
+            this.listBoxCharacterAI.TabIndex = 1;
+            this.listBoxCharacterAI.SelectedIndexChanged += new System.EventHandler(this.listBoxCharacterAI_SelectedIndexChanged);
+            // 
+            // groupBoxCharacterScripts
+            // 
+            this.groupBoxCharacterScripts.Controls.Add(this.listBoxCharacterScripts);
+            this.groupBoxCharacterScripts.Enabled = false;
+            this.groupBoxCharacterScripts.Location = new System.Drawing.Point(6, 223);
+            this.groupBoxCharacterScripts.Name = "groupBoxCharacterScripts";
+            this.groupBoxCharacterScripts.Size = new System.Drawing.Size(175, 238);
+            this.groupBoxCharacterScripts.TabIndex = 3;
+            this.groupBoxCharacterScripts.TabStop = false;
+            this.groupBoxCharacterScripts.Text = "Scripts";
+            // 
+            // listBoxCharacterScripts
+            // 
+            this.listBoxCharacterScripts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxCharacterScripts.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.listBoxCharacterScripts.FormattingEnabled = true;
+            this.listBoxCharacterScripts.Items.AddRange(new object[] {
+            "Pre-Battle",
+            "Main",
+            "General Counter",
+            "Death Counter",
+            "Physical Counter",
+            "Magic Counter",
+            "Ally Death",
+            "Post-Attack",
+            "Custom Event 1",
+            "Custom Event 2",
+            "Custom Event 3",
+            "Custom Event 4",
+            "Custom Event 5",
+            "Custom Event 6",
+            "Custom Event 7",
+            "Post-Battle"});
+            this.listBoxCharacterScripts.Location = new System.Drawing.Point(3, 19);
+            this.listBoxCharacterScripts.Name = "listBoxCharacterScripts";
+            this.listBoxCharacterScripts.Size = new System.Drawing.Size(169, 216);
+            this.listBoxCharacterScripts.TabIndex = 2;
+            this.listBoxCharacterScripts.SelectedIndexChanged += new System.EventHandler(this.listBoxCharacterScripts_SelectedIndexChanged);
+            // 
             // tabPageInitInventory
             // 
-            this.tabPageInitInventory.Controls.Add(this.groupBox1);
+            this.tabPageInitInventory.Controls.Add(this.groupBoxInitMateriaStolen);
             this.tabPageInitInventory.Controls.Add(this.groupBoxInitMateria);
             this.tabPageInitInventory.Controls.Add(this.groupBoxInitInventory);
             this.tabPageInitInventory.Location = new System.Drawing.Point(4, 24);
             this.tabPageInitInventory.Name = "tabPageInitInventory";
             this.tabPageInitInventory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageInitInventory.Size = new System.Drawing.Size(768, 505);
+            this.tabPageInitInventory.Size = new System.Drawing.Size(776, 533);
             this.tabPageInitInventory.TabIndex = 1;
             this.tabPageInitInventory.Text = "Inventory";
             this.tabPageInitInventory.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // groupBoxInitMateriaStolen
             // 
-            this.groupBox1.Controls.Add(this.listBoxInitMateriaStolen);
-            this.groupBox1.Controls.Add(this.buttonInitMateriaStolenEdit);
-            this.groupBox1.Controls.Add(this.comboBoxInitMateriaStolen);
-            this.groupBox1.Controls.Add(this.labelInitMateriaStolen);
-            this.groupBox1.Location = new System.Drawing.Point(513, 6);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(249, 455);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Materia stolen by Yuffie";
+            this.groupBoxInitMateriaStolen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxInitMateriaStolen.Controls.Add(this.listBoxInitMateriaStolen);
+            this.groupBoxInitMateriaStolen.Controls.Add(this.buttonInitMateriaStolenEdit);
+            this.groupBoxInitMateriaStolen.Controls.Add(this.comboBoxInitMateriaStolen);
+            this.groupBoxInitMateriaStolen.Controls.Add(this.labelInitMateriaStolen);
+            this.groupBoxInitMateriaStolen.Location = new System.Drawing.Point(519, 6);
+            this.groupBoxInitMateriaStolen.Name = "groupBoxInitMateriaStolen";
+            this.groupBoxInitMateriaStolen.Size = new System.Drawing.Size(251, 479);
+            this.groupBoxInitMateriaStolen.TabIndex = 3;
+            this.groupBoxInitMateriaStolen.TabStop = false;
+            this.groupBoxInitMateriaStolen.Text = "Materia stolen by Yuffie";
             // 
             // listBoxInitMateriaStolen
             // 
@@ -1457,7 +1682,7 @@
             this.listBoxInitMateriaStolen.ItemHeight = 15;
             this.listBoxInitMateriaStolen.Location = new System.Drawing.Point(6, 22);
             this.listBoxInitMateriaStolen.Name = "listBoxInitMateriaStolen";
-            this.listBoxInitMateriaStolen.Size = new System.Drawing.Size(237, 334);
+            this.listBoxInitMateriaStolen.Size = new System.Drawing.Size(239, 349);
             this.listBoxInitMateriaStolen.TabIndex = 7;
             this.listBoxInitMateriaStolen.SelectedIndexChanged += new System.EventHandler(this.listBoxInitMateriaStolen_SelectedIndexChanged);
             // 
@@ -1466,12 +1691,13 @@
             this.buttonInitMateriaStolenEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInitMateriaStolenEdit.Enabled = false;
-            this.buttonInitMateriaStolenEdit.Location = new System.Drawing.Point(6, 426);
+            this.buttonInitMateriaStolenEdit.Location = new System.Drawing.Point(6, 450);
             this.buttonInitMateriaStolenEdit.Name = "buttonInitMateriaStolenEdit";
-            this.buttonInitMateriaStolenEdit.Size = new System.Drawing.Size(237, 23);
+            this.buttonInitMateriaStolenEdit.Size = new System.Drawing.Size(239, 23);
             this.buttonInitMateriaStolenEdit.TabIndex = 6;
             this.buttonInitMateriaStolenEdit.Text = "Edit details...";
             this.buttonInitMateriaStolenEdit.UseVisualStyleBackColor = true;
+            this.buttonInitMateriaStolenEdit.Click += new System.EventHandler(this.buttonInitMateriaStolenEdit_Click);
             // 
             // comboBoxInitMateriaStolen
             // 
@@ -1480,9 +1706,9 @@
             this.comboBoxInitMateriaStolen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInitMateriaStolen.Enabled = false;
             this.comboBoxInitMateriaStolen.FormattingEnabled = true;
-            this.comboBoxInitMateriaStolen.Location = new System.Drawing.Point(6, 382);
+            this.comboBoxInitMateriaStolen.Location = new System.Drawing.Point(6, 406);
             this.comboBoxInitMateriaStolen.Name = "comboBoxInitMateriaStolen";
-            this.comboBoxInitMateriaStolen.Size = new System.Drawing.Size(237, 23);
+            this.comboBoxInitMateriaStolen.Size = new System.Drawing.Size(239, 23);
             this.comboBoxInitMateriaStolen.TabIndex = 5;
             this.comboBoxInitMateriaStolen.SelectedIndexChanged += new System.EventHandler(this.comboBoxInitMateriaStolen_SelectedIndexChanged);
             // 
@@ -1490,7 +1716,7 @@
             // 
             this.labelInitMateriaStolen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelInitMateriaStolen.AutoSize = true;
-            this.labelInitMateriaStolen.Location = new System.Drawing.Point(6, 364);
+            this.labelInitMateriaStolen.Location = new System.Drawing.Point(6, 388);
             this.labelInitMateriaStolen.Name = "labelInitMateriaStolen";
             this.labelInitMateriaStolen.Size = new System.Drawing.Size(50, 15);
             this.labelInitMateriaStolen.TabIndex = 4;
@@ -1498,13 +1724,15 @@
             // 
             // groupBoxInitMateria
             // 
+            this.groupBoxInitMateria.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxInitMateria.Controls.Add(this.buttonInitMateriaEdit);
             this.groupBoxInitMateria.Controls.Add(this.comboBoxInitMateria);
             this.groupBoxInitMateria.Controls.Add(this.labelInitMateria);
             this.groupBoxInitMateria.Controls.Add(this.listBoxInitMateria);
-            this.groupBoxInitMateria.Location = new System.Drawing.Point(257, 6);
+            this.groupBoxInitMateria.Location = new System.Drawing.Point(263, 6);
             this.groupBoxInitMateria.Name = "groupBoxInitMateria";
-            this.groupBoxInitMateria.Size = new System.Drawing.Size(250, 455);
+            this.groupBoxInitMateria.Size = new System.Drawing.Size(251, 479);
             this.groupBoxInitMateria.TabIndex = 2;
             this.groupBoxInitMateria.TabStop = false;
             this.groupBoxInitMateria.Text = "Materia";
@@ -1514,12 +1742,13 @@
             this.buttonInitMateriaEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInitMateriaEdit.Enabled = false;
-            this.buttonInitMateriaEdit.Location = new System.Drawing.Point(6, 426);
+            this.buttonInitMateriaEdit.Location = new System.Drawing.Point(6, 450);
             this.buttonInitMateriaEdit.Name = "buttonInitMateriaEdit";
-            this.buttonInitMateriaEdit.Size = new System.Drawing.Size(238, 23);
+            this.buttonInitMateriaEdit.Size = new System.Drawing.Size(239, 23);
             this.buttonInitMateriaEdit.TabIndex = 3;
             this.buttonInitMateriaEdit.Text = "Edit details...";
             this.buttonInitMateriaEdit.UseVisualStyleBackColor = true;
+            this.buttonInitMateriaEdit.Click += new System.EventHandler(this.buttonInitMateriaEdit_Click);
             // 
             // comboBoxInitMateria
             // 
@@ -1528,9 +1757,9 @@
             this.comboBoxInitMateria.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInitMateria.Enabled = false;
             this.comboBoxInitMateria.FormattingEnabled = true;
-            this.comboBoxInitMateria.Location = new System.Drawing.Point(6, 382);
+            this.comboBoxInitMateria.Location = new System.Drawing.Point(6, 406);
             this.comboBoxInitMateria.Name = "comboBoxInitMateria";
-            this.comboBoxInitMateria.Size = new System.Drawing.Size(238, 23);
+            this.comboBoxInitMateria.Size = new System.Drawing.Size(239, 23);
             this.comboBoxInitMateria.TabIndex = 2;
             this.comboBoxInitMateria.SelectedIndexChanged += new System.EventHandler(this.comboBoxInitMateria_SelectedIndexChanged);
             // 
@@ -1538,7 +1767,7 @@
             // 
             this.labelInitMateria.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelInitMateria.AutoSize = true;
-            this.labelInitMateria.Location = new System.Drawing.Point(6, 364);
+            this.labelInitMateria.Location = new System.Drawing.Point(6, 388);
             this.labelInitMateria.Name = "labelInitMateria";
             this.labelInitMateria.Size = new System.Drawing.Size(50, 15);
             this.labelInitMateria.TabIndex = 1;
@@ -1553,12 +1782,15 @@
             this.listBoxInitMateria.ItemHeight = 15;
             this.listBoxInitMateria.Location = new System.Drawing.Point(6, 22);
             this.listBoxInitMateria.Name = "listBoxInitMateria";
-            this.listBoxInitMateria.Size = new System.Drawing.Size(238, 334);
+            this.listBoxInitMateria.Size = new System.Drawing.Size(239, 349);
             this.listBoxInitMateria.TabIndex = 0;
             this.listBoxInitMateria.SelectedIndexChanged += new System.EventHandler(this.listBoxInitMateria_SelectedIndexChanged);
             // 
             // groupBoxInitInventory
             // 
+            this.groupBoxInitInventory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxInitInventory.Controls.Add(this.numericInitItemAmount);
             this.groupBoxInitInventory.Controls.Add(this.labelInitItemAmount);
             this.groupBoxInitInventory.Controls.Add(this.comboBoxInitItem);
@@ -1566,7 +1798,7 @@
             this.groupBoxInitInventory.Controls.Add(this.listBoxInitInventory);
             this.groupBoxInitInventory.Location = new System.Drawing.Point(6, 6);
             this.groupBoxInitInventory.Name = "groupBoxInitInventory";
-            this.groupBoxInitInventory.Size = new System.Drawing.Size(245, 455);
+            this.groupBoxInitInventory.Size = new System.Drawing.Size(251, 479);
             this.groupBoxInitInventory.TabIndex = 1;
             this.groupBoxInitInventory.TabStop = false;
             this.groupBoxInitInventory.Text = "Inventory";
@@ -1576,14 +1808,14 @@
             this.numericInitItemAmount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.numericInitItemAmount.Enabled = false;
-            this.numericInitItemAmount.Location = new System.Drawing.Point(6, 426);
+            this.numericInitItemAmount.Location = new System.Drawing.Point(6, 450);
             this.numericInitItemAmount.Maximum = new decimal(new int[] {
             99,
             0,
             0,
             0});
             this.numericInitItemAmount.Name = "numericInitItemAmount";
-            this.numericInitItemAmount.Size = new System.Drawing.Size(233, 23);
+            this.numericInitItemAmount.Size = new System.Drawing.Size(239, 23);
             this.numericInitItemAmount.TabIndex = 4;
             this.numericInitItemAmount.ValueChanged += new System.EventHandler(this.numericInitItemAmount_ValueChanged);
             // 
@@ -1591,7 +1823,7 @@
             // 
             this.labelInitItemAmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelInitItemAmount.AutoSize = true;
-            this.labelInitItemAmount.Location = new System.Drawing.Point(6, 408);
+            this.labelInitItemAmount.Location = new System.Drawing.Point(6, 432);
             this.labelInitItemAmount.Name = "labelInitItemAmount";
             this.labelInitItemAmount.Size = new System.Drawing.Size(54, 15);
             this.labelInitItemAmount.TabIndex = 3;
@@ -1604,9 +1836,9 @@
             this.comboBoxInitItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInitItem.Enabled = false;
             this.comboBoxInitItem.FormattingEnabled = true;
-            this.comboBoxInitItem.Location = new System.Drawing.Point(6, 382);
+            this.comboBoxInitItem.Location = new System.Drawing.Point(6, 406);
             this.comboBoxInitItem.Name = "comboBoxInitItem";
-            this.comboBoxInitItem.Size = new System.Drawing.Size(233, 23);
+            this.comboBoxInitItem.Size = new System.Drawing.Size(239, 23);
             this.comboBoxInitItem.TabIndex = 2;
             this.comboBoxInitItem.SelectedIndexChanged += new System.EventHandler(this.comboBoxInitItem_SelectedIndexChanged);
             // 
@@ -1614,7 +1846,7 @@
             // 
             this.labelInitItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelInitItem.AutoSize = true;
-            this.labelInitItem.Location = new System.Drawing.Point(6, 364);
+            this.labelInitItem.Location = new System.Drawing.Point(6, 388);
             this.labelInitItem.Name = "labelInitItem";
             this.labelInitItem.Size = new System.Drawing.Size(34, 15);
             this.labelInitItem.TabIndex = 1;
@@ -1629,7 +1861,7 @@
             this.listBoxInitInventory.ItemHeight = 15;
             this.listBoxInitInventory.Location = new System.Drawing.Point(6, 22);
             this.listBoxInitInventory.Name = "listBoxInitInventory";
-            this.listBoxInitInventory.Size = new System.Drawing.Size(233, 334);
+            this.listBoxInitInventory.Size = new System.Drawing.Size(239, 349);
             this.listBoxInitInventory.TabIndex = 0;
             this.listBoxInitInventory.SelectedIndexChanged += new System.EventHandler(this.listBoxInitInventory_SelectedIndexChanged);
             // 
@@ -1716,8 +1948,6 @@
             // 
             // textBoxItemName
             // 
-            this.textBoxItemName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxItemName.Location = new System.Drawing.Point(7, 21);
             this.textBoxItemName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxItemName.Name = "textBoxItemName";
@@ -2427,8 +2657,6 @@
             // 
             // textBoxArmorName
             // 
-            this.textBoxArmorName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxArmorName.Location = new System.Drawing.Point(7, 21);
             this.textBoxArmorName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxArmorName.Name = "textBoxArmorName";
@@ -2652,8 +2880,6 @@
             // 
             // textBoxAccessoryName
             // 
-            this.textBoxAccessoryName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxAccessoryName.Location = new System.Drawing.Point(7, 21);
             this.textBoxAccessoryName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAccessoryName.Name = "textBoxAccessoryName";
@@ -2900,8 +3126,6 @@
             // 
             // textBoxMateriaName
             // 
-            this.textBoxMateriaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxMateriaName.Location = new System.Drawing.Point(191, 31);
             this.textBoxMateriaName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxMateriaName.Name = "textBoxMateriaName";
@@ -2968,8 +3192,6 @@
             // 
             // textBoxKeyItemName
             // 
-            this.textBoxKeyItemName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxKeyItemName.Location = new System.Drawing.Point(191, 31);
             this.textBoxKeyItemName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxKeyItemName.Name = "textBoxKeyItemName";
@@ -3053,6 +3275,7 @@
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.panelButtons);
             this.Controls.Add(this.tabControlMain);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MinimumSize = new System.Drawing.Size(639, 456);
@@ -3075,8 +3298,13 @@
             this.groupBoxAttackSpecialActions.ResumeLayout(false);
             this.groupBoxAttackSpecialActions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericAttackStatusChangeChance)).EndInit();
-            this.tabPageInitData.ResumeLayout(false);
-            this.tabControlInitialData.ResumeLayout(false);
+            this.tabPageBattleData.ResumeLayout(false);
+            this.tabControlBattleData.ResumeLayout(false);
+            this.tabPageBattleText.ResumeLayout(false);
+            this.tabPageBattleText.PerformLayout();
+            this.tabPageBattleRNGTable.ResumeLayout(false);
+            this.tabPageCharacters.ResumeLayout(false);
+            this.tabControlCharacters.ResumeLayout(false);
             this.tabPageInitCharacterStats.ResumeLayout(false);
             this.tabPageInitCharacterStats.PerformLayout();
             this.groupBoxCharacterMP.ResumeLayout(false);
@@ -3096,9 +3324,13 @@
             this.groupBoxCharacterWeapon.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericCharacterLevel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericCharacterID)).EndInit();
+            this.tabPageCharacterGrowth.ResumeLayout(false);
+            this.tabPageCharacterAI.ResumeLayout(false);
+            this.groupBoxCharacterAI.ResumeLayout(false);
+            this.groupBoxCharacterScripts.ResumeLayout(false);
             this.tabPageInitInventory.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.groupBoxInitMateriaStolen.ResumeLayout(false);
+            this.groupBoxInitMateriaStolen.PerformLayout();
             this.groupBoxInitMateria.ResumeLayout(false);
             this.groupBoxInitMateria.PerformLayout();
             this.groupBoxInitInventory.ResumeLayout(false);
@@ -3157,8 +3389,7 @@
         private System.Windows.Forms.Button buttonImport;
         private System.Windows.Forms.Button buttonExport;
         private System.Windows.Forms.Panel panelButtons;
-        private System.Windows.Forms.TabPage tabPageBattleData;
-        private System.Windows.Forms.TabPage tabPageInitData;
+        private System.Windows.Forms.TabPage tabPageCharacters;
         private System.Windows.Forms.TabPage tabPageWeaponData;
         private System.Windows.Forms.TabPage tabPageArmorData;
         private System.Windows.Forms.TabPage tabPageAccessoryData;
@@ -3327,7 +3558,6 @@
         private Button buttonAttackSyncAll;
         private TabPage tabPageItems3;
         private Shared.SpecialAttackFlagsControl specialAttackFlagsControlItem;
-        private TabControl tabControlInitialData;
         private TabPage tabPageInitCharacterStats;
         private TabPage tabPageInitInventory;
         private ListBox listBoxInitCharacters;
@@ -3385,10 +3615,27 @@
         private Label labelCharacterBaseHP;
         private NumericUpDown numericCharacterCurrHP;
         private Label labelCharacterCurrHP;
-        private GroupBox groupBox1;
+        private GroupBox groupBoxInitMateriaStolen;
         private Button buttonInitMateriaStolenEdit;
         private ComboBox comboBoxInitMateriaStolen;
         private Label labelInitMateriaStolen;
         private ListBox listBoxInitMateriaStolen;
+        private TabControl tabControlCharacters;
+        private TabPage tabPageCharacterGrowth;
+        private TabPage tabPageCharacterAI;
+        private TabPage tabPageBattleData;
+        private ListBox listBoxBattleText;
+        private TextBox textBoxBattleText;
+        private ListBox listBoxCharacterGrowth;
+        private ListBox listBoxCharacterAI;
+        private ListBox listBoxCharacterScripts;
+        private GroupBox groupBoxCharacterScripts;
+        private GroupBox groupBoxCharacterAI;
+        private AIEditor.ScriptControl scriptControlCharacterAI;
+        private Label labelBattleText;
+        private TabControl tabControlBattleData;
+        private TabPage tabPageBattleText;
+        private TabPage tabPageBattleRNGTable;
+        private Controls.RNGTableControl rngTableControl;
     }
 }

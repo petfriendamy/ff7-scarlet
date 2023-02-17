@@ -8,7 +8,7 @@ namespace FF7Scarlet.AIEditor
         protected Script[] scripts = new Script[SCRIPT_NUMBER];
         public Scene? Parent { get; protected set; }
 
-        public void CreateNewScript(int pos, Code startingCode)
+        public Script CreateNewScript(int pos, Code startingCode)
         {
             if (pos < 0 || pos >= SCRIPT_NUMBER)
             {
@@ -19,6 +19,7 @@ namespace FF7Scarlet.AIEditor
                 throw new ArgumentException("Script already exists.");
             }
             scripts[pos] = new Script(this, startingCode);
+            return scripts[pos];
         }
 
         public Script? GetScriptAtPosition(int pos)

@@ -7,7 +7,7 @@ namespace FF7Scarlet.SceneEditor
     {
         public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ATTACK_COUNT = 32,
             NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152,
-            FORMATION_BLOCK_SIZE = 504, ENEMY_AI_BLOCK_SIZE = 4090, SCRIPT_NUMBER = 16;
+            FORMATION_BLOCK_SIZE = 504, ENEMY_AI_BLOCK_SIZE = 4090;
         private readonly Enemy[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
         private readonly Attack?[] attackList = new Attack?[ATTACK_COUNT];
@@ -204,10 +204,6 @@ namespace FF7Scarlet.SceneEditor
 
         public void ParseAIScripts()
         {
-            if (formationAIRaw == null || enemyAIraw == null)
-            {
-                throw new ArgumentNullException();
-            }
             int i, j, next;
 
             //parse formation scripts

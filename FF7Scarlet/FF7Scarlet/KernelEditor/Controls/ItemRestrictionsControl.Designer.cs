@@ -99,6 +99,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBoxWeaponRestrictions);
+            this.DoubleBuffered = true;
             this.Name = "ItemRestrictionsControl";
             this.Size = new System.Drawing.Size(240, 125);
             this.groupBoxWeaponRestrictions.ResumeLayout(false);

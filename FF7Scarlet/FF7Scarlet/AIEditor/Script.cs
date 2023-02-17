@@ -10,6 +10,7 @@ namespace FF7Scarlet.AIEditor
 {
     public class Script
     {
+        public const int SCRIPT_COUNT = 16;
         private List<Code> code = new List<Code> { };
         private Dictionary<int, ushort> labels = new Dictionary<int, ushort> { };
         private bool headersAreCorrect = false;

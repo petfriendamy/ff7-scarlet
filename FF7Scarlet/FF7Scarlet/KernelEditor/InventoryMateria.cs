@@ -22,8 +22,13 @@ namespace FF7Scarlet.KernelEditor
             Index = data[0];
 
             var ap = new byte[4];
-            Array.Copy(data, ap, 3);
+            Array.Copy(data, 1, ap, 0, 3);
             CurrentAP = BitConverter.ToInt32(ap);
+        }
+
+        public InventoryMateria Copy()
+        {
+            return new InventoryMateria(Index, CurrentAP);
         }
     }
 }

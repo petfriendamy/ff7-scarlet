@@ -138,6 +138,7 @@
             this.Controls.Add(this.pictureBoxSlot3);
             this.Controls.Add(this.pictureBoxSlot2);
             this.Controls.Add(this.pictureBoxSlot1);
+            this.DoubleBuffered = true;
             this.Name = "MateriaSlotSelectorControl";
             this.Size = new System.Drawing.Size(199, 31);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSlot1)).EndInit();
