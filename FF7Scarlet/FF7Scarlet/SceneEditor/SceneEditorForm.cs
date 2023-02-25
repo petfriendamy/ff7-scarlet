@@ -545,7 +545,7 @@ namespace FF7Scarlet.SceneEditor
                 for (i = 0; i < DataManager.SCENE_COUNT; ++i)
                 {
                     await UpdateDataAsync(i);
-                    progressBarSaving.Value = ((i + i) / DataManager.SCENE_COUNT) * 100;
+                    progressBarSaving.Value = ((i + 1) / DataManager.SCENE_COUNT) * 100;
                 }
                 await Task.Delay(500);
 
@@ -733,35 +733,9 @@ namespace FF7Scarlet.SceneEditor
 
         private void buttonExport_Click(object sender, EventArgs e)
         {
-            if (SelectedScene != null)
+            using (var export = new SceneExportForm(sceneList, SelectedSceneIndex))
             {
-                try
-                {
-                    EnableOrDisableForm(false);
-                    SelectedScene.UpdateRawData();
-                    DialogResult result;
-                    string path;
-                    int pos = SelectedSceneIndex;
-                    using (var save = new SaveFileDialog())
-                    {
-                        save.FileName = $"scene.{pos}.bin";
-                        save.Filter = "Scene file|*.bin";
-                        result = save.ShowDialog();
-                        path = save.FileName;
-                    }
-
-                    if (result == DialogResult.OK)
-                    {
-                        File.WriteAllBytes(path, SelectedScene.GetRawData());
-                        DataManager.UpdateScene(this, SelectedScene, pos);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                EnableOrDisableForm(true);
-                buttonExport.Select();
+                export.ShowDialog();
             }
         }
 

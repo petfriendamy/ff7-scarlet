@@ -184,29 +184,37 @@ namespace FF7Scarlet.AIEditor
                 if (OpcodeInfo == null) { throw new ArgumentNullException(); }
                 try
                 {
-                    if (Parameter == null) { throw new ArgumentNullException(); }
-                    var temp = Parameter.GetBytes(OpcodeInfo.ParameterType);
                     data[0] = Opcode;
 
                     if (OpcodeInfo.Group == OpcodeGroups.Jump)
                     {
-                        if (Parent == null) { throw new ArgumentNullException(); }
-                        temp = BitConverter.GetBytes(Parent.GetLabelPosition(Parameter.ToInt()));
+                        if (Parent == null || Parameter == null) { throw new ArgumentNullException(); }
+                        var temp = BitConverter.GetBytes(Parent.GetLabelPosition(Parameter.ToInt()));
                         Array.Copy(temp, 0, data, 1, temp.Length);
                     }
                     else
                     {
+                        //check for parameter data
+                        byte[]? pbytes = null;
+                        if (Parameter != null)
+                        {
+                            pbytes = Parameter.GetBytes(OpcodeInfo.ParameterType);
+                        }
+
+                        //get data
                         switch (OpcodeInfo.ParameterType)
                         {
                             case ParameterTypes.None:
                                 break;
                             case ParameterTypes.Debug:
                                 data[1] = PopCount;
-                                Array.Copy(temp, 0, data, 2, temp.Length);
+                                if (pbytes == null) { throw new ArgumentNullException(); }
+                                Array.Copy(pbytes, 0, data, 2, pbytes.Length);
                                 data[data.Length - 1] = 0;
                                 break;
                             default:
-                                Array.Copy(temp, 0, data, 1, temp.Length);
+                                if (pbytes == null) { throw new ArgumentNullException(); }
+                                Array.Copy(pbytes, 0, data, 1, pbytes.Length);
                                 break;
                         }
                     }

@@ -305,11 +305,12 @@ namespace FF7Scarlet.SceneEditor
                         writer.Seek(0x0298, SeekOrigin.Begin);
                         for (i = 0; i < ENEMY_COUNT; ++i)
                         {
-                            if (enemies[i] == null)
+                            var e = enemies[i];
+                            if (e == null)
                             {
                                 writer.Write(HexParser.GetNullBlock(ENEMY_DATA_BLOCK_SIZE + NAME_LENGTH));
                             }
-                            else { writer.Write(enemies[i].GetRawEnemyData()); }
+                            else { writer.Write(e.GetRawEnemyData()); }
                         }
                     }
                     catch (Exception ex)
@@ -423,7 +424,7 @@ namespace FF7Scarlet.SceneEditor
             return copy;
         }
 
-        private byte[] GetRawScriptData(int containerCount, int blockSize, AIContainer[] aiContainers,
+        private byte[] GetRawScriptData(int containerCount, int blockSize, AIContainer?[] aiContainers,
             ref ushort[] offsets)
         {
             var scriptList = new List<byte[]> { };
@@ -433,7 +434,8 @@ namespace FF7Scarlet.SceneEditor
             var length = new int[containerCount];
             for (i = 0; i < containerCount; ++i)
             {
-                if (aiContainers[i] == null || !aiContainers[i].HasScripts())
+                var container = aiContainers[i];
+                if (container == null || !container.HasScripts())
                 {
                     offsets[i] = HexParser.NULL_OFFSET_16_BIT;
                     length[i] = 0;
@@ -442,7 +444,7 @@ namespace FF7Scarlet.SceneEditor
                 else
                 {
                     offsets[i] = currPos;
-                    currData = aiContainers[i].GetRawAIData();
+                    currData = container.GetRawAIData();
                     scriptList.Add(currData);
                     length[i] = currData.Length;
                     while (length[i] % 2 != 0) { length[i]++; }
