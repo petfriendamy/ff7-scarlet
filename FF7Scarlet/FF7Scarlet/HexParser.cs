@@ -8,6 +8,9 @@ namespace FF7Scarlet
 {
     public static class HexParser
     {
+        public const ushort NULL_OFFSET_16_BIT = 0xFFFF;
+        public const uint NULL_OFFSET_32_BIT = 0xFFFFFFFF;
+
         public static byte GetUpperNybble(byte value)
         {
             return (byte)Math.Floor((double)(value / 0x10));
@@ -24,6 +27,16 @@ namespace FF7Scarlet
             if (lower > 0xF) { throw new ArgumentException("Lower nybble too large to merge."); }
 
             return (byte)((upper * 0x10) + lower);
+        }
+
+        public static byte[] GetNullBlock(int size)
+        {
+            var data = new byte[size];
+            for (int i = 0; i < size; ++i)
+            {
+                data[i] = 0xFF;
+            }
+            return data;
         }
     }
 }

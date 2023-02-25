@@ -27,7 +27,7 @@
                 var op = OpcodeInfo.GetInfo(c.GetPrimaryOpcode());
                 if (op != null)
                 {
-                    if (op.IsParameter() || op.Group == OpcodeGroups.Jump)
+                    if (op.IsParameter || op.Group == OpcodeGroups.Jump)
                     {
                         paramList[i].SetCode(c.GetPrimaryOpcode(), c.GetParameter());
 
@@ -37,7 +37,7 @@
                             AddParameter();
                         }
                     }
-                    else if (op.IsOperand())
+                    else if (op.IsOperand)
                     {
                         if (i > 0 && paramList[i - 1].Operand == -1)
                         {

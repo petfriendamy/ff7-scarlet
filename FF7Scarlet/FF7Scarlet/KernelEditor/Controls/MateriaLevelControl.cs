@@ -2,7 +2,7 @@
 {
     public partial class MateriaLevelControl : UserControl
     {
-        private const int MAX_AP = DataManager.NULL_OFFSET_16_BIT * 100;
+        private const int MAX_AP = HexParser.NULL_OFFSET_16_BIT * 100;
         private NumericUpDown[] APSelectors;
         private int[] prevValues = new int[4];
         private bool editing = false;

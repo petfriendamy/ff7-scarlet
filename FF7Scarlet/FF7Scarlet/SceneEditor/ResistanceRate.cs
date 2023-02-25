@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shojy.FF7.Elena.Battle;
+﻿using Shojy.FF7.Elena.Battle;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -17,6 +12,26 @@ namespace FF7Scarlet.SceneEditor
         public ResistRates Rate { get; protected set; }
 
         public abstract byte GetID();
+        public virtual string GetText()
+        {
+            switch (Rate)
+            {
+                case ResistRates.Death:
+                    return "Killed by";
+                case ResistRates.Double:
+                    return "2x damage from";
+                case ResistRates.Half:
+                    return "Half damage from";
+                case ResistRates.Null:
+                    return "Nullifies damage from";
+                case ResistRates.Absorb:
+                    return "Absorbs damage from";
+                case ResistRates.FullCure:
+                    return "Fully cured by";
+                default:
+                    return "(none)";
+            }
+        }
     }
 
     public class ElementResistanceRate : ResistanceRate
@@ -33,6 +48,11 @@ namespace FF7Scarlet.SceneEditor
         {
             return (byte)Element;
         }
+
+        public override string GetText()
+        {
+            return base.GetText() + ' ' + Element.ToString();
+        }
     }
 
     public class StatusResistanceRate : ResistanceRate
@@ -48,6 +68,11 @@ namespace FF7Scarlet.SceneEditor
         public override byte GetID()
         {
             return (byte)(Status + 0x20);
+        }
+
+        public override string GetText()
+        {
+            return base.GetText() + ' ' + Status.ToString() + " (status attack)";
         }
     }
 }

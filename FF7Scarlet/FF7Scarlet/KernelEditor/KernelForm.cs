@@ -58,9 +58,6 @@ namespace FF7Scarlet.KernelEditor
             {
                 if (DataManager.AttackIsSynced(a.ID)) { syncedAttackIDs.Add(a.ID); }
             }
-            scriptControlCharacterAI.DataChanged += new EventHandler(scriptControlCharacterAI_DataChanged);
-            scriptControlCharacterAI.ScriptAdded += new EventHandler(scriptControlCharacterAI_ScriptAddedOrRemoved);
-            scriptControlCharacterAI.ScriptRemoved += new EventHandler(scriptControlCharacterAI_ScriptAddedOrRemoved);
         }
 
         #endregion
@@ -403,7 +400,8 @@ namespace FF7Scarlet.KernelEditor
                         //materia data
                         case KernelSection.MateriaData:
                             var materia = kernel.MateriaData.Materias[i];
-                            if (Enum.IsDefined(materia.Element)){
+                            if (Enum.IsDefined(materia.Element))
+                            {
                                 comboBoxMateriaElement.SelectedIndex = (int)materia.Element;
                             }
                             else
@@ -669,8 +667,8 @@ namespace FF7Scarlet.KernelEditor
                     }
                     numericInitItemAmount.Enabled = true;
 
-                    var type = item.GetType(newItemIndex - 1);
-                    byte index = item.GetIndex(newItemIndex - 1);
+                    var type = InventoryItem.GetType((ushort)(newItemIndex - 1));
+                    byte index = InventoryItem.GetIndex((ushort)(newItemIndex - 1));
 
                     item.SetItem(type, index);
                     item.Amount = amount;
@@ -706,7 +704,7 @@ namespace FF7Scarlet.KernelEditor
             }
             selectedMateria = listBox.SelectedIndex;
             newMateriaIndex = comboBox.SelectedIndex;
-            
+
             if (selectedMateria >= 0 && selectedMateria < max)
             {
                 loading = true;
@@ -972,9 +970,12 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
             comboBoxAttackStatusChange.Items.Add("None");
-            foreach (var s in Enum.GetNames<StatusChange>())
+            foreach (var s in Enum.GetValues<StatusChange>())
             {
-                comboBoxAttackStatusChange.Items.Add(s);
+                if (s != StatusChange.None)
+                {
+                    comboBoxAttackStatusChange.Items.Add(s);
+                }
             }
 
             //materia info
@@ -1184,6 +1185,14 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void comboBoxAttackStatusChange_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = comboBoxAttackStatusChange.SelectedIndex;
+            numericAttackStatusChangeChance.Enabled = (i > 0);
+            statusesControlAttack.Enabled = (i > 0);
+            if (!loading) { SetUnsaved(true); }
+        }
+
         private void checkBoxAttackSyncWithSceneBin_CheckedChanged(object sender, EventArgs e)
         {
             if (!loading)
@@ -1265,7 +1274,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 PopulateTabWithSelected(KernelSection.ItemData);
             }
-            
+
         }
 
         private void listBoxWeapons_SelectedIndexChanged(object sender, EventArgs e)
@@ -1350,16 +1359,13 @@ namespace FF7Scarlet.KernelEditor
         {
             try
             {
-                bool result = false,
-                    saveSceneBin = false,
-                    otherFormsOpen = (DataManager.FormIsOpen(FormType.BattleDataEditor) ||
-                        DataManager.FormIsOpen(FormType.BattleAIEditor));
+                bool result = false, saveSceneBin = false;
 
                 //check if there are any attacks that need to be synced
                 if (syncedAttackIDs.Count > 0)
                 {
-                    //if no other forms are open, offer to save scene.bin as well
-                    if (!otherFormsOpen)
+                    //if the scene editor is not open, offer to save scene.bin as well
+                    if (!DataManager.FormIsOpen(FormType.SceneEditor))
                     {
                         var dialogResult = MessageBox.Show("Update scene.bin also?", "Update scene.bin?", MessageBoxButtons.YesNoCancel,
                         MessageBoxIcon.Question);
@@ -1423,11 +1429,6 @@ namespace FF7Scarlet.KernelEditor
 
                 e.Cancel = result == DialogResult.No;
             }
-        }
-
-        private void KernelForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            DataManager.CloseForm(FormType.KernelEditor);
         }
 
         #endregion

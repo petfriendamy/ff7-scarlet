@@ -103,6 +103,33 @@
             }
         }
 
+        public bool IsOperand
+        {
+            get
+            {
+                return (Group == OpcodeGroups.Mathematical || Group == OpcodeGroups.Logical
+                    || Group == OpcodeGroups.BitOperation) && PopCount > 0;
+            }
+        }
+
+        public bool IsParameter
+        {
+            get
+            {
+                return Group == OpcodeGroups.Push || Group == OpcodeGroups.Jump
+                    || EnumValue == Opcodes.RandomWord || ParameterType == ParameterTypes.String
+                    || ParameterType == ParameterTypes.Debug;
+            }
+        }
+
+        public bool IsVariable
+        {
+            get
+            {
+                return Group == OpcodeGroups.Push;
+            }
+        }
+
         public OpcodeInfo(Opcodes enumValue, OpcodeGroups group, ParameterTypes parameterType, int popCount,
             string? shortName = null)
         {
@@ -128,19 +155,6 @@
         public static OpcodeInfo? GetInfo(Opcodes opcode)
         {
             return GetInfo((byte)opcode);
-        }
-
-        public bool IsOperand()
-        {
-            return (Group == OpcodeGroups.Mathematical || Group == OpcodeGroups.Logical
-                || Group == OpcodeGroups.BitOperation) && PopCount > 0;
-        }
-
-        public bool IsParameter()
-        {
-            return Group == OpcodeGroups.Push || Group == OpcodeGroups.Jump
-                || EnumValue == Opcodes.RandomWord || ParameterType == ParameterTypes.String
-                || ParameterType == ParameterTypes.Debug;
         }
     }
 }

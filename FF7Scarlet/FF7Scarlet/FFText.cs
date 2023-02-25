@@ -25,7 +25,7 @@ namespace FF7Scarlet
             this.data = data;
         }
 
-        public FFText(string? str, int length = -1)
+        public FFText(string? str = null, int length = -1)
         {
             int i, j;
             if (str == null)

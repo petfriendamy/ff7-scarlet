@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartupForm));
             this.buttonKernelEditor = new System.Windows.Forms.Button();
             this.buttonBattleDataEditor = new System.Windows.Forms.Button();
-            this.buttonAIEditor = new System.Windows.Forms.Button();
             this.buttonKernelBrowse = new System.Windows.Forms.Button();
             this.groupBoxKernel = new System.Windows.Forms.GroupBox();
             this.textBoxKernel = new System.Windows.Forms.TextBox();
@@ -55,7 +54,7 @@
             this.buttonKernelEditor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonKernelEditor.Enabled = false;
-            this.buttonKernelEditor.Location = new System.Drawing.Point(257, 211);
+            this.buttonKernelEditor.Location = new System.Drawing.Point(257, 244);
             this.buttonKernelEditor.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonKernelEditor.Name = "buttonKernelEditor";
             this.buttonKernelEditor.Size = new System.Drawing.Size(314, 27);
@@ -69,27 +68,14 @@
             this.buttonBattleDataEditor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonBattleDataEditor.Enabled = false;
-            this.buttonBattleDataEditor.Location = new System.Drawing.Point(257, 245);
+            this.buttonBattleDataEditor.Location = new System.Drawing.Point(257, 278);
             this.buttonBattleDataEditor.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonBattleDataEditor.Name = "buttonBattleDataEditor";
             this.buttonBattleDataEditor.Size = new System.Drawing.Size(314, 27);
             this.buttonBattleDataEditor.TabIndex = 1;
-            this.buttonBattleDataEditor.Text = "Open Battle Data Editor";
+            this.buttonBattleDataEditor.Text = "Open Scene Editor";
             this.buttonBattleDataEditor.UseVisualStyleBackColor = true;
-            // 
-            // buttonAIEditor
-            // 
-            this.buttonAIEditor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAIEditor.Enabled = false;
-            this.buttonAIEditor.Location = new System.Drawing.Point(257, 278);
-            this.buttonAIEditor.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.buttonAIEditor.Name = "buttonAIEditor";
-            this.buttonAIEditor.Size = new System.Drawing.Size(314, 27);
-            this.buttonAIEditor.TabIndex = 2;
-            this.buttonAIEditor.Text = "Open Battle A.I. Editor";
-            this.buttonAIEditor.UseVisualStyleBackColor = true;
-            this.buttonAIEditor.Click += new System.EventHandler(this.buttonAIEditor_Click);
+            this.buttonBattleDataEditor.Click += new System.EventHandler(this.buttonBattleDataEditor_Click);
             // 
             // buttonKernelBrowse
             // 
@@ -223,7 +209,6 @@
             this.Controls.Add(this.groupBoxScene);
             this.Controls.Add(this.groupBoxKernel2);
             this.Controls.Add(this.groupBoxKernel);
-            this.Controls.Add(this.buttonAIEditor);
             this.Controls.Add(this.buttonBattleDataEditor);
             this.Controls.Add(this.buttonKernelEditor);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -249,7 +234,6 @@
 
         private System.Windows.Forms.Button buttonKernelEditor;
         private System.Windows.Forms.Button buttonBattleDataEditor;
-        private System.Windows.Forms.Button buttonAIEditor;
         private System.Windows.Forms.Button buttonKernelBrowse;
         private System.Windows.Forms.GroupBox groupBoxKernel;
         private System.Windows.Forms.TextBox textBoxKernel;

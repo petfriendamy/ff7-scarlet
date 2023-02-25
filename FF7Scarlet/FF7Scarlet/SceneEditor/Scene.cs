@@ -8,7 +8,7 @@ namespace FF7Scarlet.SceneEditor
         public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ATTACK_COUNT = 32,
             NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152,
             FORMATION_BLOCK_SIZE = 504, ENEMY_AI_BLOCK_SIZE = 4090;
-        private readonly Enemy[] enemies = new Enemy[ENEMY_COUNT];
+        private readonly Enemy?[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
         private readonly Attack?[] attackList = new Attack?[ATTACK_COUNT];
 
@@ -18,6 +18,18 @@ namespace FF7Scarlet.SceneEditor
         private readonly byte[] enemyAIraw = new byte[ENEMY_AI_BLOCK_SIZE];
         private byte[] rawData;
 
+        public Enemy?[] Enemies
+        {
+            get { return enemies; }
+        }
+        public Formation[] Formations
+        {
+            get { return formations; }
+        }
+        public Attack?[] AttackList
+        {
+            get { return attackList; }
+        }
         public bool ScriptsLoaded { get; private set; } = false;
 
         public Scene(string filePath)
@@ -45,15 +57,6 @@ namespace FF7Scarlet.SceneEditor
             ParseData(rawData);
         }
 
-        public Enemy GetEnemyByNumber(int id)
-        {
-            if (id >= 1 && id <= ENEMY_COUNT)
-            {
-                return enemies[id - 1];
-            }
-            throw new ArgumentOutOfRangeException();
-        }
-
         public bool IsEmpty()
         {
             return (enemies[0] == null && enemies[1] == null && enemies[2] == null);
@@ -70,13 +73,14 @@ namespace FF7Scarlet.SceneEditor
                 string temp = "";
                 for (int i = 0; i < ENEMY_COUNT; i++)
                 {
-                    if (enemies[i] == null)
+                    var enemy = enemies[i];
+                    if (enemy == null)
                     {
                         temp += "(none)";
                     }
                     else
                     {
-                        temp += enemies[i].Name;
+                        temp += enemy.Name.ToString();
                     }
                     if (i + 1 < ENEMY_COUNT)
                     {
@@ -87,16 +91,24 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        public string GetAttackName(int id)
+        public Attack? GetAttackByID(ushort id)
         {
-            foreach (var atk in attackList)
+            if (id != HexParser.NULL_OFFSET_16_BIT)
             {
-                if (atk != null && atk.ID == id)
+                foreach (var atk in attackList)
                 {
-                    var str = atk.Name.ToString();
-                    if (str == null) { return $"Unnamed ({id:X4})"; }
-                    else { return str; }
+                    if (atk?.ID == id) { return atk; }
                 }
+            }
+            return null;
+        }
+
+        public string GetAttackName(ushort id)
+        {
+            var atk = GetAttackByID(id);
+            if (atk != null)
+            {
+                return atk.GetNameString();
             }
             return $"Unknown ({id:X4})";
         }
@@ -163,7 +175,7 @@ namespace FF7Scarlet.SceneEditor
                     for (i = 0; i < ATTACK_COUNT; ++i)
                     {
                         attackName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
-                        if (attackID[i] != DataManager.NULL_OFFSET_16_BIT)
+                        if (attackID[i] != HexParser.NULL_OFFSET_16_BIT)
                         {
                             attackList[i] = new Attack(attackID[i], attackName[i], attackData[i]);
                         }
@@ -204,57 +216,61 @@ namespace FF7Scarlet.SceneEditor
 
         public void ParseAIScripts()
         {
-            int i, j, next;
-
-            //parse formation scripts
-            for (i = 0; i < FORMATION_COUNT; ++i)
+            if (!IsEmpty()) //no need to parse an empty scene
             {
-                if (formationAIoffset[i] != DataManager.NULL_OFFSET_16_BIT)
+                int i, j, next;
+
+                //parse formation scripts
+                for (i = 0; i < FORMATION_COUNT; ++i)
                 {
-                    next = -1;
-                    for (j = i + 1; j < FORMATION_COUNT && next == -1; ++j)
+                    if (formationAIoffset[i] != HexParser.NULL_OFFSET_16_BIT)
                     {
-                        if (formationAIoffset[j] != DataManager.NULL_OFFSET_16_BIT)
+                        next = -1;
+                        for (j = i + 1; j < FORMATION_COUNT && next == -1; ++j)
                         {
-                            next = formationAIoffset[j];
+                            if (formationAIoffset[j] != HexParser.NULL_OFFSET_16_BIT)
+                            {
+                                next = formationAIoffset[j];
+                            }
+                        }
+                        try
+                        {
+                            formations[i] = new Formation();
+                            formations[i].ParseScripts(formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new FileLoadException($"An error occurred while parsing the formation scripts: {ex.Message}", ex);
                         }
                     }
-                    try
-                    {
-                        formations[i] = new Formation();
-                        formations[i].ParseScripts(formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new FileLoadException($"An error occurred while parsing the formation scripts: {ex.Message}", ex);
-                    }
                 }
-            }
 
-            //parse enemy scripts
-            for (i = 0; i < ENEMY_COUNT; ++i)
-            {
-                if (enemies[i] != null && enemyAIoffset[i] != DataManager.NULL_OFFSET_16_BIT)
+                //parse enemy scripts
+                for (i = 0; i < ENEMY_COUNT; ++i)
                 {
-                    next = -1;
-                    for (j = i + 1; j < ENEMY_COUNT && next == -1; ++j)
+                    var e = enemies[i];
+                    if (e != null && enemyAIoffset[i] != HexParser.NULL_OFFSET_16_BIT)
                     {
-                        if (enemyAIoffset[j] != DataManager.NULL_OFFSET_16_BIT)
+                        next = -1;
+                        for (j = i + 1; j < ENEMY_COUNT && next == -1; ++j)
                         {
-                            next = enemyAIoffset[j];
+                            if (enemyAIoffset[j] != HexParser.NULL_OFFSET_16_BIT)
+                            {
+                                next = enemyAIoffset[j];
+                            }
+                        }
+                        try
+                        {
+                            e.ParseScripts(enemyAIraw, ENEMY_COUNT * 2, enemyAIoffset[i], next);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new FileLoadException($"An error occurred while parsing the script for {e.Name} (enemy #{i + 1}): {ex.Message}", ex);
                         }
                     }
-                    try
-                    {
-                        enemies[i].ParseScripts(enemyAIraw, ENEMY_COUNT * 2, enemyAIoffset[i], next);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new FileLoadException($"An error occurred while parsing the script for {enemies[i].Name} (enemy #{i + 1}): {ex.Message}", ex);
-                    }
                 }
+                ScriptsLoaded = true;
             }
-            ScriptsLoaded = true;
         }
 
         public int SyncAttack(Attack attack)
@@ -291,7 +307,7 @@ namespace FF7Scarlet.SceneEditor
                         {
                             if (enemies[i] == null)
                             {
-                                writer.Write(GetNullBlock(ENEMY_DATA_BLOCK_SIZE + NAME_LENGTH));
+                                writer.Write(HexParser.GetNullBlock(ENEMY_DATA_BLOCK_SIZE + NAME_LENGTH));
                             }
                             else { writer.Write(enemies[i].GetRawEnemyData()); }
                         }
@@ -308,7 +324,7 @@ namespace FF7Scarlet.SceneEditor
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
                             atk = attackList[i];
-                            if (atk == null) { writer.Write(GetNullBlock(Attack.BLOCK_SIZE)); }
+                            if (atk == null) { writer.Write(HexParser.GetNullBlock(Attack.BLOCK_SIZE)); }
                             else { writer.Write(atk.GetRawData()); }
                         }
                         for (i = 0; i < ATTACK_COUNT; ++i)
@@ -320,11 +336,11 @@ namespace FF7Scarlet.SceneEditor
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
                             atk = attackList[i];
-                            if (atk == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
+                            if (atk == null) { writer.Write(HexParser.GetNullBlock(NAME_LENGTH)); }
                             else
                             {
                                 var name = atk.Name.GetBytes();
-                                if (name == null) { writer.Write(GetNullBlock(NAME_LENGTH)); }
+                                if (name == null) { writer.Write(HexParser.GetNullBlock(NAME_LENGTH)); }
                                 else { writer.Write(name); }
                             }
                         }
@@ -419,7 +435,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 if (aiContainers[i] == null || !aiContainers[i].HasScripts())
                 {
-                    offsets[i] = DataManager.NULL_OFFSET_16_BIT;
+                    offsets[i] = HexParser.NULL_OFFSET_16_BIT;
                     length[i] = 0;
                     scriptList.Add(new byte[0]);
                 }
@@ -467,16 +483,6 @@ namespace FF7Scarlet.SceneEditor
                         end = true;
                     }
                 }
-            }
-            return data;
-        }
-
-        private byte[] GetNullBlock(int size)
-        {
-            var data = new byte[size];
-            for (int i = 0; i < size; ++i)
-            {
-                data[i] = 0xFF;
             }
             return data;
         }

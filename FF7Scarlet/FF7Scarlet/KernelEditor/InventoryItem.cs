@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -20,6 +14,13 @@ namespace FF7Scarlet.KernelEditor
         public byte Index { get; private set; }
         public int Amount { get; set; }
         public ItemType Type { get; private set; }
+
+        public InventoryItem(ushort itemIndex, int amount)
+        {
+            Index = GetIndex(itemIndex);
+            Amount = amount;
+            Type = GetType(itemIndex);
+        }
 
         public InventoryItem(byte[] data)
         {
@@ -50,12 +51,12 @@ namespace FF7Scarlet.KernelEditor
             Amount = amountBytes[0];
         }
 
-        public byte GetIndex(int value)
+        public static byte GetIndex(ushort value)
         {
             return GetIndex(GetType(value), value);
         }
 
-        public byte GetIndex(ItemType type, int value)
+        public static byte GetIndex(ItemType type, ushort value)
         {
             switch (type)
             {
@@ -72,7 +73,7 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        public ItemType GetType(int value)
+        public static ItemType GetType(ushort value)
         {
             if (value > MAX_INDEX)
             {

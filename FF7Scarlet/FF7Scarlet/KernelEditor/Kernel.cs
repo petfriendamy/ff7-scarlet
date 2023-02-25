@@ -266,7 +266,7 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].CameraMovementId;
                 default:
-                    return DataManager.NULL_OFFSET_16_BIT;
+                    return HexParser.NULL_OFFSET_16_BIT;
             }
         }
 
@@ -279,7 +279,7 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.AttackData:
                     return Attacks[pos].CameraMovementIDMulti;
                 default:
-                    return DataManager.NULL_OFFSET_16_BIT;
+                    return HexParser.NULL_OFFSET_16_BIT;
             }
         }
 

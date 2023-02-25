@@ -7,22 +7,20 @@ using FF7Scarlet.Shared;
 
 namespace FF7Scarlet
 {
-    public enum FormType { KernelEditor, BattleDataEditor, BattleAIEditor }
+    public enum FormType { KernelEditor, SceneEditor }
     public enum FileClass { Kernel, Kernel2, Scene }
 
     public static class DataManager
     {
         private static StartupForm? startupForm = null;
         private static KernelForm? kernelForm = null;
-        private static BattleAIForm? battleAIForm = null;
+        private static SceneEditorForm? sceneEditorForm = null;
         private static Scene[] sceneList = new Scene[SCENE_COUNT];
         private static byte[] sceneLookupTable = new byte[64];
         private static Dictionary<ushort, Attack> syncedAttacks = new();
 
         public const int SCENE_COUNT = 256;
         private const int COMPRESSED_BLOCK_SIZE = 0x2000, UNCOMPRESSED_BLOCK_SIZE = 7808, HEADER_COUNT = 16;
-        public const ushort NULL_OFFSET_16_BIT = 0xFFFF;
-        public const uint NULL_OFFSET_32_BIT = 0xFFFFFFFF;
 
         public static string KernelPath { get; private set; } = string.Empty;
         public static string Kernel2Path { get; private set; } = string.Empty;
@@ -147,35 +145,19 @@ namespace FF7Scarlet
                     if (kernelForm == null)
                     {
                         kernelForm = new KernelForm();
+                        kernelForm.FormClosed += new FormClosedEventHandler(kernelFormClosed);
                         kernelForm.Show();
                     }
                     break;
-                case FormType.BattleDataEditor:
-                    break;
-                case FormType.BattleAIEditor:
-                    if (battleAIForm == null)
+                case FormType.SceneEditor:
+                    if (sceneEditorForm == null)
                     {
-                        battleAIForm = new BattleAIForm(syncedAttacks);
-                        battleAIForm.Show();
+                        sceneEditorForm = new SceneEditorForm(syncedAttacks);
+                        sceneEditorForm.FormClosed += new FormClosedEventHandler(sceneFormClosed);
+                        sceneEditorForm.Show();
                     }
                     break;
             }
-        }
-
-        public static void CloseForm(FormType type)
-        {
-            switch (type)
-            {
-                case FormType.KernelEditor:
-                    kernelForm = null;
-                    break;
-                case FormType.BattleDataEditor:
-                    break;
-                case FormType.BattleAIEditor:
-                    battleAIForm = null;
-                    break;
-            }
-            startupForm?.EnableFormButton(type);
         }
 
         public static bool FormIsOpen(FormType type)
@@ -184,10 +166,8 @@ namespace FF7Scarlet
             {
                 case FormType.KernelEditor:
                     return kernelForm != null;
-                case FormType.BattleDataEditor:
+                case FormType.SceneEditor:
                     return false;
-                case FormType.BattleAIEditor:
-                    return battleAIForm != null;
             }
             return false;
         }
@@ -279,8 +259,8 @@ namespace FF7Scarlet
             if (syncedAttacks.ContainsKey(attack.ID)) { syncedAttacks[attack.ID] = newAtk; } 
             else { syncedAttacks.Add(attack.ID, newAtk); }
 
-            //if either of the scene editors are open, sync data over there
-            if (battleAIForm != null)
+            //if the scene editor is open, sync data over there
+            if (sceneEditorForm != null)
             {
                 syncInternal = false;
             }
@@ -383,7 +363,7 @@ namespace FF7Scarlet
                 {
                     Array.Copy(fileData, currOffset + j, headerBytes, 0, 4);
                     currHeader = BitConverter.ToUInt32(headerBytes, 0);
-                    if (currHeader != NULL_OFFSET_32_BIT) //check if offset exists first
+                    if (currHeader != HexParser.NULL_OFFSET_32_BIT) //check if offset exists first
                     {
                         //determine if the next offset exists or not
                         if (i < 15)
@@ -391,11 +371,11 @@ namespace FF7Scarlet
                             Array.Copy(fileData, currOffset + j + 4, headerBytes, 0, 4);
                             nextHeader = BitConverter.ToUInt32(headerBytes, 0);
                         }
-                        else { nextHeader = NULL_OFFSET_32_BIT; }
+                        else { nextHeader = HexParser.NULL_OFFSET_32_BIT; }
 
                         //get the offset and size of this compressed file
                         sceneOffset[currScene] = (currHeader * 4) + currOffset;
-                        if (nextHeader == NULL_OFFSET_32_BIT)
+                        if (nextHeader == HexParser.NULL_OFFSET_32_BIT)
                         {
                             sceneSize[currScene] = COMPRESSED_BLOCK_SIZE - (currHeader * 4);
                         }
@@ -503,7 +483,7 @@ namespace FF7Scarlet
                         {
                             writer.Write(headers[currScene + j]);
                         }
-                        else { writer.Write(NULL_OFFSET_32_BIT); }
+                        else { writer.Write(HexParser.NULL_OFFSET_32_BIT); }
                     }
 
                     //write the scenes assigned to this block
@@ -540,6 +520,18 @@ namespace FF7Scarlet
                 compressedData = outputStream.ToArray();
             }
             return compressedData;
+        }
+
+        private static void kernelFormClosed(object? sender, FormClosedEventArgs e)
+        {
+            kernelForm = null;
+            startupForm?.EnableFormButton(FormType.KernelEditor);
+        }
+
+        private static void sceneFormClosed(object? sender, FormClosedEventArgs e)
+        {
+            sceneEditorForm = null;
+            startupForm?.EnableFormButton(FormType.SceneEditor);
         }
     }
 }

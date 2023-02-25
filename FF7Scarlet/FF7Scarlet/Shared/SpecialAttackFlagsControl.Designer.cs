@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBoxMain = new System.Windows.Forms.GroupBox();
+            this.checkBoxUnknown2 = new System.Windows.Forms.CheckBox();
             this.checkBoxUnknown1 = new System.Windows.Forms.CheckBox();
             this.checkBoxAlwaysCrit = new System.Windows.Forms.CheckBox();
             this.checkBoxNoRetargetIfDead = new System.Windows.Forms.CheckBox();
@@ -40,7 +41,6 @@
             this.checkBoxDrainsHPandMP = new System.Windows.Forms.CheckBox();
             this.checkBoxDrainsDamage = new System.Windows.Forms.CheckBox();
             this.checkBoxDamageMP = new System.Windows.Forms.CheckBox();
-            this.checkBoxUnknown2 = new System.Windows.Forms.CheckBox();
             this.groupBoxMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,6 +65,16 @@
             this.groupBoxMain.TabIndex = 46;
             this.groupBoxMain.TabStop = false;
             this.groupBoxMain.Text = "Special attack flags";
+            // 
+            // checkBoxUnknown2
+            // 
+            this.checkBoxUnknown2.AutoSize = true;
+            this.checkBoxUnknown2.Location = new System.Drawing.Point(149, 72);
+            this.checkBoxUnknown2.Name = "checkBoxUnknown2";
+            this.checkBoxUnknown2.Size = new System.Drawing.Size(77, 19);
+            this.checkBoxUnknown2.TabIndex = 12;
+            this.checkBoxUnknown2.Text = "Unknown";
+            this.checkBoxUnknown2.UseVisualStyleBackColor = true;
             // 
             // checkBoxUnknown1
             // 
@@ -175,16 +185,6 @@
             this.checkBoxDamageMP.TabIndex = 0;
             this.checkBoxDamageMP.Text = "Damages MP";
             this.checkBoxDamageMP.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxUnknown2
-            // 
-            this.checkBoxUnknown2.AutoSize = true;
-            this.checkBoxUnknown2.Location = new System.Drawing.Point(149, 72);
-            this.checkBoxUnknown2.Name = "checkBoxUnknown2";
-            this.checkBoxUnknown2.Size = new System.Drawing.Size(77, 19);
-            this.checkBoxUnknown2.TabIndex = 12;
-            this.checkBoxUnknown2.Text = "Unknown";
-            this.checkBoxUnknown2.UseVisualStyleBackColor = true;
             // 
             // SpecialAttackFlagsControl
             // 

@@ -29,67 +29,69 @@ namespace FF7Scarlet.AIEditor
         /// </summary>
         private void InitializeComponent()
         {
-            this.checkBoxEnabled = new System.Windows.Forms.CheckBox();
-            this.comboBoxParameter = new System.Windows.Forms.ComboBox();
-            this.comboBoxType = new System.Windows.Forms.ComboBox();
-            this.comboBoxOperand = new System.Windows.Forms.ComboBox();
-            this.SuspendLayout();
+            checkBoxEnabled = new CheckBox();
+            comboBoxParameter = new ComboBox();
+            comboBoxType = new ComboBox();
+            comboBoxOperand = new ComboBox();
+            SuspendLayout();
             // 
             // checkBoxEnabled
             // 
-            this.checkBoxEnabled.AutoSize = true;
-            this.checkBoxEnabled.Location = new System.Drawing.Point(3, 6);
-            this.checkBoxEnabled.Name = "checkBoxEnabled";
-            this.checkBoxEnabled.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxEnabled.TabIndex = 20;
-            this.checkBoxEnabled.UseVisualStyleBackColor = true;
-            this.checkBoxEnabled.CheckedChanged += new System.EventHandler(this.checkBoxEnabled_CheckedChanged);
+            checkBoxEnabled.AutoSize = true;
+            checkBoxEnabled.Location = new Point(4, 7);
+            checkBoxEnabled.Margin = new Padding(4, 3, 4, 3);
+            checkBoxEnabled.Name = "checkBoxEnabled";
+            checkBoxEnabled.Size = new Size(15, 14);
+            checkBoxEnabled.TabIndex = 20;
+            checkBoxEnabled.UseVisualStyleBackColor = true;
+            checkBoxEnabled.CheckedChanged += checkBoxEnabled_CheckedChanged;
             // 
             // comboBoxParameter
             // 
-            this.comboBoxParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxParameter.Enabled = false;
-            this.comboBoxParameter.FormattingEnabled = true;
-            this.comboBoxParameter.Location = new System.Drawing.Point(220, 3);
-            this.comboBoxParameter.Name = "comboBoxParameter";
-            this.comboBoxParameter.Size = new System.Drawing.Size(200, 21);
-            this.comboBoxParameter.TabIndex = 19;
+            comboBoxParameter.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxParameter.Enabled = false;
+            comboBoxParameter.FormattingEnabled = true;
+            comboBoxParameter.Location = new Point(257, 3);
+            comboBoxParameter.Margin = new Padding(4, 3, 4, 3);
+            comboBoxParameter.Name = "comboBoxParameter";
+            comboBoxParameter.Size = new Size(233, 23);
+            comboBoxParameter.TabIndex = 19;
             // 
             // comboBoxType
             // 
-            this.comboBoxType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxType.Enabled = false;
-            this.comboBoxType.FormattingEnabled = true;
-            this.comboBoxType.Location = new System.Drawing.Point(114, 3);
-            this.comboBoxType.Name = "comboBoxType";
-            this.comboBoxType.Size = new System.Drawing.Size(100, 21);
-            this.comboBoxType.TabIndex = 18;
+            comboBoxType.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxType.Enabled = false;
+            comboBoxType.FormattingEnabled = true;
+            comboBoxType.Location = new Point(133, 3);
+            comboBoxType.Margin = new Padding(4, 3, 4, 3);
+            comboBoxType.Name = "comboBoxType";
+            comboBoxType.Size = new Size(116, 23);
+            comboBoxType.TabIndex = 18;
             // 
             // comboBoxOperand
             // 
-            this.comboBoxOperand.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxOperand.Enabled = false;
-            this.comboBoxOperand.FormattingEnabled = true;
-            this.comboBoxOperand.Location = new System.Drawing.Point(24, 3);
-            this.comboBoxOperand.Name = "comboBoxOperand";
-            this.comboBoxOperand.Size = new System.Drawing.Size(84, 21);
-            this.comboBoxOperand.TabIndex = 17;
+            comboBoxOperand.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxOperand.Enabled = false;
+            comboBoxOperand.FormattingEnabled = true;
+            comboBoxOperand.Location = new Point(28, 3);
+            comboBoxOperand.Margin = new Padding(4, 3, 4, 3);
+            comboBoxOperand.Name = "comboBoxOperand";
+            comboBoxOperand.Size = new Size(97, 23);
+            comboBoxOperand.TabIndex = 17;
             // 
             // ParameterControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.checkBoxEnabled);
-            this.Controls.Add(this.comboBoxParameter);
-            this.Controls.Add(this.comboBoxType);
-            this.Controls.Add(this.comboBoxOperand);
-            this.Name = "ParameterControl";
-            this.Size = new System.Drawing.Size(423, 27);
-            this.Load += new System.EventHandler(this.ParameterControl_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(checkBoxEnabled);
+            Controls.Add(comboBoxParameter);
+            Controls.Add(comboBoxType);
+            Controls.Add(comboBoxOperand);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "ParameterControl";
+            Size = new Size(493, 31);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

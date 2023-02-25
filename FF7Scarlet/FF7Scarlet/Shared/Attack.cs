@@ -38,6 +38,13 @@ namespace FF7Scarlet.Shared
             ParseData(data);
         }
 
+        public string GetNameString()
+        {
+            var str = Name.ToString();
+            if (str == null) { return $"Unnamed ({ID:X4})"; }
+            else { return str; }
+        }
+
         public byte[] GetRawData()
         {
             var copy = new byte[rawData.Length];

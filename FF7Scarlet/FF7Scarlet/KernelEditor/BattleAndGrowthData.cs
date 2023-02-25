@@ -119,12 +119,12 @@ namespace FF7Scarlet.KernelEditor
             for (i = 0; i < AI_BLOCK_COUNT; ++i)
             {
                 characterAI[i] = new CharacterAI();
-                if (characterAIoffsets[i] != DataManager.NULL_OFFSET_16_BIT)
+                if (characterAIoffsets[i] != HexParser.NULL_OFFSET_16_BIT)
                 {
                     next = -1;
                     for (j = i + 1; j < AI_BLOCK_COUNT && next == -1; ++j)
                     {
-                        if (characterAIoffsets[j] != DataManager.NULL_OFFSET_16_BIT)
+                        if (characterAIoffsets[j] != HexParser.NULL_OFFSET_16_BIT)
                         {
                             next = characterAIoffsets[j];
                         }

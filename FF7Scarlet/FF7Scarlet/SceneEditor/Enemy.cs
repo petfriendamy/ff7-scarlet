@@ -5,15 +5,14 @@ namespace FF7Scarlet.SceneEditor
 {
     public class Enemy : AIContainer
     {
-        private ResistanceRate[] resistRates = new ResistanceRate[8];
-        private byte[] animationIndexes = new byte[16];
-        private ushort[] attackIDs = new ushort[16];
-        private ushort[] camIDs = new ushort[16];
-        private ushort[] manipAttacks = new ushort[3];
-        private ItemDropRate[] dropRates = new ItemDropRate[4];
-        private ushort morphItem, unknown;
-        private byte[] statusImmunities = new byte[4];
-        private byte alignFF;
+        public const int ATTACK_COUNT = 16;
+        private readonly ResistanceRate?[] resistanceRates = new ResistanceRate?[8];
+        private readonly byte[] actionAnimationIndexes = new byte[ATTACK_COUNT];
+        private readonly ushort[] attackIDs = new ushort[ATTACK_COUNT];
+        private readonly ushort[] cameraMovementIDs = new ushort[ATTACK_COUNT];
+        private readonly ushort[] manipAttackIDs = new ushort[3];
+        private readonly ItemDropRate?[] itemDropRates = new ItemDropRate?[4];
+        private ushort unknown;
 
         public int ID { get; }
         public FFText Name { get; set; }
@@ -25,19 +24,64 @@ namespace FF7Scarlet.SceneEditor
         public byte Defense { get; set; }
         public byte Magic { get; set; }
         public byte MDef { get; set; }
+        public Statuses StatusImmunities { get; set; }
         public ushort MP { get; set; }
         public ushort AP { get; set; }
+        public ushort MorphItemIndex { get; set; }
         public byte BackAttackMultiplier { get; set; }
-        public int HP { get; set; }
-        public int EXP { get; set; }
-        public int Gil { get; set; }
-
-        public Enemy(Scene parent, int id, FFText name, byte[] data)
+        public uint HP { get; set; }
+        public uint EXP { get; set; }
+        public uint Gil { get; set; }
+        public ResistanceRate?[] ResistanceRates
         {
+            get { return resistanceRates; }
+        }
+        public byte[] ActionAnimationIndexes
+        {
+            get { return actionAnimationIndexes; }
+        }
+        public ushort[] AttackIDs
+        {
+            get { return attackIDs; }
+        }
+        public ushort[] CameraMovementIDs
+        {
+            get { return cameraMovementIDs; }
+        }
+        public ushort[] ManipAttackIDs
+        {
+            get { return manipAttackIDs; }
+        }
+        public ItemDropRate?[] ItemDropRates
+        {
+            get { return itemDropRates; }
+        }
+
+        public Enemy(Scene parent, int id, FFText name, byte[]? data)
+        {
+            if (name.Length > Scene.NAME_LENGTH)
+            {
+                throw new ArgumentException("Enemy name is too long.");
+            }
             Parent = parent;
             ID = id;
             Name = name;
-            ParseData(data);
+
+            if (data == null) //initialize data as null
+            {
+                int i;
+                for (i = 0; i < ATTACK_COUNT; ++i)
+                {
+                    AttackIDs[i] = HexParser.NULL_OFFSET_16_BIT;
+                    CameraMovementIDs[i] = HexParser.NULL_OFFSET_16_BIT;
+                }
+                for (i = 0; i < 3; ++i)
+                {
+                    ManipAttackIDs[i] = HexParser.NULL_OFFSET_16_BIT;
+                }
+                MorphItemIndex = HexParser.NULL_OFFSET_16_BIT;
+            }
+            else { ParseData(data); }
         }
 
         private void ParseData(byte[] data)
@@ -62,29 +106,30 @@ namespace FF7Scarlet.SceneEditor
                 for (i = 0; i < 8; ++i)
                 {
                     j = reader.ReadByte();
-                    if (temp[i] != 0xFF)
+                    if (temp[i] == 0xFF && j == 0xFF) //none
                     {
-                        if (temp[i] < 0x10) //element
-                        {
-                            resistRates[i] = new ElementResistanceRate((MateriaElements)temp[i], (ResistRates)j);
-                        }
-                        else //status effect
-                        {
-                            resistRates[i] = new StatusResistanceRate((EquipmentStatus)(temp[i] - 0x20), (ResistRates)j);
-                        }
+                        ResistanceRates[i] = null;
+                    }
+                    else if (temp[i] < 0x10) //element
+                    {
+                        ResistanceRates[i] = new ElementResistanceRate((MateriaElements)temp[i], (ResistRates)j);
+                    }
+                    else //status effect
+                    {
+                        ResistanceRates[i] = new StatusResistanceRate((EquipmentStatus)(temp[i] - 0x20), (ResistRates)j);
                     }
                 }
-                for (i = 0; i < 16; ++i)
+                for (i = 0; i < ATTACK_COUNT; ++i)
                 {
-                    animationIndexes[i] = reader.ReadByte();
+                    ActionAnimationIndexes[i] = reader.ReadByte();
                 }
-                for (i = 0; i < 16; ++i)
+                for (i = 0; i < ATTACK_COUNT; ++i)
                 {
-                    attackIDs[i] = reader.ReadUInt16();
+                    AttackIDs[i] = reader.ReadUInt16();
                 }
-                for (i = 0; i < 16; ++i)
+                for (i = 0; i < ATTACK_COUNT; ++i)
                 {
-                    camIDs[i] = reader.ReadUInt16();
+                    CameraMovementIDs[i] = reader.ReadUInt16();
                 }
                 for (i = 0; i < 4; ++i) //drop rates
                 {
@@ -92,26 +137,36 @@ namespace FF7Scarlet.SceneEditor
                 }
                 for (i = 0; i < 4; ++i)
                 {
-                    dropRates[i] = new ItemDropRate(reader.ReadUInt16(), temp[i]);
+                    j = reader.ReadUInt16();
+                    if (temp[i] == 0xFF && j == HexParser.NULL_OFFSET_16_BIT) //none
+                    {
+                        ItemDropRates[i] = null;
+                    }
+                    else
+                    {
+                        ItemDropRates[i] = new ItemDropRate((ushort)j, temp[i]);
+                    }
                 }
                 for (i = 0; i < 3; ++i)
                 {
-                    manipAttacks[i] = reader.ReadUInt16();
+                    ManipAttackIDs[i] = reader.ReadUInt16();
                 }
                 unknown = reader.ReadUInt16();
                 MP = reader.ReadUInt16();
                 AP = reader.ReadUInt16();
-                morphItem = reader.ReadUInt16();
+                MorphItemIndex = reader.ReadUInt16();
                 BackAttackMultiplier = reader.ReadByte();
-                alignFF = reader.ReadByte();
-                HP = reader.ReadInt32();
-                EXP = reader.ReadInt32();
-                Gil = reader.ReadInt32();
-                for (i = 0; i < 4; ++i)
-                {
-                    statusImmunities[i] = reader.ReadByte();
-                }
+                reader.ReadByte(); //padding
+                HP = reader.ReadUInt32();
+                EXP = reader.ReadUInt32();
+                Gil = reader.ReadUInt32();
+                StatusImmunities = (Statuses)~reader.ReadUInt32();
             }
+        }
+
+        public bool AttackIsManipable(ushort id)
+        {
+            return (id != HexParser.NULL_OFFSET_16_BIT && ManipAttackIDs.ToList().Contains(id));
         }
 
         public byte[] GetRawEnemyData()
@@ -120,7 +175,9 @@ namespace FF7Scarlet.SceneEditor
             using (var ms = new MemoryStream(data, true))
             using (var writer = new BinaryWriter(ms))
             {
-                writer.Write(Name.GetBytes());
+                var name = Name.GetBytes();
+                if (name == null) { writer.Write(HexParser.GetNullBlock(Scene.NAME_LENGTH)); }
+                else { writer.Write(name); }
                 writer.Write(Level);
                 writer.Write(Speed);
                 writer.Write(Luck);
@@ -129,7 +186,7 @@ namespace FF7Scarlet.SceneEditor
                 writer.Write(Defense);
                 writer.Write(Magic);
                 writer.Write(MDef);
-                foreach (var r in resistRates)
+                foreach (var r in ResistanceRates)
                 {
                     if (r == null) { writer.Write((byte)0xFF); }
                     else
@@ -137,7 +194,7 @@ namespace FF7Scarlet.SceneEditor
                         writer.Write(r.GetID());
                     }
                 }
-                foreach (var r in resistRates)
+                foreach (var r in ResistanceRates)
                 {
                     if (r == null) { writer.Write((byte)0xFF); }
                     else
@@ -145,19 +202,19 @@ namespace FF7Scarlet.SceneEditor
                         writer.Write((byte)r.Rate);
                     }
                 }
-                foreach (var a in animationIndexes)
+                foreach (var a in ActionAnimationIndexes)
                 {
                     writer.Write(a);
                 }
-                foreach (var a in attackIDs)
+                foreach (var a in AttackIDs)
                 {
                     writer.Write(a);
                 }
-                foreach (var c in camIDs)
+                foreach (var c in CameraMovementIDs)
                 {
                     writer.Write(c);
                 }
-                foreach (var d in dropRates)
+                foreach (var d in ItemDropRates)
                 {
                     if (d == null) { writer.Write((byte)0xFF); }
                     else
@@ -165,32 +222,29 @@ namespace FF7Scarlet.SceneEditor
                         writer.Write(d.GetRawDropRate());
                     }
                 }
-                foreach (var d in dropRates)
+                foreach (var d in ItemDropRates)
                 {
-                    if (d == null) { writer.Write((ushort)0xFFFF); }
+                    if (d == null) { writer.Write(HexParser.NULL_OFFSET_16_BIT); }
                     else
                     {
                         writer.Write(d.ItemID);
                     }
                 }
-                foreach (var m in manipAttacks)
+                foreach (var m in ManipAttackIDs)
                 {
                     writer.Write(m);
                 }
                 writer.Write(unknown);
                 writer.Write(MP);
                 writer.Write(AP);
-                writer.Write(morphItem);
+                writer.Write(MorphItemIndex);
                 writer.Write(BackAttackMultiplier);
-                writer.Write(alignFF);
+                writer.Write((byte)0xFF);
                 writer.Write(HP);
                 writer.Write(EXP);
                 writer.Write(Gil);
-                foreach (var s in statusImmunities)
-                {
-                    writer.Write(s);
-                }
-                writer.Write(0xFFFFFFFF);
+                writer.Write((uint)~StatusImmunities);
+                writer.Write(HexParser.NULL_OFFSET_32_BIT);
             }
             return data;
         }

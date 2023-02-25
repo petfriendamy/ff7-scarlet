@@ -54,12 +54,12 @@ namespace FF7Scarlet.AIEditor
             //get scripts
             for (i = 0; i < SCRIPT_NUMBER; ++i)
             {
-                if (scriptOffsets[i] != DataManager.NULL_OFFSET_16_BIT) //check if script exists
+                if (scriptOffsets[i] != HexParser.NULL_OFFSET_16_BIT) //check if script exists
                 {
                     next = -1;
                     for (j = i + 1; j < SCRIPT_NUMBER && next == -1; ++j) //check for next script (if it exists)
                     {
-                        if (scriptOffsets[j] != DataManager.NULL_OFFSET_16_BIT)
+                        if (scriptOffsets[j] != HexParser.NULL_OFFSET_16_BIT)
                         {
                             next = scriptOffsets[j];
                         }
@@ -110,7 +110,7 @@ namespace FF7Scarlet.AIEditor
             {
                 if (scripts[i] == null || scripts[i].IsEmpty)
                 {
-                    offsets[i] = DataManager.NULL_OFFSET_16_BIT;
+                    offsets[i] = HexParser.NULL_OFFSET_16_BIT;
                 }
                 else
                 {

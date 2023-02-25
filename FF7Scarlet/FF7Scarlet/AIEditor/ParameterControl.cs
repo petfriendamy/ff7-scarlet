@@ -76,7 +76,7 @@ namespace FF7Scarlet.AIEditor
         {
             get
             {
-                if (Parent.Parent is ParameterForm)
+                if (Parent?.Parent is ParameterForm)
                 {
                     return Parent.Parent as ParameterForm;
                 }
@@ -90,17 +90,14 @@ namespace FF7Scarlet.AIEditor
         {
             InitializeComponent();
             operands = (from op in OpcodeInfo.OPCODE_LIST
-                        where op.IsOperand()
+                        where op.IsOperand
                         select op).ToList();
 
             paramTypes = (from op in OpcodeInfo.OPCODE_LIST
-                          where op.IsParameter() && op.Group != OpcodeGroups.Jump
+                          where op.IsParameter && op.Group != OpcodeGroups.Jump
                             && op.ParameterType != ParameterTypes.String
                           select op).ToList();
-        }
 
-        private void ParameterControl_Load(object sender, EventArgs e)
-        {
             foreach (var op in operands)
             {
                 comboBoxOperand.Items.Add(op.ShortName);
@@ -178,14 +175,18 @@ namespace FF7Scarlet.AIEditor
                     //add common variables to the dropdown list
                     if (op.ParameterType != ParameterTypes.String && op.ParameterType != ParameterTypes.Debug)
                     {
-                        var temp = int.Parse(parameter.ToString(), NumberStyles.HexNumber);
-                        if (Enum.IsDefined(typeof(CommonVars.Globals), temp))
+                        var str = parameter.ToString();
+                        if (str != null)
                         {
-                            comboBoxParameter.Text += $" ({(CommonVars.Globals)temp})";
-                        }
-                        if (Enum.IsDefined(typeof(CommonVars.ActorGlobals), temp))
-                        {
-                            comboBoxParameter.Text += $" ({(CommonVars.ActorGlobals)temp})";
+                            var temp = int.Parse(str, NumberStyles.HexNumber);
+                            if (Enum.IsDefined(typeof(CommonVars.Globals), temp))
+                            {
+                                comboBoxParameter.Text += $" ({(CommonVars.Globals)temp})";
+                            }
+                            if (Enum.IsDefined(typeof(CommonVars.ActorGlobals), temp))
+                            {
+                                comboBoxParameter.Text += $" ({(CommonVars.ActorGlobals)temp})";
+                            }
                         }
                     }
                 }

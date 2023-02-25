@@ -28,7 +28,7 @@
             if (DataManager.SceneFileIsLoaded)
             {
                 buttonBattleDataEditor.Enabled = true;
-                buttonAIEditor.Enabled = true;
+                //buttonAIEditor.Enabled = true;
             }
         }
 
@@ -39,11 +39,8 @@
                 case FormType.KernelEditor:
                     buttonKernelEditor.Enabled = true;
                     break;
-                case FormType.BattleDataEditor:
+                case FormType.SceneEditor:
                     buttonBattleDataEditor.Enabled = true;
-                    break;
-                case FormType.BattleAIEditor:
-                    buttonAIEditor.Enabled = true;
                     break;
             }
         }
@@ -124,10 +121,10 @@
             buttonKernelEditor.Enabled = false;
         }
 
-        private void buttonAIEditor_Click(object sender, EventArgs e)
+        private void buttonBattleDataEditor_Click(object sender, EventArgs e)
         {
-            DataManager.OpenForm(FormType.BattleAIEditor);
-            buttonAIEditor.Enabled = false;
+            DataManager.OpenForm(FormType.SceneEditor);
+            buttonBattleDataEditor.Enabled = false;
         }
     }
 }

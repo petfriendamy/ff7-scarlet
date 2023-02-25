@@ -179,10 +179,17 @@ namespace FF7Scarlet.AIEditor
                             else if (pop2 != null && pop2.Parameter != null)
                             {
                                 string atkName = $"Unknown ({pop2.Parameter})";
-                                var scene = GetParentScene();
-                                if (scene != null)
+                                if (pop2.OpcodeInfo?.IsVariable == true)
                                 {
-                                    atkName = scene.GetAttackName(pop2.Parameter.ToInt());
+                                    atkName = pop2.Disassemble(false);
+                                }
+                                else
+                                {
+                                    var scene = GetParentScene();
+                                    if (scene != null)
+                                    {
+                                        atkName = scene.GetAttackName((ushort)pop2.Parameter.ToInt());
+                                    }
                                 }
                                 output += $"PerformAttack ({pop1.Parameter}, {atkName})";
                             }
