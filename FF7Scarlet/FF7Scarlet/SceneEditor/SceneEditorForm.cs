@@ -602,6 +602,36 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
+        private void comboBoxFormation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //stuff
+        }
+
+        private void buttonSearch_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            SceneSearchResult? search;
+            using (var form = new SceneSearchForm(sceneList))
+            {
+                result = form.ShowDialog();
+                search = form.SearchResult;
+            }
+            if (result == DialogResult.OK && search != null)
+            {
+                comboBoxSceneList.SelectedIndex = search.SceneIndex;
+                comboBoxEnemy.SelectedIndex = search.EnemyPosition;
+                comboBoxFormation.SelectedIndex = search.FormationPosition;
+                if (search.SearchType == SearchType.Enemy)
+                {
+                    tabControlMain.SelectedTab = tabPageEnemyData;
+                }
+                else
+                {
+                    tabControlMain.SelectedTab = tabPageFormationData;
+                }
+            }
+        }
+
         private void listBoxElementResistances_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = listBoxElementResistances.SelectedIndex;
@@ -741,7 +771,11 @@ namespace FF7Scarlet.SceneEditor
 
         private void SceneEditorForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (unsavedChanges)
+            if (processing)
+            {
+                e.Cancel = true;
+            }
+            else if (unsavedChanges)
             {
                 var result = MessageBox.Show("Unsaved changes will be lost. Are you sure?", "Unsaved changes",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning);

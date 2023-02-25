@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Formats.Asn1.AsnWriter;
-
-namespace FF7Scarlet.SceneEditor
+﻿namespace FF7Scarlet.SceneEditor
 {
     public partial class SceneExportForm : Form
     {
         private readonly Scene[] scenes;
         private int selectedScene;
+        private bool processing = false;
 
         public SceneExportForm(Scene[] sceneList, int selected)
         {
@@ -111,6 +100,7 @@ namespace FF7Scarlet.SceneEditor
                             {
                                 groupBoxExport.Enabled = false;
                                 buttonExport.Enabled = false;
+                                processing = true;
                                 success = await ExportMulti(path);
                             }
                         }
@@ -119,6 +109,7 @@ namespace FF7Scarlet.SceneEditor
                     {
                         MessageBox.Show("Scene(s) exported successfully.", "Done!", MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
+                        processing = false;
                         Close();
                     }
                 }
@@ -126,6 +117,7 @@ namespace FF7Scarlet.SceneEditor
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     progressBarSaving.Value = 0;
+                    processing = false;
                 }
             }
         }
@@ -180,6 +172,11 @@ namespace FF7Scarlet.SceneEditor
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
+        }
+
+        private void SceneExportForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (processing) { e.Cancel = true; }
         }
     }
 }

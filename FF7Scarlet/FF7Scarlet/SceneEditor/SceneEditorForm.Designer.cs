@@ -138,6 +138,7 @@
             labelFormationScripts = new Label();
             listBoxFormationScripts = new ListBox();
             panelTop = new Panel();
+            buttonSearch = new Button();
             comboBoxFormation = new ComboBox();
             labelFormation = new Label();
             comboBoxEnemy = new ComboBox();
@@ -1304,6 +1305,7 @@
             // 
             // panelTop
             // 
+            panelTop.Controls.Add(buttonSearch);
             panelTop.Controls.Add(comboBoxFormation);
             panelTop.Controls.Add(labelFormation);
             panelTop.Controls.Add(comboBoxEnemy);
@@ -1316,6 +1318,17 @@
             panelTop.Size = new Size(784, 73);
             panelTop.TabIndex = 11;
             // 
+            // buttonSearch
+            // 
+            buttonSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            buttonSearch.Location = new Point(681, 40);
+            buttonSearch.Name = "buttonSearch";
+            buttonSearch.Size = new Size(90, 23);
+            buttonSearch.TabIndex = 14;
+            buttonSearch.Text = "Search...";
+            buttonSearch.UseVisualStyleBackColor = true;
+            buttonSearch.Click += buttonSearch_Click;
+            // 
             // comboBoxFormation
             // 
             comboBoxFormation.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -1324,6 +1337,7 @@
             comboBoxFormation.Name = "comboBoxFormation";
             comboBoxFormation.Size = new Size(100, 23);
             comboBoxFormation.TabIndex = 13;
+            comboBoxFormation.SelectedIndexChanged += comboBoxFormation_SelectedIndexChanged;
             // 
             // labelFormation
             // 
@@ -1594,5 +1608,6 @@
         private TextBox textBoxAttackID;
         private Label labelAttackID;
         private ProgressBar progressBarSaving;
+        private Button buttonSearch;
     }
 }

@@ -144,6 +144,7 @@
             MinimumSize = new Size(500, 380);
             Name = "SceneExportForm";
             Text = "Export scenes";
+            FormClosing += SceneExportForm_FormClosing;
             groupBoxExport.ResumeLayout(false);
             groupBoxExport.PerformLayout();
             ResumeLayout(false);
