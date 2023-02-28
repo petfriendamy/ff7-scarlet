@@ -126,7 +126,15 @@
         {
             get
             {
-                return Group == OpcodeGroups.Push;
+                return Group == OpcodeGroups.Push && !IsConst;
+            }
+        }
+
+        public bool IsConst
+        {
+            get
+            {
+                return Code >= (byte)Opcodes.PushConst01 && Code <= (byte)Opcodes.PushConst03;
             }
         }
 

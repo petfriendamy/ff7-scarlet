@@ -73,14 +73,13 @@ namespace FF7Scarlet.KernelEditor
 
         public byte[] GetLookupTable()
         {
-            var table = new byte[64];
-            Array.Copy(KernelData[KernelSection.BattleAndGrowthData], 0xF1C, table, 0, 64);
-            return table;
+            return BattleAndGrowthData.CopyLookupTable();
         }
 
         public void UpdateLookupTable(byte[] table)
         {
             BattleAndGrowthData.UpdateLookupTable(table);
+            Array.Copy(table, 0, KernelData[KernelSection.BattleAndGrowthData], 0xF1C, 64);
         }
 
         public int GetCount(KernelSection section)

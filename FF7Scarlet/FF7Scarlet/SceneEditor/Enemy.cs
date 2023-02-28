@@ -14,7 +14,7 @@ namespace FF7Scarlet.SceneEditor
         private readonly ItemDropRate?[] itemDropRates = new ItemDropRate?[4];
         private ushort unknown;
 
-        public int ID { get; }
+        public ushort ID { get; }
         public FFText Name { get; set; }
         public byte Level { get; set; }
         public byte Speed { get; set; }
@@ -57,7 +57,7 @@ namespace FF7Scarlet.SceneEditor
             get { return itemDropRates; }
         }
 
-        public Enemy(Scene parent, int id, FFText name, byte[]? data)
+        public Enemy(Scene parent, ushort id, FFText name, byte[]? data)
         {
             if (name.Length > Scene.NAME_LENGTH)
             {

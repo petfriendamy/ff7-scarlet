@@ -28,7 +28,6 @@
             if (DataManager.SceneFileIsLoaded)
             {
                 buttonBattleDataEditor.Enabled = true;
-                //buttonAIEditor.Enabled = true;
             }
         }
 

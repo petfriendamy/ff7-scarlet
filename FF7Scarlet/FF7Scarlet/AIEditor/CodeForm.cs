@@ -41,7 +41,7 @@ namespace FF7Scarlet.AIEditor
                 else
                 {
                     opcode = op;
-                    command = CommandInfo.GetInfo(op.EnumValue);
+                    command = CommandInfo.GetInfo(op.Code);
                 }
             }
 
@@ -78,6 +78,16 @@ namespace FF7Scarlet.AIEditor
                             break;
                     }
                     ptype = command.ParameterType2;
+                }
+                UpdateCommandParameters();
+            }
+            else if (Code is CodeBlock)
+            {
+                command = CommandInfo.GetInfo(0xFF);
+                if (command != null)
+                {
+                    comboBoxCommands.SelectedIndex = CommandInfo.COMMAND_LIST.ToList().IndexOf(command);
+                    param1 = Code;
                 }
                 UpdateCommandParameters();
             }
@@ -255,82 +265,90 @@ namespace FF7Scarlet.AIEditor
             {
                 temp.Add(p);
             }
-            using (var paramForm = new ParameterForm(temp, isString))
+            try
             {
-                if (paramForm.ShowDialog() == DialogResult.OK)
+                using (var paramForm = new ParameterForm(temp, isString))
                 {
-                    if (isString)
+                    if (paramForm.ShowDialog() == DialogResult.OK)
                     {
-                        var p = paramForm.Code[0].GetParameter();
-                        if (p != null)
+                        if (isString)
                         {
-                            if (pos == 0)
+                            var p = paramForm.Code[0].GetParameter();
+                            if (p != null)
                             {
-                                textBoxParameter1.Text = p.ToString();
-                                comboBoxManualParameter.Text = textBoxParameter1.Text;
+                                if (pos == 0)
+                                {
+                                    textBoxParameter1.Text = p.ToString();
+                                    comboBoxManualParameter.Text = textBoxParameter1.Text;
+                                }
+                                else
+                                {
+                                    textBoxParameter2.Text = p.ToString();
+                                    comboBoxManualParameter.Text = textBoxParameter2.Text;
+                                }
+                                strText = p;
                             }
-                            else
-                            {
-                                textBoxParameter2.Text = p.ToString();
-                                comboBoxManualParameter.Text = textBoxParameter2.Text;
-                            }
-                            strText = p;
+
                         }
-                        
-                    }
-                    else if (isLabel)
-                    {
-                        var p = paramForm.Code[0].GetParameter();
-                        if (p != null)
+                        else if (isLabel)
                         {
-                            int pint = p.ToInt();
-                            if (pos == 0)
+                            var p = paramForm.Code[0].GetParameter();
+                            if (p != null)
                             {
-                                textBoxParameter1.Text = pint.ToString();
-                                comboBoxManualParameter.Text = textBoxParameter1.Text;
+                                int pint = p.ToInt();
+                                if (pos == 0)
+                                {
+                                    textBoxParameter1.Text = pint.ToString();
+                                    comboBoxManualParameter.Text = textBoxParameter1.Text;
+                                }
+                                else
+                                {
+                                    textBoxParameter2.Text = pint.ToString();
+                                    comboBoxManualParameter.Text = textBoxParameter2.Text;
+                                }
+                                label = pint;
                             }
-                            else
-                            {
-                                textBoxParameter2.Text = pint.ToString();
-                                comboBoxManualParameter.Text = textBoxParameter2.Text;
-                            }
-                            label = pint;
-                        }
-                    }
-                    else
-                    {
-                        Code test;
-                        if (paramForm.Code.Count > 1)
-                        {
-                            test = new CodeBlock(null, paramForm.Code);
                         }
                         else
                         {
-                            test = paramForm.Code[0];
-                        }
+                            Code test;
+                            if (paramForm.Code.Count > 1)
+                            {
+                                test = new CodeBlock(null, paramForm.Code);
+                            }
+                            else
+                            {
+                                test = paramForm.Code[0];
+                            }
 
-                        //update parameter text
-                        if (tabControlOptions.SelectedTab == tabPageGenerate)
-                        {
-                            if (pos == 0)
+                            //update parameter text
+                            if (tabControlOptions.SelectedTab == tabPageGenerate)
+                            {
+                                if (pos == 0)
+                                {
+                                    param1 = test;
+                                    textBoxParameter1.Text = test.Disassemble(false);
+                                }
+                                else
+                                {
+                                    param2 = test;
+                                    textBoxParameter2.Text = test.Disassemble(false);
+                                }
+                            }
+                            else
                             {
                                 param1 = test;
-                                textBoxParameter1.Text = test.Disassemble(false);
-                            }
-                            else
-                            {
-                                param2 = test;
-                                textBoxParameter2.Text = test.Disassemble(false);
+                                comboBoxManualParameter.Text = test.Disassemble(false);
                             }
                         }
-                        else
-                        {
-                            param1 = test;
-                            comboBoxManualParameter.Text = test.Disassemble(false);
-                        }
+                        unsavedChanges = true;
                     }
-                    unsavedChanges = true;
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while loading the parameter: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -396,14 +414,19 @@ namespace FF7Scarlet.AIEditor
                     {
                         if (command != null && param1 != null)
                         {
-                            if (command.OpcodeInfo?.PopCount > 0)
+                            if ((byte)command.Opcode == 0xFF)
+                            {
+                                Code = param1;
+                            }
+                            else if (command.OpcodeInfo?.PopCount > 0)
                             {
                                 FFText? p = null;
                                 if (command.ParameterType2 == ParameterTypes.Label)
                                 {
                                     p = new FFText(label.ToString("X4"));
                                 }
-                                var cb = new CodeBlock(null, new CodeLine(null, 0xFFFF, (byte)command.Opcode, p));
+                                var cb = new CodeBlock(null, new CodeLine(null, HexParser.NULL_OFFSET_16_BIT,
+                                    (byte)command.Opcode, p));
                                 if (param2 != null) { cb.AddToTop(param2); }
 
                                 cb.AddToTop(param1);
@@ -412,7 +435,7 @@ namespace FF7Scarlet.AIEditor
                             else
                             {
                                 param = ParseParameter(command.ParameterType1, textBoxParameter1.Text);
-                                Code = new CodeLine(null, 0xFFFF, (byte)command.Opcode, param);
+                                Code = new CodeLine(null, HexParser.NULL_OFFSET_16_BIT, (byte)command.Opcode, param);
                                 
                             }
                         }
@@ -421,7 +444,7 @@ namespace FF7Scarlet.AIEditor
                     {
                         var op = currList[comboBoxOpcodes.SelectedIndex];
                         param = ParseParameter(op.ParameterType, comboBoxManualParameter.Text);
-                        Code = new CodeLine(null, 0xFFFF, op.Code, param);
+                        Code = new CodeLine(null, HexParser.NULL_OFFSET_16_BIT, op.Code, param);
                     }
                 }
                 catch (ArgumentNullException ex)

@@ -313,14 +313,16 @@ namespace FF7Scarlet
             var data = new List<byte> { };
             byte[] uncompressedSection, compressedSection;
             ushort compressedLength, uncompressedLength;
+            int appendFF;
             for (ushort i = 0; i < Kernel.SECTION_COUNT; ++i)
             {
                 uncompressedSection = Kernel.GetSectionRawData((KernelSection)(i + 1));
                 uncompressedLength = (ushort)uncompressedSection.Length;
                 compressedSection = GetCompressedData(uncompressedSection);
                 compressedLength = (ushort)compressedSection.Length;
+                appendFF = compressedLength % 4;
 
-                data.AddRange(BitConverter.GetBytes(compressedLength));
+                data.AddRange(BitConverter.GetBytes(compressedLength + appendFF));
                 data.AddRange(BitConverter.GetBytes(uncompressedLength));
                 if (i >= Kernel.KERNEL1_END)
                 {
@@ -328,6 +330,11 @@ namespace FF7Scarlet
                 }
                 else { data.AddRange(BitConverter.GetBytes(i)); }
                 data.AddRange(compressedSection);
+                while (appendFF > 0)
+                {
+                    data.Add(0xFF);
+                    appendFF--;
+                }
             }
             File.WriteAllBytes(KernelPath, data.ToArray());
 

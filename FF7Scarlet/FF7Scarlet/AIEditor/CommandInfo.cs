@@ -18,7 +18,8 @@ namespace FF7Scarlet.AIEditor
             new CommandInfo(Opcodes.Jump, "Goto label", "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.Attack, "Perform an attack", "Attack Type", ParameterTypes.Other, "Attack ID", ParameterTypes.Other),
             new CommandInfo(Opcodes.ShowMessage, "Show a message", "String", ParameterTypes.String),
-            new CommandInfo(Opcodes.DebugMessage, "Send a string to the debug console", "Var Count", ParameterTypes.Debug, "String", ParameterTypes.String)
+            new CommandInfo(Opcodes.DebugMessage, "Send a string to the debug console", "Var Count", ParameterTypes.Debug, "String", ParameterTypes.String),
+            new CommandInfo((Opcodes)0xFF, "Push a value to the stack", "Value", ParameterTypes.Other)
         };
 
         public Opcodes Opcode { get; }
@@ -45,6 +46,11 @@ namespace FF7Scarlet.AIEditor
         public CommandInfo(Opcodes opcode, string description, string parameter, ParameterTypes type)
             :this(opcode, description, parameter, type, null, ParameterTypes.None)
         {
+        }
+
+        public static CommandInfo? GetInfo(byte opcode)
+        {
+            return GetInfo((Opcodes)opcode);
         }
 
         public static CommandInfo? GetInfo(Opcodes opcode)

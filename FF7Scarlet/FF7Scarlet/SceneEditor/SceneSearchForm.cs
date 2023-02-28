@@ -19,6 +19,7 @@ namespace FF7Scarlet.SceneEditor
         {
             InitializeComponent();
             scenes = sceneList;
+            textBoxEnemyName.Select();
         }
 
         private void buttonSearch_Click(object sender, EventArgs e)
@@ -85,7 +86,7 @@ namespace FF7Scarlet.SceneEditor
                     else { return; }
                 }
             }
-            else
+            else //formation
             {
                 int scene = (int)Math.Floor(numericFormationNumber.Value / Scene.FORMATION_COUNT);
                 int formation = (int)numericFormationNumber.Value % Scene.FORMATION_COUNT;

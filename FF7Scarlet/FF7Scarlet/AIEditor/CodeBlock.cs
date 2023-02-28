@@ -86,9 +86,9 @@ namespace FF7Scarlet.AIEditor
         public override string Disassemble(bool verbose)
         {
             string output = "";
-            if (Enum.IsDefined(typeof(Opcodes), GetPrimaryOpcode()))
+            var opcode = (Opcodes)GetPrimaryOpcode();
+            if (Enum.IsDefined(opcode))
             {
-                var opcode = (Opcodes)GetPrimaryOpcode();
                 CodeLine? pop1, pop2;
                 switch (opcode)
                 {
@@ -179,7 +179,8 @@ namespace FF7Scarlet.AIEditor
                             else if (pop2 != null && pop2.Parameter != null)
                             {
                                 string atkName = $"Unknown ({pop2.Parameter})";
-                                if (pop2.OpcodeInfo?.IsVariable == true)
+                                var op = pop2.OpcodeInfo;
+                                if (op != null && op.IsVariable)
                                 {
                                     atkName = pop2.Disassemble(false);
                                 }

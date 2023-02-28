@@ -86,7 +86,7 @@ namespace FF7Scarlet.AIEditor
         private void ReloadScript(int selected)
         {
             //loading = true;
-            DisplayScript(selected);
+            DisplayScript(SelectedScriptIndex);
             listBoxCurrScript.SelectedIndex = selected;
             //loading = false;
         }

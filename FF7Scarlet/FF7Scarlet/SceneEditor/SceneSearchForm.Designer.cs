@@ -51,7 +51,7 @@
             panelBottom.Dock = DockStyle.Bottom;
             panelBottom.Location = new Point(0, 95);
             panelBottom.Name = "panelBottom";
-            panelBottom.Size = new Size(264, 46);
+            panelBottom.Size = new Size(267, 46);
             panelBottom.TabIndex = 0;
             // 
             // buttonSearch
@@ -73,7 +73,7 @@
             tabControlMain.Location = new Point(0, 0);
             tabControlMain.Name = "tabControlMain";
             tabControlMain.SelectedIndex = 0;
-            tabControlMain.Size = new Size(264, 95);
+            tabControlMain.Size = new Size(267, 95);
             tabControlMain.TabIndex = 1;
             // 
             // tabPageEnemy
@@ -83,7 +83,7 @@
             tabPageEnemy.Location = new Point(4, 24);
             tabPageEnemy.Name = "tabPageEnemy";
             tabPageEnemy.Padding = new Padding(3);
-            tabPageEnemy.Size = new Size(256, 67);
+            tabPageEnemy.Size = new Size(259, 67);
             tabPageEnemy.TabIndex = 0;
             tabPageEnemy.Text = "Enemy";
             tabPageEnemy.UseVisualStyleBackColor = true;
@@ -112,7 +112,7 @@
             tabPageFormation.Location = new Point(4, 24);
             tabPageFormation.Name = "tabPageFormation";
             tabPageFormation.Padding = new Padding(3);
-            tabPageFormation.Size = new Size(256, 67);
+            tabPageFormation.Size = new Size(259, 67);
             tabPageFormation.TabIndex = 1;
             tabPageFormation.Text = "Formation";
             tabPageFormation.UseVisualStyleBackColor = true;

@@ -1,12 +1,13 @@
 ﻿using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
+using Microsoft.VisualBasic;
 
 namespace FF7Scarlet.SceneEditor
 {
     public class Scene
     {
-        public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ATTACK_COUNT = 32,
-            NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152,
+        public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ALL_FORMATIONS_COUNT = 1024,
+            ATTACK_COUNT = 32, NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152,
             FORMATION_BLOCK_SIZE = 504, ENEMY_AI_BLOCK_SIZE = 4090;
         private readonly Enemy?[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
@@ -59,7 +60,31 @@ namespace FF7Scarlet.SceneEditor
 
         public bool IsEmpty()
         {
-            return (enemies[0] == null && enemies[1] == null && enemies[2] == null);
+            return (Enemies[0] == null && Enemies[1] == null && Enemies[2] == null);
+        }
+
+        public Enemy? GetEnemyByID(ushort id)
+        {
+            foreach (var e in Enemies)
+            {
+                if (e?.ID == id)
+                {
+                    return e;
+                }
+            }
+            return null;
+        }
+
+        public string GetEnemyName(ushort id)
+        {
+            var enemy = GetEnemyByID(id);
+            if (enemy == null) { return "(none)"; }
+            else
+            {
+                var name = enemy.Name.ToString();
+                if (name == null) { return $"Enemy ID {enemy.ID:X4}"; }
+                else { return name; }
+            }
         }
 
         public string GetEnemyNames()
@@ -73,14 +98,14 @@ namespace FF7Scarlet.SceneEditor
                 string temp = "";
                 for (int i = 0; i < ENEMY_COUNT; i++)
                 {
-                    var enemy = enemies[i];
+                    var enemy = Enemies[i];
                     if (enemy == null)
                     {
                         temp += "(none)";
                     }
                     else
                     {
-                        temp += enemy.Name.ToString();
+                        temp += GetEnemyName(enemy.ID);
                     }
                     if (i + 1 < ENEMY_COUNT)
                     {
@@ -95,7 +120,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (id != HexParser.NULL_OFFSET_16_BIT)
             {
-                foreach (var atk in attackList)
+                foreach (var atk in AttackList)
                 {
                     if (atk?.ID == id) { return atk; }
                 }
@@ -119,9 +144,12 @@ namespace FF7Scarlet.SceneEditor
             using (var reader = new BinaryReader(ms))
             {
                 int i, j;
-                var enemyID = new int[ENEMY_COUNT];
+                var enemyID = new ushort[ENEMY_COUNT];
                 var enemyName = new FFText[ENEMY_COUNT];
-                var attackData = new List<byte[]> { };
+                var setupData = new BattleSetupData[FORMATION_COUNT];
+                var cameraData = new CameraPlacementData[FORMATION_COUNT];
+                var enemyLocations = new EnemyLocation[Formation.ENEMY_COUNT];
+                var attackData = new List<byte[]>();
                 var attackID = new ushort[ATTACK_COUNT];
                 var attackName = new FFText[ATTACK_COUNT];
                 byte[] temp;
@@ -136,16 +164,23 @@ namespace FF7Scarlet.SceneEditor
 
                     reader.ReadBytes(2); //padding
                     //battle setup data
-                    for (i = 0; i < 4; ++i) { reader.ReadBytes(20); }
-                    //camera placement data
-                    for (i = 0; i < 4; ++i) { reader.ReadBytes(48); }
-                    //battle formations
-                    for (i = 0; i < 4; ++i)
+                    for (i = 0; i < FORMATION_COUNT; ++i)
                     {
-                        for (j = 0; j < 6; ++j)
+                        setupData[i] = new BattleSetupData(reader.ReadBytes(20));
+                    }
+                    //camera placement data
+                    for (i = 0; i < FORMATION_COUNT; ++i)
+                    {
+                        cameraData[i] = new CameraPlacementData(reader.ReadBytes(48));
+                    }
+                    //battle formations
+                    for (i = 0; i < FORMATION_COUNT; ++i)
+                    {
+                        for (j = 0; j < Formation.ENEMY_COUNT; ++j)
                         {
-                            reader.ReadBytes(16);
+                            enemyLocations[j] = new EnemyLocation(reader.ReadBytes(16));
                         }
+                        Formations[i] = new Formation(this, setupData[i], cameraData[i], enemyLocations);
                     }
 
                     //enemy data
@@ -155,7 +190,7 @@ namespace FF7Scarlet.SceneEditor
                         temp = reader.ReadBytes(ENEMY_DATA_BLOCK_SIZE);
                         if (!enemyName[i].IsEmpty())
                         {
-                            enemies[i] = new Enemy(this, enemyID[i], enemyName[i], temp);
+                            Enemies[i] = new Enemy(this, enemyID[i], enemyName[i], temp);
                         }
                     }
 
@@ -177,9 +212,9 @@ namespace FF7Scarlet.SceneEditor
                         attackName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
                         if (attackID[i] != HexParser.NULL_OFFSET_16_BIT)
                         {
-                            attackList[i] = new Attack(attackID[i], attackName[i], attackData[i]);
+                            AttackList[i] = new Attack(attackID[i], attackName[i], attackData[i]);
                         }
-                        else { attackList[i] = null; }
+                        else { AttackList[i] = null; }
                     }
                 }
                 catch (Exception ex)
@@ -235,8 +270,8 @@ namespace FF7Scarlet.SceneEditor
                         }
                         try
                         {
-                            formations[i] = new Formation();
-                            formations[i].ParseScripts(formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
+                            //formations[i] = new Formation();
+                            Formations[i].ParseScripts(formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
                         }
                         catch (Exception ex)
                         {
@@ -248,7 +283,7 @@ namespace FF7Scarlet.SceneEditor
                 //parse enemy scripts
                 for (i = 0; i < ENEMY_COUNT; ++i)
                 {
-                    var e = enemies[i];
+                    var e = Enemies[i];
                     if (e != null && enemyAIoffset[i] != HexParser.NULL_OFFSET_16_BIT)
                     {
                         next = -1;
@@ -278,12 +313,12 @@ namespace FF7Scarlet.SceneEditor
             int count = 0;
             for (int i = 0; i < ATTACK_COUNT; ++i)
             {
-                var atk = attackList[i];
+                var atk = AttackList[i];
                 if (atk != null)
                 {
                     if (atk.ID == attack.ID)
                     {
-                        attackList[i] = attack;
+                        AttackList[i] = attack;
                         count++;
                     }
                 }
@@ -305,7 +340,7 @@ namespace FF7Scarlet.SceneEditor
                         writer.Seek(0x0298, SeekOrigin.Begin);
                         for (i = 0; i < ENEMY_COUNT; ++i)
                         {
-                            var e = enemies[i];
+                            var e = Enemies[i];
                             if (e == null)
                             {
                                 writer.Write(HexParser.GetNullBlock(ENEMY_DATA_BLOCK_SIZE + NAME_LENGTH));
@@ -324,19 +359,19 @@ namespace FF7Scarlet.SceneEditor
                         Attack? atk;
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            atk = attackList[i];
+                            atk = AttackList[i];
                             if (atk == null) { writer.Write(HexParser.GetNullBlock(Attack.BLOCK_SIZE)); }
                             else { writer.Write(atk.GetRawData()); }
                         }
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            atk = attackList[i];
-                            if (atk == null) { writer.Write((ushort)0xFFFF); }
+                            atk = AttackList[i];
+                            if (atk == null) { writer.Write(HexParser.NULL_OFFSET_16_BIT); }
                             else { writer.Write(atk.ID); }
                         }
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
-                            atk = attackList[i];
+                            atk = AttackList[i];
                             if (atk == null) { writer.Write(HexParser.GetNullBlock(NAME_LENGTH)); }
                             else
                             {

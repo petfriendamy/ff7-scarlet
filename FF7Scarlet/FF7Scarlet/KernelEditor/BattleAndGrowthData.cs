@@ -135,6 +135,13 @@ namespace FF7Scarlet.KernelEditor
             ScriptsLoaded = true;
         }
 
+        public byte[] CopyLookupTable()
+        {
+            var table = new byte[64];
+            Array.Copy(sceneLookupTable, table, 64);
+            return table;
+        }
+
         public void UpdateLookupTable(byte[] table)
         {
             if (table.Length != 64)

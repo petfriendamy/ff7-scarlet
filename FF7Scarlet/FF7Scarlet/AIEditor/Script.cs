@@ -158,7 +158,7 @@ namespace FF7Scarlet.AIEditor
                 if (newLabels.Contains(header))
                 {
                     int labelPos = newLabels.IndexOf(header) + 1;
-                    var newLabel = new CodeLine(this, header, (byte)Opcodes.Label, new FFText(labelPos));
+                    var newLabel = new CodeLine(this, header, (byte)Opcodes.Label, new FFText(labelPos.ToString("X4")));
                     firstParse.Insert(i, newLabel);
                     ++i;
                 }

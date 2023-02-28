@@ -20,6 +20,7 @@ namespace FF7Scarlet.SceneEditor
         private Scene[] sceneList;
         private Dictionary<ushort, Attack> syncedAttacks;
         private List<ResistRates> resistList;
+        private List<Enemy> validEnemies = new();
         private List<Attack> validAttacks = new();
         private bool loading = false, unsavedChanges = false, processing = false;
 
@@ -126,6 +127,21 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxAttackConditionSubMenu.Items.Add(c);
                 }
             }
+            foreach (var l in Enum.GetNames<BattleLocations>())
+            {
+                comboBoxFormationLocation.Items.Add(l);
+            }
+            comboBoxFormationNext.Items.Add("None");
+            comboBoxFormationBattleArena.Items.Add("None");
+            for (int i = 0; i < Scene.ALL_FORMATIONS_COUNT; ++i)
+            {
+                comboBoxFormationNext.Items.Add($"Battle ID {i}");
+                comboBoxFormationBattleArena.Items.Add($"Battle ID {i}");
+            }
+            foreach (var t in Enum.GetNames<BattleType>())
+            {
+                comboBoxFormationBattleType.Items.Add(t);
+            }
 
             //kernel-synced data
             LoadKernelData();
@@ -229,11 +245,18 @@ namespace FF7Scarlet.SceneEditor
                 comboBoxEnemyAttackID.Items.Add(a.GetNameString());
             }
             comboBoxEnemyAttackID.SelectedIndex = 0;
-            comboBoxEnemyAttackCamID.Text = "FFFF";
+            comboBoxEnemyAttackCamID.Text = HexParser.NULL_OFFSET_16_BIT.ToString("X4");
             EnableOrDisableGroupBox(groupBoxEnemyAttacks, false, false);
 
             //get enemies
+            validEnemies =
+                (from e in scene.Enemies
+                 where e != null
+                 select e).ToList();
+
             comboBoxEnemy.Items.Clear();
+            comboBoxFormationSelectedEnemy.Items.Clear();
+            comboBoxFormationSelectedEnemy.Items.Add("None");
             for (i = 0; i < Scene.ENEMY_COUNT; ++i)
             {
                 var enemy = scene.Enemies[i];
@@ -243,9 +266,9 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else
                 {
-                    var name = enemy.Name.ToString();
-                    if (name == null) { comboBoxEnemy.Items.Add("(no name)"); }
-                    else { comboBoxEnemy.Items.Add(name); }
+                    var name = scene.GetEnemyName(enemy.ID);
+                    comboBoxEnemy.Items.Add(name);
+                    comboBoxFormationSelectedEnemy.Items.Add(name);
                 }
             }
             comboBoxEnemy.SelectedIndex = 0;
@@ -275,9 +298,9 @@ namespace FF7Scarlet.SceneEditor
                 {
                     if (SelectedScene != null && SelectedEnemyIndex != -1)
                     {
-                        int id = (SelectedSceneIndex * Scene.ENEMY_COUNT) + SelectedEnemyIndex;
+                        var id = (ushort)((SelectedSceneIndex * Scene.ENEMY_COUNT) + SelectedEnemyIndex);
                         SelectedScene.Enemies[SelectedEnemyIndex] = new Enemy(SelectedScene, id,
-                            new FFText("New Enemy"), null);
+                            new FFText(), null);
                         UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex);
                         SetUnsaved(true);
                         LoadEnemyData(SelectedEnemy, false);
@@ -323,7 +346,7 @@ namespace FF7Scarlet.SceneEditor
                 listBoxEnemyAttacks.Items.Clear();
                 for (int i = 0; i < 16; ++i)
                 {
-                    if (enemy.AttackIDs[i] == 0xFFFF)
+                    if (enemy.AttackIDs[i] == HexParser.NULL_OFFSET_16_BIT)
                     {
                         listBoxEnemyAttacks.Items.Add("(none)");
                     }
@@ -473,10 +496,63 @@ namespace FF7Scarlet.SceneEditor
         private void LoadFormationData(Formation formation, bool clearLoadingWhenDone)
         {
             loading = true;
+            var scene = formation.Parent;
+            if (scene == null) { throw new ArgumentNullException(); }
+            int i;
+
+            //enemies
+            listBoxFormationEnemies.Items.Clear();
+            foreach (var e in formation.EnemyLocations)
+            {
+                listBoxFormationEnemies.Items.Add(scene.GetEnemyName(e.EnemyID));
+            }
+            comboBoxFormationSelectedEnemy.Enabled = false;
+
+            //battle setup data
+            if ((ushort)formation.BattleSetupData.Location == HexParser.NULL_OFFSET_16_BIT)
+            {
+                comboBoxFormationLocation.SelectedIndex = -1;
+            }
+            else
+            {
+                comboBoxFormationLocation.SelectedIndex = (int)formation.BattleSetupData.Location;
+            }
+            if (formation.BattleSetupData.NextSceneID == HexParser.NULL_OFFSET_16_BIT)
+            {
+                comboBoxFormationNext.SelectedIndex = 0;
+            }
+            else
+            {
+                comboBoxFormationNext.SelectedIndex = formation.BattleSetupData.NextSceneID + 1;
+            }
+            numericFormationEscapeCounter.Value = formation.BattleSetupData.EscapeCounter;
+            listBoxFormationBattleArena.Items.Clear();
+            for (i = 0; i < BattleSetupData.BATTLE_ARENA_ID_COUNT; ++i)
+            {
+                if (formation.BattleSetupData.BattleArenaIDs[i] == HexParser.NULL_OFFSET_16_BIT)
+                {
+                    listBoxFormationBattleArena.Items.Add("(none)");
+                }
+                else
+                {
+                    listBoxFormationBattleArena.Items.Add($"Battle ID {formation.BattleSetupData.BattleArenaIDs[i]}");
+                }
+            }
+            comboBoxFormationBattleArena.Enabled = false;
+            battleFlagsControlFormation.SetFlags(formation.BattleSetupData.BattleFlags);
+            if ((byte)formation.BattleSetupData.BattleType == 0xFF)
+            {
+                comboBoxFormationBattleType.SelectedIndex = -1;
+            }
+            else
+            {
+                comboBoxFormationBattleType.SelectedIndex = (int)formation.BattleSetupData.BattleType;
+            }
+            numericFormationPreBattleCamPosition.Value = formation.BattleSetupData.PreBattleCameraPosition;
 
             //A.I. scripts
-            scriptControlFormations.AIContainer = SelectedFormation;
-            UpdateScripts(SelectedFormation, listBoxFormationScripts);
+            scriptControlFormations.AIContainer = formation;
+            UpdateScripts(formation, listBoxFormationScripts);
 
             if (clearLoadingWhenDone) { loading = false; }
         }
@@ -488,9 +564,13 @@ namespace FF7Scarlet.SceneEditor
                 comboBoxSceneList.SelectedIndex = scene;
                 if (enemy >= 0 && enemy < Scene.ENEMY_COUNT)
                 {
-                    comboBoxEnemy.SelectedIndex = enemy;
-                    comboBoxSceneList.Items[scene] = $"{scene}: {sceneList[scene].GetEnemyNames()}";
-                    comboBoxEnemy.Items[enemy] = sceneList[scene].Enemies[enemy]?.Name.ToString();
+                    var e = sceneList[scene].Enemies[enemy];
+                    if (e != null)
+                    {
+                        comboBoxEnemy.SelectedIndex = enemy;
+                        comboBoxSceneList.Items[scene] = $"{scene}: {sceneList[scene].GetEnemyNames()}";
+                        comboBoxEnemy.Items[enemy] = sceneList[scene].GetEnemyName(e.ID);
+                    }
                 }
             }
         }
@@ -604,7 +684,10 @@ namespace FF7Scarlet.SceneEditor
 
         private void comboBoxFormation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //stuff
+            if (!loading && SelectedFormation != null)
+            {
+                LoadFormationData(SelectedFormation, true);
+            }
         }
 
         private void buttonSearch_Click(object sender, EventArgs e)
@@ -730,11 +813,6 @@ namespace FF7Scarlet.SceneEditor
             UpdateScripts(SelectedEnemy, listBoxEnemyScripts);
         }
 
-        private void scriptControlFormations_ScriptAddedOrRemoved(object sender, EventArgs e)
-        {
-            UpdateScripts(SelectedFormation, listBoxFormationScripts);
-        }
-
         private void listBoxAttacks_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!loading)
@@ -749,6 +827,39 @@ namespace FF7Scarlet.SceneEditor
             numericAttackStatusChangeChance.Enabled = (i > 0);
             statusesControlAttack.Enabled = (i > 0);
             if (!loading) { SetUnsaved(true); }
+        }
+
+        private void listBoxFormationEnemies_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = listBoxFormationEnemies.SelectedIndex;
+            if (!loading && i >= 0 && i < Formation.ENEMY_COUNT && SelectedFormation != null && SelectedScene != null)
+            {
+                comboBoxFormationSelectedEnemy.Enabled = true;
+                var enemy = SelectedScene.GetEnemyByID(SelectedFormation.EnemyLocations[i].EnemyID);
+                if (enemy == null)
+                {
+                    comboBoxFormationSelectedEnemy.SelectedIndex = 0;
+                }
+                else
+                {
+                    comboBoxFormationSelectedEnemy.SelectedIndex = validEnemies.IndexOf(enemy) + 1;
+                }
+            }
+        }
+
+        private void listBoxFormationBattleArena_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBoxFormationScripts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            scriptControlFormations.SelectedScriptIndex = listBoxFormationScripts.SelectedIndex;
+        }
+
+        private void scriptControlFormations_ScriptAddedOrRemoved(object sender, EventArgs e)
+        {
+            UpdateScripts(SelectedFormation, listBoxFormationScripts);
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
