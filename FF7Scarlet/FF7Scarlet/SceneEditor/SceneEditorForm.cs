@@ -506,7 +506,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 listBoxFormationEnemies.Items.Add(scene.GetEnemyName(e.EnemyID));
             }
-            comboBoxFormationSelectedEnemy.Enabled = false;
+            EnableOrDisableGroupBox(groupBoxFormationEnemies, false, false);
 
             //battle setup data
             if ((ushort)formation.BattleSetupData.Location == HexParser.NULL_OFFSET_16_BIT)
@@ -549,6 +549,14 @@ namespace FF7Scarlet.SceneEditor
                 comboBoxFormationBattleType.SelectedIndex = (int)formation.BattleSetupData.BattleType;
             }
             numericFormationPreBattleCamPosition.Value = formation.BattleSetupData.PreBattleCameraPosition;
+
+            //camera data
+            cameraPositionControlMain.SetPosition(formation.CameraPlacementData.CameraPositions[0],
+                formation.CameraPlacementData.CameraDirections[0]);
+            cameraPositionControlExtra1.SetPosition(formation.CameraPlacementData.CameraPositions[1],
+                formation.CameraPlacementData.CameraDirections[1]);
+            cameraPositionControlExtra2.SetPosition(formation.CameraPlacementData.CameraPositions[2],
+                formation.CameraPlacementData.CameraDirections[2]);
 
             //A.I. scripts
             scriptControlFormations.AIContainer = formation;
@@ -834,22 +842,94 @@ namespace FF7Scarlet.SceneEditor
             int i = listBoxFormationEnemies.SelectedIndex;
             if (!loading && i >= 0 && i < Formation.ENEMY_COUNT && SelectedFormation != null && SelectedScene != null)
             {
-                comboBoxFormationSelectedEnemy.Enabled = true;
+                loading = true;
                 var enemy = SelectedScene.GetEnemyByID(SelectedFormation.EnemyLocations[i].EnemyID);
                 if (enemy == null)
                 {
                     comboBoxFormationSelectedEnemy.SelectedIndex = 0;
+                    EnableOrDisableGroupBox(groupBoxFormationEnemies, false, true, comboBoxFormationSelectedEnemy);
                 }
                 else
                 {
                     comboBoxFormationSelectedEnemy.SelectedIndex = validEnemies.IndexOf(enemy) + 1;
+                    EnableOrDisableGroupBox(groupBoxFormationEnemies, true, false);
+
+                    var enemyInfo = SelectedFormation.EnemyLocations[i];
+                    numericFormationEnemyX.Value = enemyInfo.Location.X;
+                    numericFormationEnemyY.Value = enemyInfo.Location.Y;
+                    numericFormationEnemyZ.Value = enemyInfo.Location.Z;
+                    numericFormationEnemyRow.Value = enemyInfo.Row;
+                    coverFlagsControlFormationEnemy.SetFlags(enemyInfo.CoverFlags);
+                    initialConditionControlEnemy.SetConditions(enemyInfo.InitialConditionFlags);
                 }
+                loading = false;
+            }
+        }
+
+        private void comboBoxFormationSelectedEnemy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int newEnemy = comboBoxFormationSelectedEnemy.SelectedIndex,
+                selectedEnemy = listBoxFormationEnemies.SelectedIndex;
+
+            if (!loading && newEnemy >= 0 && newEnemy < Scene.ENEMY_COUNT && selectedEnemy >= 0
+                && selectedEnemy < validEnemies.Count && SelectedFormation != null)
+            {
+                var enemy = validEnemies[newEnemy];
+                if (newEnemy == 0)
+                {
+                    SelectedFormation.EnemyLocations[selectedEnemy].EnemyID = HexParser.NULL_OFFSET_16_BIT;
+                    listBoxFormationEnemies.Items[selectedEnemy] = "(none)";
+                }
+                else
+                {
+                    SelectedFormation.EnemyLocations[selectedEnemy].EnemyID = enemy.ID;
+                    listBoxFormationEnemies.Items[selectedEnemy] = enemy.GetNameString();
+                }
+                SetUnsaved(true);
             }
         }
 
         private void listBoxFormationBattleArena_SelectedIndexChanged(object sender, EventArgs e)
         {
+            int i = listBoxFormationBattleArena.SelectedIndex;
+            if (!loading && i >= 0 && i < 3 && SelectedFormation != null)
+            {
+                loading = true;
+                comboBoxFormationBattleArena.Enabled = true;
+                var id = SelectedFormation.BattleSetupData.BattleArenaIDs[i];
+                if (id == HexParser.NULL_OFFSET_16_BIT)
+                {
+                    comboBoxFormationBattleArena.SelectedIndex = 0;
+                }
+                else
+                {
+                    comboBoxFormationBattleArena.SelectedIndex = id + 1;
+                }
+                loading = false;
+            }
+        }
 
+        private void comboBoxFormationBattleArena_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int newForm = comboBoxFormationBattleArena.SelectedIndex,
+                selectedForm = listBoxFormationBattleArena.SelectedIndex;
+            if (!loading && newForm >= 0 && newForm <= Scene.ALL_FORMATIONS_COUNT && selectedForm >= 0
+                && selectedForm < 3 && SelectedFormation != null)
+            {
+                if (newForm == 0)
+                {
+                    SelectedFormation.BattleSetupData.BattleArenaIDs[selectedForm] = HexParser.NULL_OFFSET_16_BIT;
+                    listBoxFormationBattleArena.Items[selectedForm] = "(none)";
+                }
+                else
+                {
+                    //int i = (int)Math.Floor((decimal)newForm / Scene.FORMATION_COUNT),
+                    //    j = newForm % Scene.FORMATION_COUNT;
+                    SelectedFormation.BattleSetupData.BattleArenaIDs[selectedForm] = (ushort)(newForm - 1);
+                    listBoxFormationBattleArena.Items[selectedForm] = $"Battle ID {newForm - 1}";
+                }
+                SetUnsaved(true);
+            }
         }
 
         private void listBoxFormationScripts_SelectedIndexChanged(object sender, EventArgs e)

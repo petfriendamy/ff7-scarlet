@@ -1,12 +1,19 @@
-﻿namespace FF7Scarlet.SceneEditor
+﻿using System.Collections;
+
+namespace FF7Scarlet.SceneEditor
 {
     public class EnemyLocation
     {
+        private bool[] coverFlags = new bool[16];
+
         public ushort EnemyID { get; set; }
         public Point3D Location { get; set; }
         public ushort Row { get; set; }
-        public ushort CoverFlags { get; set; }
-        public uint InitialConditionFlags { get; set; }
+        public InitialConditions InitialConditionFlags { get; set; }
+        public bool[] CoverFlags
+        {
+            get { return coverFlags; }
+        }
 
         public EnemyLocation(byte[] data)
         {
@@ -20,8 +27,10 @@
                 z = reader.ReadUInt16();
                 Location = new Point3D(x, y, z);
                 Row = reader.ReadUInt16();
-                CoverFlags = reader.ReadUInt16();
-                InitialConditionFlags = reader.ReadUInt32();
+                var temp = reader.ReadBytes(2);
+                var array = new BitArray(temp);
+                array.CopyTo(CoverFlags, 0);
+                InitialConditionFlags = (InitialConditions)reader.ReadUInt32();
             }
         }
     }

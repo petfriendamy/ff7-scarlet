@@ -164,6 +164,13 @@ namespace FF7Scarlet.AIEditor
                     case Opcodes.RandomByte:
                         output += $"RandomBit({block[0].Disassemble(false)})";
                         break;
+                    case Opcodes.MPCost:
+                        pop1 = block[0] as CodeLine;
+                        if (pop1 != null && pop1.Parameter != null)
+                        {
+                            output += $"MPCost({GetAttackName(pop1)})";
+                        }
+                        break;
                     case Opcodes.Assign:
                         output += $"{block[0].Disassemble(false)} = {block[1].Disassemble(false)}";
                         break;
@@ -178,21 +185,7 @@ namespace FF7Scarlet.AIEditor
                             }
                             else if (pop2 != null && pop2.Parameter != null)
                             {
-                                string atkName = $"Unknown ({pop2.Parameter})";
-                                var op = pop2.OpcodeInfo;
-                                if (op != null && op.IsVariable)
-                                {
-                                    atkName = pop2.Disassemble(false);
-                                }
-                                else
-                                {
-                                    var scene = GetParentScene();
-                                    if (scene != null)
-                                    {
-                                        atkName = scene.GetAttackName((ushort)pop2.Parameter.ToInt());
-                                    }
-                                }
-                                output += $"PerformAttack ({pop1.Parameter}, {atkName})";
+                                output += $"PerformAttack ({pop1.Parameter}, {GetAttackName(pop2)})";
                             }
                         }
                         break;
@@ -221,6 +214,26 @@ namespace FF7Scarlet.AIEditor
                 }
             }
             return output;
+        }
+
+        private string GetAttackName(CodeLine parameter)
+        {
+            string atkName = $"Unknown ({parameter.Parameter})";
+            var op = parameter.OpcodeInfo;
+            if (op != null && op.IsVariable)
+            {
+                atkName = parameter.Disassemble(false);
+            }
+            else
+            {
+                var scene = GetParentScene();
+                var p = parameter.Parameter;
+                if (scene != null && p != null)
+                {
+                    atkName = scene.GetAttackName((ushort)p.ToInt());
+                }
+            }
+            return atkName;
         }
 
         public override List<CodeLine> BreakDown()

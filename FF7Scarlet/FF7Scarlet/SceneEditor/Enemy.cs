@@ -1,5 +1,6 @@
 ﻿using FF7Scarlet.AIEditor;
 using Shojy.FF7.Elena.Battle;
+using System;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -162,6 +163,13 @@ namespace FF7Scarlet.SceneEditor
                 Gil = reader.ReadUInt32();
                 StatusImmunities = (Statuses)~reader.ReadUInt32();
             }
+        }
+
+        public string GetNameString()
+        {
+            var name = Name.ToString();
+            if (name == null) { return $"Enemy ID {ID:X4}"; }
+            else { return name; }
         }
 
         public bool AttackIsManipable(ushort id)

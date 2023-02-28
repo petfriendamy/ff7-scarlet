@@ -77,8 +77,9 @@
                         {
                             groupBoxExport.Enabled = false;
                             buttonExport.Enabled = false;
-                            success = ExportScene(selectedScene, path);
+                            ExportScene(selectedScene, path);
                             progressBarSaving.Value = 100;
+                            success = true;
                         }
                     }
                     else //multiple scenes
@@ -122,19 +123,17 @@
             }
         }
 
-        private bool ExportScene(int scene, string path)
+        private void ExportScene(int scene, string path)
         {
             try
             {
                 scenes[scene].UpdateRawData();
                 File.WriteAllBytes(path, scenes[scene].GetRawData());
-                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new Exception($"An exception was thrown in scene {scene}:\n\n{ex.Message}", ex);
             }
-            return false;
         }
 
         private Task ExportSceneAsync(int scene, string path)

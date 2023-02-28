@@ -79,12 +79,7 @@ namespace FF7Scarlet.SceneEditor
         {
             var enemy = GetEnemyByID(id);
             if (enemy == null) { return "(none)"; }
-            else
-            {
-                var name = enemy.Name.ToString();
-                if (name == null) { return $"Enemy ID {enemy.ID:X4}"; }
-                else { return name; }
-            }
+            else { return enemy.GetNameString(); }
         }
 
         public string GetEnemyNames()

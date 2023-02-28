@@ -5,9 +5,13 @@ namespace FF7Scarlet.AIEditor
 {
     public partial class ParameterControl : UserControl
     {
+        #region Properties
+
+        private readonly List<OpcodeInfo> operands, paramTypes;
         private int operand = -1;
         private byte paramType = 0xFF;
         private bool singleParameter = false;
+
         public int Operand
         {
             get
@@ -43,7 +47,7 @@ namespace FF7Scarlet.AIEditor
         {
             get
             {
-                var op = OpcodeInfo.GetInfo(paramType);
+                var op = OpcodeInfo.GetInfo(ParamType);
                 if (op == null) { return null; }
 
                 var type = op.ParameterType;
@@ -84,7 +88,9 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
-        private readonly List<OpcodeInfo> operands, paramTypes;
+        #endregion
+
+        #region Constructor
 
         public ParameterControl()
         {
@@ -96,6 +102,7 @@ namespace FF7Scarlet.AIEditor
             paramTypes = (from op in OpcodeInfo.OPCODE_LIST
                           where op.IsParameter && op.Group != OpcodeGroups.Jump
                             && op.ParameterType != ParameterTypes.String
+                            && op.ParameterType != ParameterTypes.Debug
                           select op).ToList();
 
             foreach (var op in operands)
@@ -118,6 +125,10 @@ namespace FF7Scarlet.AIEditor
                 comboBoxParameter.Items.Add($"{gv:X4} ({(CommonVars.ActorGlobals)gv})");
             }
         }
+
+        #endregion
+
+        #region User Methods
 
         public void SetAsFirst()
         {
@@ -206,10 +217,26 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
+        #endregion
+
+        #region Event Methods
+
         private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
         {
             comboBoxOperand.Enabled = comboBoxType.Enabled = comboBoxParameter.Enabled = checkBoxEnabled.Checked;
             PForm?.UpdateParamList(this, checkBoxEnabled.Checked);
         }
+
+        private void comboBoxOperand_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Operand = operands[comboBoxOperand.SelectedIndex].Code;
+        }
+
+        private void comboBoxType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ParamType = (byte)paramTypes[comboBoxType.SelectedIndex].ParameterType;
+        }
+
+        #endregion
     }
 }

@@ -12,14 +12,14 @@ namespace FF7Scarlet.AIEditor
         {
             new CommandInfo(Opcodes.Assign, "Set x to y", "Variable", ParameterTypes.Other, "Assignment", ParameterTypes.Other),
             new CommandInfo(Opcodes.AssignGlobal, "Set global variable to x", "Variable", ParameterTypes.Other, "Assignment", ParameterTypes.Other),
-            new CommandInfo(Opcodes.JumpEqual, "If x == y, goto label", "Condition", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
+            new CommandInfo(Opcodes.JumpEqual, "If condition is met, goto label", "Condition", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.JumpNotEqual, "If 1st in stack != x, goto label", "Value", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.Label, "Create new label", "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.Jump, "Goto label", "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.Attack, "Perform an attack", "Attack Type", ParameterTypes.Other, "Attack ID", ParameterTypes.Other),
             new CommandInfo(Opcodes.ShowMessage, "Show a message", "String", ParameterTypes.String),
             new CommandInfo(Opcodes.DebugMessage, "Send a string to the debug console", "Var Count", ParameterTypes.Debug, "String", ParameterTypes.String),
-            new CommandInfo((Opcodes)0xFF, "Push a value to the stack", "Value", ParameterTypes.Other)
+            new CommandInfo((Opcodes)0xFF, "(Unknown code block)", "Value", ParameterTypes.Other)
         };
 
         public Opcodes Opcode { get; }

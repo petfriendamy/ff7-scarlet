@@ -132,13 +132,11 @@
             listBoxAttacks = new ListBox();
             tabPageFormationData = new TabPage();
             tabControlFormationData = new TabControl();
-            tabPageFormationEnemies = new TabPage();
+            tabPageFormationDataInner = new TabPage();
             groupBoxFormationSetupData = new GroupBox();
             battleFlagsControlFormation = new BattleFlagsControl();
             labelFormationLocation = new Label();
-            numericFormationPreBattleCamPosition = new NumericUpDown();
             comboBoxFormationLocation = new ComboBox();
-            labelFormationPreBattleCamPosition = new Label();
             labelFormationNext = new Label();
             comboBoxFormationBattleType = new ComboBox();
             comboBoxFormationNext = new ComboBox();
@@ -150,10 +148,25 @@
             listBoxFormationBattleArena = new ListBox();
             numericFormationEscapeCounter = new NumericUpDown();
             groupBoxFormationEnemies = new GroupBox();
+            coverFlagsControlFormationEnemy = new CoverFlagsControl();
+            initialConditionControlEnemy = new InitialConditionControl();
+            numericFormationEnemyRow = new NumericUpDown();
+            labelFormationEnemyRow = new Label();
+            numericFormationEnemyZ = new NumericUpDown();
+            labelFormationEnemyZ = new Label();
+            numericFormationEnemyY = new NumericUpDown();
+            labelFormationEnemyY = new Label();
+            numericFormationEnemyX = new NumericUpDown();
+            labelFormationEnemyX = new Label();
             comboBoxFormationSelectedEnemy = new ComboBox();
             labelFormationSelectedEnemy = new Label();
             listBoxFormationEnemies = new ListBox();
-            tabPageSetupCameraData = new TabPage();
+            tabPageCameraData = new TabPage();
+            cameraPositionControlExtra2 = new Controls.CameraPositionControl();
+            cameraPositionControlExtra1 = new Controls.CameraPositionControl();
+            cameraPositionControlMain = new Controls.CameraPositionControl();
+            numericFormationPreBattleCamPosition = new NumericUpDown();
+            labelFormationCamPreBattlePosition = new Label();
             tabPageFormationAI = new TabPage();
             scriptControlFormations = new AIEditor.ScriptControl();
             labelFormationScripts = new Label();
@@ -205,12 +218,17 @@
             ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).BeginInit();
             tabPageFormationData.SuspendLayout();
             tabControlFormationData.SuspendLayout();
-            tabPageFormationEnemies.SuspendLayout();
+            tabPageFormationDataInner.SuspendLayout();
             groupBoxFormationSetupData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericFormationPreBattleCamPosition).BeginInit();
             groupBoxFormationBattleArena.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericFormationEscapeCounter).BeginInit();
             groupBoxFormationEnemies.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericFormationEnemyRow).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericFormationEnemyZ).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericFormationEnemyY).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericFormationEnemyX).BeginInit();
+            tabPageCameraData.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericFormationPreBattleCamPosition).BeginInit();
             tabPageFormationAI.SuspendLayout();
             panelTop.SuspendLayout();
             panelBottom.SuspendLayout();
@@ -1266,8 +1284,8 @@
             // 
             // tabControlFormationData
             // 
-            tabControlFormationData.Controls.Add(tabPageFormationEnemies);
-            tabControlFormationData.Controls.Add(tabPageSetupCameraData);
+            tabControlFormationData.Controls.Add(tabPageFormationDataInner);
+            tabControlFormationData.Controls.Add(tabPageCameraData);
             tabControlFormationData.Controls.Add(tabPageFormationAI);
             tabControlFormationData.Dock = DockStyle.Fill;
             tabControlFormationData.Location = new Point(0, 0);
@@ -1276,25 +1294,23 @@
             tabControlFormationData.Size = new Size(776, 455);
             tabControlFormationData.TabIndex = 0;
             // 
-            // tabPageFormationEnemies
+            // tabPageFormationDataInner
             // 
-            tabPageFormationEnemies.Controls.Add(groupBoxFormationSetupData);
-            tabPageFormationEnemies.Controls.Add(groupBoxFormationEnemies);
-            tabPageFormationEnemies.Location = new Point(4, 24);
-            tabPageFormationEnemies.Name = "tabPageFormationEnemies";
-            tabPageFormationEnemies.Padding = new Padding(3);
-            tabPageFormationEnemies.Size = new Size(768, 427);
-            tabPageFormationEnemies.TabIndex = 0;
-            tabPageFormationEnemies.Text = "Enemies";
-            tabPageFormationEnemies.UseVisualStyleBackColor = true;
+            tabPageFormationDataInner.Controls.Add(groupBoxFormationSetupData);
+            tabPageFormationDataInner.Controls.Add(groupBoxFormationEnemies);
+            tabPageFormationDataInner.Location = new Point(4, 24);
+            tabPageFormationDataInner.Name = "tabPageFormationDataInner";
+            tabPageFormationDataInner.Padding = new Padding(3);
+            tabPageFormationDataInner.Size = new Size(768, 427);
+            tabPageFormationDataInner.TabIndex = 0;
+            tabPageFormationDataInner.Text = "Formation Data";
+            tabPageFormationDataInner.UseVisualStyleBackColor = true;
             // 
             // groupBoxFormationSetupData
             // 
             groupBoxFormationSetupData.Controls.Add(battleFlagsControlFormation);
             groupBoxFormationSetupData.Controls.Add(labelFormationLocation);
-            groupBoxFormationSetupData.Controls.Add(numericFormationPreBattleCamPosition);
             groupBoxFormationSetupData.Controls.Add(comboBoxFormationLocation);
-            groupBoxFormationSetupData.Controls.Add(labelFormationPreBattleCamPosition);
             groupBoxFormationSetupData.Controls.Add(labelFormationNext);
             groupBoxFormationSetupData.Controls.Add(comboBoxFormationBattleType);
             groupBoxFormationSetupData.Controls.Add(comboBoxFormationNext);
@@ -1304,7 +1320,7 @@
             groupBoxFormationSetupData.Controls.Add(numericFormationEscapeCounter);
             groupBoxFormationSetupData.Location = new Point(6, 182);
             groupBoxFormationSetupData.Name = "groupBoxFormationSetupData";
-            groupBoxFormationSetupData.Size = new Size(756, 200);
+            groupBoxFormationSetupData.Size = new Size(756, 161);
             groupBoxFormationSetupData.TabIndex = 11;
             groupBoxFormationSetupData.TabStop = false;
             groupBoxFormationSetupData.Text = "Battle setup data";
@@ -1314,7 +1330,7 @@
             battleFlagsControlFormation.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             battleFlagsControlFormation.Location = new Point(6, 66);
             battleFlagsControlFormation.Name = "battleFlagsControlFormation";
-            battleFlagsControlFormation.Size = new Size(339, 126);
+            battleFlagsControlFormation.Size = new Size(339, 89);
             battleFlagsControlFormation.TabIndex = 11;
             // 
             // labelFormationLocation
@@ -1326,15 +1342,6 @@
             labelFormationLocation.TabIndex = 0;
             labelFormationLocation.Text = "Battle location:";
             // 
-            // numericFormationPreBattleCamPosition
-            // 
-            numericFormationPreBattleCamPosition.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            numericFormationPreBattleCamPosition.Location = new Point(351, 169);
-            numericFormationPreBattleCamPosition.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
-            numericFormationPreBattleCamPosition.Name = "numericFormationPreBattleCamPosition";
-            numericFormationPreBattleCamPosition.Size = new Size(168, 23);
-            numericFormationPreBattleCamPosition.TabIndex = 10;
-            // 
             // comboBoxFormationLocation
             // 
             comboBoxFormationLocation.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -1344,16 +1351,6 @@
             comboBoxFormationLocation.Name = "comboBoxFormationLocation";
             comboBoxFormationLocation.Size = new Size(339, 23);
             comboBoxFormationLocation.TabIndex = 1;
-            // 
-            // labelFormationPreBattleCamPosition
-            // 
-            labelFormationPreBattleCamPosition.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            labelFormationPreBattleCamPosition.AutoSize = true;
-            labelFormationPreBattleCamPosition.Location = new Point(351, 151);
-            labelFormationPreBattleCamPosition.Name = "labelFormationPreBattleCamPosition";
-            labelFormationPreBattleCamPosition.Size = new Size(150, 15);
-            labelFormationPreBattleCamPosition.TabIndex = 9;
-            labelFormationPreBattleCamPosition.Text = "Pre-battle camera position:";
             // 
             // labelFormationNext
             // 
@@ -1427,6 +1424,7 @@
             comboBoxFormationBattleArena.Name = "comboBoxFormationBattleArena";
             comboBoxFormationBattleArena.Size = new Size(213, 23);
             comboBoxFormationBattleArena.TabIndex = 5;
+            comboBoxFormationBattleArena.SelectedIndexChanged += comboBoxFormationBattleArena_SelectedIndexChanged;
             // 
             // labelFormationBattleArena
             // 
@@ -1459,31 +1457,124 @@
             // 
             // groupBoxFormationEnemies
             // 
+            groupBoxFormationEnemies.Controls.Add(coverFlagsControlFormationEnemy);
+            groupBoxFormationEnemies.Controls.Add(initialConditionControlEnemy);
+            groupBoxFormationEnemies.Controls.Add(numericFormationEnemyRow);
+            groupBoxFormationEnemies.Controls.Add(labelFormationEnemyRow);
+            groupBoxFormationEnemies.Controls.Add(numericFormationEnemyZ);
+            groupBoxFormationEnemies.Controls.Add(labelFormationEnemyZ);
+            groupBoxFormationEnemies.Controls.Add(numericFormationEnemyY);
+            groupBoxFormationEnemies.Controls.Add(labelFormationEnemyY);
+            groupBoxFormationEnemies.Controls.Add(numericFormationEnemyX);
+            groupBoxFormationEnemies.Controls.Add(labelFormationEnemyX);
             groupBoxFormationEnemies.Controls.Add(comboBoxFormationSelectedEnemy);
             groupBoxFormationEnemies.Controls.Add(labelFormationSelectedEnemy);
             groupBoxFormationEnemies.Controls.Add(listBoxFormationEnemies);
             groupBoxFormationEnemies.Location = new Point(6, 6);
             groupBoxFormationEnemies.Name = "groupBoxFormationEnemies";
-            groupBoxFormationEnemies.Size = new Size(200, 170);
+            groupBoxFormationEnemies.Size = new Size(756, 170);
             groupBoxFormationEnemies.TabIndex = 2;
             groupBoxFormationEnemies.TabStop = false;
             groupBoxFormationEnemies.Text = "Enemies in formation";
+            // 
+            // coverFlagsControlFormationEnemy
+            // 
+            coverFlagsControlFormationEnemy.Location = new Point(531, 19);
+            coverFlagsControlFormationEnemy.Name = "coverFlagsControlFormationEnemy";
+            coverFlagsControlFormationEnemy.Size = new Size(213, 141);
+            coverFlagsControlFormationEnemy.TabIndex = 12;
+            // 
+            // initialConditionControlEnemy
+            // 
+            initialConditionControlEnemy.Location = new Point(200, 66);
+            initialConditionControlEnemy.Name = "initialConditionControlEnemy";
+            initialConditionControlEnemy.Size = new Size(319, 94);
+            initialConditionControlEnemy.TabIndex = 11;
+            // 
+            // numericFormationEnemyRow
+            // 
+            numericFormationEnemyRow.Location = new Point(449, 37);
+            numericFormationEnemyRow.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numericFormationEnemyRow.Name = "numericFormationEnemyRow";
+            numericFormationEnemyRow.Size = new Size(70, 23);
+            numericFormationEnemyRow.TabIndex = 10;
+            // 
+            // labelFormationEnemyRow
+            // 
+            labelFormationEnemyRow.AutoSize = true;
+            labelFormationEnemyRow.Location = new Point(449, 19);
+            labelFormationEnemyRow.Name = "labelFormationEnemyRow";
+            labelFormationEnemyRow.Size = new Size(33, 15);
+            labelFormationEnemyRow.TabIndex = 9;
+            labelFormationEnemyRow.Text = "Row:";
+            // 
+            // numericFormationEnemyZ
+            // 
+            numericFormationEnemyZ.Location = new Point(351, 37);
+            numericFormationEnemyZ.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numericFormationEnemyZ.Name = "numericFormationEnemyZ";
+            numericFormationEnemyZ.Size = new Size(70, 23);
+            numericFormationEnemyZ.TabIndex = 8;
+            // 
+            // labelFormationEnemyZ
+            // 
+            labelFormationEnemyZ.AutoSize = true;
+            labelFormationEnemyZ.Location = new Point(351, 19);
+            labelFormationEnemyZ.Name = "labelFormationEnemyZ";
+            labelFormationEnemyZ.Size = new Size(17, 15);
+            labelFormationEnemyZ.TabIndex = 7;
+            labelFormationEnemyZ.Text = "Z:";
+            // 
+            // numericFormationEnemyY
+            // 
+            numericFormationEnemyY.Location = new Point(275, 37);
+            numericFormationEnemyY.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numericFormationEnemyY.Name = "numericFormationEnemyY";
+            numericFormationEnemyY.Size = new Size(70, 23);
+            numericFormationEnemyY.TabIndex = 6;
+            // 
+            // labelFormationEnemyY
+            // 
+            labelFormationEnemyY.AutoSize = true;
+            labelFormationEnemyY.Location = new Point(275, 19);
+            labelFormationEnemyY.Name = "labelFormationEnemyY";
+            labelFormationEnemyY.Size = new Size(17, 15);
+            labelFormationEnemyY.TabIndex = 5;
+            labelFormationEnemyY.Text = "Y:";
+            // 
+            // numericFormationEnemyX
+            // 
+            numericFormationEnemyX.Location = new Point(200, 37);
+            numericFormationEnemyX.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numericFormationEnemyX.Name = "numericFormationEnemyX";
+            numericFormationEnemyX.Size = new Size(70, 23);
+            numericFormationEnemyX.TabIndex = 4;
+            // 
+            // labelFormationEnemyX
+            // 
+            labelFormationEnemyX.AutoSize = true;
+            labelFormationEnemyX.Location = new Point(200, 19);
+            labelFormationEnemyX.Name = "labelFormationEnemyX";
+            labelFormationEnemyX.Size = new Size(17, 15);
+            labelFormationEnemyX.TabIndex = 3;
+            labelFormationEnemyX.Text = "X:";
             // 
             // comboBoxFormationSelectedEnemy
             // 
             comboBoxFormationSelectedEnemy.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxFormationSelectedEnemy.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxFormationSelectedEnemy.FormattingEnabled = true;
-            comboBoxFormationSelectedEnemy.Location = new Point(6, 141);
+            comboBoxFormationSelectedEnemy.Location = new Point(6, 137);
             comboBoxFormationSelectedEnemy.Name = "comboBoxFormationSelectedEnemy";
             comboBoxFormationSelectedEnemy.Size = new Size(188, 23);
             comboBoxFormationSelectedEnemy.TabIndex = 2;
+            comboBoxFormationSelectedEnemy.SelectedIndexChanged += comboBoxFormationSelectedEnemy_SelectedIndexChanged;
             // 
             // labelFormationSelectedEnemy
             // 
             labelFormationSelectedEnemy.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelFormationSelectedEnemy.AutoSize = true;
-            labelFormationSelectedEnemy.Location = new Point(6, 123);
+            labelFormationSelectedEnemy.Location = new Point(6, 119);
             labelFormationSelectedEnemy.Name = "labelFormationSelectedEnemy";
             labelFormationSelectedEnemy.Size = new Size(93, 15);
             labelFormationSelectedEnemy.TabIndex = 1;
@@ -1499,14 +1590,62 @@
             listBoxFormationEnemies.TabIndex = 0;
             listBoxFormationEnemies.SelectedIndexChanged += listBoxFormationEnemies_SelectedIndexChanged;
             // 
-            // tabPageSetupCameraData
+            // tabPageCameraData
             // 
-            tabPageSetupCameraData.Location = new Point(4, 24);
-            tabPageSetupCameraData.Name = "tabPageSetupCameraData";
-            tabPageSetupCameraData.Size = new Size(768, 427);
-            tabPageSetupCameraData.TabIndex = 4;
-            tabPageSetupCameraData.Text = "Setup/Camera Data";
-            tabPageSetupCameraData.UseVisualStyleBackColor = true;
+            tabPageCameraData.Controls.Add(cameraPositionControlExtra2);
+            tabPageCameraData.Controls.Add(cameraPositionControlExtra1);
+            tabPageCameraData.Controls.Add(cameraPositionControlMain);
+            tabPageCameraData.Controls.Add(numericFormationPreBattleCamPosition);
+            tabPageCameraData.Controls.Add(labelFormationCamPreBattlePosition);
+            tabPageCameraData.Location = new Point(4, 24);
+            tabPageCameraData.Name = "tabPageCameraData";
+            tabPageCameraData.Size = new Size(768, 427);
+            tabPageCameraData.TabIndex = 4;
+            tabPageCameraData.Text = "Camera Data";
+            tabPageCameraData.UseVisualStyleBackColor = true;
+            // 
+            // cameraPositionControlExtra2
+            // 
+            cameraPositionControlExtra2.GroupBoxText = "Position 3";
+            cameraPositionControlExtra2.Location = new Point(6, 250);
+            cameraPositionControlExtra2.Name = "cameraPositionControlExtra2";
+            cameraPositionControlExtra2.Size = new Size(239, 116);
+            cameraPositionControlExtra2.TabIndex = 13;
+            // 
+            // cameraPositionControlExtra1
+            // 
+            cameraPositionControlExtra1.GroupBoxText = "Position 2:";
+            cameraPositionControlExtra1.Location = new Point(6, 128);
+            cameraPositionControlExtra1.Name = "cameraPositionControlExtra1";
+            cameraPositionControlExtra1.Size = new Size(239, 116);
+            cameraPositionControlExtra1.TabIndex = 12;
+            // 
+            // cameraPositionControlMain
+            // 
+            cameraPositionControlMain.GroupBoxText = "Main position";
+            cameraPositionControlMain.Location = new Point(6, 6);
+            cameraPositionControlMain.Name = "cameraPositionControlMain";
+            cameraPositionControlMain.Size = new Size(239, 116);
+            cameraPositionControlMain.TabIndex = 11;
+            // 
+            // numericFormationPreBattleCamPosition
+            // 
+            numericFormationPreBattleCamPosition.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            numericFormationPreBattleCamPosition.Location = new Point(251, 24);
+            numericFormationPreBattleCamPosition.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericFormationPreBattleCamPosition.Name = "numericFormationPreBattleCamPosition";
+            numericFormationPreBattleCamPosition.Size = new Size(108, 23);
+            numericFormationPreBattleCamPosition.TabIndex = 10;
+            // 
+            // labelFormationCamPreBattlePosition
+            // 
+            labelFormationCamPreBattlePosition.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelFormationCamPreBattlePosition.AutoSize = true;
+            labelFormationCamPreBattlePosition.Location = new Point(251, 6);
+            labelFormationCamPreBattlePosition.Name = "labelFormationCamPreBattlePosition";
+            labelFormationCamPreBattlePosition.Size = new Size(108, 15);
+            labelFormationCamPreBattlePosition.TabIndex = 9;
+            labelFormationCamPreBattlePosition.Text = "Pre-battle position:";
             // 
             // tabPageFormationAI
             // 
@@ -1731,15 +1870,21 @@
             ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).EndInit();
             tabPageFormationData.ResumeLayout(false);
             tabControlFormationData.ResumeLayout(false);
-            tabPageFormationEnemies.ResumeLayout(false);
+            tabPageFormationDataInner.ResumeLayout(false);
             groupBoxFormationSetupData.ResumeLayout(false);
             groupBoxFormationSetupData.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericFormationPreBattleCamPosition).EndInit();
             groupBoxFormationBattleArena.ResumeLayout(false);
             groupBoxFormationBattleArena.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericFormationEscapeCounter).EndInit();
             groupBoxFormationEnemies.ResumeLayout(false);
             groupBoxFormationEnemies.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericFormationEnemyRow).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericFormationEnemyZ).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericFormationEnemyY).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericFormationEnemyX).EndInit();
+            tabPageCameraData.ResumeLayout(false);
+            tabPageCameraData.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericFormationPreBattleCamPosition).EndInit();
             tabPageFormationAI.ResumeLayout(false);
             tabPageFormationAI.PerformLayout();
             panelTop.ResumeLayout(false);
@@ -1862,14 +2007,14 @@
         private Label labelAttackStatusChange;
         private KernelEditor.Controls.StatusesControl statusesControlAttack;
         private TabControl tabControlFormationData;
-        private TabPage tabPageFormationEnemies;
+        private TabPage tabPageFormationDataInner;
         private ComboBox comboBoxFormation;
         private Label labelFormation;
         private TextBox textBoxAttackID;
         private Label labelAttackID;
         private ProgressBar progressBarSaving;
         private Button buttonSearch;
-        private TabPage tabPageSetupCameraData;
+        private TabPage tabPageCameraData;
         private Label labelFormationLocation;
         private ComboBox comboBoxFormationLocation;
         private Label labelFormationNext;
@@ -1883,12 +2028,25 @@
         private ComboBox comboBoxFormationBattleType;
         private Label labelFormationBattleType;
         private NumericUpDown numericFormationPreBattleCamPosition;
-        private Label labelFormationPreBattleCamPosition;
+        private Label labelFormationCamPreBattlePosition;
         private GroupBox groupBoxFormationSetupData;
         private BattleFlagsControl battleFlagsControlFormation;
         private ListBox listBoxFormationEnemies;
         private GroupBox groupBoxFormationEnemies;
         private Label labelFormationSelectedEnemy;
         private ComboBox comboBoxFormationSelectedEnemy;
+        private NumericUpDown numericFormationEnemyZ;
+        private Label labelFormationEnemyZ;
+        private NumericUpDown numericFormationEnemyY;
+        private Label labelFormationEnemyY;
+        private NumericUpDown numericFormationEnemyX;
+        private Label labelFormationEnemyX;
+        private Label labelFormationEnemyRow;
+        private NumericUpDown numericFormationEnemyRow;
+        private InitialConditionControl initialConditionControlEnemy;
+        private CoverFlagsControl coverFlagsControlFormationEnemy;
+        private Controls.CameraPositionControl cameraPositionControlExtra2;
+        private Controls.CameraPositionControl cameraPositionControlExtra1;
+        private Controls.CameraPositionControl cameraPositionControlMain;
     }
 }

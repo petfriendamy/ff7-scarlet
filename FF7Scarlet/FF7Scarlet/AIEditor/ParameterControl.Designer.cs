@@ -67,6 +67,7 @@ namespace FF7Scarlet.AIEditor
             comboBoxType.Name = "comboBoxType";
             comboBoxType.Size = new Size(116, 23);
             comboBoxType.TabIndex = 18;
+            comboBoxType.SelectedIndexChanged += comboBoxType_SelectedIndexChanged;
             // 
             // comboBoxOperand
             // 
@@ -78,6 +79,7 @@ namespace FF7Scarlet.AIEditor
             comboBoxOperand.Name = "comboBoxOperand";
             comboBoxOperand.Size = new Size(97, 23);
             comboBoxOperand.TabIndex = 17;
+            comboBoxOperand.SelectedIndexChanged += comboBoxOperand_SelectedIndexChanged;
             // 
             // ParameterControl
             // 

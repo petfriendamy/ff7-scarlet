@@ -50,13 +50,14 @@
             listBoxResults.ItemHeight = 15;
             listBoxResults.Location = new Point(12, 27);
             listBoxResults.Name = "listBoxResults";
-            listBoxResults.Size = new Size(330, 124);
+            listBoxResults.Size = new Size(322, 124);
             listBoxResults.TabIndex = 1;
+            listBoxResults.DoubleClick += buttonSelect_Click;
             // 
             // buttonSelect
             // 
             buttonSelect.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonSelect.Location = new Point(267, 161);
+            buttonSelect.Location = new Point(259, 161);
             buttonSelect.Name = "buttonSelect";
             buttonSelect.Size = new Size(75, 23);
             buttonSelect.TabIndex = 2;
@@ -67,7 +68,7 @@
             // buttonCancel
             // 
             buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonCancel.Location = new Point(186, 161);
+            buttonCancel.Location = new Point(178, 161);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(75, 23);
             buttonCancel.TabIndex = 3;
@@ -80,7 +81,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = buttonCancel;
-            ClientSize = new Size(354, 196);
+            ClientSize = new Size(346, 196);
             ControlBox = false;
             Controls.Add(buttonCancel);
             Controls.Add(buttonSelect);
