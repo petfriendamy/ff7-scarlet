@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -19,9 +13,8 @@ namespace FF7Scarlet.AIEditor
         public FFText? Parameter { get; set; }
         public byte PopCount { get; set; }
 
-        public CodeLine(Script? parent, ushort header, byte opcode, FFText? parameter = null)
+        public CodeLine(Script parent, ushort header, byte opcode, FFText? parameter = null) :base(parent)
         {
-            Parent = parent;
             Header = header;
             Opcode = opcode;
             Parameter = parameter;

@@ -16,7 +16,7 @@ namespace FF7Scarlet.AIEditor
         GreaterOrEqual = 0x42, LessThanOrEqual = 0x43, GreaterThan = 0x44,
         LessThan = 0x45, LogicalAnd = 0x50, LogicalOr = 0x51, LogicalNot = 0x52,
         PushConst01 = 0x60, PushConst02 = 0x61, PushConst03 = 0x62, JumpEqual = 0x70,
-        JumpNotEqual = 0x71, Jump = 0x72, End = 0x73, PopUnused = 0x74, Link = 0x75,
+        JumpNotEqual = 0x71, Jump = 0x72, End = 0x73, PopUnused = 0x74, ShareScripts = 0x75,
         Mask = 0x80, RandomWord = 0x81, RandomByte = 0x82, CountBits = 0x83,
         MaskGreatest = 0x84, MaskLeast = 0x85, MPCost = 0x86, TopBit = 0x87, Assign = 0x90,
         Pop = 0x91, Attack = 0x92, ShowMessage = 0x93, CopyStats = 0x94, AssignGlobal = 0x95,

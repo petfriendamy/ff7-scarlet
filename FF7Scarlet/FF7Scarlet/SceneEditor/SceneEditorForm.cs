@@ -496,7 +496,7 @@ namespace FF7Scarlet.SceneEditor
         private void LoadFormationData(Formation formation, bool clearLoadingWhenDone)
         {
             loading = true;
-            var scene = formation.Parent;
+            var scene = formation.Parent as Scene;
             if (scene == null) { throw new ArgumentNullException(); }
             int i;
 
@@ -590,8 +590,8 @@ namespace FF7Scarlet.SceneEditor
                 list.Items[i] = SCRIPT_LIST[i];
                 if (container != null)
                 {
-                    var script = container.GetScriptAtPosition(i);
-                    if (script != null && !script.IsEmpty)
+                    var script = container.Scripts[i];
+                    if (!script.IsEmpty)
                     {
                         list.Items[i] += "*";
                     }

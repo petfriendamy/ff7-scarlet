@@ -1,10 +1,8 @@
-﻿using FF7Scarlet.SceneEditor;
-
-namespace FF7Scarlet.AIEditor
+﻿namespace FF7Scarlet.AIEditor
 {
     public abstract class Code
     {
-        public Script? Parent { get; protected set; }
+        public Script Parent { get; protected set; }
 
         public abstract string Disassemble(bool verbose);
         public abstract List<CodeLine> BreakDown();
@@ -15,10 +13,14 @@ namespace FF7Scarlet.AIEditor
         public abstract void SetParent(Script parent);
         public abstract ushort SetHeader(ushort value);
         public abstract byte[] GetBytes();
-        public Scene? GetParentScene()
+        public IAttackContainer? GetTopMostParent()
         {
-            if (Parent == null) { return null; }
-            else { return Parent?.Parent.Parent; }
+            return Parent.Parent.Parent;
+        }
+
+        public Code(Script parent)
+        {
+            Parent = parent;
         }
     }
 }

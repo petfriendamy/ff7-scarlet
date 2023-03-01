@@ -5,37 +5,27 @@ namespace FF7Scarlet.AIEditor
     public abstract class AIContainer
     {
         public const int SCRIPT_NUMBER = 16;
-        protected Script[] scripts = new Script[SCRIPT_NUMBER];
-        public Scene? Parent { get; protected set; }
+        protected readonly Script[] scripts = new Script[SCRIPT_NUMBER];
+        public IAttackContainer? Parent { get; protected set; }
 
-        public Script CreateNewScript(int pos, Code startingCode)
+        public Script[] Scripts
         {
-            if (pos < 0 || pos >= SCRIPT_NUMBER)
-            {
-                throw new ArgumentOutOfRangeException("Script is out of range.");
-            }
-            if (scripts[pos] != null)
-            {
-                throw new ArgumentException("Script already exists.");
-            }
-            scripts[pos] = new Script(this, startingCode);
-            return scripts[pos];
+            get { return scripts; }
         }
 
-        public Script? GetScriptAtPosition(int pos)
+        public AIContainer()
         {
-            if (pos < 0 || pos >= SCRIPT_NUMBER)
+            for (int i = 0; i < SCRIPT_NUMBER; ++i)
             {
-                return null;
+                scripts[i] = new Script(this);
             }
-            return scripts[pos];
         }
 
         public bool HasScripts()
         {
             foreach (var s in scripts)
             {
-                if (s != null && !s.IsEmpty) { return true; }
+                if (!s.IsEmpty) { return true; }
             }
             return false;
         }
@@ -54,7 +44,7 @@ namespace FF7Scarlet.AIEditor
             //get scripts
             for (i = 0; i < SCRIPT_NUMBER; ++i)
             {
-                if (scriptOffsets[i] != HexParser.NULL_OFFSET_16_BIT) //check if script exists
+                if (scriptOffsets[i] != HexParser.NULL_OFFSET_16_BIT) //check if the script exists
                 {
                     next = -1;
                     for (j = i + 1; j < SCRIPT_NUMBER && next == -1; ++j) //check for next script (if it exists)

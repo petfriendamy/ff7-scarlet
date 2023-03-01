@@ -48,7 +48,7 @@
             new OpcodeInfo(Opcodes.Jump, OpcodeGroups.Jump, ParameterTypes.TwoByte, 0),
             new OpcodeInfo(Opcodes.End, OpcodeGroups.Command, ParameterTypes.None, 0),
             new OpcodeInfo(Opcodes.PopUnused, OpcodeGroups.Command, ParameterTypes.None, 0),
-            new OpcodeInfo(Opcodes.Link, OpcodeGroups.Command, ParameterTypes.None, 1),
+            new OpcodeInfo(Opcodes.ShareScripts, OpcodeGroups.Command, ParameterTypes.None, 1),
 
             new OpcodeInfo(Opcodes.Mask, OpcodeGroups.BitOperation, ParameterTypes.None, 2, "."),
             new OpcodeInfo(Opcodes.RandomWord, OpcodeGroups.BitOperation, ParameterTypes.None, 0, "Random"),
@@ -109,6 +109,14 @@
             {
                 return (Group == OpcodeGroups.Mathematical || Group == OpcodeGroups.Logical
                     || Group == OpcodeGroups.BitOperation) && PopCount > 0;
+            }
+        }
+
+        public bool IsModifier
+        {
+            get
+            {
+                return (IsOperand && PopCount < 2);
             }
         }
 

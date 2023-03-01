@@ -11,11 +11,13 @@ namespace FF7Scarlet.AIEditor
         private FFText? strText;
         private int label, popCount;
         private List<OpcodeInfo> currList = new List<OpcodeInfo> { };
+        private Script parentScript;
         private bool loading = true, unsavedChanges = false;
 
-        public CodeForm(Code? code = null)
+        public CodeForm(Script script, Code? code = null)
         {
             InitializeComponent();
+            parentScript = script;
 
             //get command list
             foreach (var command in CommandInfo.COMMAND_LIST)
@@ -31,7 +33,7 @@ namespace FF7Scarlet.AIEditor
             {
                 opcode = currList[0];
                 command = CommandInfo.COMMAND_LIST[0];
-                Code = command.GenerateCode();
+                Code = command.GenerateCode(script);
             }
             else
             {
@@ -267,7 +269,7 @@ namespace FF7Scarlet.AIEditor
             }
             try
             {
-                using (var paramForm = new ParameterForm(temp, isString))
+                using (var paramForm = new ParameterForm(parentScript, temp, isString))
                 {
                     if (paramForm.ShowDialog() == DialogResult.OK)
                     {
@@ -314,7 +316,7 @@ namespace FF7Scarlet.AIEditor
                             Code test;
                             if (paramForm.Code.Count > 1)
                             {
-                                test = new CodeBlock(null, paramForm.Code);
+                                test = new CodeBlock(parentScript, paramForm.Code);
                             }
                             else
                             {
@@ -425,8 +427,8 @@ namespace FF7Scarlet.AIEditor
                                 {
                                     p = new FFText(label.ToString("X4"));
                                 }
-                                var cb = new CodeBlock(null, new CodeLine(null, HexParser.NULL_OFFSET_16_BIT,
-                                    (byte)command.Opcode, p));
+                                var cb = new CodeBlock(parentScript, new CodeLine(parentScript,
+                                    HexParser.NULL_OFFSET_16_BIT,  (byte)command.Opcode, p));
                                 if (param2 != null) { cb.AddToTop(param2); }
 
                                 cb.AddToTop(param1);
@@ -435,7 +437,8 @@ namespace FF7Scarlet.AIEditor
                             else
                             {
                                 param = ParseParameter(command.ParameterType1, textBoxParameter1.Text);
-                                Code = new CodeLine(null, HexParser.NULL_OFFSET_16_BIT, (byte)command.Opcode, param);
+                                Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
+                                    (byte)command.Opcode, param);
                                 
                             }
                         }
@@ -444,7 +447,7 @@ namespace FF7Scarlet.AIEditor
                     {
                         var op = currList[comboBoxOpcodes.SelectedIndex];
                         param = ParseParameter(op.ParameterType, comboBoxManualParameter.Text);
-                        Code = new CodeLine(null, HexParser.NULL_OFFSET_16_BIT, op.Code, param);
+                        Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, op.Code, param);
                     }
                 }
                 catch (ArgumentNullException ex)

@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Globalization;
+using System.Linq.Expressions;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -7,32 +8,53 @@ namespace FF7Scarlet.AIEditor
     {
         #region Properties
 
-        private readonly List<OpcodeInfo> operands, paramTypes;
-        private int operand = -1;
-        private byte paramType = 0xFF;
-        private bool singleParameter = false;
+        private readonly List<OpcodeInfo> operands, modifiers, paramTypes;
+        private byte operand = 0xFF, modifier = 0xFF, paramType = 0xFF;
+        private bool singleParameter = false, modifyAbove = false, loading = true;
 
-        public int Operand
+        public byte Operand
         {
             get
             {
-                if (IsFirst) { return -1; }
+                if (IsFirst) { return 0xFF; }
                 else if (!singleParameter && comboBoxOperand.SelectedIndex != -1)
                 {
                     return operands[comboBoxOperand.SelectedIndex].Code;
                 }
                 else { return operand; }
             }
-            private set
+            set
             {
                 operand = value;
+            }
+        }
+        public byte Modifier
+        {
+            get { return modifier; }
+            set
+            {
+                var op = OpcodeInfo.GetInfo(value);
+                if (op != null && op.IsModifier)
+                {
+                    modifier = value;
+                    comboBoxModifiers.SelectedIndex = modifiers.IndexOf(op) + 1;
+                }
+                else
+                {
+                    modifier = 0xFF;
+                    comboBoxModifiers.SelectedIndex = 0;
+                }
             }
         }
         public byte ParamType
         {
             get
             {
-                if (!singleParameter && comboBoxType.SelectedIndex != -1)
+                if (ModifyAbove)
+                {
+                    return 0xFF;
+                }
+                else if (!singleParameter && comboBoxType.SelectedIndex != -1)
                 {
                     return paramTypes[comboBoxType.SelectedIndex].Code;
                 }
@@ -71,6 +93,19 @@ namespace FF7Scarlet.AIEditor
             }
         }
         public bool IsFirst { get; private set; } = false;
+        public bool ModifyAbove
+        {
+            get { return modifyAbove; }
+            private set
+            {
+                modifyAbove = value;
+                comboBoxParameter.Enabled = !value;
+                if (modifyAbove && comboBoxModifiers.SelectedIndex < 1)
+                {
+                    comboBoxModifiers.SelectedIndex = 1;
+                }
+            }
+        }
         public bool Checked
         {
             get { return checkBoxEnabled.Checked; }
@@ -96,24 +131,34 @@ namespace FF7Scarlet.AIEditor
         {
             InitializeComponent();
             operands = (from op in OpcodeInfo.OPCODE_LIST
-                        where op.IsOperand
+                        where op.IsOperand && !op.IsModifier
                         select op).ToList();
 
+            modifiers = (from op in OpcodeInfo.OPCODE_LIST
+                         where op.IsModifier
+                         select op).ToList();
+
             paramTypes = (from op in OpcodeInfo.OPCODE_LIST
-                          where op.IsParameter && op.Group != OpcodeGroups.Jump
+                          where (op.IsParameter && op.Group != OpcodeGroups.Jump
                             && op.ParameterType != ParameterTypes.String
-                            && op.ParameterType != ParameterTypes.Debug
+                            && op.ParameterType != ParameterTypes.Debug)
                           select op).ToList();
 
             foreach (var op in operands)
             {
                 comboBoxOperand.Items.Add(op.ShortName);
             }
-
+            comboBoxModifiers.Items.Add(" ");
+            foreach (var op in modifiers)
+            {
+                comboBoxModifiers.Items.Add(op.ShortName);
+            }
+            comboBoxModifiers.SelectedIndex = 0;
             foreach (var op in paramTypes)
             {
                 comboBoxType.Items.Add(op.ShortName);
             }
+            comboBoxType.Items.Add("(Modify above)");
 
             foreach (int gv in Enum.GetValues(typeof(CommonVars.Globals)))
             {
@@ -124,6 +169,7 @@ namespace FF7Scarlet.AIEditor
             {
                 comboBoxParameter.Items.Add($"{gv:X4} ({(CommonVars.ActorGlobals)gv})");
             }
+            loading = false;
         }
 
         #endregion
@@ -137,10 +183,13 @@ namespace FF7Scarlet.AIEditor
             IsFirst = true;
         }
 
-        public void SetCode(byte paramType, FFText? parameter)
+        public void SetCode(byte paramType, FFText? parameter, bool isModifier = false)
         {
+            loading = true;
             ParamType = paramType;
             Parameter = parameter;
+            Modifier = 0xFF;
+            ModifyAbove = isModifier;
 
             var op = OpcodeInfo.GetInfo(paramType);
             if (op != null)
@@ -203,6 +252,7 @@ namespace FF7Scarlet.AIEditor
                 }
                 checkBoxEnabled.Checked = true;
             }
+            loading = false;
         }
 
         public void SetOperand(byte operand)
@@ -217,14 +267,26 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
+        public void SetAsModifier(byte opcode)
+        {
+            Modifier = opcode;
+            comboBoxType.SelectedIndex = paramTypes.Count;
+            checkBoxEnabled.Checked = true;
+        }
+
         #endregion
 
         #region Event Methods
 
         private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            comboBoxOperand.Enabled = comboBoxType.Enabled = comboBoxParameter.Enabled = checkBoxEnabled.Checked;
-            PForm?.UpdateParamList(this, checkBoxEnabled.Checked);
+            bool check = checkBoxEnabled.Checked;
+            comboBoxModifiers.Enabled = comboBoxType.Enabled = check;
+            if (!ModifyAbove)
+            {
+                comboBoxOperand.Enabled = comboBoxParameter.Enabled = check;
+            }
+            PForm?.UpdateParamList(this, check);
         }
 
         private void comboBoxOperand_SelectedIndexChanged(object sender, EventArgs e)
@@ -232,9 +294,30 @@ namespace FF7Scarlet.AIEditor
             Operand = operands[comboBoxOperand.SelectedIndex].Code;
         }
 
+        private void comboBoxModifiers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxModifiers.SelectedIndex < 1)
+            {
+                modifier = 0xFF;
+                if (ModifyAbove) { ModifyAbove = false; }
+            }
+            else
+            {
+                modifier = modifiers[comboBoxModifiers.SelectedIndex - 1].Code;
+            }
+        }
+
         private void comboBoxType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ParamType = (byte)paramTypes[comboBoxType.SelectedIndex].ParameterType;
+            if (comboBoxType.SelectedIndex >= paramTypes.Count)
+            {
+                ModifyAbove = true;
+            }
+            else
+            {
+                ParamType = (byte)paramTypes[comboBoxType.SelectedIndex].ParameterType;
+                ModifyAbove = false;
+            }
         }
 
         #endregion

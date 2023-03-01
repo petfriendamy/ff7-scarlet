@@ -31,7 +31,7 @@ namespace FF7Scarlet.AIEditor
         }
         public Script? SelectedScript
         {
-            get { return AIContainer?.GetScriptAtPosition(SelectedScriptIndex); }
+            get { return AIContainer?.Scripts[SelectedScriptIndex]; }
         }
         private Code? SelectedCode
         {
@@ -64,7 +64,7 @@ namespace FF7Scarlet.AIEditor
                 }
                 else
                 {
-                    var script = AIContainer.GetScriptAtPosition(scriptID);
+                    var script = AIContainer.Scripts[scriptID];
                     toolStripScript.Enabled = true;
                     if (script == null)
                     {
@@ -187,12 +187,16 @@ namespace FF7Scarlet.AIEditor
                 MessageBox.Show("The script container does not exist.", "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+            else if (SelectedScript == null)
+            {
+                MessageBox.Show("No script selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             else
             {
                 DialogResult result;
                 Code newCode;
 
-                using (var codeForm = new CodeForm())
+                using (var codeForm = new CodeForm(SelectedScript))
                 {
                     result = codeForm.ShowDialog();
                     newCode = codeForm.Code;
@@ -200,16 +204,15 @@ namespace FF7Scarlet.AIEditor
 
                 if (result == DialogResult.OK)
                 {
-                    if (SelectedScript == null)
+                    if (SelectedScript.IsEmpty)
                     {
-                        var newScript = AIContainer.CreateNewScript(SelectedScriptIndex, newCode);
-                        newCode.SetParent(newScript);
+                        AIContainer.Scripts[SelectedScriptIndex] = new Script(AIContainer, newCode);
                         listBoxCurrScript.SelectedIndex = 0;
                         InvokeScriptAdded();
                     }
                     else
                     {
-                        int i = SelectedCodeIndex;
+                        int i = SelectedCodeIndex + 1;
                         SelectedScript.InsertCodeAtPosition(i, newCode);
                         ReloadScript(i);
                     }
@@ -220,12 +223,12 @@ namespace FF7Scarlet.AIEditor
 
         private void toolStripButtonEdit_Click(object sender, EventArgs e)
         {
-            if (SelectedScript != null && SelectedCode != null)
+            if (AIContainer != null && SelectedScript != null && SelectedCode != null)
             {
                 DialogResult result;
                 Code newCode;
 
-                using (var codeForm = new CodeForm(SelectedCode))
+                using (var codeForm = new CodeForm(SelectedScript, SelectedCode))
                 {
                     result = codeForm.ShowDialog();
                     newCode = codeForm.Code;

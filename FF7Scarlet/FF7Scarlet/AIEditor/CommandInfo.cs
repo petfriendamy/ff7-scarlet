@@ -19,6 +19,8 @@ namespace FF7Scarlet.AIEditor
             new CommandInfo(Opcodes.Attack, "Perform an attack", "Attack Type", ParameterTypes.Other, "Attack ID", ParameterTypes.Other),
             new CommandInfo(Opcodes.ShowMessage, "Show a message", "String", ParameterTypes.String),
             new CommandInfo(Opcodes.DebugMessage, "Send a string to the debug console", "Var Count", ParameterTypes.Debug, "String", ParameterTypes.String),
+            new CommandInfo(Opcodes.ShareScripts, "Use scripts from specified character", "Character ID", ParameterTypes.Other),
+            new CommandInfo(Opcodes.ElementalDef, "Get elemental defense of target", "Target", ParameterTypes.Other, "Element", ParameterTypes.Other),
             new CommandInfo((Opcodes)0xFF, "(Unknown code block)", "Value", ParameterTypes.Other)
         };
 
@@ -62,7 +64,7 @@ namespace FF7Scarlet.AIEditor
             return null;
         }
 
-        public CodeBlock GenerateCode(CodeBlock? old = null)
+        public CodeBlock GenerateCode(Script parentScript, CodeBlock? old = null)
         {
             var op = OpcodeInfo.GetInfo(Opcode);
             if (op == null) { throw new ArgumentNullException(); }
@@ -74,16 +76,18 @@ namespace FF7Scarlet.AIEditor
                 {
                     p = new FFText("");
                 }
-                block = new CodeBlock(null, new CodeLine(null, 0xFFFF, (byte)Opcode, p));
+                block = new CodeBlock(parentScript, new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
+                    (byte)Opcode, p));
                 for (int i = 0; i < op.PopCount; ++i)
                 {
-                    block.AddToTop(new CodeLine(null, 0xFFFF, (byte)Opcodes.PushConst01, new FFText("0")));
+                    block.AddToTop(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
+                        (byte)Opcodes.PushConst01, new FFText("0")));
                 }
             }
             else
             {
                 p = old.GetParameter();
-                block = new CodeBlock(null, old.GetCodeAtPosition(0));
+                block = new CodeBlock(parentScript, old.GetCodeAtPosition(0));
                 for (int i = 1; i < op.PopCount; ++i)
                 {
                     block.AddToTop(old.GetCodeAtPosition(i));

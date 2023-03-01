@@ -4,7 +4,7 @@ using Microsoft.VisualBasic;
 
 namespace FF7Scarlet.SceneEditor
 {
-    public class Scene
+    public class Scene : IAttackContainer
     {
         public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ALL_FORMATIONS_COUNT = 1024,
             ATTACK_COUNT = 32, NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152,
@@ -33,7 +33,7 @@ namespace FF7Scarlet.SceneEditor
         }
         public bool ScriptsLoaded { get; private set; } = false;
 
-        public Scene(string filePath)
+        public Scene(string filePath) :base()
         {
             if (File.Exists(filePath))
             {
@@ -46,13 +46,13 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        public Scene(ref byte[] data)
+        public Scene(ref byte[] data) :base()
         {
             rawData = data;
             ParseData(rawData);
         }
 
-        public Scene(Scene other)
+        public Scene(Scene other) :base()
         {
             rawData = other.rawData;
             ParseData(rawData);

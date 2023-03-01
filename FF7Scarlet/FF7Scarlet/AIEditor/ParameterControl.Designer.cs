@@ -33,6 +33,7 @@ namespace FF7Scarlet.AIEditor
             comboBoxParameter = new ComboBox();
             comboBoxType = new ComboBox();
             comboBoxOperand = new ComboBox();
+            comboBoxModifiers = new ComboBox();
             SuspendLayout();
             // 
             // checkBoxEnabled
@@ -51,10 +52,10 @@ namespace FF7Scarlet.AIEditor
             comboBoxParameter.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxParameter.Enabled = false;
             comboBoxParameter.FormattingEnabled = true;
-            comboBoxParameter.Location = new Point(257, 3);
+            comboBoxParameter.Location = new Point(332, 3);
             comboBoxParameter.Margin = new Padding(4, 3, 4, 3);
             comboBoxParameter.Name = "comboBoxParameter";
-            comboBoxParameter.Size = new Size(233, 23);
+            comboBoxParameter.Size = new Size(215, 23);
             comboBoxParameter.TabIndex = 19;
             // 
             // comboBoxType
@@ -62,10 +63,10 @@ namespace FF7Scarlet.AIEditor
             comboBoxType.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxType.Enabled = false;
             comboBoxType.FormattingEnabled = true;
-            comboBoxType.Location = new Point(133, 3);
+            comboBoxType.Location = new Point(194, 3);
             comboBoxType.Margin = new Padding(4, 3, 4, 3);
             comboBoxType.Name = "comboBoxType";
-            comboBoxType.Size = new Size(116, 23);
+            comboBoxType.Size = new Size(130, 23);
             comboBoxType.TabIndex = 18;
             comboBoxType.SelectedIndexChanged += comboBoxType_SelectedIndexChanged;
             // 
@@ -77,21 +78,34 @@ namespace FF7Scarlet.AIEditor
             comboBoxOperand.Location = new Point(28, 3);
             comboBoxOperand.Margin = new Padding(4, 3, 4, 3);
             comboBoxOperand.Name = "comboBoxOperand";
-            comboBoxOperand.Size = new Size(97, 23);
+            comboBoxOperand.Size = new Size(50, 23);
             comboBoxOperand.TabIndex = 17;
             comboBoxOperand.SelectedIndexChanged += comboBoxOperand_SelectedIndexChanged;
+            // 
+            // comboBoxModifiers
+            // 
+            comboBoxModifiers.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxModifiers.Enabled = false;
+            comboBoxModifiers.FormattingEnabled = true;
+            comboBoxModifiers.Location = new Point(86, 3);
+            comboBoxModifiers.Margin = new Padding(4, 3, 4, 3);
+            comboBoxModifiers.Name = "comboBoxModifiers";
+            comboBoxModifiers.Size = new Size(100, 23);
+            comboBoxModifiers.TabIndex = 21;
+            comboBoxModifiers.SelectedIndexChanged += comboBoxModifiers_SelectedIndexChanged;
             // 
             // ParameterControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(comboBoxModifiers);
             Controls.Add(checkBoxEnabled);
             Controls.Add(comboBoxParameter);
             Controls.Add(comboBoxType);
             Controls.Add(comboBoxOperand);
             Margin = new Padding(4, 3, 4, 3);
             Name = "ParameterControl";
-            Size = new Size(493, 31);
+            Size = new Size(550, 31);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -102,5 +116,6 @@ namespace FF7Scarlet.AIEditor
         private System.Windows.Forms.ComboBox comboBoxParameter;
         private System.Windows.Forms.ComboBox comboBoxType;
         private System.Windows.Forms.ComboBox comboBoxOperand;
+        private ComboBox comboBoxModifiers;
     }
 }

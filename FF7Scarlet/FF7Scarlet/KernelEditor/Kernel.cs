@@ -9,19 +9,9 @@ using Shojy.FF7.Elena.Sections;
 
 namespace FF7Scarlet.KernelEditor
 {
-    public struct StatIncrease
-    {
-        public CharacterStat Stat { get; set; }
-        public byte Amount { get; set; }
+    
 
-        public StatIncrease(CharacterStat stat, byte amount)
-        {
-            Stat = stat;
-            Amount = amount;
-        }
-    }
-
-    public class Kernel : KernelReader
+    public class Kernel : KernelReader, IAttackContainer
     {
         public const int SECTION_COUNT = 27, KERNEL1_END = 9, ATTACK_COUNT = 128;
         private Dictionary<KernelSection, byte[]> kernel1TextSections =
@@ -104,6 +94,16 @@ namespace FF7Scarlet.KernelEditor
                 if (atk.ID == id) { return atk; }
             }
             return null;
+        }
+
+        public string GetAttackName(ushort id)
+        {
+            var atk = GetAttackByID(id);
+            if (atk != null)
+            {
+                return atk.GetNameString();
+            }
+            return $"Unknown ({id:X4})";
         }
 
         public Item? GetItemByID(int id)

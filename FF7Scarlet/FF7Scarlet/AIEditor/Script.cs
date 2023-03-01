@@ -21,15 +21,18 @@ namespace FF7Scarlet.AIEditor
         }
         public AIContainer Parent { get; }
 
-        public Script(AIContainer parent, ref byte[] data, int offset, int nextOffset)
+        public Script(AIContainer parent)
         {
             Parent = parent;
+        }
+
+        public Script(AIContainer parent, ref byte[] data, int offset, int nextOffset) :this(parent)
+        {
             ParseScript(ref data, offset, nextOffset);
         }
 
-        public Script(AIContainer parent, Code startingCode)
+        public Script(AIContainer parent, Code startingCode) :this(parent)
         {
-            Parent = parent;
             startingCode.SetParent(this);
             code.Add(startingCode);
             if (startingCode.GetPrimaryOpcode() == (byte)Opcodes.Label)
@@ -169,7 +172,7 @@ namespace FF7Scarlet.AIEditor
             headersAreCorrect = true;
         }
 
-        public static List<Code> GetParsedCode(List<CodeLine> list, Script? parent = null)
+        public static List<Code> GetParsedCode(List<CodeLine> list, Script parent)
         {
             //use a stack to combine values
             var stack = new Stack<Code> { };

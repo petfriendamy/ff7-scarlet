@@ -613,7 +613,7 @@ namespace FF7Scarlet.KernelEditor
                         listBoxCharacterScripts.Items[i] = SCRIPT_LIST[i];
                         if (chara != null)
                         {
-                            var script = chara.GetScriptAtPosition(i);
+                            var script = chara.Scripts[i];
                             if (script != null && !script.IsEmpty)
                             {
                                 listBoxCharacterScripts.Items[i] += "*";

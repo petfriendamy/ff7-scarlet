@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shojy.FF7.Elena.Battle;
+using Shojy.FF7.Elena.Equipment;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -11,15 +7,13 @@ namespace FF7Scarlet.AIEditor
     {
         private readonly List<Code> block = new List<Code> { };
 
-        public CodeBlock(Script? parent, Code first)
+        public CodeBlock(Script parent, Code first) :base(parent)
         {
-            Parent = parent;
             AddToEnd(first);
         }
 
-        public CodeBlock(Script? parent, List<Code> list)
+        public CodeBlock(Script parent, List<Code> list) :base(parent)
         {
-            Parent = parent;
             block = list;
         }
 
@@ -192,6 +186,21 @@ namespace FF7Scarlet.AIEditor
                     case Opcodes.AssignGlobal:
                         output += $"GlobalVar:{block[0].Disassemble(false)} = {block[1].Disassemble(false)}";
                         break;
+                    case Opcodes.ElementalDef:
+                        var parameter = block[1].GetParameter();
+                        if (parameter != null)
+                        {
+                            var elementName = Enum.GetName((Elements)parameter.ToInt());
+                            if (elementName == null)
+                            {
+                                output += $"GetElementDefense({block[0].Disassemble(false)}, Unknown ({block[1].Disassemble(false)}))";
+                            }
+                            else
+                            {
+                                output += $"GetElementDefense({block[0].Disassemble(false)}, {elementName})";
+                            }
+                        }
+                        break;
                     case Opcodes.DebugMessage:
                         pop1 = block[block.Count - 1] as CodeLine;
                         output += $"DebugMessage \"{pop1?.Parameter}\"";
@@ -226,11 +235,11 @@ namespace FF7Scarlet.AIEditor
             }
             else
             {
-                var scene = GetParentScene();
+                var parent = GetTopMostParent();
                 var p = parameter.Parameter;
-                if (scene != null && p != null)
+                if (parent != null && p != null)
                 {
-                    atkName = scene.GetAttackName((ushort)p.ToInt());
+                    atkName = parent.GetAttackName((ushort)p.ToInt());
                 }
             }
             return atkName;
