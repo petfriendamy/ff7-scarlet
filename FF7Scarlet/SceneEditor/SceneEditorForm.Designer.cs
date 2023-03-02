@@ -41,7 +41,7 @@
             labelEnemyResistRate = new Label();
             comboBoxEnemyResistElement = new ComboBox();
             labelEnemyResistElement = new Label();
-            listBoxElementResistances = new ListBox();
+            listBoxEnemyElementResistances = new ListBox();
             groupBoxEnemyReward = new GroupBox();
             labelEnemyEXP = new Label();
             numericEnemyEXP = new NumericUpDown();
@@ -83,6 +83,7 @@
             labelEnemyDropItem = new Label();
             listBoxEnemyItemDropRates = new ListBox();
             groupBoxEnemyAttacks = new GroupBox();
+            buttonViewManipList = new Button();
             numericAttackAnimationIndex = new NumericUpDown();
             labelEnemyAttackAnimationIndex = new Label();
             checkBoxEnemyAttackIsManipable = new CheckBox();
@@ -315,6 +316,7 @@
             statusesControlEnemyImmunities.Name = "statusesControlEnemyImmunities";
             statusesControlEnemyImmunities.Size = new Size(494, 210);
             statusesControlEnemyImmunities.TabIndex = 43;
+            statusesControlEnemyImmunities.StatusesChanged += EnemyDataChanged;
             // 
             // groupBoxEnemyElementResistances
             // 
@@ -322,7 +324,7 @@
             groupBoxEnemyElementResistances.Controls.Add(labelEnemyResistRate);
             groupBoxEnemyElementResistances.Controls.Add(comboBoxEnemyResistElement);
             groupBoxEnemyElementResistances.Controls.Add(labelEnemyResistElement);
-            groupBoxEnemyElementResistances.Controls.Add(listBoxElementResistances);
+            groupBoxEnemyElementResistances.Controls.Add(listBoxEnemyElementResistances);
             groupBoxEnemyElementResistances.Location = new Point(267, 8);
             groupBoxEnemyElementResistances.Name = "groupBoxEnemyElementResistances";
             groupBoxEnemyElementResistances.Size = new Size(494, 156);
@@ -340,6 +342,7 @@
             comboBoxEnemyResistRate.Name = "comboBoxEnemyResistRate";
             comboBoxEnemyResistRate.Size = new Size(154, 23);
             comboBoxEnemyResistRate.TabIndex = 45;
+            comboBoxEnemyResistRate.SelectedIndexChanged += comboBoxEnemyResistRate_SelectedIndexChanged;
             // 
             // labelEnemyResistRate
             // 
@@ -361,6 +364,7 @@
             comboBoxEnemyResistElement.Name = "comboBoxEnemyResistElement";
             comboBoxEnemyResistElement.Size = new Size(154, 23);
             comboBoxEnemyResistElement.TabIndex = 43;
+            comboBoxEnemyResistElement.SelectedIndexChanged += comboBoxEnemyResistElement_SelectedIndexChanged;
             // 
             // labelEnemyResistElement
             // 
@@ -372,16 +376,16 @@
             labelEnemyResistElement.TabIndex = 42;
             labelEnemyResistElement.Text = "Element:";
             // 
-            // listBoxElementResistances
+            // listBoxEnemyElementResistances
             // 
-            listBoxElementResistances.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            listBoxElementResistances.FormattingEnabled = true;
-            listBoxElementResistances.ItemHeight = 15;
-            listBoxElementResistances.Location = new Point(6, 22);
-            listBoxElementResistances.Name = "listBoxElementResistances";
-            listBoxElementResistances.Size = new Size(322, 124);
-            listBoxElementResistances.TabIndex = 41;
-            listBoxElementResistances.SelectedIndexChanged += listBoxElementResistances_SelectedIndexChanged;
+            listBoxEnemyElementResistances.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            listBoxEnemyElementResistances.FormattingEnabled = true;
+            listBoxEnemyElementResistances.ItemHeight = 15;
+            listBoxEnemyElementResistances.Location = new Point(6, 22);
+            listBoxEnemyElementResistances.Name = "listBoxEnemyElementResistances";
+            listBoxEnemyElementResistances.Size = new Size(322, 124);
+            listBoxEnemyElementResistances.TabIndex = 41;
+            listBoxEnemyElementResistances.SelectedIndexChanged += listBoxEnemyElementResistances_SelectedIndexChanged;
             // 
             // groupBoxEnemyReward
             // 
@@ -414,6 +418,7 @@
             numericEnemyEXP.Name = "numericEnemyEXP";
             numericEnemyEXP.Size = new Size(113, 23);
             numericEnemyEXP.TabIndex = 34;
+            numericEnemyEXP.ValueChanged += EnemyDataChanged;
             // 
             // numericEnemyGil
             // 
@@ -422,6 +427,7 @@
             numericEnemyGil.Name = "numericEnemyGil";
             numericEnemyGil.Size = new Size(232, 23);
             numericEnemyGil.TabIndex = 38;
+            numericEnemyGil.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemyAP
             // 
@@ -449,6 +455,7 @@
             numericEnemyAP.Name = "numericEnemyAP";
             numericEnemyAP.Size = new Size(113, 23);
             numericEnemyAP.TabIndex = 36;
+            numericEnemyAP.ValueChanged += EnemyDataChanged;
             // 
             // groupBoxEnemyStats
             // 
@@ -487,6 +494,7 @@
             numericEnemyLevel.Size = new Size(55, 23);
             numericEnemyLevel.TabIndex = 14;
             numericEnemyLevel.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numericEnemyLevel.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemyLevel
             // 
@@ -504,6 +512,7 @@
             numericEnemyStrength.Name = "numericEnemyStrength";
             numericEnemyStrength.Size = new Size(55, 23);
             numericEnemyStrength.TabIndex = 20;
+            numericEnemyStrength.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemyStrength
             // 
@@ -531,6 +540,7 @@
             numericEnemyMP.Name = "numericEnemyMP";
             numericEnemyMP.Size = new Size(77, 23);
             numericEnemyMP.TabIndex = 18;
+            numericEnemyMP.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemyMP
             // 
@@ -549,6 +559,7 @@
             numericEnemyDefense.Name = "numericEnemyDefense";
             numericEnemyDefense.Size = new Size(52, 23);
             numericEnemyDefense.TabIndex = 22;
+            numericEnemyDefense.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemyHP
             // 
@@ -575,6 +586,7 @@
             numericEnemyHP.Name = "numericEnemyHP";
             numericEnemyHP.Size = new Size(88, 23);
             numericEnemyHP.TabIndex = 16;
+            numericEnemyHP.ValueChanged += EnemyDataChanged;
             // 
             // numericEnemySpeed
             // 
@@ -583,6 +595,7 @@
             numericEnemySpeed.Name = "numericEnemySpeed";
             numericEnemySpeed.Size = new Size(55, 23);
             numericEnemySpeed.TabIndex = 32;
+            numericEnemySpeed.ValueChanged += EnemyDataChanged;
             // 
             // numericEnemyMagic
             // 
@@ -591,6 +604,7 @@
             numericEnemyMagic.Name = "numericEnemyMagic";
             numericEnemyMagic.Size = new Size(55, 23);
             numericEnemyMagic.TabIndex = 24;
+            numericEnemyMagic.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemySpeed
             // 
@@ -617,6 +631,7 @@
             numericEnemyEvade.Name = "numericEnemyEvade";
             numericEnemyEvade.Size = new Size(52, 23);
             numericEnemyEvade.TabIndex = 30;
+            numericEnemyEvade.ValueChanged += EnemyDataChanged;
             // 
             // numericEnemyMDef
             // 
@@ -625,6 +640,7 @@
             numericEnemyMDef.Name = "numericEnemyMDef";
             numericEnemyMDef.Size = new Size(52, 23);
             numericEnemyMDef.TabIndex = 26;
+            numericEnemyMDef.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemyEvade
             // 
@@ -642,6 +658,7 @@
             numericEnemyLuck.Name = "numericEnemyLuck";
             numericEnemyLuck.Size = new Size(55, 23);
             numericEnemyLuck.TabIndex = 28;
+            numericEnemyLuck.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemyLuck
             // 
@@ -659,6 +676,7 @@
             textBoxEnemyName.Name = "textBoxEnemyName";
             textBoxEnemyName.Size = new Size(252, 23);
             textBoxEnemyName.TabIndex = 4;
+            textBoxEnemyName.TextChanged += textBoxEnemyName_TextChanged;
             // 
             // labelEnemyName
             // 
@@ -693,6 +711,7 @@
             comboBoxEnemyMorphItem.Name = "comboBoxEnemyMorphItem";
             comboBoxEnemyMorphItem.Size = new Size(381, 23);
             comboBoxEnemyMorphItem.TabIndex = 48;
+            comboBoxEnemyMorphItem.SelectedIndexChanged += EnemyDataChanged;
             // 
             // labelEnemyMorphItem
             // 
@@ -729,6 +748,7 @@
             checkBoxEnemyItemIsSteal.TabIndex = 7;
             checkBoxEnemyItemIsSteal.Text = "Steal";
             checkBoxEnemyItemIsSteal.UseVisualStyleBackColor = true;
+            checkBoxEnemyItemIsSteal.CheckedChanged += checkBoxEnemyItemIsSteal_CheckedChanged;
             // 
             // numericEnemyDropRate
             // 
@@ -738,6 +758,7 @@
             numericEnemyDropRate.Name = "numericEnemyDropRate";
             numericEnemyDropRate.Size = new Size(67, 23);
             numericEnemyDropRate.TabIndex = 6;
+            numericEnemyDropRate.ValueChanged += numericEnemyDropRate_ValueChanged;
             // 
             // labelEnemyItemDropRate
             // 
@@ -758,6 +779,7 @@
             comboBoxEnemyDropItemID.Name = "comboBoxEnemyDropItemID";
             comboBoxEnemyDropItemID.Size = new Size(239, 23);
             comboBoxEnemyDropItemID.TabIndex = 2;
+            comboBoxEnemyDropItemID.SelectedIndexChanged += comboBoxEnemyDropItemID_SelectedIndexChanged;
             // 
             // labelEnemyDropItem
             // 
@@ -782,6 +804,7 @@
             // groupBoxEnemyAttacks
             // 
             groupBoxEnemyAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxEnemyAttacks.Controls.Add(buttonViewManipList);
             groupBoxEnemyAttacks.Controls.Add(numericAttackAnimationIndex);
             groupBoxEnemyAttacks.Controls.Add(labelEnemyAttackAnimationIndex);
             groupBoxEnemyAttacks.Controls.Add(checkBoxEnemyAttackIsManipable);
@@ -792,24 +815,35 @@
             groupBoxEnemyAttacks.Controls.Add(listBoxEnemyAttacks);
             groupBoxEnemyAttacks.Location = new Point(9, 8);
             groupBoxEnemyAttacks.Name = "groupBoxEnemyAttacks";
-            groupBoxEnemyAttacks.Size = new Size(363, 365);
+            groupBoxEnemyAttacks.Size = new Size(363, 394);
             groupBoxEnemyAttacks.TabIndex = 45;
             groupBoxEnemyAttacks.TabStop = false;
             groupBoxEnemyAttacks.Text = "Attacks";
             // 
+            // buttonViewManipList
+            // 
+            buttonViewManipList.Location = new Point(145, 361);
+            buttonViewManipList.Name = "buttonViewManipList";
+            buttonViewManipList.Size = new Size(212, 23);
+            buttonViewManipList.TabIndex = 8;
+            buttonViewManipList.Text = "View manip list";
+            buttonViewManipList.UseVisualStyleBackColor = true;
+            // 
             // numericAttackAnimationIndex
             // 
             numericAttackAnimationIndex.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            numericAttackAnimationIndex.Location = new Point(259, 287);
+            numericAttackAnimationIndex.Location = new Point(259, 332);
+            numericAttackAnimationIndex.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             numericAttackAnimationIndex.Name = "numericAttackAnimationIndex";
             numericAttackAnimationIndex.Size = new Size(98, 23);
             numericAttackAnimationIndex.TabIndex = 7;
+            numericAttackAnimationIndex.ValueChanged += numericAttackAnimationIndex_ValueChanged;
             // 
             // labelEnemyAttackAnimationIndex
             // 
             labelEnemyAttackAnimationIndex.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelEnemyAttackAnimationIndex.AutoSize = true;
-            labelEnemyAttackAnimationIndex.Location = new Point(259, 269);
+            labelEnemyAttackAnimationIndex.Location = new Point(259, 314);
             labelEnemyAttackAnimationIndex.Name = "labelEnemyAttackAnimationIndex";
             labelEnemyAttackAnimationIndex.Size = new Size(98, 15);
             labelEnemyAttackAnimationIndex.TabIndex = 6;
@@ -819,21 +853,24 @@
             // 
             checkBoxEnemyAttackIsManipable.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             checkBoxEnemyAttackIsManipable.AutoSize = true;
-            checkBoxEnemyAttackIsManipable.Location = new Point(224, 333);
+            checkBoxEnemyAttackIsManipable.Location = new Point(6, 364);
             checkBoxEnemyAttackIsManipable.Name = "checkBoxEnemyAttackIsManipable";
             checkBoxEnemyAttackIsManipable.Size = new Size(133, 19);
             checkBoxEnemyAttackIsManipable.TabIndex = 5;
             checkBoxEnemyAttackIsManipable.Text = "Include in manip list";
             checkBoxEnemyAttackIsManipable.UseVisualStyleBackColor = true;
+            checkBoxEnemyAttackIsManipable.CheckedChanged += checkBoxEnemyAttackIsManipable_CheckedChanged;
             // 
             // comboBoxEnemyAttackCamID
             // 
             comboBoxEnemyAttackCamID.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxEnemyAttackCamID.FormattingEnabled = true;
             comboBoxEnemyAttackCamID.Location = new Point(6, 331);
+            comboBoxEnemyAttackCamID.MaxLength = 4;
             comboBoxEnemyAttackCamID.Name = "comboBoxEnemyAttackCamID";
-            comboBoxEnemyAttackCamID.Size = new Size(212, 23);
+            comboBoxEnemyAttackCamID.Size = new Size(247, 23);
             comboBoxEnemyAttackCamID.TabIndex = 4;
+            comboBoxEnemyAttackCamID.TextChanged += comboBoxEnemyAttackCamID_TextChanged;
             // 
             // labelEnemyAttackCamID
             // 
@@ -851,8 +888,9 @@
             comboBoxEnemyAttackID.FormattingEnabled = true;
             comboBoxEnemyAttackID.Location = new Point(6, 287);
             comboBoxEnemyAttackID.Name = "comboBoxEnemyAttackID";
-            comboBoxEnemyAttackID.Size = new Size(247, 23);
+            comboBoxEnemyAttackID.Size = new Size(351, 23);
             comboBoxEnemyAttackID.TabIndex = 2;
+            comboBoxEnemyAttackID.SelectedIndexChanged += comboBoxEnemyAttackID_SelectedIndexChanged;
             // 
             // labelEnemyAttackID
             // 
@@ -882,6 +920,7 @@
             numericEnemyBackDamageMultiplier.Name = "numericEnemyBackDamageMultiplier";
             numericEnemyBackDamageMultiplier.Size = new Size(135, 23);
             numericEnemyBackDamageMultiplier.TabIndex = 44;
+            numericEnemyBackDamageMultiplier.ValueChanged += EnemyDataChanged;
             // 
             // labelEnemyBackDamageMultiplier
             // 
@@ -997,6 +1036,7 @@
             textBoxAttackID.Location = new Point(7, 24);
             textBoxAttackID.MaxLength = 4;
             textBoxAttackID.Name = "textBoxAttackID";
+            textBoxAttackID.ReadOnly = true;
             textBoxAttackID.Size = new Size(62, 23);
             textBoxAttackID.TabIndex = 60;
             // 
@@ -1945,7 +1985,7 @@
         private Label labelEnemyResistRate;
         private ComboBox comboBoxEnemyResistElement;
         private Label labelEnemyResistElement;
-        private ListBox listBoxElementResistances;
+        private ListBox listBoxEnemyElementResistances;
         private Label labelEnemyBackDamageMultiplier;
         private NumericUpDown numericEnemyBackDamageMultiplier;
         private KernelEditor.Controls.StatusesControl statusesControlEnemyImmunities;
@@ -2048,5 +2088,6 @@
         private Controls.CameraPositionControl cameraPositionControlExtra2;
         private Controls.CameraPositionControl cameraPositionControlExtra1;
         private Controls.CameraPositionControl cameraPositionControlMain;
+        private Button buttonViewManipList;
     }
 }

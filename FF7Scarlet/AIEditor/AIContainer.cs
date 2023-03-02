@@ -6,15 +6,16 @@ namespace FF7Scarlet.AIEditor
     {
         public const int SCRIPT_NUMBER = 16;
         protected readonly Script[] scripts = new Script[SCRIPT_NUMBER];
-        public IAttackContainer? Parent { get; protected set; }
+        public IAttackContainer Parent { get; protected set; }
 
         public Script[] Scripts
         {
             get { return scripts; }
         }
 
-        public AIContainer()
+        public AIContainer(IAttackContainer parent)
         {
+            Parent = parent;
             for (int i = 0; i < SCRIPT_NUMBER; ++i)
             {
                 scripts[i] = new Script(this);

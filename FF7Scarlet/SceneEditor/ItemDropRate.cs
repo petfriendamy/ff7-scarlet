@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FF7Scarlet.KernelEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,16 +10,23 @@ namespace FF7Scarlet.SceneEditor
     public class ItemDropRate
     {
         public ushort ItemID { get; set; }
-        public bool IsSteal { get; private set; }
-        public byte DropRate { get; private set; }
+        public bool IsSteal { get; set; }
+        public byte DropRate { get; set; }
+
+        public ItemDropRate(byte itemID, ItemType type, byte rate, bool isSteal)
+        {
+            ItemID = InventoryItem.GetCombinedIndex(type, itemID);
+            DropRate = rate;
+            IsSteal = isSteal;
+        }
 
         public ItemDropRate(ushort itemId, byte rate)
         {
             ItemID = itemId;
-            SetDropRate(rate);
+            SetDropRateFromFile(rate);
         }
 
-        public void SetDropRate(byte rate)
+        public void SetDropRateFromFile(byte rate)
         {
             if (rate > 0x80)
             {

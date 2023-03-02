@@ -11,18 +11,18 @@ namespace FF7Scarlet.Shared
         public ushort ID { get; }
         public FFText Name { get; set; }
         public byte AccuracyRate { get; set; }
-        public byte ImpactEffectID { get; set; }
-        public byte TargetHurtActionIndex { get; set; }
+        public byte ImpactEffectID { get; set; } = 0xFF;
+        public byte TargetHurtActionIndex { get; set; } = 0xFF;
         public ushort MPCost { get; set; }
-        public ushort ImpactSound { get; set; }
-        public ushort CameraMovementIDSingle { get; set; }
-        public ushort CameraMovementIDMulti { get; set; }
+        public ushort ImpactSound { get; set; } = HexParser.NULL_OFFSET_16_BIT;
+        public ushort CameraMovementIDSingle { get; set; } = HexParser.NULL_OFFSET_16_BIT;
+        public ushort CameraMovementIDMulti { get; set; } = HexParser.NULL_OFFSET_16_BIT;
         public TargetData TargetFlags { get; set; }
-        public byte AttackEffectID { get; set; }
-        public byte DamageCalculationID { get; set; }
+        public byte AttackEffectID { get; set; } = 0xFF;
+        public byte DamageCalculationID { get; set; } = 0xFF;
         public byte AttackStrength { get; set; }
         public AttackConditions AttackConditions { get; set; }
-        public StatusChange StatusChange { get; set; }
+        public StatusChange StatusChange { get; set; } = StatusChange.None;
         public byte StatusChangeChance { get; set; }
         public byte AditionalEffects { get; set; }
         public byte AdditionalEffectsModifier { get; set; }
@@ -30,9 +30,15 @@ namespace FF7Scarlet.Shared
         public Elements Elements { get; set; }
         public SpecialEffects SpecialAttackFlags { get; set; }
 
-        public Attack(ushort id, FFText name, byte[] data)
+        public Attack(ushort id)
         {
             ID = id;
+            Name = new FFText();
+            rawData = new byte[BLOCK_SIZE];
+        }
+
+        public Attack(ushort id, FFText name, byte[] data) :this(id)
+        {
             Name = name;
             rawData = data;
             ParseData(data);

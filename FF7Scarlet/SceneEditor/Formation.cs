@@ -15,9 +15,8 @@ namespace FF7Scarlet.SceneEditor
         }
 
         public Formation(Scene parent, BattleSetupData setupData, CameraPlacementData cameraData,
-            EnemyLocation[] enemyLocations)
+            EnemyLocation[] enemyLocations) :base(parent)
         {
-            Parent = parent;
             BattleSetupData = setupData;
             CameraPlacementData = cameraData;
             Array.Copy(enemyLocations, EnemyLocations, ENEMY_COUNT);

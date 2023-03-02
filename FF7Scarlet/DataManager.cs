@@ -2,7 +2,6 @@
 using Shojy.FF7.Elena;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
-using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 
 namespace FF7Scarlet

@@ -55,7 +55,7 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //get battle and growth data
-            BattleAndGrowthData = new BattleAndGrowthData(GetSectionRawData(KernelSection.BattleAndGrowthData));
+            BattleAndGrowthData = new BattleAndGrowthData(this, GetSectionRawData(KernelSection.BattleAndGrowthData));
 
             //get initial data
             InitialData = new InitialData(GetSectionRawData(KernelSection.InitData));

@@ -67,7 +67,7 @@ namespace FF7Scarlet.SceneEditor
         {
             foreach (var e in Enemies)
             {
-                if (e?.ID == id)
+                if (e?.ModelID == id)
                 {
                     return e;
                 }
@@ -100,7 +100,7 @@ namespace FF7Scarlet.SceneEditor
                     }
                     else
                     {
-                        temp += GetEnemyName(enemy.ID);
+                        temp += GetEnemyName(enemy.ModelID);
                     }
                     if (i + 1 < ENEMY_COUNT)
                     {
@@ -139,7 +139,7 @@ namespace FF7Scarlet.SceneEditor
             using (var reader = new BinaryReader(ms))
             {
                 int i, j;
-                var enemyID = new ushort[ENEMY_COUNT];
+                var enemyModelID = new ushort[ENEMY_COUNT];
                 var enemyName = new FFText[ENEMY_COUNT];
                 var setupData = new BattleSetupData[FORMATION_COUNT];
                 var cameraData = new CameraPlacementData[FORMATION_COUNT];
@@ -151,10 +151,10 @@ namespace FF7Scarlet.SceneEditor
 
                 try
                 {
-                    //enemy IDs
+                    //enemy model IDs
                     for (i = 0; i < ENEMY_COUNT; ++i)
                     {
-                        enemyID[i] = reader.ReadUInt16();
+                        enemyModelID[i] = reader.ReadUInt16();
                     }
 
                     reader.ReadBytes(2); //padding
@@ -185,7 +185,7 @@ namespace FF7Scarlet.SceneEditor
                         temp = reader.ReadBytes(ENEMY_DATA_BLOCK_SIZE);
                         if (!enemyName[i].IsEmpty())
                         {
-                            Enemies[i] = new Enemy(this, enemyID[i], enemyName[i], temp);
+                            Enemies[i] = new Enemy(this, enemyModelID[i], enemyName[i], temp);
                         }
                     }
 

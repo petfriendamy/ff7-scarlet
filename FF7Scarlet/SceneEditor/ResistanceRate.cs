@@ -9,7 +9,7 @@ namespace FF7Scarlet.SceneEditor
 
     public abstract class ResistanceRate
     {
-        public ResistRates Rate { get; protected set; }
+        public ResistRates Rate { get; set; }
 
         public abstract byte GetID();
         public virtual string GetText()
@@ -36,7 +36,7 @@ namespace FF7Scarlet.SceneEditor
 
     public class ElementResistanceRate : ResistanceRate
     {
-        public MateriaElements Element { get; }
+        public MateriaElements Element { get; set; }
 
         public ElementResistanceRate(MateriaElements element, ResistRates rate)
         {
@@ -57,7 +57,7 @@ namespace FF7Scarlet.SceneEditor
 
     public class StatusResistanceRate : ResistanceRate
     {
-        public EquipmentStatus Status { get; }
+        public EquipmentStatus Status { get; set; }
 
         public StatusResistanceRate(EquipmentStatus status, ResistRates rate)
         {
@@ -72,7 +72,7 @@ namespace FF7Scarlet.SceneEditor
 
         public override string GetText()
         {
-            return base.GetText() + ' ' + Status.ToString() + " (status attack)";
+            return base.GetText() + ' ' + StringParser.AddSpace(Status.ToString()) + " (status attack)";
         }
     }
 }

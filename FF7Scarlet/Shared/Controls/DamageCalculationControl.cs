@@ -232,10 +232,9 @@ namespace FF7Scarlet.KernelEditor.Controls
             {
                 if (textBoxActualValue.Text.Length == 2)
                 {
-                    var formatProvider = new CultureInfo("en-US");
                     byte value;
                     bool valid = byte.TryParse(textBoxActualValue.Text, NumberStyles.HexNumber,
-                        formatProvider, out value);
+                        HexParser.CultureInfo, out value);
                     if (valid)
                     {
                         TrySetCaller(5);

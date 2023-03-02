@@ -291,32 +291,41 @@ namespace FF7Scarlet.AIEditor
 
         private void comboBoxOperand_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Operand = operands[comboBoxOperand.SelectedIndex].Code;
+            if (!loading)
+            {
+                Operand = operands[comboBoxOperand.SelectedIndex].Code;
+            }
         }
 
         private void comboBoxModifiers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxModifiers.SelectedIndex < 1)
+            if (!loading)
             {
-                modifier = 0xFF;
-                if (ModifyAbove) { ModifyAbove = false; }
-            }
-            else
-            {
-                modifier = modifiers[comboBoxModifiers.SelectedIndex - 1].Code;
+                if (comboBoxModifiers.SelectedIndex < 1)
+                {
+                    Modifier = 0xFF;
+                    if (ModifyAbove) { ModifyAbove = false; }
+                }
+                else
+                {
+                    Modifier = modifiers[comboBoxModifiers.SelectedIndex - 1].Code;
+                }
             }
         }
 
         private void comboBoxType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxType.SelectedIndex >= paramTypes.Count)
+            if (!loading)
             {
-                ModifyAbove = true;
-            }
-            else
-            {
-                ParamType = (byte)paramTypes[comboBoxType.SelectedIndex].ParameterType;
-                ModifyAbove = false;
+                if (comboBoxType.SelectedIndex >= paramTypes.Count)
+                {
+                    ModifyAbove = true;
+                }
+                else
+                {
+                    ParamType = (byte)paramTypes[comboBoxType.SelectedIndex].ParameterType;
+                    ModifyAbove = false;
+                }
             }
         }
 

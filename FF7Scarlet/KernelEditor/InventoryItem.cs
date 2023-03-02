@@ -9,17 +9,30 @@ namespace FF7Scarlet.KernelEditor
 
     public class InventoryItem
     {
+        #region Properties
+
         public const ushort WEAPON_START = 128, ARMOR_START = 256, ACCESSORY_START = 288, MAX_INDEX = 319;
 
         public byte Index { get; private set; }
         public int Amount { get; set; }
         public ItemType Type { get; private set; }
 
+        #endregion
+
+        #region Constructors
+
         public InventoryItem(ushort itemIndex, int amount)
         {
             Index = GetIndex(itemIndex);
             Amount = amount;
             Type = GetType(itemIndex);
+        }
+
+        public InventoryItem(byte index, int amount, ItemType type)
+        {
+            Index = index;
+            Amount = amount;
+            Type = type;
         }
 
         public InventoryItem(byte[] data)
@@ -51,6 +64,10 @@ namespace FF7Scarlet.KernelEditor
             Amount = amountBytes[0];
         }
 
+        #endregion
+
+        #region Methods
+
         public static byte GetIndex(ushort value)
         {
             return GetIndex(GetType(value), value);
@@ -69,7 +86,24 @@ namespace FF7Scarlet.KernelEditor
                 case ItemType.Accessory:
                     return (byte)(value - ACCESSORY_START);
                 default:
-                    return 0;
+                    return 0xFF;
+            }
+        }
+
+        public static ushort GetCombinedIndex(ItemType type, byte index)
+        {
+            switch (type)
+            {
+                case ItemType.Item:
+                    return index;
+                case ItemType.Weapon:
+                    return (ushort)(index + WEAPON_START);
+                case ItemType.Armor:
+                    return (ushort)(index + ARMOR_START);
+                case ItemType.Accessory:
+                    return (ushort)(index + ACCESSORY_START);
+                default:
+                    return HexParser.NULL_OFFSET_16_BIT;
             }
         }
 
@@ -102,5 +136,7 @@ namespace FF7Scarlet.KernelEditor
             Type = type;
             Index = index;
         }
+
+        #endregion
     }
 }

@@ -21,6 +21,7 @@ namespace FF7Scarlet.KernelEditor
         private readonly ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
         private readonly CharacterAI[] characterAI = new CharacterAI[AI_BLOCK_COUNT];
 
+        public Kernel Parent { get; }
         public CharacterGrowth[] CharacterGrowth
         {
             get { return characterGrowth; }
@@ -63,8 +64,10 @@ namespace FF7Scarlet.KernelEditor
         }
         public bool ScriptsLoaded { get; private set; } = false;
 
-        public BattleAndGrowthData(byte[] data)
+        public BattleAndGrowthData(Kernel parent, byte[] data)
         {
+            Parent = parent;
+
             int i;
             using (var ms = new MemoryStream(data))
             using (var reader = new BinaryReader(ms))
@@ -118,7 +121,7 @@ namespace FF7Scarlet.KernelEditor
 
             for (i = 0; i < AI_BLOCK_COUNT; ++i)
             {
-                characterAI[i] = new CharacterAI();
+                characterAI[i] = new CharacterAI(Parent);
                 if (characterAIoffsets[i] != HexParser.NULL_OFFSET_16_BIT)
                 {
                     next = -1;

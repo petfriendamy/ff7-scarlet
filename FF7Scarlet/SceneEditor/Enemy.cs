@@ -6,16 +6,36 @@ namespace FF7Scarlet.SceneEditor
 {
     public class Enemy : AIContainer
     {
-        public const int ATTACK_COUNT = 16;
-        private readonly ResistanceRate?[] resistanceRates = new ResistanceRate?[8];
+        public const int ELEMENT_RESISTANCE_COUNT = 8, ATTACK_COUNT = 16,
+            MANIP_ATTACK_COUNT = 3, DROP_ITEM_COUNT = 4;
+        private readonly ResistanceRate?[] resistanceRates = new ResistanceRate?[ELEMENT_RESISTANCE_COUNT];
         private readonly byte[] actionAnimationIndexes = new byte[ATTACK_COUNT];
         private readonly ushort[] attackIDs = new ushort[ATTACK_COUNT];
         private readonly ushort[] cameraMovementIDs = new ushort[ATTACK_COUNT];
-        private readonly ushort[] manipAttackIDs = new ushort[3];
-        private readonly ItemDropRate?[] itemDropRates = new ItemDropRate?[4];
-        private ushort unknown;
+        private readonly ushort[] manipAttackIDs = new ushort[MANIP_ATTACK_COUNT];
+        private readonly ItemDropRate?[] itemDropRates = new ItemDropRate?[DROP_ITEM_COUNT];
+        private ushort modelID, unknown;
 
-        public ushort ID { get; }
+        public ushort ModelID
+        {
+            get { return modelID; }
+            set
+            {
+                if (value != modelID)
+                {
+                    var scene = Parent as Scene;
+                    if (scene != null)
+                    {
+                        var exists = scene.GetEnemyByID(value);
+                        if (exists != null)
+                        {
+                            throw new ArgumentException("Another enemy in the scene is using this ID.");
+                        }
+                        modelID = value;
+                    }
+                }
+            }
+        }
         public FFText Name { get; set; }
         public byte Level { get; set; }
         public byte Speed { get; set; }
@@ -58,14 +78,13 @@ namespace FF7Scarlet.SceneEditor
             get { return itemDropRates; }
         }
 
-        public Enemy(Scene parent, ushort id, FFText name, byte[]? data)
+        public Enemy(Scene parent, ushort modelID, FFText name, byte[]? data) :base(parent)
         {
             if (name.Length > Scene.NAME_LENGTH)
             {
                 throw new ArgumentException("Enemy name is too long.");
             }
-            Parent = parent;
-            ID = id;
+            ModelID = modelID;
             Name = name;
 
             if (data == null) //initialize data as null
@@ -76,7 +95,7 @@ namespace FF7Scarlet.SceneEditor
                     AttackIDs[i] = HexParser.NULL_OFFSET_16_BIT;
                     CameraMovementIDs[i] = HexParser.NULL_OFFSET_16_BIT;
                 }
-                for (i = 0; i < 3; ++i)
+                for (i = 0; i < MANIP_ATTACK_COUNT; ++i)
                 {
                     ManipAttackIDs[i] = HexParser.NULL_OFFSET_16_BIT;
                 }
@@ -104,7 +123,7 @@ namespace FF7Scarlet.SceneEditor
                 {
                     temp[i] = reader.ReadByte();
                 }
-                for (i = 0; i < 8; ++i)
+                for (i = 0; i < ELEMENT_RESISTANCE_COUNT; ++i)
                 {
                     j = reader.ReadByte();
                     if (temp[i] == 0xFF && j == 0xFF) //none
@@ -132,11 +151,11 @@ namespace FF7Scarlet.SceneEditor
                 {
                     CameraMovementIDs[i] = reader.ReadUInt16();
                 }
-                for (i = 0; i < 4; ++i) //drop rates
+                for (i = 0; i < DROP_ITEM_COUNT; ++i) //drop rates
                 {
                     temp[i] = reader.ReadByte();
                 }
-                for (i = 0; i < 4; ++i)
+                for (i = 0; i < DROP_ITEM_COUNT; ++i)
                 {
                     j = reader.ReadUInt16();
                     if (temp[i] == 0xFF && j == HexParser.NULL_OFFSET_16_BIT) //none
@@ -148,7 +167,7 @@ namespace FF7Scarlet.SceneEditor
                         ItemDropRates[i] = new ItemDropRate((ushort)j, temp[i]);
                     }
                 }
-                for (i = 0; i < 3; ++i)
+                for (i = 0; i < MANIP_ATTACK_COUNT; ++i)
                 {
                     ManipAttackIDs[i] = reader.ReadUInt16();
                 }
@@ -168,7 +187,7 @@ namespace FF7Scarlet.SceneEditor
         public string GetNameString()
         {
             var name = Name.ToString();
-            if (name == null) { return $"Enemy ID {ID:X4}"; }
+            if (name == null) { return $"Enemy ID {ModelID:X4}"; }
             else { return name; }
         }
 

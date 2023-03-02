@@ -4,6 +4,6 @@ namespace FF7Scarlet.KernelEditor
 {
     public class CharacterAI : AIContainer
     {
-        public CharacterAI() :base() { }
+        public CharacterAI(Kernel parent) :base(parent) { }
     }
 }

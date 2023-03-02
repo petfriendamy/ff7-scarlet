@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace FF7Scarlet
     {
         public const ushort NULL_OFFSET_16_BIT = 0xFFFF;
         public const uint NULL_OFFSET_32_BIT = 0xFFFFFFFF;
+        public static CultureInfo CultureInfo { get; } = new CultureInfo("en-US");
 
         public static byte GetUpperNybble(byte value)
         {
