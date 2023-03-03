@@ -4,7 +4,7 @@ namespace FF7Scarlet.SceneEditor
 {
     public class Formation : AIContainer
     {
-        public const int ENEMY_COUNT = 6;
+        public const int AI_BLOCK_SIZE = 504, ENEMY_COUNT = 6;
         private readonly EnemyLocation[] enemyLocations = new EnemyLocation[ENEMY_COUNT];
 
         public BattleSetupData BattleSetupData { get; }

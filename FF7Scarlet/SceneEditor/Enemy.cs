@@ -6,8 +6,8 @@ namespace FF7Scarlet.SceneEditor
 {
     public class Enemy : AIContainer
     {
-        public const int ELEMENT_RESISTANCE_COUNT = 8, ATTACK_COUNT = 16,
-            MANIP_ATTACK_COUNT = 3, DROP_ITEM_COUNT = 4;
+        public const int DATA_BLOCK_SIZE = 152, AI_BLOCK_SIZE = 4090, ELEMENT_RESISTANCE_COUNT = 8,
+            ATTACK_COUNT = 16, MANIP_ATTACK_COUNT = 3, DROP_ITEM_COUNT = 4;
         private readonly ResistanceRate?[] resistanceRates = new ResistanceRate?[ELEMENT_RESISTANCE_COUNT];
         private readonly byte[] actionAnimationIndexes = new byte[ATTACK_COUNT];
         private readonly ushort[] attackIDs = new ushort[ATTACK_COUNT];
@@ -198,7 +198,7 @@ namespace FF7Scarlet.SceneEditor
 
         public byte[] GetRawEnemyData()
         {
-            var data = new byte[Scene.ENEMY_DATA_BLOCK_SIZE + Scene.NAME_LENGTH];
+            var data = new byte[DATA_BLOCK_SIZE + Scene.NAME_LENGTH];
             using (var ms = new MemoryStream(data, true))
             using (var writer = new BinaryWriter(ms))
             {

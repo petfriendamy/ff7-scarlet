@@ -3,19 +3,20 @@ using Shojy.FF7.Elena;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
+using System.Configuration;
 
 namespace FF7Scarlet
 {
     public enum FormType { KernelEditor, SceneEditor }
-    public enum FileClass { Kernel, Kernel2, Scene }
+    public enum FileClass { Kernel, Kernel2, Scene, BattleLgp }
 
     public static class DataManager
     {
         private static StartupForm? startupForm = null;
         private static KernelForm? kernelForm = null;
         private static SceneEditorForm? sceneEditorForm = null;
-        private static Scene[] sceneList = new Scene[SCENE_COUNT];
-        private static byte[] sceneLookupTable = new byte[64];
+        private static readonly Scene[] sceneList = new Scene[SCENE_COUNT];
+        private static readonly byte[] sceneLookupTable = new byte[64];
         private static Dictionary<ushort, Attack> syncedAttacks = new();
 
         public const int SCENE_COUNT = 256;
@@ -24,7 +25,10 @@ namespace FF7Scarlet
         public static string KernelPath { get; private set; } = string.Empty;
         public static string Kernel2Path { get; private set; } = string.Empty;
         public static string ScenePath { get; private set; } = string.Empty;
+        public static string BattleLgpPath { get; private set; } = string.Empty;
         public static Kernel? Kernel { get; private set; }
+        public static BattleLgp? BattleLgp { get; private set; }
+        public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
 
         public static bool KernelFileIsLoaded
         {
@@ -41,6 +45,11 @@ namespace FF7Scarlet
             get { return !string.IsNullOrEmpty(ScenePath); }
         }
 
+        public static bool BattleLgpIsLoaded
+        {
+            get { return !string.IsNullOrEmpty(BattleLgpPath); }
+        }
+
         public static void SetStartupForm(StartupForm form)
         {
             if (startupForm != null)
@@ -54,45 +63,48 @@ namespace FF7Scarlet
         {
             if (ValidateFile(fileClass, path))
             {
-                var result = MessageBox.Show("Would you like to auto-detect the other files based on this one's location?",
-                    "Auto-Detect Files", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
+                if (fileClass != FileClass.BattleLgp)
                 {
-                    string? kernelDir = null, battleDir = null;
-                    if (fileClass == FileClass.Scene)
+                    var result = MessageBox.Show("Would you like to auto-detect the other files based on this one's location?",
+                        "Auto-Detect Files", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
                     {
-                        battleDir = Path.GetDirectoryName(path);
-                        if (battleDir != null)
+                        string? kernelDir = null, battleDir = null;
+                        if (fileClass == FileClass.Scene)
                         {
-                            kernelDir = Directory.GetParent(battleDir)?.FullName + @"\kernel";
+                            battleDir = Path.GetDirectoryName(path);
+                            if (battleDir != null)
+                            {
+                                kernelDir = Directory.GetParent(battleDir)?.FullName + @"\kernel";
+                            }
                         }
-                    }
-                    else
-                    {
-                        kernelDir = Path.GetDirectoryName(path);
+                        else
+                        {
+                            kernelDir = Path.GetDirectoryName(path);
+                            if (kernelDir != null)
+                            {
+                                battleDir = Directory.GetParent(kernelDir)?.FullName + @"\battle";
+                            }
+                        }
+
                         if (kernelDir != null)
                         {
-                            battleDir = Directory.GetParent(kernelDir)?.FullName + @"\battle";
+                            if (fileClass != FileClass.Kernel)
+                            {
+                                ValidateFile(FileClass.Kernel, kernelDir + @"\KERNEL.BIN");
+                            }
+                            if (fileClass != FileClass.Kernel2)
+                            {
+                                ValidateFile(FileClass.Kernel2, kernelDir + @"\kernel2.bin");
+                            }
                         }
-                    }
-
-                    if (kernelDir != null)
-                    {
-                        if (fileClass != FileClass.Kernel)
+                        if (battleDir != null)
                         {
-                            ValidateFile(FileClass.Kernel, kernelDir + @"\KERNEL.BIN");
-                        }
-                        if (fileClass != FileClass.Kernel2)
-                        {
-                            ValidateFile(FileClass.Kernel2, kernelDir + @"\kernel2.bin");
-                        }
-                    }
-                    if (battleDir != null)
-                    {
-                        if (fileClass != FileClass.Scene)
-                        {
-                            ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
+                            if (fileClass != FileClass.Scene)
+                            {
+                                ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
+                            }
                         }
                     }
                 }
@@ -128,6 +140,14 @@ namespace FF7Scarlet
                         try
                         {
                             LoadSceneBin(path);
+                            return true;
+                        }
+                        catch { return false; }
+                    case FileClass.BattleLgp:
+                        try
+                        {
+                            BattleLgp = new BattleLgp(path);
+                            BattleLgpPath = path;
                             return true;
                         }
                         catch { return false; }

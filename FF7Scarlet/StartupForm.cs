@@ -1,4 +1,7 @@
-﻿namespace FF7Scarlet
+﻿using FF7Scarlet.SceneEditor;
+using System.Configuration;
+
+namespace FF7Scarlet
 {
     public partial class StartupForm : Form
     {
@@ -7,6 +10,31 @@
             InitializeComponent();
             DataManager.SetStartupForm(this);
             toolTipHoverText.SetToolTip(groupBoxKernel2, "kernel2 cannot be loaded without kernel.bin.");
+
+            //get Scarlet.config settings
+            DataManager.ConfigFile.ExeConfigFilename = AppContext.BaseDirectory + @"\Scarlet.config";
+            var config = ConfigurationManager.OpenMappedExeConfiguration(DataManager.ConfigFile,
+                ConfigurationUserLevel.None);
+            var settings = config.AppSettings.Settings;
+            if (settings != null)
+            {
+                if (settings[BattleLgp.CONFIG_KEY] != null)
+                {
+                    string path = settings[BattleLgp.CONFIG_KEY].Value;
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(path))
+                        {
+                            DataManager.SetFilePath(FileClass.BattleLgp, path);
+                        }
+                    }
+                    catch //if the file can't be loaded, remove it from settings
+                    {
+                        settings[BattleLgp.CONFIG_KEY].Value = string.Empty;
+                        config.Save();
+                    }
+                }
+            }
         }
 
         private void UpdateTextBoxes()
@@ -124,6 +152,12 @@
         {
             DataManager.OpenForm(FormType.SceneEditor);
             buttonBattleDataEditor.Enabled = false;
+        }
+
+        private void buttonSettings_Click(object sender, EventArgs e)
+        {
+            var settings = new SettingsForm();
+            settings.ShowDialog();
         }
     }
 }

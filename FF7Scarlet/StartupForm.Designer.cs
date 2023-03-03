@@ -43,6 +43,7 @@
             buttonSceneBrowse = new Button();
             toolTipHoverText = new ToolTip(components);
             pictureBoxLogo = new PictureBox();
+            buttonSettings = new Button();
             groupBoxKernel.SuspendLayout();
             groupBoxKernel2.SuspendLayout();
             groupBoxScene.SuspendLayout();
@@ -53,7 +54,7 @@
             // 
             buttonKernelEditor.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             buttonKernelEditor.Enabled = false;
-            buttonKernelEditor.Location = new Point(257, 245);
+            buttonKernelEditor.Location = new Point(257, 213);
             buttonKernelEditor.Margin = new Padding(4, 3, 4, 3);
             buttonKernelEditor.Name = "buttonKernelEditor";
             buttonKernelEditor.Size = new Size(314, 27);
@@ -66,7 +67,7 @@
             // 
             buttonBattleDataEditor.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             buttonBattleDataEditor.Enabled = false;
-            buttonBattleDataEditor.Location = new Point(257, 279);
+            buttonBattleDataEditor.Location = new Point(257, 246);
             buttonBattleDataEditor.Margin = new Padding(4, 3, 4, 3);
             buttonBattleDataEditor.Name = "buttonBattleDataEditor";
             buttonBattleDataEditor.Size = new Size(314, 27);
@@ -78,10 +79,10 @@
             // buttonKernelBrowse
             // 
             buttonKernelBrowse.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            buttonKernelBrowse.Location = new Point(218, 21);
+            buttonKernelBrowse.Location = new Point(218, 22);
             buttonKernelBrowse.Margin = new Padding(4, 3, 4, 3);
             buttonKernelBrowse.Name = "buttonKernelBrowse";
-            buttonKernelBrowse.Size = new Size(88, 27);
+            buttonKernelBrowse.Size = new Size(88, 24);
             buttonKernelBrowse.TabIndex = 3;
             buttonKernelBrowse.Text = "Browse...";
             buttonKernelBrowse.UseVisualStyleBackColor = true;
@@ -104,7 +105,7 @@
             // textBoxKernel
             // 
             textBoxKernel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxKernel.Location = new Point(7, 24);
+            textBoxKernel.Location = new Point(7, 22);
             textBoxKernel.Margin = new Padding(4, 3, 4, 3);
             textBoxKernel.Name = "textBoxKernel";
             textBoxKernel.Size = new Size(203, 23);
@@ -128,7 +129,7 @@
             // 
             textBoxKernel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxKernel2.Enabled = false;
-            textBoxKernel2.Location = new Point(7, 24);
+            textBoxKernel2.Location = new Point(7, 22);
             textBoxKernel2.Margin = new Padding(4, 3, 4, 3);
             textBoxKernel2.Name = "textBoxKernel2";
             textBoxKernel2.Size = new Size(204, 23);
@@ -138,10 +139,10 @@
             // 
             buttonKernel2Browse.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             buttonKernel2Browse.Enabled = false;
-            buttonKernel2Browse.Location = new Point(219, 20);
+            buttonKernel2Browse.Location = new Point(219, 22);
             buttonKernel2Browse.Margin = new Padding(4, 3, 4, 3);
             buttonKernel2Browse.Name = "buttonKernel2Browse";
-            buttonKernel2Browse.Size = new Size(88, 27);
+            buttonKernel2Browse.Size = new Size(88, 23);
             buttonKernel2Browse.TabIndex = 3;
             buttonKernel2Browse.Text = "Browse...";
             buttonKernel2Browse.UseVisualStyleBackColor = true;
@@ -164,7 +165,7 @@
             // textBoxScene
             // 
             textBoxScene.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxScene.Location = new Point(7, 24);
+            textBoxScene.Location = new Point(7, 22);
             textBoxScene.Margin = new Padding(4, 3, 4, 3);
             textBoxScene.Name = "textBoxScene";
             textBoxScene.Size = new Size(202, 23);
@@ -173,10 +174,10 @@
             // buttonSceneBrowse
             // 
             buttonSceneBrowse.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            buttonSceneBrowse.Location = new Point(217, 21);
+            buttonSceneBrowse.Location = new Point(217, 22);
             buttonSceneBrowse.Margin = new Padding(4, 3, 4, 3);
             buttonSceneBrowse.Name = "buttonSceneBrowse";
-            buttonSceneBrowse.Size = new Size(88, 27);
+            buttonSceneBrowse.Size = new Size(88, 24);
             buttonSceneBrowse.TabIndex = 3;
             buttonSceneBrowse.Text = "Browse...";
             buttonSceneBrowse.UseVisualStyleBackColor = true;
@@ -191,11 +192,24 @@
             pictureBoxLogo.TabIndex = 8;
             pictureBoxLogo.TabStop = false;
             // 
+            // buttonSettings
+            // 
+            buttonSettings.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonSettings.Location = new Point(257, 279);
+            buttonSettings.Margin = new Padding(4, 3, 4, 3);
+            buttonSettings.Name = "buttonSettings";
+            buttonSettings.Size = new Size(314, 27);
+            buttonSettings.TabIndex = 9;
+            buttonSettings.Text = "Settings...";
+            buttonSettings.UseVisualStyleBackColor = true;
+            buttonSettings.Click += buttonSettings_Click;
+            // 
             // StartupForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(584, 318);
+            Controls.Add(buttonSettings);
             Controls.Add(pictureBoxLogo);
             Controls.Add(groupBoxScene);
             Controls.Add(groupBoxKernel2);
@@ -233,5 +247,6 @@
         private System.Windows.Forms.Button buttonSceneBrowse;
         private System.Windows.Forms.ToolTip toolTipHoverText;
         private PictureBox pictureBoxLogo;
+        private Button buttonSettings;
     }
 }

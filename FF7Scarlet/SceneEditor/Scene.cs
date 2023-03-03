@@ -7,16 +7,15 @@ namespace FF7Scarlet.SceneEditor
     public class Scene : IAttackContainer
     {
         public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ALL_FORMATIONS_COUNT = 1024,
-            ATTACK_COUNT = 32, NAME_LENGTH = 32, ENEMY_DATA_BLOCK_SIZE = 152,
-            FORMATION_BLOCK_SIZE = 504, ENEMY_AI_BLOCK_SIZE = 4090;
+            ATTACK_COUNT = 32, NAME_LENGTH = 32;
         private readonly Enemy?[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
         private readonly Attack?[] attackList = new Attack?[ATTACK_COUNT];
 
         private ushort[] formationAIoffset = new ushort[FORMATION_COUNT];
         private ushort[] enemyAIoffset = new ushort[ENEMY_COUNT];
-        private readonly byte[] formationAIRaw = new byte[FORMATION_BLOCK_SIZE];
-        private readonly byte[] enemyAIraw = new byte[ENEMY_AI_BLOCK_SIZE];
+        private readonly byte[] formationAIRaw = new byte[Formation.AI_BLOCK_SIZE];
+        private readonly byte[] enemyAIraw = new byte[Enemy.AI_BLOCK_SIZE];
         private byte[] rawData;
 
         public Enemy?[] Enemies
@@ -182,7 +181,7 @@ namespace FF7Scarlet.SceneEditor
                     for (i = 0; i < ENEMY_COUNT; ++i)
                     {
                         enemyName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
-                        temp = reader.ReadBytes(ENEMY_DATA_BLOCK_SIZE);
+                        temp = reader.ReadBytes(Enemy.DATA_BLOCK_SIZE);
                         if (!enemyName[i].IsEmpty())
                         {
                             Enemies[i] = new Enemy(this, enemyModelID[i], enemyName[i], temp);
@@ -230,7 +229,7 @@ namespace FF7Scarlet.SceneEditor
                     }
 
                     //formations
-                    Array.Copy(reader.ReadBytes(FORMATION_BLOCK_SIZE), formationAIRaw, FORMATION_BLOCK_SIZE);
+                    Array.Copy(reader.ReadBytes(Formation.AI_BLOCK_SIZE), formationAIRaw, Formation.AI_BLOCK_SIZE);
 
                     //enemy A.I. offsets
                     for (i = 0; i < ENEMY_COUNT; ++i)
@@ -239,7 +238,7 @@ namespace FF7Scarlet.SceneEditor
                     }
 
                     //enemy A.I. scripts
-                    Array.Copy(reader.ReadBytes(ENEMY_AI_BLOCK_SIZE), enemyAIraw, ENEMY_AI_BLOCK_SIZE);
+                    Array.Copy(reader.ReadBytes(Enemy.AI_BLOCK_SIZE), enemyAIraw, Enemy.AI_BLOCK_SIZE);
                 }
             }
         }
@@ -338,7 +337,7 @@ namespace FF7Scarlet.SceneEditor
                             var e = Enemies[i];
                             if (e == null)
                             {
-                                writer.Write(HexParser.GetNullBlock(ENEMY_DATA_BLOCK_SIZE + NAME_LENGTH));
+                                writer.Write(HexParser.GetNullBlock(Enemy.DATA_BLOCK_SIZE + NAME_LENGTH));
                             }
                             else { writer.Write(e.GetRawEnemyData()); }
                         }
@@ -386,8 +385,8 @@ namespace FF7Scarlet.SceneEditor
                         //formation data
                         try
                         {
-                            Array.Copy(GetRawScriptData(FORMATION_COUNT, FORMATION_BLOCK_SIZE, formations,
-                                ref formationAIoffset), formationAIRaw, FORMATION_BLOCK_SIZE);
+                            Array.Copy(GetRawScriptData(FORMATION_COUNT, Formation.AI_BLOCK_SIZE, formations,
+                                ref formationAIoffset), formationAIRaw, Formation.AI_BLOCK_SIZE);
 
                             foreach (var o in formationAIoffset)
                             {
@@ -407,8 +406,8 @@ namespace FF7Scarlet.SceneEditor
                         //enemy A.I. data
                         try
                         {
-                            Array.Copy(GetRawScriptData(ENEMY_COUNT, ENEMY_AI_BLOCK_SIZE, enemies,
-                                ref enemyAIoffset), enemyAIraw, ENEMY_AI_BLOCK_SIZE);
+                            Array.Copy(GetRawScriptData(ENEMY_COUNT, Enemy.AI_BLOCK_SIZE, enemies,
+                                ref enemyAIoffset), enemyAIraw, Enemy.AI_BLOCK_SIZE);
 
                             foreach (var o in enemyAIoffset)
                             {

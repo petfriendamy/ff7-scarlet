@@ -73,6 +73,8 @@
             textBoxEnemyName = new TextBox();
             labelEnemyName = new Label();
             tabPageEnemyPage2 = new TabPage();
+            comboBoxEnemyModelID = new ComboBox();
+            labelEnemyModelID = new Label();
             comboBoxEnemyMorphItem = new ComboBox();
             labelEnemyMorphItem = new Label();
             groupBoxEnemyItemDropRates = new GroupBox();
@@ -689,6 +691,8 @@
             // 
             // tabPageEnemyPage2
             // 
+            tabPageEnemyPage2.Controls.Add(comboBoxEnemyModelID);
+            tabPageEnemyPage2.Controls.Add(labelEnemyModelID);
             tabPageEnemyPage2.Controls.Add(comboBoxEnemyMorphItem);
             tabPageEnemyPage2.Controls.Add(labelEnemyMorphItem);
             tabPageEnemyPage2.Controls.Add(groupBoxEnemyItemDropRates);
@@ -701,6 +705,26 @@
             tabPageEnemyPage2.TabIndex = 5;
             tabPageEnemyPage2.Text = "Page 2";
             tabPageEnemyPage2.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxEnemyModelID
+            // 
+            comboBoxEnemyModelID.FormattingEnabled = true;
+            comboBoxEnemyModelID.Location = new Point(378, 379);
+            comboBoxEnemyModelID.MaxLength = 4;
+            comboBoxEnemyModelID.Name = "comboBoxEnemyModelID";
+            comboBoxEnemyModelID.Size = new Size(121, 23);
+            comboBoxEnemyModelID.TabIndex = 50;
+            comboBoxEnemyModelID.SelectedIndexChanged += comboBoxEnemyModelID_SelectedIndexChanged;
+            comboBoxEnemyModelID.TextChanged += comboBoxEnemyModelID_TextChanged;
+            // 
+            // labelEnemyModelID
+            // 
+            labelEnemyModelID.AutoSize = true;
+            labelEnemyModelID.Location = new Point(378, 361);
+            labelEnemyModelID.Name = "labelEnemyModelID";
+            labelEnemyModelID.Size = new Size(58, 15);
+            labelEnemyModelID.TabIndex = 49;
+            labelEnemyModelID.Text = "Model ID:";
             // 
             // comboBoxEnemyMorphItem
             // 
@@ -918,7 +942,7 @@
             numericEnemyBackDamageMultiplier.Location = new Point(378, 213);
             numericEnemyBackDamageMultiplier.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             numericEnemyBackDamageMultiplier.Name = "numericEnemyBackDamageMultiplier";
-            numericEnemyBackDamageMultiplier.Size = new Size(135, 23);
+            numericEnemyBackDamageMultiplier.Size = new Size(121, 23);
             numericEnemyBackDamageMultiplier.TabIndex = 44;
             numericEnemyBackDamageMultiplier.ValueChanged += EnemyDataChanged;
             // 
@@ -2089,5 +2113,7 @@
         private Controls.CameraPositionControl cameraPositionControlExtra1;
         private Controls.CameraPositionControl cameraPositionControlMain;
         private Button buttonViewManipList;
+        private ComboBox comboBoxEnemyModelID;
+        private Label labelEnemyModelID;
     }
 }

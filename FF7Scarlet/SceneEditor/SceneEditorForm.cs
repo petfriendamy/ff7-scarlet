@@ -2,7 +2,6 @@
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Battle;
-using Shojy.FF7.Elena.Equipment;
 using System.Globalization;
 using System.Media;
 
@@ -159,8 +158,9 @@ namespace FF7Scarlet.SceneEditor
                 comboBoxFormationBattleType.Items.Add(t);
             }
 
-            //kernel-synced data
+            //synced data
             LoadKernelData();
+            LoadModelData();
 
             //create private version of scene data that can be edited freely
             sceneList = DataManager.CopySceneList();
@@ -238,6 +238,18 @@ namespace FF7Scarlet.SceneEditor
             }
             comboBoxEnemyDropItemID.SelectedIndex = 0;
             EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, false);
+        }
+
+        private void LoadModelData()
+        {
+            if (DataManager.BattleLgpIsLoaded && DataManager.BattleLgp != null)
+            {
+                comboBoxEnemyModelID.DropDownStyle = ComboBoxStyle.DropDownList;
+                foreach (var m in DataManager.BattleLgp.Models)
+                {
+                    comboBoxEnemyModelID.Items.Add(m);
+                }
+            }
         }
 
         private void LoadSceneData(Scene scene, bool clearLoadingWhenDone)
@@ -326,7 +338,11 @@ namespace FF7Scarlet.SceneEditor
                 {
                     if (SelectedScene != null && SelectedEnemyIndex != -1)
                     {
-                        var id = (ushort)((SelectedSceneIndex * Scene.ENEMY_COUNT) + SelectedEnemyIndex);
+                        ushort id = 0;
+                        while (SelectedScene.GetEnemyByID(id) != null)
+                        {
+                            id++;
+                        }
                         SelectedScene.Enemies[SelectedEnemyIndex] = new Enemy(SelectedScene, id,
                             new FFText(), null);
                         UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
@@ -402,7 +418,7 @@ namespace FF7Scarlet.SceneEditor
                         }
                     }
                     EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, false);
-                    if (enemy.MorphItemIndex == 0xFFFF)
+                    if (enemy.MorphItemIndex == HexParser.NULL_OFFSET_16_BIT)
                     {
                         comboBoxEnemyMorphItem.SelectedIndex = 0;
                     }
@@ -410,6 +426,16 @@ namespace FF7Scarlet.SceneEditor
                     {
                         comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
                     }
+                }
+
+                //model ID
+                if (DataManager.BattleLgpIsLoaded)
+                {
+                    comboBoxEnemyModelID.SelectedIndex = enemy.ModelID;
+                }
+                else
+                {
+                    comboBoxEnemyModelID.Text = enemy.ModelID.ToString("X4");
                 }
 
                 //A.I. scripts
@@ -1208,6 +1234,56 @@ namespace FF7Scarlet.SceneEditor
                 }
                 SetUnsaved(true);
                 loading = false;
+            }
+        }
+
+        private void comboBoxEnemyModelID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedEnemy != null && DataManager.BattleLgpIsLoaded
+                && DataManager.BattleLgp != null)
+            {
+                ushort newID = (ushort)comboBoxEnemyModelID.SelectedIndex, oldID = SelectedEnemy.ModelID;
+                if (newID >= 0 && newID < DataManager.BattleLgp.Models.Length)
+                {
+                    loading = true;
+                    try
+                    {
+                        SelectedEnemy.ModelID = newID;
+                        SetUnsaved(true);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        comboBoxEnemyModelID.SelectedIndex = oldID;
+                    }
+                    loading = false;
+                }
+            }
+        }
+
+        private void comboBoxEnemyModelID_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && !DataManager.BattleLgpIsLoaded && SelectedEnemy != null)
+            {
+                string text = comboBoxEnemyModelID.Text;
+                if (text.Length == 4)
+                {
+                    ushort newID, oldID = SelectedEnemy.ModelID;
+                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        try
+                        {
+                            SelectedEnemy.ModelID = newID;
+                            SetUnsaved(true);
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            comboBoxEnemyModelID.Text = oldID.ToString("X4");
+                        }
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
             }
         }
 
