@@ -9,6 +9,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         private byte attackPower;
         private int mainCaller = -1;
         private bool loaded = false, editingTextBox = false;
+        public event EventHandler? DataChanged;
 
         public byte ActualValue
         {
@@ -94,8 +95,8 @@ namespace FF7Scarlet.KernelEditor.Controls
                 TrySetCaller(100);
                 info.IsNull = value;
                 checkBoxIsNull.Checked = value;
-                numericAttackPower.Enabled =  comboBoxDamageType.Enabled = 
-                    comboBoxAccuracyCalculation.Enabled = checkBoxCanCrit.Enabled = 
+                numericAttackPower.Enabled = comboBoxDamageType.Enabled =
+                    comboBoxAccuracyCalculation.Enabled = checkBoxCanCrit.Enabled =
                     comboBoxDamageFormula.Enabled = !value;
                 UpdateActualValueTextBox(100);
                 TryClearCaller(100);
@@ -142,6 +143,7 @@ namespace FF7Scarlet.KernelEditor.Controls
                     textBoxActualValue.Text = "??";
                 }
                 editingTextBox = false;
+                InvokeDataChanged(caller);
             }
         }
 
@@ -161,12 +163,17 @@ namespace FF7Scarlet.KernelEditor.Controls
             }
         }
 
+        private void numericAttackPower_ValueChanged(object sender, EventArgs e)
+        {
+            InvokeDataChanged(-1);
+        }
+
         private void comboBoxDamageType_SelectedIndexChanged(object sender, EventArgs e)
         {
             TrySetCaller(1);
             info.DamageType = (DamageType)comboBoxDamageType.SelectedIndex;
             checkBoxCanCrit.Enabled = (DamageType == DamageType.Physical);
-            if (!checkBoxCanCrit.Enabled ) { CanCrit = false; }
+            if (!checkBoxCanCrit.Enabled) { CanCrit = false; }
             UpdateActualValueTextBox(1);
             TryClearCaller(1);
         }
@@ -240,6 +247,7 @@ namespace FF7Scarlet.KernelEditor.Controls
                         TrySetCaller(5);
                         ActualValue = value;
                         valid = IsValid;
+                        InvokeDataChanged(5);
                         TryClearCaller(5);
                     }
 
@@ -249,6 +257,14 @@ namespace FF7Scarlet.KernelEditor.Controls
                         SystemSounds.Exclamation.Play();
                     }
                 }
+            }
+        }
+
+        private void InvokeDataChanged(int caller)
+        {
+            if (loaded && caller == mainCaller)
+            {
+                DataChanged?.Invoke(this, new EventArgs());
             }
         }
     }

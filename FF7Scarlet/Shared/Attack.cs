@@ -12,6 +12,7 @@ namespace FF7Scarlet.Shared
 
         public ushort ID { get; }
         public FFText Name { get; set; }
+        public FFText? Description { get; set; }
         public byte AccuracyRate { get; set; }
         public byte ImpactEffectID { get; set; } = 0xFF;
         public byte TargetHurtActionIndex { get; set; } = 0xFF;
@@ -124,10 +125,24 @@ namespace FF7Scarlet.Shared
                 writer.Write(DamageCalculationID);
                 writer.Write(AttackStrength);
                 writer.Write((byte)AttackConditions);
-                writer.Write((byte)(StatusChange + StatusChangeChance));
+                if (StatusChange == StatusChange.None)
+                {
+                    writer.Write((byte)0xFF);
+                }
+                else
+                {
+                    writer.Write((byte)(StatusChange + StatusChangeChance));
+                }
                 writer.Write(AdditionalEffects);
                 writer.Write(AdditionalEffectsModifier);
-                writer.Write((uint)StatusEffects);
+                if (StatusChange == StatusChange.None)
+                {
+                    writer.Write(HexParser.NULL_OFFSET_32_BIT);
+                }
+                else
+                {
+                    writer.Write((uint)StatusEffects);
+                }
                 writer.Write((ushort)Elements);
                 writer.Write((ushort)~SpecialAttackFlags);
             }

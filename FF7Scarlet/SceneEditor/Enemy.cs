@@ -202,9 +202,7 @@ namespace FF7Scarlet.SceneEditor
             using (var ms = new MemoryStream(data, true))
             using (var writer = new BinaryWriter(ms))
             {
-                var name = Name.GetBytes();
-                if (name == null) { writer.Write(HexParser.GetNullBlock(Scene.NAME_LENGTH)); }
-                else { writer.Write(name); }
+                writer.Write(Name.GetBytes(Scene.NAME_LENGTH));
                 writer.Write(Level);
                 writer.Write(Speed);
                 writer.Write(Luck);

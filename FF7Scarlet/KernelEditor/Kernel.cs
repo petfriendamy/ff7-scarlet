@@ -51,6 +51,7 @@ namespace FF7Scarlet.KernelEditor
                 {
                     Attacks[i] = new Attack((ushort)i, new FFText(MagicNames.Strings[i]),
                         reader.ReadBytes(Attack.BLOCK_SIZE));
+                    Attacks[i].Description = new FFText(MagicDescriptions.Strings[i]);
                 }
             }
 

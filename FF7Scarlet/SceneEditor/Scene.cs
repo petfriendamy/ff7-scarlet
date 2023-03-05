@@ -369,9 +369,7 @@ namespace FF7Scarlet.SceneEditor
                             if (atk == null) { writer.Write(HexParser.GetNullBlock(NAME_LENGTH)); }
                             else
                             {
-                                var name = atk.Name.GetBytes();
-                                if (name == null) { writer.Write(HexParser.GetNullBlock(NAME_LENGTH)); }
-                                else { writer.Write(name); }
+                                writer.Write(atk.Name.GetBytes(NAME_LENGTH));
                             }
                         }
                     }

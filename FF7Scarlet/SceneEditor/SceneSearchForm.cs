@@ -42,7 +42,20 @@ namespace FF7Scarlet.SceneEditor
                                 currentName = currentName.ToLower();
                                 if (currentName.Contains(textBoxEnemyName.Text.ToLower()))
                                 {
-                                    foundScenes.Add(new SceneSearchResult(SearchType.Enemy, i, j, 0));
+                                    //find first (and usually only) formation with this enemy in it
+                                    int formation = 0;
+                                    for (int n = 0; n < Scene.FORMATION_COUNT; ++n)
+                                    {
+                                        foreach (var fe in scenes[i].Formations[n].EnemyLocations)
+                                        {
+                                            if (fe.EnemyID == enemy.ModelID)
+                                            {
+                                                formation = n;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    foundScenes.Add(new SceneSearchResult(SearchType.Enemy, i, j, formation));
                                 }
                             }
                         }

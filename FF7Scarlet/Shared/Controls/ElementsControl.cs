@@ -1,32 +1,55 @@
 ﻿using Shojy.FF7.Elena.Battle;
+using System.Runtime.CompilerServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class ElementsControl : UserControl
     {
+        private CheckBox[] checkBoxes;
+        private Elements[] elementList;
+        private bool loading = false;
+        public event EventHandler? ElementsChanged;
+
         public ElementsControl()
         {
             InitializeComponent();
+            elementList = Enum.GetValues<Elements>();
+            checkBoxes = new CheckBox[]
+            {
+                checkBoxFire, checkBoxIce, checkBoxBolt, checkBoxEarth, checkBoxPoison,
+                checkBoxGravity, checkBoxWater, checkBoxWind, checkBoxHoly, checkBoxRestorative,
+                checkBoxCut, checkBoxHit, checkBoxPunch, checkBoxShoot, checkBoxShout,
+                checkBoxHidden
+            };
         }
 
         public void SetElements(Elements elements)
         {
-            checkBoxFire.Checked = elements.HasFlag(Elements.Fire);
-            checkBoxIce.Checked = elements.HasFlag(Elements.Ice);
-            checkBoxBolt.Checked = elements.HasFlag(Elements.Bolt);
-            checkBoxEarth.Checked = elements.HasFlag(Elements.Earth);
-            checkBoxPoison.Checked = elements.HasFlag(Elements.Poison);
-            checkBoxGravity.Checked = elements.HasFlag(Elements.Gravity);
-            checkBoxWater.Checked = elements.HasFlag(Elements.Water);
-            checkBoxWind.Checked = elements.HasFlag(Elements.Wind);
-            checkBoxHoly.Checked = elements.HasFlag(Elements.Holy);
-            checkBoxRestorative.Checked = elements.HasFlag(Elements.Restorative);
-            checkBoxCut.Checked = elements.HasFlag(Elements.Cut);
-            checkBoxHit.Checked = elements.HasFlag(Elements.Hit);
-            checkBoxPunch.Checked = elements.HasFlag(Elements.Punch);
-            checkBoxShoot.Checked = elements.HasFlag(Elements.Shoot);
-            checkBoxShout.Checked = elements.HasFlag(Elements.Shout);
-            checkBoxHidden.Checked = elements.HasFlag(Elements.Hidden);
+            loading = true;
+            for (int i = 0; i < elementList.Length; ++i)
+            {
+                checkBoxes[i].Checked = elements.HasFlag(elementList[i]);
+            }
+            loading = false;
+        }
+
+        public Elements GetElements()
+        {
+            Elements element = 0;
+            for (int i = 0; i < elementList.Length; ++i)
+            {
+                if (checkBoxes[i].Checked)
+                {
+                    element |= elementList[i];
+                }
+            }
+            return element;
+        }
+
+        private void CheckBoxChanged(object? sender, EventArgs e)
+        {
+            if (!loading) { ElementsChanged?.Invoke(this, e); }
         }
     }
 }

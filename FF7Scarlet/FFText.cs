@@ -9,15 +9,11 @@ namespace FF7Scarlet
         private const string TEXT_MAP = "ÄÁÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü⌘°¢£ÙÛ¶ß®©™´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»…?ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄¤‹›ﬁﬂ■▪‚„‰ÂÊËÁÈíîïìÓÔ ÒÙÛ";
         private const byte MAP_OFFSET = 0x60, CHAR_OFFSET = 0x20;
 
-        private readonly byte[]? data;
+        private readonly byte[] data;
 
         public int Length
         {
-            get
-            {
-                if (data == null) { return 0; }
-                else { return data.Length; }
-            }
+            get { return data.Length; }
         }
 
         public FFText(byte[] data)
@@ -28,9 +24,9 @@ namespace FF7Scarlet
         public FFText(string? str = null, int length = -1)
         {
             int i, j;
-            if (str == null)
+            if (str == null) //string is null
             {
-                if (length == -1) { data = null; }
+                if (length == -1) { data = new byte[0]; }
                 else
                 {
                     data = new byte[length];
@@ -40,7 +36,7 @@ namespace FF7Scarlet
                     }
                 }
             }
-            else
+            else //get string
             {
                 if (length == -1)
                 {
@@ -158,7 +154,7 @@ namespace FF7Scarlet
             return -1;
         }
 
-        public byte[]? GetBytes(ParameterTypes type = ParameterTypes.String)
+        public byte[] GetBytes(ParameterTypes type = ParameterTypes.String)
         {
             var singleByte = new byte[1];
             var threeByteInt = new byte[3];
@@ -175,6 +171,19 @@ namespace FF7Scarlet
                 default:
                     return data;
             }
+        }
+
+        public byte[] GetBytes(int length)
+        {
+            var bytes = new byte[length];
+            int dataLength = Math.Min(length, data.Length);
+            Array.Copy(data, bytes, dataLength);
+            for (int i = dataLength; i < length - 1; ++i)
+            {
+                bytes[i] = 0xFF;
+            }
+            bytes[length - 1] = 0xFF; //last byte must always be null terminator
+            return bytes;
         }
 
         public int CompareTo(object? obj)

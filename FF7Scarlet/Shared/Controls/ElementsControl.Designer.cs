@@ -28,225 +28,240 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBoxMain = new System.Windows.Forms.GroupBox();
-            this.checkBoxHidden = new System.Windows.Forms.CheckBox();
-            this.checkBoxShout = new System.Windows.Forms.CheckBox();
-            this.checkBoxShoot = new System.Windows.Forms.CheckBox();
-            this.checkBoxPunch = new System.Windows.Forms.CheckBox();
-            this.checkBoxHit = new System.Windows.Forms.CheckBox();
-            this.checkBoxCut = new System.Windows.Forms.CheckBox();
-            this.checkBoxRestorative = new System.Windows.Forms.CheckBox();
-            this.checkBoxHoly = new System.Windows.Forms.CheckBox();
-            this.checkBoxWind = new System.Windows.Forms.CheckBox();
-            this.checkBoxWater = new System.Windows.Forms.CheckBox();
-            this.checkBoxGravity = new System.Windows.Forms.CheckBox();
-            this.checkBoxPoison = new System.Windows.Forms.CheckBox();
-            this.checkBoxEarth = new System.Windows.Forms.CheckBox();
-            this.checkBoxBolt = new System.Windows.Forms.CheckBox();
-            this.checkBoxIce = new System.Windows.Forms.CheckBox();
-            this.checkBoxFire = new System.Windows.Forms.CheckBox();
-            this.groupBoxMain.SuspendLayout();
-            this.SuspendLayout();
+            groupBoxMain = new GroupBox();
+            checkBoxHidden = new CheckBox();
+            checkBoxShout = new CheckBox();
+            checkBoxShoot = new CheckBox();
+            checkBoxPunch = new CheckBox();
+            checkBoxHit = new CheckBox();
+            checkBoxCut = new CheckBox();
+            checkBoxRestorative = new CheckBox();
+            checkBoxHoly = new CheckBox();
+            checkBoxWind = new CheckBox();
+            checkBoxWater = new CheckBox();
+            checkBoxGravity = new CheckBox();
+            checkBoxPoison = new CheckBox();
+            checkBoxEarth = new CheckBox();
+            checkBoxBolt = new CheckBox();
+            checkBoxIce = new CheckBox();
+            checkBoxFire = new CheckBox();
+            groupBoxMain.SuspendLayout();
+            SuspendLayout();
             // 
             // groupBoxMain
             // 
-            this.groupBoxMain.Controls.Add(this.checkBoxHidden);
-            this.groupBoxMain.Controls.Add(this.checkBoxShout);
-            this.groupBoxMain.Controls.Add(this.checkBoxShoot);
-            this.groupBoxMain.Controls.Add(this.checkBoxPunch);
-            this.groupBoxMain.Controls.Add(this.checkBoxHit);
-            this.groupBoxMain.Controls.Add(this.checkBoxCut);
-            this.groupBoxMain.Controls.Add(this.checkBoxRestorative);
-            this.groupBoxMain.Controls.Add(this.checkBoxHoly);
-            this.groupBoxMain.Controls.Add(this.checkBoxWind);
-            this.groupBoxMain.Controls.Add(this.checkBoxWater);
-            this.groupBoxMain.Controls.Add(this.checkBoxGravity);
-            this.groupBoxMain.Controls.Add(this.checkBoxPoison);
-            this.groupBoxMain.Controls.Add(this.checkBoxEarth);
-            this.groupBoxMain.Controls.Add(this.checkBoxBolt);
-            this.groupBoxMain.Controls.Add(this.checkBoxIce);
-            this.groupBoxMain.Controls.Add(this.checkBoxFire);
-            this.groupBoxMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxMain.Location = new System.Drawing.Point(0, 0);
-            this.groupBoxMain.Name = "groupBoxMain";
-            this.groupBoxMain.Size = new System.Drawing.Size(370, 130);
-            this.groupBoxMain.TabIndex = 30;
-            this.groupBoxMain.TabStop = false;
-            this.groupBoxMain.Text = "Elements";
+            groupBoxMain.Controls.Add(checkBoxHidden);
+            groupBoxMain.Controls.Add(checkBoxShout);
+            groupBoxMain.Controls.Add(checkBoxShoot);
+            groupBoxMain.Controls.Add(checkBoxPunch);
+            groupBoxMain.Controls.Add(checkBoxHit);
+            groupBoxMain.Controls.Add(checkBoxCut);
+            groupBoxMain.Controls.Add(checkBoxRestorative);
+            groupBoxMain.Controls.Add(checkBoxHoly);
+            groupBoxMain.Controls.Add(checkBoxWind);
+            groupBoxMain.Controls.Add(checkBoxWater);
+            groupBoxMain.Controls.Add(checkBoxGravity);
+            groupBoxMain.Controls.Add(checkBoxPoison);
+            groupBoxMain.Controls.Add(checkBoxEarth);
+            groupBoxMain.Controls.Add(checkBoxBolt);
+            groupBoxMain.Controls.Add(checkBoxIce);
+            groupBoxMain.Controls.Add(checkBoxFire);
+            groupBoxMain.Dock = DockStyle.Fill;
+            groupBoxMain.Location = new Point(0, 0);
+            groupBoxMain.Name = "groupBoxMain";
+            groupBoxMain.Size = new Size(370, 130);
+            groupBoxMain.TabIndex = 30;
+            groupBoxMain.TabStop = false;
+            groupBoxMain.Text = "Elements";
             // 
             // checkBoxHidden
             // 
-            this.checkBoxHidden.AutoSize = true;
-            this.checkBoxHidden.Location = new System.Drawing.Point(282, 97);
-            this.checkBoxHidden.Name = "checkBoxHidden";
-            this.checkBoxHidden.Size = new System.Drawing.Size(65, 19);
-            this.checkBoxHidden.TabIndex = 15;
-            this.checkBoxHidden.Text = "Hidden";
-            this.checkBoxHidden.UseVisualStyleBackColor = true;
+            checkBoxHidden.AutoSize = true;
+            checkBoxHidden.Location = new Point(282, 97);
+            checkBoxHidden.Name = "checkBoxHidden";
+            checkBoxHidden.Size = new Size(65, 19);
+            checkBoxHidden.TabIndex = 15;
+            checkBoxHidden.Text = "Hidden";
+            checkBoxHidden.UseVisualStyleBackColor = true;
+            checkBoxHidden.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxShout
             // 
-            this.checkBoxShout.AutoSize = true;
-            this.checkBoxShout.Location = new System.Drawing.Point(282, 72);
-            this.checkBoxShout.Name = "checkBoxShout";
-            this.checkBoxShout.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxShout.TabIndex = 14;
-            this.checkBoxShout.Text = "Shout";
-            this.checkBoxShout.UseVisualStyleBackColor = true;
+            checkBoxShout.AutoSize = true;
+            checkBoxShout.Location = new Point(282, 72);
+            checkBoxShout.Name = "checkBoxShout";
+            checkBoxShout.Size = new Size(57, 19);
+            checkBoxShout.TabIndex = 14;
+            checkBoxShout.Text = "Shout";
+            checkBoxShout.UseVisualStyleBackColor = true;
+            checkBoxShout.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxShoot
             // 
-            this.checkBoxShoot.AutoSize = true;
-            this.checkBoxShoot.Location = new System.Drawing.Point(282, 47);
-            this.checkBoxShoot.Name = "checkBoxShoot";
-            this.checkBoxShoot.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxShoot.TabIndex = 13;
-            this.checkBoxShoot.Text = "Shoot";
-            this.checkBoxShoot.UseVisualStyleBackColor = true;
+            checkBoxShoot.AutoSize = true;
+            checkBoxShoot.Location = new Point(282, 47);
+            checkBoxShoot.Name = "checkBoxShoot";
+            checkBoxShoot.Size = new Size(57, 19);
+            checkBoxShoot.TabIndex = 13;
+            checkBoxShoot.Text = "Shoot";
+            checkBoxShoot.UseVisualStyleBackColor = true;
+            checkBoxShoot.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxPunch
             // 
-            this.checkBoxPunch.AutoSize = true;
-            this.checkBoxPunch.Location = new System.Drawing.Point(282, 22);
-            this.checkBoxPunch.Name = "checkBoxPunch";
-            this.checkBoxPunch.Size = new System.Drawing.Size(60, 19);
-            this.checkBoxPunch.TabIndex = 12;
-            this.checkBoxPunch.Text = "Punch";
-            this.checkBoxPunch.UseVisualStyleBackColor = true;
+            checkBoxPunch.AutoSize = true;
+            checkBoxPunch.Location = new Point(282, 22);
+            checkBoxPunch.Name = "checkBoxPunch";
+            checkBoxPunch.Size = new Size(60, 19);
+            checkBoxPunch.TabIndex = 12;
+            checkBoxPunch.Text = "Punch";
+            checkBoxPunch.UseVisualStyleBackColor = true;
+            checkBoxPunch.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxHit
             // 
-            this.checkBoxHit.AutoSize = true;
-            this.checkBoxHit.Location = new System.Drawing.Point(190, 97);
-            this.checkBoxHit.Name = "checkBoxHit";
-            this.checkBoxHit.Size = new System.Drawing.Size(42, 19);
-            this.checkBoxHit.TabIndex = 11;
-            this.checkBoxHit.Text = "Hit";
-            this.checkBoxHit.UseVisualStyleBackColor = true;
+            checkBoxHit.AutoSize = true;
+            checkBoxHit.Location = new Point(190, 97);
+            checkBoxHit.Name = "checkBoxHit";
+            checkBoxHit.Size = new Size(42, 19);
+            checkBoxHit.TabIndex = 11;
+            checkBoxHit.Text = "Hit";
+            checkBoxHit.UseVisualStyleBackColor = true;
+            checkBoxHit.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxCut
             // 
-            this.checkBoxCut.AutoSize = true;
-            this.checkBoxCut.Location = new System.Drawing.Point(190, 72);
-            this.checkBoxCut.Name = "checkBoxCut";
-            this.checkBoxCut.Size = new System.Drawing.Size(45, 19);
-            this.checkBoxCut.TabIndex = 10;
-            this.checkBoxCut.Text = "Cut";
-            this.checkBoxCut.UseVisualStyleBackColor = true;
+            checkBoxCut.AutoSize = true;
+            checkBoxCut.Location = new Point(190, 72);
+            checkBoxCut.Name = "checkBoxCut";
+            checkBoxCut.Size = new Size(45, 19);
+            checkBoxCut.TabIndex = 10;
+            checkBoxCut.Text = "Cut";
+            checkBoxCut.UseVisualStyleBackColor = true;
+            checkBoxCut.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxRestorative
             // 
-            this.checkBoxRestorative.AutoSize = true;
-            this.checkBoxRestorative.Location = new System.Drawing.Point(190, 47);
-            this.checkBoxRestorative.Name = "checkBoxRestorative";
-            this.checkBoxRestorative.Size = new System.Drawing.Size(84, 19);
-            this.checkBoxRestorative.TabIndex = 9;
-            this.checkBoxRestorative.Text = "Restorative";
-            this.checkBoxRestorative.UseVisualStyleBackColor = true;
+            checkBoxRestorative.AutoSize = true;
+            checkBoxRestorative.Location = new Point(190, 47);
+            checkBoxRestorative.Name = "checkBoxRestorative";
+            checkBoxRestorative.Size = new Size(84, 19);
+            checkBoxRestorative.TabIndex = 9;
+            checkBoxRestorative.Text = "Restorative";
+            checkBoxRestorative.UseVisualStyleBackColor = true;
+            checkBoxRestorative.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxHoly
             // 
-            this.checkBoxHoly.AutoSize = true;
-            this.checkBoxHoly.Location = new System.Drawing.Point(190, 22);
-            this.checkBoxHoly.Name = "checkBoxHoly";
-            this.checkBoxHoly.Size = new System.Drawing.Size(51, 19);
-            this.checkBoxHoly.TabIndex = 8;
-            this.checkBoxHoly.Text = "Holy";
-            this.checkBoxHoly.UseVisualStyleBackColor = true;
+            checkBoxHoly.AutoSize = true;
+            checkBoxHoly.Location = new Point(190, 22);
+            checkBoxHoly.Name = "checkBoxHoly";
+            checkBoxHoly.Size = new Size(51, 19);
+            checkBoxHoly.TabIndex = 8;
+            checkBoxHoly.Text = "Holy";
+            checkBoxHoly.UseVisualStyleBackColor = true;
+            checkBoxHoly.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxWind
             // 
-            this.checkBoxWind.AutoSize = true;
-            this.checkBoxWind.Location = new System.Drawing.Point(98, 97);
-            this.checkBoxWind.Name = "checkBoxWind";
-            this.checkBoxWind.Size = new System.Drawing.Size(54, 19);
-            this.checkBoxWind.TabIndex = 7;
-            this.checkBoxWind.Text = "Wind";
-            this.checkBoxWind.UseVisualStyleBackColor = true;
+            checkBoxWind.AutoSize = true;
+            checkBoxWind.Location = new Point(98, 97);
+            checkBoxWind.Name = "checkBoxWind";
+            checkBoxWind.Size = new Size(54, 19);
+            checkBoxWind.TabIndex = 7;
+            checkBoxWind.Text = "Wind";
+            checkBoxWind.UseVisualStyleBackColor = true;
+            checkBoxWind.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxWater
             // 
-            this.checkBoxWater.AutoSize = true;
-            this.checkBoxWater.Location = new System.Drawing.Point(98, 72);
-            this.checkBoxWater.Name = "checkBoxWater";
-            this.checkBoxWater.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxWater.TabIndex = 6;
-            this.checkBoxWater.Text = "Water";
-            this.checkBoxWater.UseVisualStyleBackColor = true;
+            checkBoxWater.AutoSize = true;
+            checkBoxWater.Location = new Point(98, 72);
+            checkBoxWater.Name = "checkBoxWater";
+            checkBoxWater.Size = new Size(57, 19);
+            checkBoxWater.TabIndex = 6;
+            checkBoxWater.Text = "Water";
+            checkBoxWater.UseVisualStyleBackColor = true;
+            checkBoxWater.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxGravity
             // 
-            this.checkBoxGravity.AutoSize = true;
-            this.checkBoxGravity.Location = new System.Drawing.Point(98, 47);
-            this.checkBoxGravity.Name = "checkBoxGravity";
-            this.checkBoxGravity.Size = new System.Drawing.Size(63, 19);
-            this.checkBoxGravity.TabIndex = 5;
-            this.checkBoxGravity.Text = "Gravity";
-            this.checkBoxGravity.UseVisualStyleBackColor = true;
+            checkBoxGravity.AutoSize = true;
+            checkBoxGravity.Location = new Point(98, 47);
+            checkBoxGravity.Name = "checkBoxGravity";
+            checkBoxGravity.Size = new Size(63, 19);
+            checkBoxGravity.TabIndex = 5;
+            checkBoxGravity.Text = "Gravity";
+            checkBoxGravity.UseVisualStyleBackColor = true;
+            checkBoxGravity.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxPoison
             // 
-            this.checkBoxPoison.AutoSize = true;
-            this.checkBoxPoison.Location = new System.Drawing.Point(98, 22);
-            this.checkBoxPoison.Name = "checkBoxPoison";
-            this.checkBoxPoison.Size = new System.Drawing.Size(62, 19);
-            this.checkBoxPoison.TabIndex = 4;
-            this.checkBoxPoison.Text = "Poison";
-            this.checkBoxPoison.UseVisualStyleBackColor = true;
+            checkBoxPoison.AutoSize = true;
+            checkBoxPoison.Location = new Point(98, 22);
+            checkBoxPoison.Name = "checkBoxPoison";
+            checkBoxPoison.Size = new Size(62, 19);
+            checkBoxPoison.TabIndex = 4;
+            checkBoxPoison.Text = "Poison";
+            checkBoxPoison.UseVisualStyleBackColor = true;
+            checkBoxPoison.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxEarth
             // 
-            this.checkBoxEarth.AutoSize = true;
-            this.checkBoxEarth.Location = new System.Drawing.Point(6, 97);
-            this.checkBoxEarth.Name = "checkBoxEarth";
-            this.checkBoxEarth.Size = new System.Drawing.Size(53, 19);
-            this.checkBoxEarth.TabIndex = 3;
-            this.checkBoxEarth.Text = "Earth";
-            this.checkBoxEarth.UseVisualStyleBackColor = true;
+            checkBoxEarth.AutoSize = true;
+            checkBoxEarth.Location = new Point(6, 97);
+            checkBoxEarth.Name = "checkBoxEarth";
+            checkBoxEarth.Size = new Size(53, 19);
+            checkBoxEarth.TabIndex = 3;
+            checkBoxEarth.Text = "Earth";
+            checkBoxEarth.UseVisualStyleBackColor = true;
+            checkBoxEarth.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxBolt
             // 
-            this.checkBoxBolt.AutoSize = true;
-            this.checkBoxBolt.Location = new System.Drawing.Point(6, 72);
-            this.checkBoxBolt.Name = "checkBoxBolt";
-            this.checkBoxBolt.Size = new System.Drawing.Size(77, 19);
-            this.checkBoxBolt.TabIndex = 2;
-            this.checkBoxBolt.Text = "Lightning";
-            this.checkBoxBolt.UseVisualStyleBackColor = true;
+            checkBoxBolt.AutoSize = true;
+            checkBoxBolt.Location = new Point(6, 72);
+            checkBoxBolt.Name = "checkBoxBolt";
+            checkBoxBolt.Size = new Size(77, 19);
+            checkBoxBolt.TabIndex = 2;
+            checkBoxBolt.Text = "Lightning";
+            checkBoxBolt.UseVisualStyleBackColor = true;
+            checkBoxBolt.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxIce
             // 
-            this.checkBoxIce.AutoSize = true;
-            this.checkBoxIce.Location = new System.Drawing.Point(6, 47);
-            this.checkBoxIce.Name = "checkBoxIce";
-            this.checkBoxIce.Size = new System.Drawing.Size(41, 19);
-            this.checkBoxIce.TabIndex = 1;
-            this.checkBoxIce.Text = "Ice";
-            this.checkBoxIce.UseVisualStyleBackColor = true;
+            checkBoxIce.AutoSize = true;
+            checkBoxIce.Location = new Point(6, 47);
+            checkBoxIce.Name = "checkBoxIce";
+            checkBoxIce.Size = new Size(41, 19);
+            checkBoxIce.TabIndex = 1;
+            checkBoxIce.Text = "Ice";
+            checkBoxIce.UseVisualStyleBackColor = true;
+            checkBoxIce.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxFire
             // 
-            this.checkBoxFire.AutoSize = true;
-            this.checkBoxFire.Location = new System.Drawing.Point(6, 22);
-            this.checkBoxFire.Name = "checkBoxFire";
-            this.checkBoxFire.Size = new System.Drawing.Size(45, 19);
-            this.checkBoxFire.TabIndex = 0;
-            this.checkBoxFire.Text = "Fire";
-            this.checkBoxFire.UseVisualStyleBackColor = true;
+            checkBoxFire.AutoSize = true;
+            checkBoxFire.Location = new Point(6, 22);
+            checkBoxFire.Name = "checkBoxFire";
+            checkBoxFire.Size = new Size(45, 19);
+            checkBoxFire.TabIndex = 0;
+            checkBoxFire.Text = "Fire";
+            checkBoxFire.UseVisualStyleBackColor = true;
+            checkBoxFire.CheckedChanged += CheckBoxChanged;
             // 
             // ElementsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBoxMain);
-            this.DoubleBuffered = true;
-            this.MinimumSize = new System.Drawing.Size(370, 130);
-            this.Name = "ElementsControl";
-            this.Size = new System.Drawing.Size(370, 130);
-            this.groupBoxMain.ResumeLayout(false);
-            this.groupBoxMain.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(groupBoxMain);
+            DoubleBuffered = true;
+            MinimumSize = new Size(370, 130);
+            Name = "ElementsControl";
+            Size = new Size(370, 130);
+            groupBoxMain.ResumeLayout(false);
+            groupBoxMain.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion

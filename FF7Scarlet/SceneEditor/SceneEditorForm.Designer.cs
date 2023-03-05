@@ -132,6 +132,8 @@
             labelAttackStatusChange = new Label();
             statusesControlAttack = new KernelEditor.Controls.StatusesControl();
             specialAttackFlagsControlAttack = new Shared.SpecialAttackFlagsControl();
+            tabPageAttackPage3 = new TabPage();
+            targetDataControlAttack = new KernelEditor.Controls.TargetDataControl();
             listBoxAttacks = new ListBox();
             tabPageFormationData = new TabPage();
             tabControlFormationData = new TabControl();
@@ -219,6 +221,7 @@
             ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).BeginInit();
             tabPageAttackPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).BeginInit();
+            tabPageAttackPage3.SuspendLayout();
             tabPageFormationData.SuspendLayout();
             tabControlFormationData.SuspendLayout();
             tabPageFormationDataInner.SuspendLayout();
@@ -1018,6 +1021,7 @@
             tabControlAttackData.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tabControlAttackData.Controls.Add(tabPageAttackPage1);
             tabControlAttackData.Controls.Add(tabPageAttackPage2);
+            tabControlAttackData.Controls.Add(tabPageAttackPage3);
             tabControlAttackData.Enabled = false;
             tabControlAttackData.Location = new Point(190, 9);
             tabControlAttackData.Name = "tabControlAttackData";
@@ -1080,6 +1084,7 @@
             elementsControlAttack.Name = "elementsControlAttack";
             elementsControlAttack.Size = new Size(370, 130);
             elementsControlAttack.TabIndex = 58;
+            elementsControlAttack.ElementsChanged += AttackDataChanged;
             // 
             // damageCalculationControlAttack
             // 
@@ -1094,6 +1099,7 @@
             damageCalculationControlAttack.Name = "damageCalculationControlAttack";
             damageCalculationControlAttack.Size = new Size(556, 143);
             damageCalculationControlAttack.TabIndex = 57;
+            damageCalculationControlAttack.DataChanged += AttackDataChanged;
             // 
             // labelAttackHurtActionIndex
             // 
@@ -1108,9 +1114,11 @@
             // 
             comboBoxAttackHurtActionIndex.FormattingEnabled = true;
             comboBoxAttackHurtActionIndex.Location = new Point(383, 204);
+            comboBoxAttackHurtActionIndex.MaxLength = 2;
             comboBoxAttackHurtActionIndex.Name = "comboBoxAttackHurtActionIndex";
             comboBoxAttackHurtActionIndex.Size = new Size(180, 23);
             comboBoxAttackHurtActionIndex.TabIndex = 55;
+            comboBoxAttackHurtActionIndex.TextChanged += comboBoxAttackHurtActionIndex_TextChanged;
             // 
             // labelAttackAttackEffectID
             // 
@@ -1125,9 +1133,11 @@
             // 
             comboBoxAttackAttackEffectID.FormattingEnabled = true;
             comboBoxAttackAttackEffectID.Location = new Point(219, 68);
+            comboBoxAttackAttackEffectID.MaxLength = 2;
             comboBoxAttackAttackEffectID.Name = "comboBoxAttackAttackEffectID";
             comboBoxAttackAttackEffectID.Size = new Size(100, 23);
             comboBoxAttackAttackEffectID.TabIndex = 53;
+            comboBoxAttackAttackEffectID.TextChanged += comboBoxAttackAttackEffectID_TextChanged;
             // 
             // labelAttackImpactEffectID
             // 
@@ -1142,9 +1152,11 @@
             // 
             comboBoxAttackImpactEffectID.FormattingEnabled = true;
             comboBoxAttackImpactEffectID.Location = new Point(325, 68);
+            comboBoxAttackImpactEffectID.MaxLength = 2;
             comboBoxAttackImpactEffectID.Name = "comboBoxAttackImpactEffectID";
             comboBoxAttackImpactEffectID.Size = new Size(100, 23);
             comboBoxAttackImpactEffectID.TabIndex = 51;
+            comboBoxAttackImpactEffectID.TextChanged += comboBoxAttackImpactEffectID_TextChanged;
             // 
             // labelAttackCamMovementIDMulti
             // 
@@ -1159,9 +1171,11 @@
             // 
             comboBoxAttackCamMovementIDMulti.FormattingEnabled = true;
             comboBoxAttackCamMovementIDMulti.Location = new Point(383, 159);
+            comboBoxAttackCamMovementIDMulti.MaxLength = 4;
             comboBoxAttackCamMovementIDMulti.Name = "comboBoxAttackCamMovementIDMulti";
             comboBoxAttackCamMovementIDMulti.Size = new Size(180, 23);
             comboBoxAttackCamMovementIDMulti.TabIndex = 50;
+            comboBoxAttackCamMovementIDMulti.TextChanged += comboBoxAttackCamMovementIDMulti_TextChanged;
             // 
             // labelAttackCamMovementIDSingle
             // 
@@ -1176,9 +1190,11 @@
             // 
             comboBoxAttackCamMovementIDSingle.FormattingEnabled = true;
             comboBoxAttackCamMovementIDSingle.Location = new Point(383, 115);
+            comboBoxAttackCamMovementIDSingle.MaxLength = 4;
             comboBoxAttackCamMovementIDSingle.Name = "comboBoxAttackCamMovementIDSingle";
             comboBoxAttackCamMovementIDSingle.Size = new Size(180, 23);
             comboBoxAttackCamMovementIDSingle.TabIndex = 48;
+            comboBoxAttackCamMovementIDSingle.TextChanged += comboBoxAttackCamMovementIDSingle_TextChanged;
             // 
             // numericAttackAttackPercent
             // 
@@ -1187,6 +1203,7 @@
             numericAttackAttackPercent.Name = "numericAttackAttackPercent";
             numericAttackAttackPercent.Size = new Size(100, 23);
             numericAttackAttackPercent.TabIndex = 46;
+            numericAttackAttackPercent.ValueChanged += AttackDataChanged;
             // 
             // labelAttackAttackPercent
             // 
@@ -1213,6 +1230,7 @@
             numericAttackMPCost.Name = "numericAttackMPCost";
             numericAttackMPCost.Size = new Size(100, 23);
             numericAttackMPCost.TabIndex = 44;
+            numericAttackMPCost.ValueChanged += AttackDataChanged;
             // 
             // labelAttackName
             // 
@@ -1232,6 +1250,7 @@
             textBoxAttackName.Name = "textBoxAttackName";
             textBoxAttackName.Size = new Size(205, 23);
             textBoxAttackName.TabIndex = 4;
+            textBoxAttackName.TextChanged += textBoxAttackName_TextChanged;
             // 
             // tabPageAttackPage2
             // 
@@ -1258,6 +1277,7 @@
             numericAttackStatusChangeChance.Name = "numericAttackStatusChangeChance";
             numericAttackStatusChangeChance.Size = new Size(108, 23);
             numericAttackStatusChangeChance.TabIndex = 49;
+            numericAttackStatusChangeChance.ValueChanged += numericAttackStatusChangeChance_ValueChanged;
             // 
             // comboBoxAttackConditionSubMenu
             // 
@@ -1267,6 +1287,7 @@
             comboBoxAttackConditionSubMenu.Name = "comboBoxAttackConditionSubMenu";
             comboBoxAttackConditionSubMenu.Size = new Size(300, 23);
             comboBoxAttackConditionSubMenu.TabIndex = 51;
+            comboBoxAttackConditionSubMenu.SelectedIndexChanged += AttackDataChanged;
             // 
             // labelAttackStatusChangeChance
             // 
@@ -1315,6 +1336,7 @@
             statusesControlAttack.Name = "statusesControlAttack";
             statusesControlAttack.Size = new Size(557, 200);
             statusesControlAttack.TabIndex = 45;
+            statusesControlAttack.StatusesChanged += AttackDataChanged;
             // 
             // specialAttackFlagsControlAttack
             // 
@@ -1323,6 +1345,25 @@
             specialAttackFlagsControlAttack.Name = "specialAttackFlagsControlAttack";
             specialAttackFlagsControlAttack.Size = new Size(557, 100);
             specialAttackFlagsControlAttack.TabIndex = 44;
+            specialAttackFlagsControlAttack.FlagsChanged += AttackDataChanged;
+            // 
+            // tabPageAttackPage3
+            // 
+            tabPageAttackPage3.Controls.Add(targetDataControlAttack);
+            tabPageAttackPage3.Location = new Point(4, 24);
+            tabPageAttackPage3.Name = "tabPageAttackPage3";
+            tabPageAttackPage3.Size = new Size(569, 397);
+            tabPageAttackPage3.TabIndex = 2;
+            tabPageAttackPage3.Text = "Page 3";
+            tabPageAttackPage3.UseVisualStyleBackColor = true;
+            // 
+            // targetDataControlAttack
+            // 
+            targetDataControlAttack.Location = new Point(6, 6);
+            targetDataControlAttack.Name = "targetDataControlAttack";
+            targetDataControlAttack.Size = new Size(330, 125);
+            targetDataControlAttack.TabIndex = 0;
+            targetDataControlAttack.FlagsChanged += AttackDataChanged;
             // 
             // listBoxAttacks
             // 
@@ -1932,6 +1973,7 @@
             tabPageAttackPage2.ResumeLayout(false);
             tabPageAttackPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).EndInit();
+            tabPageAttackPage3.ResumeLayout(false);
             tabPageFormationData.ResumeLayout(false);
             tabControlFormationData.ResumeLayout(false);
             tabPageFormationDataInner.ResumeLayout(false);
@@ -2115,5 +2157,7 @@
         private Button buttonViewManipList;
         private ComboBox comboBoxEnemyModelID;
         private Label labelEnemyModelID;
+        private TabPage tabPageAttackPage3;
+        private KernelEditor.Controls.TargetDataControl targetDataControlAttack;
     }
 }

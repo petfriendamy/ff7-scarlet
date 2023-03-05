@@ -70,9 +70,6 @@
             numericAttackMPCost = new NumericUpDown();
             tabPageAttacks2 = new TabPage();
             specialAttackFlagsControlAttack = new Shared.SpecialAttackFlagsControl();
-            groupBoxAttackSpecialActions = new GroupBox();
-            buttonAttackSyncAll = new Button();
-            checkBoxAttackSyncWithSceneBin = new CheckBox();
             numericAttackStatusChangeChance = new NumericUpDown();
             comboBoxAttackConditionSubMenu = new ComboBox();
             labelAttackStatusChangeChance = new Label();
@@ -80,6 +77,11 @@
             labelAttackConditionSubMenu = new Label();
             labelAttackStatusChange = new Label();
             statusesControlAttack = new Controls.StatusesControl();
+            tabPageAttacks3 = new TabPage();
+            targetDataControlAttack = new Controls.TargetDataControl();
+            groupBoxAttackSpecialActions = new GroupBox();
+            buttonAttackSyncAll = new Button();
+            checkBoxAttackSyncWithSceneBin = new CheckBox();
             listBoxAttacks = new ListBox();
             tabPageBattleData = new TabPage();
             tabControlBattleData = new TabControl();
@@ -293,8 +295,9 @@
             ((System.ComponentModel.ISupportInitialize)numericAttackAttackPercent).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).BeginInit();
             tabPageAttacks2.SuspendLayout();
-            groupBoxAttackSpecialActions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).BeginInit();
+            tabPageAttacks3.SuspendLayout();
+            groupBoxAttackSpecialActions.SuspendLayout();
             tabPageBattleData.SuspendLayout();
             tabControlBattleData.SuspendLayout();
             tabPageBattleText.SuspendLayout();
@@ -531,6 +534,7 @@
             tabControlAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tabControlAttacks.Controls.Add(tabPageAttacks1);
             tabControlAttacks.Controls.Add(tabPageAttacks2);
+            tabControlAttacks.Controls.Add(tabPageAttacks3);
             tabControlAttacks.Location = new Point(191, 13);
             tabControlAttacks.Name = "tabControlAttacks";
             tabControlAttacks.SelectedIndex = 0;
@@ -585,6 +589,7 @@
             comboBoxAttackHurtActionIndex.Name = "comboBoxAttackHurtActionIndex";
             comboBoxAttackHurtActionIndex.Size = new Size(180, 23);
             comboBoxAttackHurtActionIndex.TabIndex = 41;
+            comboBoxAttackHurtActionIndex.TextChanged += comboBoxAttackHurtActionIndex_TextChanged;
             // 
             // labelAttackAttackEffectID
             // 
@@ -603,6 +608,7 @@
             elementsControlAttack.Name = "elementsControlAttack";
             elementsControlAttack.Size = new Size(370, 130);
             elementsControlAttack.TabIndex = 0;
+            elementsControlAttack.ElementsChanged += AttackDataChanged;
             // 
             // comboBoxAttackAttackEffectID
             // 
@@ -611,6 +617,7 @@
             comboBoxAttackAttackEffectID.Name = "comboBoxAttackAttackEffectID";
             comboBoxAttackAttackEffectID.Size = new Size(100, 23);
             comboBoxAttackAttackEffectID.TabIndex = 39;
+            comboBoxAttackAttackEffectID.TextChanged += comboBoxAttackAttackEffectID_TextChanged;
             // 
             // labelAttackImpactEffectID
             // 
@@ -628,6 +635,7 @@
             comboBoxAttackImpactEffectID.Name = "comboBoxAttackImpactEffectID";
             comboBoxAttackImpactEffectID.Size = new Size(100, 23);
             comboBoxAttackImpactEffectID.TabIndex = 37;
+            comboBoxAttackImpactEffectID.TextChanged += comboBoxAttackImpactEffectID_TextChanged;
             // 
             // textBoxAttackDescription
             // 
@@ -637,6 +645,7 @@
             textBoxAttackDescription.Name = "textBoxAttackDescription";
             textBoxAttackDescription.Size = new Size(558, 23);
             textBoxAttackDescription.TabIndex = 4;
+            textBoxAttackDescription.TextChanged += textBoxAttackDescription_TextChanged;
             // 
             // damageCalculationControlAttack
             // 
@@ -651,6 +660,7 @@
             damageCalculationControlAttack.Name = "damageCalculationControlAttack";
             damageCalculationControlAttack.Size = new Size(556, 140);
             damageCalculationControlAttack.TabIndex = 36;
+            damageCalculationControlAttack.DataChanged += AttackDataChanged;
             // 
             // labelAttackCamMovementIDMulti
             // 
@@ -678,6 +688,7 @@
             comboBoxAttackCamMovementIDMulti.Name = "comboBoxAttackCamMovementIDMulti";
             comboBoxAttackCamMovementIDMulti.Size = new Size(180, 23);
             comboBoxAttackCamMovementIDMulti.TabIndex = 36;
+            comboBoxAttackCamMovementIDMulti.TextChanged += comboBoxAttackCamMovementIDMulti_TextChanged;
             // 
             // textBoxAttackName
             // 
@@ -687,6 +698,7 @@
             textBoxAttackName.Name = "textBoxAttackName";
             textBoxAttackName.Size = new Size(226, 23);
             textBoxAttackName.TabIndex = 2;
+            textBoxAttackName.TextChanged += textBoxAttackName_TextChanged;
             // 
             // labelAttackCamMovementIDSingle
             // 
@@ -714,6 +726,7 @@
             comboBoxAttackCamMovementIDSingle.Name = "comboBoxAttackCamMovementIDSingle";
             comboBoxAttackCamMovementIDSingle.Size = new Size(180, 23);
             comboBoxAttackCamMovementIDSingle.TabIndex = 34;
+            comboBoxAttackCamMovementIDSingle.TextChanged += comboBoxAttackCamMovementIDSingle_TextChanged;
             // 
             // labelSummonText
             // 
@@ -733,6 +746,7 @@
             numericAttackAttackPercent.Name = "numericAttackAttackPercent";
             numericAttackAttackPercent.Size = new Size(100, 23);
             numericAttackAttackPercent.TabIndex = 10;
+            numericAttackAttackPercent.ValueChanged += AttackDataChanged;
             // 
             // textBoxSummonText
             // 
@@ -743,6 +757,7 @@
             textBoxSummonText.Name = "textBoxSummonText";
             textBoxSummonText.Size = new Size(324, 23);
             textBoxSummonText.TabIndex = 6;
+            textBoxSummonText.TextChanged += textBoxSummonText_TextChanged;
             // 
             // labelAttackAttackPercent
             // 
@@ -769,11 +784,11 @@
             numericAttackMPCost.Name = "numericAttackMPCost";
             numericAttackMPCost.Size = new Size(100, 23);
             numericAttackMPCost.TabIndex = 8;
+            numericAttackMPCost.ValueChanged += AttackDataChanged;
             // 
             // tabPageAttacks2
             // 
             tabPageAttacks2.Controls.Add(specialAttackFlagsControlAttack);
-            tabPageAttacks2.Controls.Add(groupBoxAttackSpecialActions);
             tabPageAttacks2.Controls.Add(numericAttackStatusChangeChance);
             tabPageAttacks2.Controls.Add(comboBoxAttackConditionSubMenu);
             tabPageAttacks2.Controls.Add(labelAttackStatusChangeChance);
@@ -796,40 +811,7 @@
             specialAttackFlagsControlAttack.Name = "specialAttackFlagsControlAttack";
             specialAttackFlagsControlAttack.Size = new Size(558, 100);
             specialAttackFlagsControlAttack.TabIndex = 43;
-            // 
-            // groupBoxAttackSpecialActions
-            // 
-            groupBoxAttackSpecialActions.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBoxAttackSpecialActions.Controls.Add(buttonAttackSyncAll);
-            groupBoxAttackSpecialActions.Controls.Add(checkBoxAttackSyncWithSceneBin);
-            groupBoxAttackSpecialActions.Location = new Point(263, 315);
-            groupBoxAttackSpecialActions.Name = "groupBoxAttackSpecialActions";
-            groupBoxAttackSpecialActions.Size = new Size(300, 120);
-            groupBoxAttackSpecialActions.TabIndex = 45;
-            groupBoxAttackSpecialActions.TabStop = false;
-            groupBoxAttackSpecialActions.Text = "Special actions";
-            // 
-            // buttonAttackSyncAll
-            // 
-            buttonAttackSyncAll.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            buttonAttackSyncAll.Location = new Point(183, 18);
-            buttonAttackSyncAll.Name = "buttonAttackSyncAll";
-            buttonAttackSyncAll.Size = new Size(111, 23);
-            buttonAttackSyncAll.TabIndex = 1;
-            buttonAttackSyncAll.Text = "Sync all";
-            buttonAttackSyncAll.UseVisualStyleBackColor = true;
-            buttonAttackSyncAll.Click += buttonAttackSyncAll_Click;
-            // 
-            // checkBoxAttackSyncWithSceneBin
-            // 
-            checkBoxAttackSyncWithSceneBin.AutoSize = true;
-            checkBoxAttackSyncWithSceneBin.Location = new Point(6, 21);
-            checkBoxAttackSyncWithSceneBin.Name = "checkBoxAttackSyncWithSceneBin";
-            checkBoxAttackSyncWithSceneBin.Size = new Size(171, 19);
-            checkBoxAttackSyncWithSceneBin.TabIndex = 0;
-            checkBoxAttackSyncWithSceneBin.Text = "Keep synced with scene.bin";
-            checkBoxAttackSyncWithSceneBin.UseVisualStyleBackColor = true;
-            checkBoxAttackSyncWithSceneBin.CheckedChanged += checkBoxAttackSyncWithSceneBin_CheckedChanged;
+            specialAttackFlagsControlAttack.FlagsChanged += AttackDataChanged;
             // 
             // numericAttackStatusChangeChance
             // 
@@ -838,6 +820,7 @@
             numericAttackStatusChangeChance.Name = "numericAttackStatusChangeChance";
             numericAttackStatusChangeChance.Size = new Size(108, 23);
             numericAttackStatusChangeChance.TabIndex = 5;
+            numericAttackStatusChangeChance.ValueChanged += numericAttackStatusChangeChance_ValueChanged;
             // 
             // comboBoxAttackConditionSubMenu
             // 
@@ -847,6 +830,7 @@
             comboBoxAttackConditionSubMenu.Name = "comboBoxAttackConditionSubMenu";
             comboBoxAttackConditionSubMenu.Size = new Size(251, 23);
             comboBoxAttackConditionSubMenu.TabIndex = 44;
+            comboBoxAttackConditionSubMenu.SelectedIndexChanged += AttackDataChanged;
             // 
             // labelAttackStatusChangeChance
             // 
@@ -895,6 +879,60 @@
             statusesControlAttack.Name = "statusesControlAttack";
             statusesControlAttack.Size = new Size(557, 200);
             statusesControlAttack.TabIndex = 1;
+            statusesControlAttack.StatusesChanged += AttackDataChanged;
+            // 
+            // tabPageAttacks3
+            // 
+            tabPageAttacks3.Controls.Add(targetDataControlAttack);
+            tabPageAttacks3.Controls.Add(groupBoxAttackSpecialActions);
+            tabPageAttacks3.Location = new Point(4, 24);
+            tabPageAttacks3.Name = "tabPageAttacks3";
+            tabPageAttacks3.Size = new Size(569, 441);
+            tabPageAttacks3.TabIndex = 2;
+            tabPageAttacks3.Text = "Page 3";
+            tabPageAttacks3.UseVisualStyleBackColor = true;
+            // 
+            // targetDataControlAttack
+            // 
+            targetDataControlAttack.Location = new Point(6, 6);
+            targetDataControlAttack.Name = "targetDataControlAttack";
+            targetDataControlAttack.Size = new Size(330, 125);
+            targetDataControlAttack.TabIndex = 0;
+            targetDataControlAttack.FlagsChanged += AttackDataChanged;
+            // 
+            // groupBoxAttackSpecialActions
+            // 
+            groupBoxAttackSpecialActions.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxAttackSpecialActions.Controls.Add(buttonAttackSyncAll);
+            groupBoxAttackSpecialActions.Controls.Add(checkBoxAttackSyncWithSceneBin);
+            groupBoxAttackSpecialActions.Location = new Point(6, 137);
+            groupBoxAttackSpecialActions.Name = "groupBoxAttackSpecialActions";
+            groupBoxAttackSpecialActions.Size = new Size(330, 50);
+            groupBoxAttackSpecialActions.TabIndex = 45;
+            groupBoxAttackSpecialActions.TabStop = false;
+            groupBoxAttackSpecialActions.Text = "Special actions";
+            // 
+            // buttonAttackSyncAll
+            // 
+            buttonAttackSyncAll.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            buttonAttackSyncAll.Location = new Point(183, 18);
+            buttonAttackSyncAll.Name = "buttonAttackSyncAll";
+            buttonAttackSyncAll.Size = new Size(141, 23);
+            buttonAttackSyncAll.TabIndex = 1;
+            buttonAttackSyncAll.Text = "Sync all";
+            buttonAttackSyncAll.UseVisualStyleBackColor = true;
+            buttonAttackSyncAll.Click += buttonAttackSyncAll_Click;
+            // 
+            // checkBoxAttackSyncWithSceneBin
+            // 
+            checkBoxAttackSyncWithSceneBin.AutoSize = true;
+            checkBoxAttackSyncWithSceneBin.Location = new Point(6, 21);
+            checkBoxAttackSyncWithSceneBin.Name = "checkBoxAttackSyncWithSceneBin";
+            checkBoxAttackSyncWithSceneBin.Size = new Size(171, 19);
+            checkBoxAttackSyncWithSceneBin.TabIndex = 0;
+            checkBoxAttackSyncWithSceneBin.Text = "Keep synced with scene.bin";
+            checkBoxAttackSyncWithSceneBin.UseVisualStyleBackColor = true;
+            checkBoxAttackSyncWithSceneBin.CheckedChanged += checkBoxAttackSyncWithSceneBin_CheckedChanged;
             // 
             // listBoxAttacks
             // 
@@ -3100,7 +3138,6 @@
             Name = "KernelForm";
             Text = "Scarlet - Kernel Editor";
             FormClosing += KernelForm_FormClosing;
-            Load += KernelForm_Load;
             tabControlMain.ResumeLayout(false);
             tabPageCommandData.ResumeLayout(false);
             tabPageCommandData.PerformLayout();
@@ -3112,9 +3149,10 @@
             ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).EndInit();
             tabPageAttacks2.ResumeLayout(false);
             tabPageAttacks2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).EndInit();
+            tabPageAttacks3.ResumeLayout(false);
             groupBoxAttackSpecialActions.ResumeLayout(false);
             groupBoxAttackSpecialActions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).EndInit();
             tabPageBattleData.ResumeLayout(false);
             tabControlBattleData.ResumeLayout(false);
             tabPageBattleText.ResumeLayout(false);
@@ -3454,5 +3492,7 @@
         private TabPage tabPageBattleRNGTable;
         private Controls.RNGTableControl rngTableControl;
         private TabPage tabPageMagicOrder;
+        private TabPage tabPageAttacks3;
+        private Controls.TargetDataControl targetDataControlAttack;
     }
 }

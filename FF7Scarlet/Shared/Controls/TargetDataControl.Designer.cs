@@ -28,128 +28,135 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBoxMain = new System.Windows.Forms.GroupBox();
-            this.checkBoxRandomTarget = new System.Windows.Forms.CheckBox();
-            this.checkBoxAllRows = new System.Windows.Forms.CheckBox();
-            this.checkBoxShortRange = new System.Windows.Forms.CheckBox();
-            this.checkBoxOneRowOnly = new System.Windows.Forms.CheckBox();
-            this.checkBoxSingleMultiToggle = new System.Windows.Forms.CheckBox();
-            this.checkBoxMultipleTargetDefault = new System.Windows.Forms.CheckBox();
-            this.checkBoxStartOnEnemies = new System.Windows.Forms.CheckBox();
-            this.checkBoxEnableSelection = new System.Windows.Forms.CheckBox();
-            this.groupBoxMain.SuspendLayout();
-            this.SuspendLayout();
+            groupBoxMain = new GroupBox();
+            checkBoxRandomTarget = new CheckBox();
+            checkBoxAllRows = new CheckBox();
+            checkBoxShortRange = new CheckBox();
+            checkBoxOneRowOnly = new CheckBox();
+            checkBoxSingleMultiToggle = new CheckBox();
+            checkBoxMultipleTargetDefault = new CheckBox();
+            checkBoxStartOnEnemies = new CheckBox();
+            checkBoxEnableSelection = new CheckBox();
+            groupBoxMain.SuspendLayout();
+            SuspendLayout();
             // 
             // groupBoxMain
             // 
-            this.groupBoxMain.Controls.Add(this.checkBoxRandomTarget);
-            this.groupBoxMain.Controls.Add(this.checkBoxAllRows);
-            this.groupBoxMain.Controls.Add(this.checkBoxShortRange);
-            this.groupBoxMain.Controls.Add(this.checkBoxOneRowOnly);
-            this.groupBoxMain.Controls.Add(this.checkBoxSingleMultiToggle);
-            this.groupBoxMain.Controls.Add(this.checkBoxMultipleTargetDefault);
-            this.groupBoxMain.Controls.Add(this.checkBoxStartOnEnemies);
-            this.groupBoxMain.Controls.Add(this.checkBoxEnableSelection);
-            this.groupBoxMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxMain.Location = new System.Drawing.Point(0, 0);
-            this.groupBoxMain.Name = "groupBoxMain";
-            this.groupBoxMain.Size = new System.Drawing.Size(330, 125);
-            this.groupBoxMain.TabIndex = 26;
-            this.groupBoxMain.TabStop = false;
-            this.groupBoxMain.Text = "Target flags";
+            groupBoxMain.Controls.Add(checkBoxRandomTarget);
+            groupBoxMain.Controls.Add(checkBoxAllRows);
+            groupBoxMain.Controls.Add(checkBoxShortRange);
+            groupBoxMain.Controls.Add(checkBoxOneRowOnly);
+            groupBoxMain.Controls.Add(checkBoxSingleMultiToggle);
+            groupBoxMain.Controls.Add(checkBoxMultipleTargetDefault);
+            groupBoxMain.Controls.Add(checkBoxStartOnEnemies);
+            groupBoxMain.Controls.Add(checkBoxEnableSelection);
+            groupBoxMain.Dock = DockStyle.Fill;
+            groupBoxMain.Location = new Point(0, 0);
+            groupBoxMain.Name = "groupBoxMain";
+            groupBoxMain.Size = new Size(330, 125);
+            groupBoxMain.TabIndex = 26;
+            groupBoxMain.TabStop = false;
+            groupBoxMain.Text = "Target flags";
             // 
             // checkBoxRandomTarget
             // 
-            this.checkBoxRandomTarget.AutoSize = true;
-            this.checkBoxRandomTarget.Location = new System.Drawing.Point(201, 97);
-            this.checkBoxRandomTarget.Name = "checkBoxRandomTarget";
-            this.checkBoxRandomTarget.Size = new System.Drawing.Size(105, 19);
-            this.checkBoxRandomTarget.TabIndex = 7;
-            this.checkBoxRandomTarget.Text = "Random target";
-            this.checkBoxRandomTarget.UseVisualStyleBackColor = true;
+            checkBoxRandomTarget.AutoSize = true;
+            checkBoxRandomTarget.Location = new Point(201, 97);
+            checkBoxRandomTarget.Name = "checkBoxRandomTarget";
+            checkBoxRandomTarget.Size = new Size(105, 19);
+            checkBoxRandomTarget.TabIndex = 7;
+            checkBoxRandomTarget.Text = "Random target";
+            checkBoxRandomTarget.UseVisualStyleBackColor = true;
+            checkBoxRandomTarget.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxAllRows
             // 
-            this.checkBoxAllRows.AutoSize = true;
-            this.checkBoxAllRows.Location = new System.Drawing.Point(201, 72);
-            this.checkBoxAllRows.Name = "checkBoxAllRows";
-            this.checkBoxAllRows.Size = new System.Drawing.Size(68, 19);
-            this.checkBoxAllRows.TabIndex = 6;
-            this.checkBoxAllRows.Text = "All rows";
-            this.checkBoxAllRows.UseVisualStyleBackColor = true;
+            checkBoxAllRows.AutoSize = true;
+            checkBoxAllRows.Location = new Point(201, 72);
+            checkBoxAllRows.Name = "checkBoxAllRows";
+            checkBoxAllRows.Size = new Size(68, 19);
+            checkBoxAllRows.TabIndex = 6;
+            checkBoxAllRows.Text = "All rows";
+            checkBoxAllRows.UseVisualStyleBackColor = true;
+            checkBoxAllRows.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxShortRange
             // 
-            this.checkBoxShortRange.AutoSize = true;
-            this.checkBoxShortRange.Location = new System.Drawing.Point(201, 47);
-            this.checkBoxShortRange.Name = "checkBoxShortRange";
-            this.checkBoxShortRange.Size = new System.Drawing.Size(87, 19);
-            this.checkBoxShortRange.TabIndex = 5;
-            this.checkBoxShortRange.Text = "Short range";
-            this.checkBoxShortRange.UseVisualStyleBackColor = true;
+            checkBoxShortRange.AutoSize = true;
+            checkBoxShortRange.Location = new Point(201, 47);
+            checkBoxShortRange.Name = "checkBoxShortRange";
+            checkBoxShortRange.Size = new Size(87, 19);
+            checkBoxShortRange.TabIndex = 5;
+            checkBoxShortRange.Text = "Short range";
+            checkBoxShortRange.UseVisualStyleBackColor = true;
+            checkBoxShortRange.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxOneRowOnly
             // 
-            this.checkBoxOneRowOnly.AutoSize = true;
-            this.checkBoxOneRowOnly.Location = new System.Drawing.Point(201, 22);
-            this.checkBoxOneRowOnly.Name = "checkBoxOneRowOnly";
-            this.checkBoxOneRowOnly.Size = new System.Drawing.Size(97, 19);
-            this.checkBoxOneRowOnly.TabIndex = 4;
-            this.checkBoxOneRowOnly.Text = "One row only";
-            this.checkBoxOneRowOnly.UseVisualStyleBackColor = true;
+            checkBoxOneRowOnly.AutoSize = true;
+            checkBoxOneRowOnly.Location = new Point(201, 22);
+            checkBoxOneRowOnly.Name = "checkBoxOneRowOnly";
+            checkBoxOneRowOnly.Size = new Size(97, 19);
+            checkBoxOneRowOnly.TabIndex = 4;
+            checkBoxOneRowOnly.Text = "One row only";
+            checkBoxOneRowOnly.UseVisualStyleBackColor = true;
+            checkBoxOneRowOnly.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxSingleMultiToggle
             // 
-            this.checkBoxSingleMultiToggle.AutoSize = true;
-            this.checkBoxSingleMultiToggle.Location = new System.Drawing.Point(6, 97);
-            this.checkBoxSingleMultiToggle.Name = "checkBoxSingleMultiToggle";
-            this.checkBoxSingleMultiToggle.Size = new System.Drawing.Size(183, 19);
-            this.checkBoxSingleMultiToggle.TabIndex = 3;
-            this.checkBoxSingleMultiToggle.Text = "Toggle single/multiple targets";
-            this.checkBoxSingleMultiToggle.UseVisualStyleBackColor = true;
+            checkBoxSingleMultiToggle.AutoSize = true;
+            checkBoxSingleMultiToggle.Location = new Point(6, 97);
+            checkBoxSingleMultiToggle.Name = "checkBoxSingleMultiToggle";
+            checkBoxSingleMultiToggle.Size = new Size(183, 19);
+            checkBoxSingleMultiToggle.TabIndex = 3;
+            checkBoxSingleMultiToggle.Text = "Toggle single/multiple targets";
+            checkBoxSingleMultiToggle.UseVisualStyleBackColor = true;
+            checkBoxSingleMultiToggle.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxMultipleTargetDefault
             // 
-            this.checkBoxMultipleTargetDefault.AutoSize = true;
-            this.checkBoxMultipleTargetDefault.Location = new System.Drawing.Point(6, 72);
-            this.checkBoxMultipleTargetDefault.Name = "checkBoxMultipleTargetDefault";
-            this.checkBoxMultipleTargetDefault.Size = new System.Drawing.Size(160, 19);
-            this.checkBoxMultipleTargetDefault.TabIndex = 2;
-            this.checkBoxMultipleTargetDefault.Text = "Multiple target by default";
-            this.checkBoxMultipleTargetDefault.UseVisualStyleBackColor = true;
+            checkBoxMultipleTargetDefault.AutoSize = true;
+            checkBoxMultipleTargetDefault.Location = new Point(6, 72);
+            checkBoxMultipleTargetDefault.Name = "checkBoxMultipleTargetDefault";
+            checkBoxMultipleTargetDefault.Size = new Size(160, 19);
+            checkBoxMultipleTargetDefault.TabIndex = 2;
+            checkBoxMultipleTargetDefault.Text = "Multiple target by default";
+            checkBoxMultipleTargetDefault.UseVisualStyleBackColor = true;
+            checkBoxMultipleTargetDefault.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxStartOnEnemies
             // 
-            this.checkBoxStartOnEnemies.AutoSize = true;
-            this.checkBoxStartOnEnemies.Location = new System.Drawing.Point(6, 47);
-            this.checkBoxStartOnEnemies.Name = "checkBoxStartOnEnemies";
-            this.checkBoxStartOnEnemies.Size = new System.Drawing.Size(114, 19);
-            this.checkBoxStartOnEnemies.TabIndex = 1;
-            this.checkBoxStartOnEnemies.Text = "Start on enemies";
-            this.checkBoxStartOnEnemies.UseVisualStyleBackColor = true;
+            checkBoxStartOnEnemies.AutoSize = true;
+            checkBoxStartOnEnemies.Location = new Point(6, 47);
+            checkBoxStartOnEnemies.Name = "checkBoxStartOnEnemies";
+            checkBoxStartOnEnemies.Size = new Size(114, 19);
+            checkBoxStartOnEnemies.TabIndex = 1;
+            checkBoxStartOnEnemies.Text = "Start on enemies";
+            checkBoxStartOnEnemies.UseVisualStyleBackColor = true;
+            checkBoxStartOnEnemies.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxEnableSelection
             // 
-            this.checkBoxEnableSelection.AutoSize = true;
-            this.checkBoxEnableSelection.Location = new System.Drawing.Point(6, 22);
-            this.checkBoxEnableSelection.Name = "checkBoxEnableSelection";
-            this.checkBoxEnableSelection.Size = new System.Drawing.Size(111, 19);
-            this.checkBoxEnableSelection.TabIndex = 0;
-            this.checkBoxEnableSelection.Text = "Enable selection";
-            this.checkBoxEnableSelection.UseVisualStyleBackColor = true;
+            checkBoxEnableSelection.AutoSize = true;
+            checkBoxEnableSelection.Location = new Point(6, 22);
+            checkBoxEnableSelection.Name = "checkBoxEnableSelection";
+            checkBoxEnableSelection.Size = new Size(111, 19);
+            checkBoxEnableSelection.TabIndex = 0;
+            checkBoxEnableSelection.Text = "Enable selection";
+            checkBoxEnableSelection.UseVisualStyleBackColor = true;
+            checkBoxEnableSelection.CheckedChanged += CheckBoxChanged;
             // 
             // TargetDataControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBoxMain);
-            this.DoubleBuffered = true;
-            this.Name = "TargetDataControl";
-            this.Size = new System.Drawing.Size(330, 125);
-            this.groupBoxMain.ResumeLayout(false);
-            this.groupBoxMain.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(groupBoxMain);
+            DoubleBuffered = true;
+            Name = "TargetDataControl";
+            Size = new Size(330, 125);
+            groupBoxMain.ResumeLayout(false);
+            groupBoxMain.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
