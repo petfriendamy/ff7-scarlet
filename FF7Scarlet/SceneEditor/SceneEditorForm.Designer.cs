@@ -1830,7 +1830,7 @@
             comboBoxFormation.FormattingEnabled = true;
             comboBoxFormation.Location = new Point(344, 40);
             comboBoxFormation.Name = "comboBoxFormation";
-            comboBoxFormation.Size = new Size(100, 23);
+            comboBoxFormation.Size = new Size(331, 23);
             comboBoxFormation.TabIndex = 13;
             comboBoxFormation.SelectedIndexChanged += comboBoxFormation_SelectedIndexChanged;
             // 

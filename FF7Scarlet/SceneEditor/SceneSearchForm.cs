@@ -44,13 +44,15 @@ namespace FF7Scarlet.SceneEditor
                                 {
                                     //find first (and usually only) formation with this enemy in it
                                     int formation = 0;
-                                    for (int n = 0; n < Scene.FORMATION_COUNT; ++n)
+                                    bool found = false;
+                                    for (int n = 0; n < Scene.FORMATION_COUNT && !found; ++n)
                                     {
                                         foreach (var fe in scenes[i].Formations[n].EnemyLocations)
                                         {
                                             if (fe.EnemyID == enemy.ModelID)
                                             {
                                                 formation = n;
+                                                found = true;
                                                 break;
                                             }
                                         }

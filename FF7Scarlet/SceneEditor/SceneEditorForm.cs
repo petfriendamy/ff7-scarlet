@@ -28,6 +28,7 @@ namespace FF7Scarlet.SceneEditor
         private List<StatusChange> statusChanges = new();
         private List<Enemy> validEnemies = new();
         private List<Attack> validAttacks = new();
+        private List<LocationInfo> locationList = new();
         private int prevScene, prevEnemy, prevAttack, prevFormation;
         private bool
             loading = false,
@@ -111,6 +112,7 @@ namespace FF7Scarlet.SceneEditor
             numericEnemyEXP.Maximum = uint.MaxValue;
             numericEnemyGil.Maximum = uint.MaxValue;
 
+            //populate combo boxes
             comboBoxEnemyResistElement.Items.Add("None");
             resistList = new List<ResistanceRate>();
             foreach (var e in Enum.GetValues<MateriaElements>())
@@ -145,9 +147,24 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxAttackConditionSubMenu.Items.Add(c);
                 }
             }
-            foreach (var l in Enum.GetNames<BattleLocations>())
+            locationList = 
+                (from l in LocationInfo.LOCATION_LIST
+                 orderby l.Category, l.Name
+                 select l).ToList();
+            foreach (var l in locationList)
             {
-                comboBoxFormationLocation.Items.Add(l);
+                if (l.Category == Locations.TempleOfTheAncients)
+                {
+                    comboBoxFormationLocation.Items.Add(l.Name);
+                }
+                else
+                {
+                    var category = Enum.GetName(l.Category);
+                    if (category != null)
+                    {
+                        comboBoxFormationLocation.Items.Add($"{StringParser.AddSpace(category)} -- {l.Name}");
+                    }
+                }
             }
             comboBoxFormationNext.Items.Add("None");
             comboBoxFormationBattleArena.Items.Add("None");
@@ -321,7 +338,8 @@ namespace FF7Scarlet.SceneEditor
             comboBoxFormation.Items.Clear();
             for (i = 0; i < Scene.FORMATION_COUNT; ++i)
             {
-                comboBoxFormation.Items.Add($"Battle ID {(Scene.FORMATION_COUNT * SelectedSceneIndex) + i}");
+                comboBoxFormation.Items.Add($"{(Scene.FORMATION_COUNT *
+                    SelectedSceneIndex) + i}: {scene.GetFormationEnemyNames(i)}");
             }
             comboBoxFormation.SelectedIndex = 0;
             LoadFormationData(scene.Formations[0], false);
@@ -683,13 +701,13 @@ namespace FF7Scarlet.SceneEditor
             EnableOrDisableGroupBox(groupBoxFormationEnemies, false, false);
 
             //battle setup data
-            if ((ushort)formation.BattleSetupData.Location == HexParser.NULL_OFFSET_16_BIT)
+            if (formation.BattleSetupData.Location == null)
             {
                 comboBoxFormationLocation.SelectedIndex = -1;
             }
             else
             {
-                comboBoxFormationLocation.SelectedIndex = (int)formation.BattleSetupData.Location;
+                comboBoxFormationLocation.SelectedIndex = locationList.IndexOf(formation.BattleSetupData.Location);
             }
             if (formation.BattleSetupData.NextSceneID == HexParser.NULL_OFFSET_16_BIT)
             {

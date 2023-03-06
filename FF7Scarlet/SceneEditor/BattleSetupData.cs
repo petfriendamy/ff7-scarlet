@@ -5,7 +5,7 @@
         public const int BATTLE_ARENA_ID_COUNT = 4;
         private readonly ushort[] battleArenaIDs = new ushort[BATTLE_ARENA_ID_COUNT];
 
-        public BattleLocations Location { get; set; }
+        public LocationInfo? Location { get; set; }
         public ushort NextSceneID { get; set; }
         public ushort EscapeCounter { get; set; }
         public BattleFlags BattleFlags { get; set; }
@@ -21,7 +21,7 @@
             using (var ms = new MemoryStream(data, false))
             using (var reader = new BinaryReader(ms))
             {
-                Location = (BattleLocations)reader.ReadUInt16();
+                Location = LocationInfo.GetInfo(reader.ReadUInt16());
                 NextSceneID = reader.ReadUInt16();
                 EscapeCounter = reader.ReadUInt16();
                 reader.ReadUInt16(); //padding

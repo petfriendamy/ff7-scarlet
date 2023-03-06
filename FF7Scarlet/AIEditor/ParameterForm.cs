@@ -170,20 +170,19 @@
                             else //is other code
                             {
                                 firstParse.Add(ValidateCode(p.ParamType, p.Parameter));
-                                if (!p.IsFirst && p.Operand != 0xFF) //add operand
-                                {
-                                    firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
-                                        p.Operand));
-                                }
                                 if (p.Modifier != 0xFF) //add modifier
                                 {
                                     firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                                         p.Modifier));
                                 }
+                                if (!p.IsFirst && p.Operand != 0xFF) //add operand
+                                {
+                                    firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
+                                        p.Operand));
+                                }
                             }
                         }
                     }
-
                     Code = Script.GetParsedCode(firstParse, parentScript);
                 }
                 DialogResult = DialogResult.OK;

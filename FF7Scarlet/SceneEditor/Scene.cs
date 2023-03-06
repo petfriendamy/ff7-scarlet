@@ -1,6 +1,5 @@
 ﻿using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
-using Microsoft.VisualBasic;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -130,6 +129,47 @@ namespace FF7Scarlet.SceneEditor
                 return atk.GetNameString();
             }
             return $"Unknown ({id:X4})";
+        }
+
+        public string GetFormationEnemyNames(int formation)
+        {
+            if (formation < 0 || formation >= FORMATION_COUNT)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            //get enemies in formation
+            var enemyCount = new Dictionary<Enemy, int>();
+            foreach (var e in Formations[formation].EnemyLocations)
+            {
+                var enemy = GetEnemyByID(e.EnemyID);
+                if (enemy != null)
+                {
+                    if (enemyCount.ContainsKey(enemy))
+                    {
+                        enemyCount[enemy]++;
+                    }
+                    else
+                    {
+                        enemyCount.Add(enemy, 1);
+                    }
+                }
+            }
+
+            if (enemyCount.Count == 0) { return "(empty)"; }
+
+            //sort the list and get the names
+            var sorted =
+                (from e in enemyCount
+                 orderby e.Value descending
+                 select e);
+
+            string output = "";
+            foreach (var e in sorted)
+            {
+                output += $"{e.Value}x {e.Key.GetNameString()}, ";
+            }
+            return output.Substring(0, output.LastIndexOf(','));
         }
 
         private void ParseData(byte[] data)
