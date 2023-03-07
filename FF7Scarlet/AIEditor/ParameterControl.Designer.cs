@@ -103,6 +103,7 @@ namespace FF7Scarlet.AIEditor
             Controls.Add(comboBoxParameter);
             Controls.Add(comboBoxType);
             Controls.Add(comboBoxOperand);
+            DoubleBuffered = true;
             Margin = new Padding(4, 3, 4, 3);
             Name = "ParameterControl";
             Size = new Size(550, 31);

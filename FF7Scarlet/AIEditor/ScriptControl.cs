@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Windows.Forms;
-
-namespace FF7Scarlet.AIEditor
+﻿namespace FF7Scarlet.AIEditor
 {
     public partial class ScriptControl : UserControl
     {

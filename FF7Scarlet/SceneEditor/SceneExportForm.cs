@@ -77,7 +77,7 @@
                         {
                             groupBoxExport.Enabled = false;
                             buttonExport.Enabled = false;
-                            ExportScene(selectedScene, path);
+                            await ExportScene(selectedScene, path);
                             progressBarSaving.Value = 100;
                             success = true;
                         }
@@ -102,7 +102,12 @@
                                 groupBoxExport.Enabled = false;
                                 buttonExport.Enabled = false;
                                 processing = true;
-                                success = await ExportMulti(path);
+                                var selected = new int[listBoxSceneList.Items.Count];
+                                for (int i = 0; i < selected.Length; ++i)
+                                {
+                                    selected[i] = listBoxSceneList.SelectedIndices[i];
+                                }
+                                success = await ExportMulti(path, selected);
                             }
                         }
                     }
@@ -123,45 +128,34 @@
             }
         }
 
-        private void ExportScene(int scene, string path)
+        private async Task ExportScene(int scene, string path)
         {
             try
             {
-                scenes[scene].UpdateRawData();
-                File.WriteAllBytes(path, scenes[scene].GetRawData());
+                await Task.Run((() =>
+                {
+                    var data = scenes[scene].GetRawData();
+                    File.WriteAllBytes(path, data);
+                }));
+                
             }
-            catch (Exception ex)
+            catch (AggregateException ex)
             {
                 throw new Exception($"An exception was thrown in scene {scene}:\n\n{ex.Message}", ex);
             }
         }
 
-        private Task ExportSceneAsync(int scene, string path)
-        {
-            return Task.Run(() =>
-            {
-                try
-                {
-                    ExportScene(scene, path);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"An exception was thrown in scene {scene}:\n\n{ex.Message}", ex);
-                }
-            });
-        }
-
-        private async Task<bool> ExportMulti(string folderPath)
+        private async Task<bool> ExportMulti(string folderPath, int[] selected)
         {
             int index = 0;
             try
             {
-                int count = listBoxSceneList.SelectedIndices.Count;
+                int count = selected.Length;
                 for (int i = 0; i < count; ++i)
                 {
-                    index = listBoxSceneList.SelectedIndices[i];
+                    index = selected[i];
                     string filePath = folderPath + $"\\scene.{index}.bin";
-                    await ExportSceneAsync(index, filePath);
+                    await ExportScene(index, filePath);
                     progressBarSaving.Value = ((i + 1) / count) * 100;
                 }
                 return true;

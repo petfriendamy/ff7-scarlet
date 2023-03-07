@@ -189,7 +189,7 @@ namespace FF7Scarlet.AIEditor
             if (selected >= 0 && selected < currList.Count)
             {
                 var opcode = currList[selected];
-                labelManualParameter.Visible = comboBoxManualParameter.Visible = 
+                labelManualParameter.Visible = comboBoxManualParameter.Visible =
                     (opcode.ParameterType != ParameterTypes.None);
             }
             if (!loading) { unsavedChanges = true; }
@@ -428,7 +428,7 @@ namespace FF7Scarlet.AIEditor
                                     p = new FFText(label.ToString("X4"));
                                 }
                                 var cb = new CodeBlock(parentScript, new CodeLine(parentScript,
-                                    HexParser.NULL_OFFSET_16_BIT,  (byte)command.Opcode, p));
+                                    HexParser.NULL_OFFSET_16_BIT, (byte)command.Opcode, p));
                                 if (param2 != null) { cb.AddToTop(param2); }
 
                                 cb.AddToTop(param1);
@@ -439,7 +439,7 @@ namespace FF7Scarlet.AIEditor
                                 param = ParseParameter(command.ParameterType1, textBoxParameter1.Text);
                                 Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                                     (byte)command.Opcode, param);
-                                
+
                             }
                         }
                     }

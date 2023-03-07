@@ -62,13 +62,12 @@
                             }
                         }
                     }
-                    else if (op.IsOperand) //add operator to the previous line
+                    else if (op.IsOperand) //add operator to the previous code block
                     {
-                        if (i > 0 && paramList[i - 1].Operand == 0xFF)
-                        {
-                            i--;
-                        }
-                        paramList[i].SetOperand(op.Code);
+                        i--;
+                        int j = i;
+                        while (j > 0 && paramList[j].Operand != 0xFF) { j--; }
+                        paramList[j].SetOperand(op.Code);
                     }
                     ++i;
                 }
@@ -158,6 +157,7 @@
                 else //convert code back into a proper script
                 {
                     var firstParse = new List<CodeLine> { };
+                    OpcodeInfo? operand = null;
                     foreach (var p in paramList)
                     {
                         if (p.Checked || p.IsFirst)
@@ -169,13 +169,28 @@
                             }
                             else //is other code
                             {
+                                var op = OpcodeInfo.GetInfo(p.Operand); //check for logical operands
+                                if (op != null && op.Group == OpcodeGroups.Logical)
+                                {
+                                    if (operand != null) //add the previously saved operand
+                                    {
+                                        firstParse.Add(new CodeLine(parentScript,
+                                            HexParser.NULL_OFFSET_16_BIT, operand.Code));
+                                    }
+                                    operand = op;
+                                }
+
                                 firstParse.Add(ValidateCode(p.ParamType, p.Parameter));
-                                if (p.Modifier != 0xFF) //add modifier
+
+                                //add modifier
+                                if (p.Modifier != 0xFF)
                                 {
                                     firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                                         p.Modifier));
                                 }
-                                if (!p.IsFirst && p.Operand != 0xFF) //add operand
+
+                                //add non-logical operands
+                                if (!p.IsFirst && op != null && op.Group != OpcodeGroups.Logical)
                                 {
                                     firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                                         p.Operand));
@@ -183,6 +198,12 @@
                             }
                         }
                     }
+                    if (operand != null) //if there's a saved operand, add it to the end of the block
+                    {
+                        firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, operand.Code));
+                    }
+
+                    //get the parsed code block
                     Code = Script.GetParsedCode(firstParse, parentScript);
                 }
                 DialogResult = DialogResult.OK;

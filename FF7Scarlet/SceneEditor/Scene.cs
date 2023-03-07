@@ -200,19 +200,19 @@ namespace FF7Scarlet.SceneEditor
                     //battle setup data
                     for (i = 0; i < FORMATION_COUNT; ++i)
                     {
-                        setupData[i] = new BattleSetupData(reader.ReadBytes(20));
+                        setupData[i] = new BattleSetupData(reader.ReadBytes(BattleSetupData.BLOCK_SIZE));
                     }
                     //camera placement data
                     for (i = 0; i < FORMATION_COUNT; ++i)
                     {
-                        cameraData[i] = new CameraPlacementData(reader.ReadBytes(48));
+                        cameraData[i] = new CameraPlacementData(reader.ReadBytes(CameraPlacementData.BLOCK_SIZE));
                     }
                     //battle formations
                     for (i = 0; i < FORMATION_COUNT; ++i)
                     {
                         for (j = 0; j < Formation.ENEMY_COUNT; ++j)
                         {
-                            enemyLocations[j] = new EnemyLocation(reader.ReadBytes(16));
+                            enemyLocations[j] = new EnemyLocation(reader.ReadBytes(EnemyLocation.BLOCK_SIZE));
                         }
                         Formations[i] = new Formation(this, setupData[i], cameraData[i], enemyLocations);
                     }
@@ -360,7 +360,7 @@ namespace FF7Scarlet.SceneEditor
             return count;
         }
 
-        public void UpdateRawData()
+        public byte[] GetRawData()
         {
             try
             {
@@ -368,10 +368,51 @@ namespace FF7Scarlet.SceneEditor
                 using (var writer = new BinaryWriter(ms))
                 {
                     int i = 0;
+                    //enemy model IDs
+                    for (i = 0; i < ENEMY_COUNT; ++i)
+                    {
+                        var e = Enemies[i];
+                        if (e == null)
+                        {
+                            writer.Write(HexParser.NULL_OFFSET_16_BIT);
+                        }
+                        else { writer.Write(e.ModelID); }
+                    }
+
+                    writer.Write(HexParser.NULL_OFFSET_16_BIT);
+
+                    //formation data
+                    try
+                    {
+                        //battle setup data
+                        for (i = 0; i < FORMATION_COUNT; ++i)
+                        {
+                            writer.Write(Formations[i].BattleSetupData.GetRawData());
+                        }
+
+                        //camera placement data
+                        for (i = 0; i < FORMATION_COUNT; ++i)
+                        {
+                            writer.Write(Formations[i].CameraPlacementData.GetRawData());
+                        }
+
+                        //enemy placement data
+                        for (i = 0; i < FORMATION_COUNT; ++i)
+                        {
+                            for (int j = 0; j < Formation.ENEMY_COUNT; ++j)
+                            {
+                                writer.Write(Formations[i].EnemyLocations[j].GetRawData());
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Error in formation data (index {i}): {ex.Message}", ex);
+                    }
+
                     //enemy data
                     try
                     {
-                        writer.Seek(0x0298, SeekOrigin.Begin);
                         for (i = 0; i < ENEMY_COUNT; ++i)
                         {
                             var e = Enemies[i];
@@ -477,6 +518,11 @@ namespace FF7Scarlet.SceneEditor
                         }
                     }
                 }
+
+                //return a copy of the newly updated data
+                var copy = new byte[rawData.Length];
+                Array.Copy(rawData, copy, rawData.Length);
+                return copy;
             }
             catch (Exception ex)
             {
@@ -484,12 +530,12 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        public byte[] GetRawData()
+        /*public byte[] GetRawData()
         {
             var copy = new byte[rawData.Length];
             Array.Copy(rawData, copy, rawData.Length);
             return copy;
-        }
+        }*/
 
         private byte[] GetRawScriptData(int containerCount, int blockSize, AIContainer?[] aiContainers,
             ref ushort[] offsets)

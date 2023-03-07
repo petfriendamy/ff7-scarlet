@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+﻿using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -17,7 +12,11 @@ namespace FF7Scarlet.AIEditor
 
         public bool IsEmpty
         {
-            get { return code.Count == 0; }
+            get { return Length == 0; }
+        }
+        public int Length
+        {
+            get { return code.Count; }
         }
         public AIContainer Parent { get; }
 
@@ -321,13 +320,50 @@ namespace FF7Scarlet.AIEditor
         public string[] Disassemble()
         {
             var output = new List<string> { };
-            if (code.Count == 0) { output.Add("(Script is empty)"); }
+            if (IsEmpty) { output.Add("(Script is empty)"); }
             else
             {
+                var labels = new List<int>();
                 foreach (var c in code)
                 {
-                    output.Add(c.Disassemble(true));
+                    //check for jumps, and if needed, increase indent
+                    int offset = 0;
+                    var op = OpcodeInfo.GetInfo(c.GetPrimaryOpcode());
+                    if (op != null && op.Group == OpcodeGroups.Jump && op.EnumValue != Opcodes.Jump)
+                    {
+                        var p = c.GetParameter();
+                        int label = 0;
+                        if (p != null) { label = p.ToInt(); }
+
+                        if (op.EnumValue == Opcodes.Label) //label
+                        {
+                            while (labels.Contains(label))
+                            {
+                                labels.Remove(label);
+                            }
+                        }
+                        else //jump
+                        {
+                            labels.Add(label);
+                            offset = 1;
+                        }
+                    }
+
+                    //get current indent amount
+                    var indent = new char[(labels.Count - offset) * 6];
+                    for (int i = 0; i < indent.Length; ++i)
+                    {
+                        indent[i] = ' ';
+                    }
+
+                    //output the disassembled code
+                    output.Add($"{new string(indent)}{c.Disassemble(true)}");
                 }
+
+                /*foreach (var c in code)
+                {
+                    output.Add(c.Disassemble(true));
+                }*/
             }
             return output.ToArray();
         }

@@ -2,7 +2,7 @@
 {
     public class CameraPlacementData
     {
-        public const int POSITION_COUNT = 3;
+        public const int POSITION_COUNT = 3, BLOCK_SIZE = 48;
         private readonly Point3D[]
             cameraPositions = new Point3D[POSITION_COUNT],
             cameraDirections = new Point3D[POSITION_COUNT];
@@ -35,6 +35,27 @@
                     CameraDirections[i] = new Point3D(x, y, z);
                 }
             }
+        }
+
+        public byte[] GetRawData()
+        {
+            var data = new byte[BLOCK_SIZE];
+            using (var ms = new MemoryStream(data, true))
+            using (var writer = new BinaryWriter(ms))
+            {
+                for (int i = 0; i < POSITION_COUNT; ++i)
+                {
+                    writer.Write(CameraPositions[i].X);
+                    writer.Write(CameraPositions[i].Y);
+                    writer.Write(CameraPositions[i].Z);
+
+                    writer.Write(CameraDirections[i].X);
+                    writer.Write(CameraDirections[i].Y);
+                    writer.Write(CameraDirections[i].Z);
+                }
+                writer.Write(HexParser.GetNullBlock(12)); //padding
+            }
+            return data;
         }
     }
 }

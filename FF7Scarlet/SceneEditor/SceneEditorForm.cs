@@ -792,6 +792,7 @@ namespace FF7Scarlet.SceneEditor
             comboBoxSceneList.Enabled = enable;
             comboBoxEnemy.Enabled = enable;
             comboBoxFormation.Enabled = enable;
+            buttonSearch.Enabled = enable;
             tabControlMain.Enabled = enable;
             buttonSave.Enabled = enable;
             buttonImport.Enabled = enable;
@@ -839,19 +840,16 @@ namespace FF7Scarlet.SceneEditor
             buttonSave.Select();
         }
 
-        private Task UpdateDataAsync(int pos)
+        private async Task UpdateDataAsync(int pos)
         {
-            return Task.Run(() =>
+            try
             {
-                try
-                {
-                    sceneList[pos].UpdateRawData();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"An exception was thrown in scene {pos}:\n\n{ex.Message}", ex);
-                }
-            });
+                await Task.Run(() => sceneList[pos].GetRawData());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An exception was thrown in scene {pos}:\n\n{ex.Message}", ex);
+            }
         }
 
         #endregion

@@ -60,10 +60,10 @@ namespace FF7Scarlet.AIEditor
             // buttonOK
             // 
             buttonOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonOK.Location = new Point(463, 9);
+            buttonOK.Location = new Point(463, 12);
             buttonOK.Margin = new Padding(4, 3, 4, 3);
             buttonOK.Name = "buttonOK";
-            buttonOK.Size = new Size(88, 27);
+            buttonOK.Size = new Size(88, 22);
             buttonOK.TabIndex = 1;
             buttonOK.Text = "OK";
             buttonOK.UseVisualStyleBackColor = true;
@@ -73,10 +73,10 @@ namespace FF7Scarlet.AIEditor
             // 
             buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             buttonCancel.DialogResult = DialogResult.Cancel;
-            buttonCancel.Location = new Point(368, 9);
+            buttonCancel.Location = new Point(367, 12);
             buttonCancel.Margin = new Padding(4, 3, 4, 3);
             buttonCancel.Name = "buttonCancel";
-            buttonCancel.Size = new Size(88, 27);
+            buttonCancel.Size = new Size(88, 22);
             buttonCancel.TabIndex = 2;
             buttonCancel.Text = "Cancel";
             buttonCancel.UseVisualStyleBackColor = true;
@@ -132,7 +132,7 @@ namespace FF7Scarlet.AIEditor
             // labelParameter
             // 
             labelParameter.AutoSize = true;
-            labelParameter.Location = new Point(333, 9);
+            labelParameter.Location = new Point(343, 9);
             labelParameter.Name = "labelParameter";
             labelParameter.Size = new Size(64, 15);
             labelParameter.TabIndex = 3;
@@ -141,7 +141,7 @@ namespace FF7Scarlet.AIEditor
             // labelType
             // 
             labelType.AutoSize = true;
-            labelType.Location = new Point(196, 9);
+            labelType.Location = new Point(206, 9);
             labelType.Name = "labelType";
             labelType.Size = new Size(34, 15);
             labelType.TabIndex = 2;
@@ -150,7 +150,7 @@ namespace FF7Scarlet.AIEditor
             // labelModifier
             // 
             labelModifier.AutoSize = true;
-            labelModifier.Location = new Point(99, 9);
+            labelModifier.Location = new Point(100, 9);
             labelModifier.Name = "labelModifier";
             labelModifier.Size = new Size(55, 15);
             labelModifier.TabIndex = 1;
@@ -159,7 +159,7 @@ namespace FF7Scarlet.AIEditor
             // labelOperand
             // 
             labelOperand.AutoSize = true;
-            labelOperand.Location = new Point(37, 9);
+            labelOperand.Location = new Point(38, 9);
             labelOperand.Name = "labelOperand";
             labelOperand.Size = new Size(56, 15);
             labelOperand.TabIndex = 0;
@@ -173,10 +173,12 @@ namespace FF7Scarlet.AIEditor
             CancelButton = buttonCancel;
             ClientSize = new Size(564, 217);
             Controls.Add(panelMain);
-            Controls.Add(panelButtons);
             Controls.Add(panelHeader);
+            Controls.Add(panelButtons);
+            DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4, 3, 4, 3);
+            MinimumSize = new Size(580, 256);
             Name = "ParameterForm";
             Text = "Add/edit parameter";
             panelButtons.ResumeLayout(false);

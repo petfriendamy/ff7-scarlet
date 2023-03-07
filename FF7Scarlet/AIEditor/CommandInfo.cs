@@ -12,8 +12,8 @@ namespace FF7Scarlet.AIEditor
         {
             new CommandInfo(Opcodes.Assign, "Set x to y", "Variable", ParameterTypes.Other, "Assignment", ParameterTypes.Other),
             new CommandInfo(Opcodes.AssignGlobal, "Set global variable to x", "Variable", ParameterTypes.Other, "Assignment", ParameterTypes.Other),
-            new CommandInfo(Opcodes.JumpEqual, "If condition is met, goto label", "Condition", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
-            new CommandInfo(Opcodes.JumpNotEqual, "If 1st in stack != x, goto label", "Value", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
+            new CommandInfo(Opcodes.JumpEqual, "Conditional", "Condition", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
+            new CommandInfo(Opcodes.JumpNotEqual, "If 1st in stack != x", "Value", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.Label, "Create new label", "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.Jump, "Goto label", "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.Attack, "Perform an attack", "Attack Type", ParameterTypes.Other, "Attack ID", ParameterTypes.Other),

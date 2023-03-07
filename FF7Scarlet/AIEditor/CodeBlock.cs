@@ -141,7 +141,7 @@ namespace FF7Scarlet.AIEditor
                         pop1 = block[1] as CodeLine;
                         if (pop1 != null && pop1.Parameter != null)
                         {
-                            output += $"If ({block[0].Disassemble(false)}) Goto Label {pop1.Parameter.ToInt()}";
+                            output += $"If ({block[0].Disassemble(false)}) (else goto label {pop1.Parameter.ToInt()})";
                         }
                         break;
                     case Opcodes.JumpNotEqual:
@@ -149,7 +149,7 @@ namespace FF7Scarlet.AIEditor
                         if (pop1 != null && pop1.Parameter != null)
                         {
                             output += $"If (1st in Stack != {block[0].Disassemble(false)})";
-                            output += $" Goto Label {pop1.Parameter.ToInt()}";
+                            output += $" (else goto label {pop1.Parameter.ToInt()})";
                         }
                         break;
                     case Opcodes.Mask:

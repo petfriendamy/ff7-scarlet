@@ -2,7 +2,7 @@
 {
     public class BattleSetupData
     {
-        public const int BATTLE_ARENA_ID_COUNT = 4;
+        public const int BATTLE_ARENA_ID_COUNT = 4, BLOCK_SIZE = 20;
         private readonly ushort[] battleArenaIDs = new ushort[BATTLE_ARENA_ID_COUNT];
 
         public LocationInfo? Location { get; set; }
@@ -33,6 +33,28 @@
                 BattleType = (BattleType)reader.ReadByte();
                 PreBattleCameraPosition = reader.ReadByte();
             }
+        }
+
+        public byte[] GetRawData()
+        {
+            var data = new byte[BLOCK_SIZE];
+            using (var ms = new MemoryStream(data, true))
+            using (var writer = new BinaryWriter(ms))
+            {
+                if (Location == null) { writer.Write(HexParser.NULL_OFFSET_16_BIT); }
+                else { writer.Write(Location.LocationID); }
+                writer.Write(NextSceneID);
+                writer.Write(EscapeCounter);
+                writer.Write(HexParser.NULL_OFFSET_16_BIT); //padding
+                for (int i = 0; i < BATTLE_ARENA_ID_COUNT; ++i)
+                {
+                    writer.Write(BattleArenaIDs[i]);
+                }
+                writer.Write((ushort)~BattleFlags);
+                writer.Write((byte)BattleType);
+                writer.Write(PreBattleCameraPosition);
+            }
+            return data;
         }
     }
 }
