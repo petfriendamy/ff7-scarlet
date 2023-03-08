@@ -147,7 +147,7 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxAttackConditionSubMenu.Items.Add(c);
                 }
             }
-            locationList = 
+            locationList =
                 (from l in LocationInfo.LOCATION_LIST
                  orderby l.Category, l.Name
                  select l).ToList();
@@ -181,6 +181,9 @@ namespace FF7Scarlet.SceneEditor
             //synced data
             LoadKernelData();
             LoadModelData();
+
+            //disable invalid toolstrips
+            enemyPasteToolStripMenuItem.Enabled = DataManager.CopiedEnemy != null;
 
             //create private version of scene data that can be edited freely
             sceneList = DataManager.CopySceneList();
@@ -275,7 +278,7 @@ namespace FF7Scarlet.SceneEditor
         private void LoadSceneData(Scene scene, bool clearLoadingWhenDone)
         {
             loading = true;
-            scene.ParseAIScripts();
+            if (!scene.ScriptsLoaded) { scene.ParseAIScripts(); }
             int i;
 
             //get attacks
@@ -292,6 +295,7 @@ namespace FF7Scarlet.SceneEditor
                     listBoxAttacks.Items.Add(a.GetNameString());
                 }
             }
+            selectedAttackToolStripMenuItem.Enabled = false;
 
             validAttacks =
                 (from a in scene.AttackList
@@ -326,7 +330,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else
                 {
-                    var name = scene.GetEnemyName(enemy.ModelID);
+                    var name = enemy.GetNameString();
                     comboBoxEnemy.Items.Add(name);
                     comboBoxFormationSelectedEnemy.Items.Add(name);
                 }
@@ -366,6 +370,11 @@ namespace FF7Scarlet.SceneEditor
                         }
                         SelectedScene.Enemies[SelectedEnemyIndex] = new Enemy(SelectedScene, id,
                             new FFText(), null);
+                        if (SelectedEnemy != null)
+                        {
+                            validEnemies.Add(SelectedEnemy);
+                            comboBoxFormationSelectedEnemy.Items.Add(SelectedEnemy.GetNameString());
+                        }
                         UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
                         SetUnsaved(true);
                         LoadEnemyData(SelectedEnemy, false);
@@ -460,8 +469,8 @@ namespace FF7Scarlet.SceneEditor
                 }
 
                 //A.I. scripts
-                scriptControlEnemyAI.AIContainer = SelectedEnemy;
-                UpdateScripts(SelectedEnemy, listBoxEnemyScripts);
+                scriptControlEnemyAI.AIContainer = enemy;
+                UpdateScripts(enemy, listBoxEnemyScripts);
             }
             if (clearLoadingWhenDone) { loading = false; }
         }
@@ -561,6 +570,8 @@ namespace FF7Scarlet.SceneEditor
         private void LoadAttackData(Attack? attack, bool clearLoadingWhenDone)
         {
             loading = true;
+            selectedAttackToolStripMenuItem.Enabled = true;
+            attackPasteToolStripMenuItem.Enabled = DataManager.CopiedAttack != null;
 
             if (attack == null)
             {
@@ -569,17 +580,9 @@ namespace FF7Scarlet.SceneEditor
 
                 if (result == DialogResult.Yes)
                 {
-                    if (SelectedScene != null && SelectedEnemy != null && SelectedAttackIndex != -1)
+                    if (SelectedScene != null && SelectedAttackIndex != -1)
                     {
-                        lastAttackID++;
-                        attack = new Attack(lastAttackID);
-                        SelectedScene.AttackList[SelectedAttackIndex] = attack;
-                        var name = SelectedScene.GetAttackName(lastAttackID);
-                        UpdateSelectedAttackName(SelectedScene, SelectedEnemy, SelectedAttackIndex);
-                        validAttacks.Add(attack);
-                        comboBoxEnemyAttackID.Items.Add(name);
-                        SetUnsaved(true);
-                        LoadAttackData(SelectedAttack, false);
+                        CreateNewAttack(SelectedScene, SelectedAttackIndex);
                     }
                 }
                 else { tabControlAttackData.Enabled = false; }
@@ -631,7 +634,20 @@ namespace FF7Scarlet.SceneEditor
             if (clearLoadingWhenDone) { loading = false; }
         }
 
-        private void UpdateSelectedAttackName(Scene scene, Enemy enemy, int attack)
+        private void CreateNewAttack(Scene scene, int attack)
+        {
+            lastAttackID++;
+            var newAttack = new Attack(lastAttackID);
+            scene.AttackList[attack] = newAttack;
+            var name = scene.GetAttackName(lastAttackID);
+            UpdateSelectedAttackName(scene, SelectedEnemy, attack);
+            validAttacks.Add(newAttack);
+            comboBoxEnemyAttackID.Items.Add(name);
+            SetUnsaved(true);
+            LoadAttackData(SelectedAttack, false);
+        }
+
+        private void UpdateSelectedAttackName(Scene scene, Enemy? enemy, int attack)
         {
             if (attack >= 0 && attack < Scene.ATTACK_COUNT)
             {
@@ -645,12 +661,15 @@ namespace FF7Scarlet.SceneEditor
                     listBoxAttacks.Items[attack] = name;
 
                     //update name in enemy data
-                    for (i = 0; i < Enemy.ATTACK_COUNT; ++i)
+                    if (enemy != null)
                     {
-                        if (enemy.AttackIDs[i] == atk.ID)
+                        for (i = 0; i < Enemy.ATTACK_COUNT; ++i)
                         {
-                            listBoxEnemyAttacks.Items[i] = name;
-                            break;
+                            if (enemy.AttackIDs[i] == atk.ID)
+                            {
+                                listBoxEnemyAttacks.Items[i] = name;
+                                break;
+                            }
                         }
                     }
                     j = validAttacks.IndexOf(atk);
@@ -1649,6 +1668,64 @@ namespace FF7Scarlet.SceneEditor
             using (var export = new SceneExportForm(sceneList, SelectedSceneIndex))
             {
                 export.ShowDialog();
+            }
+        }
+
+        private void enemyCopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedEnemy != null)
+            {
+                DataManager.CopiedEnemy = new Enemy(SelectedEnemy);
+                enemyPasteToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        private void enemyPasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedEnemyIndex != -1 && SelectedScene != null && DataManager.CopiedEnemy != null)
+            {
+                SelectedScene.Enemies[SelectedEnemyIndex] = new Enemy(DataManager.CopiedEnemy);
+                LoadEnemyData(SelectedEnemy, true);
+                UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
+                SetUnsaved(true);
+            }
+        }
+
+        private void attackCopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedAttack != null)
+            {
+                DataManager.CopiedAttack = new Attack(SelectedAttack);
+                attackPasteToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        private void attackPasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedAttackIndex != -1 && SelectedScene != null && DataManager.CopiedAttack != null)
+            {
+                //check if this is a synced attack
+                bool getSynced = false;
+                if (syncedAttacks.ContainsKey(DataManager.CopiedAttack.ID))
+                {
+                    var result = MessageBox.Show("The copied enemy is a synced attack. Would you like to sync this one as well?",
+                        "Sync Attack?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    if (result == DialogResult.Cancel) { return; }
+                    getSynced = result == DialogResult.Yes;
+                }
+
+                //set the new attack data
+                if (getSynced)
+                {
+                    SelectedScene.AttackList[SelectedAttackIndex] = syncedAttacks[DataManager.CopiedAttack.ID];
+                }
+                else
+                {
+                    SelectedScene.AttackList[SelectedAttackIndex] = new Attack(DataManager.CopiedAttack);
+                }
+                LoadAttackData(SelectedAttack, true);
+                UpdateSelectedAttackName(SelectedScene, SelectedEnemy, SelectedAttackIndex);
+                SetUnsaved(true);
             }
         }
 

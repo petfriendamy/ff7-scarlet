@@ -2,18 +2,21 @@
 {
     public partial class ParameterForm : Form
     {
-        private List<ParameterControl> paramList;
+        private readonly List<ParameterControl> paramList;
         public List<Code> Code { get; private set; }
-        private Script parentScript;
-        private int xx, yy, offset;
-        private bool isString, loading = false;
+        private readonly Script parentScript;
+        private readonly Opcodes opcode;
+        private readonly int xx, yy, offset;
+        private readonly ParameterTypes type;
+        private bool loading = false;
 
-        public ParameterForm(Script script, List<Code> code, bool isString)
+        public ParameterForm(Script script, List<Code> code, Opcodes opcode, ParameterTypes type)
         {
             InitializeComponent();
             parentScript = script;
             Code = code;
-            this.isString = isString;
+            this.opcode = opcode;
+            this.type = type;
 
             paramList = new List<ParameterControl> { parameterControl1, parameterControl2 };
             parameterControl1.SetAsFirst();
@@ -39,6 +42,11 @@
                         if (i == paramList.Count - 1)
                         {
                             AddParameter();
+                        }
+
+                        if (op.Group == OpcodeGroups.Jump)
+                        {
+                            paramList[0].SetLabels(opcode, script.GetLabels());
                         }
                     }
                     else if (op.IsModifier)
@@ -117,44 +125,68 @@
             }
         }
 
-        public void SetAsSingleParameter(ParameterControl caller)
+        public void SetAsSingleParameter(ParameterControl caller, int offset)
         {
             if (caller == parameterControl1)
             {
+                SuspendLayout();
                 for (int i = 1; i < paramList.Count; ++i)
                 {
                     paramList[i].Visible = false;
                 }
                 labelOperand.Visible = false;
+                labelModifier.Visible = false;
+                int x = labelType.Location.X - offset, y = labelType.Location.Y;
+                labelType.Location = new Point(x, y);
+                x = labelParameter.Location.X - offset;
+                labelParameter.Location = new Point(x, y);
+                ResumeLayout();
             }
         }
 
         private CodeLine ValidateCode(byte opcode, FFText? parameter)
         {
+            //check if opcode exists
             var op = OpcodeInfo.GetInfo(opcode);
             if (op == null)
             {
                 throw new ArgumentNullException("Opcode is invalid.");
             }
+
+            //test if the parameter is valid
             bool test = ParameterInfo.IsValid(op.ParameterType, parameter);
             if (!test)
             {
-                throw new ArgumentException("Parameter is invalid.");
+                if (op.EnumValue == Opcodes.Label) //assume this is a new label
+                {
+                    return new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, opcode);
+                }
+                else
+                {
+                    throw new ArgumentException("Parameter is invalid.");
+                }
             }
             return new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, opcode, parameter);
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            try
+            try //convert code back into a proper script
             {
-                if (isString)
+                if (type == ParameterTypes.String) //is a string
                 {
                     Code = new List<Code> {
                         ValidateCode((byte)Opcodes.ShowMessage, paramList[0].Parameter)
                     };
                 }
-                else //convert code back into a proper script
+                else if (type == ParameterTypes.Label) //is a label
+                {
+                    Code = new List<Code>
+                    {
+                        ValidateCode((byte)Opcodes.Label, paramList[0].Parameter)
+                    };
+                }
+                else
                 {
                     var firstParse = new List<CodeLine> { };
                     OpcodeInfo? operand = null;

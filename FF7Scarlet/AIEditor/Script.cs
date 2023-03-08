@@ -6,8 +6,8 @@ namespace FF7Scarlet.AIEditor
     public class Script
     {
         public const int SCRIPT_COUNT = 16;
-        private List<Code> code = new List<Code> { };
-        private Dictionary<int, ushort> labels = new Dictionary<int, ushort> { };
+        private List<Code> code = new();
+        private Dictionary<int, ushort> labels = new();
         private bool headersAreCorrect = false;
 
         public bool IsEmpty
@@ -46,6 +46,34 @@ namespace FF7Scarlet.AIEditor
             {
                 code.Add(new CodeLine(this, 0xFFFF, (byte)Opcodes.End));
             }
+        }
+
+        public Script(Script other) :this(other.Parent)
+        {
+            foreach (var c in other.code)
+            {
+                if (c is CodeBlock)
+                {
+                    var cb = c as CodeBlock;
+                    if (cb != null)
+                    {
+                        code.Add(new CodeBlock(cb));
+                    }
+                }
+                else
+                {
+                    var cl = c as CodeLine;
+                    if (cl != null)
+                    {
+                        code.Add(new CodeLine(cl));
+                    }
+                }
+            }
+            foreach (var l in other.labels)
+            {
+                labels.Add(l.Key, l.Value);
+            }
+            headersAreCorrect = other.headersAreCorrect;
         }
 
         public void ParseScript(ref byte[] data, int offset, int length)
@@ -317,6 +345,11 @@ namespace FF7Scarlet.AIEditor
             throw new ArgumentOutOfRangeException($"Label {label}");
         }
 
+        public int[] GetLabels()
+        {
+            return labels.Keys.ToArray();
+        }
+
         public string[] Disassemble()
         {
             var output = new List<string> { };
@@ -350,7 +383,7 @@ namespace FF7Scarlet.AIEditor
                     }
 
                     //get current indent amount
-                    var indent = new char[(labels.Count - offset) * 6];
+                    var indent = new char[(labels.Count - offset) * 8];
                     for (int i = 0; i < indent.Length; ++i)
                     {
                         indent[i] = ' ';

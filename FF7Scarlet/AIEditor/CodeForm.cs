@@ -5,6 +5,8 @@ namespace FF7Scarlet.AIEditor
     public partial class CodeForm : Form
     {
         public Code Code { get; private set; }
+        public bool CreateNewLabel { get; private set; }
+
         private OpcodeInfo opcode;
         private CommandInfo? command;
         private Code? param1, param2;
@@ -212,7 +214,7 @@ namespace FF7Scarlet.AIEditor
             Code? param = null;
 
             //check if parameter is a string or a label
-            bool isString = false, isLabel = false;
+            ParameterTypes type = ParameterTypes.Other;
 
             if (opcode.EnumValue == Opcodes.DebugMessage)
             {
@@ -223,13 +225,12 @@ namespace FF7Scarlet.AIEditor
                 else
                 {
                     param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, strText);
-                    isString = true;
+                    type = ParameterTypes.String;
                 }
             }
             else if (command != null)
             {
                 Code? currP;
-                ParameterTypes type;
 
                 if (pos == 0)
                 {
@@ -244,12 +245,10 @@ namespace FF7Scarlet.AIEditor
                 if (type == ParameterTypes.String)
                 {
                     param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, strText);
-                    isString = true;
                 }
                 else if (type == ParameterTypes.Label)
                 {
                     param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.Label, new FFText(label.ToString("X4")));
-                    isLabel = true;
                 }
                 else
                 {
@@ -269,11 +268,11 @@ namespace FF7Scarlet.AIEditor
             }
             try
             {
-                using (var paramForm = new ParameterForm(parentScript, temp, isString))
+                using (var paramForm = new ParameterForm(parentScript, temp, opcode.EnumValue, type))
                 {
                     if (paramForm.ShowDialog() == DialogResult.OK)
                     {
-                        if (isString)
+                        if (type == ParameterTypes.String)
                         {
                             var p = paramForm.Code[0].GetParameter();
                             if (p != null)
@@ -292,10 +291,23 @@ namespace FF7Scarlet.AIEditor
                             }
 
                         }
-                        else if (isLabel)
+                        else if (type == ParameterTypes.Label)
                         {
                             var p = paramForm.Code[0].GetParameter();
-                            if (p != null)
+                            if (p == null) //new label
+                            {
+                                string text = "(New label)";
+                                if (pos == 0)
+                                {
+                                    textBoxParameter1.Text = text;
+                                }
+                                else
+                                {
+                                    textBoxParameter2.Text = text;
+                                }
+                                label = -1;
+                            }
+                            else //existing label
                             {
                                 int pint = p.ToInt();
                                 if (pos == 0)
@@ -363,10 +375,25 @@ namespace FF7Scarlet.AIEditor
             }
             if (type == ParameterTypes.Label)
             {
-                int temp = int.Parse(text);
-                return new FFText(temp.ToString("X4"));
+                int temp;
+                if (int.TryParse(text, out temp))
+                {
+                    return new FFText(temp.ToString("X4"));
+                }
+                throw new FormatException("Invalid label.");
             }
             return new FFText(text);
+        }
+
+        private int GetNewLabel()
+        {
+            var labels = parentScript.GetLabels().ToList();
+            int newLabel = labels.Count;
+            while (labels.Contains(newLabel))
+            {
+                newLabel++;
+            }
+            return newLabel;
         }
 
         private void comboBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
@@ -414,43 +441,64 @@ namespace FF7Scarlet.AIEditor
                     FFText? param;
                     if (tabControlOptions.SelectedTab == tabPageGenerate)
                     {
-                        if (command != null && param1 != null)
+                        if (command != null) //command
                         {
-                            if ((byte)command.Opcode == 0xFF)
+                            if ((byte)command.Opcode == 0xFF) //unknown block
                             {
-                                Code = param1;
-                            }
-                            else if (command.OpcodeInfo?.PopCount > 0)
-                            {
-                                FFText? p = null;
-                                if (command.ParameterType2 == ParameterTypes.Label)
+                                if (param1 != null)
                                 {
-                                    p = new FFText(label.ToString("X4"));
+                                    Code = param1;
                                 }
-                                var cb = new CodeBlock(parentScript, new CodeLine(parentScript,
-                                    HexParser.NULL_OFFSET_16_BIT, (byte)command.Opcode, p));
-                                if (param2 != null) { cb.AddToTop(param2); }
-
-                                cb.AddToTop(param1);
-                                Code = cb;
                             }
-                            else
+                            else if (command.OpcodeInfo?.PopCount > 0) //two parameters
                             {
-                                param = ParseParameter(command.ParameterType1, textBoxParameter1.Text);
+                                if (param1 != null)
+                                {
+                                    FFText? p = null;
+                                    if (command.ParameterType2 == ParameterTypes.Label)
+                                    {
+                                        if (label == -1) //new label
+                                        {
+                                            param = new FFText(GetNewLabel().ToString("X4"));
+                                            CreateNewLabel = true;
+                                        }
+                                        else
+                                        {
+                                            p = new FFText(label.ToString("X4"));
+                                        }
+                                    }
+                                    var cb = new CodeBlock(parentScript, new CodeLine(parentScript,
+                                        HexParser.NULL_OFFSET_16_BIT, (byte)command.Opcode, p));
+                                    if (param2 != null) { cb.AddToTop(param2); }
+
+                                    cb.AddToTop(param1);
+                                    Code = cb;
+                                }
+                            }
+                            else //one parameter
+                            {
+                                if (command.ParameterType1 == ParameterTypes.Label && label == -1) //new label
+                                {
+                                    param = new FFText(GetNewLabel().ToString("X4"));
+                                    CreateNewLabel = command.Opcode != Opcodes.Label;
+                                }
+                                else
+                                {
+                                    param = ParseParameter(command.ParameterType1, textBoxParameter1.Text);
+                                }
                                 Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                                     (byte)command.Opcode, param);
-
                             }
                         }
                     }
-                    else
+                    else //manual
                     {
                         var op = currList[comboBoxOpcodes.SelectedIndex];
                         param = ParseParameter(op.ParameterType, comboBoxManualParameter.Text);
                         Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, op.Code, param);
                     }
                 }
-                catch (ArgumentNullException ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;

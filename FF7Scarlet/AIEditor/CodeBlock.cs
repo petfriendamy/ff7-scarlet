@@ -17,6 +17,29 @@ namespace FF7Scarlet.AIEditor
             block = list;
         }
 
+        public CodeBlock(CodeBlock other) :base(other.Parent)
+        {
+            foreach (var c in other.block)
+            {
+                if (c is CodeBlock)
+                {
+                    var cb = c as CodeBlock;
+                    if (cb != null)
+                    {
+                        block.Add(new CodeBlock(cb));
+                    }
+                }
+                else
+                {
+                    var cl = c as CodeLine;
+                    if (cl != null)
+                    {
+                        block.Add(new CodeLine(cl));
+                    }
+                }
+            }
+        }
+
         public void AddToTop(Code code)
         {
             block.Insert(0, code);

@@ -40,11 +40,22 @@ namespace FF7Scarlet.Shared
             rawData = new byte[BLOCK_SIZE];
         }
 
-        public Attack(ushort id, FFText name, byte[] data) :this(id)
+        public Attack(ushort id, FFText name, byte[] data)
         {
+            ID = id;
             Name = name;
             rawData = data;
             ParseData(data);
+        }
+
+        public Attack(Attack other) : this(other.ID, other) { }
+
+        public Attack(ushort id, Attack other)
+        {
+            ID = id;
+            Name = other.Name;
+            rawData = other.rawData;
+            ParseData(rawData);
         }
 
         public string GetNameString()

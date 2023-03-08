@@ -177,6 +177,32 @@
             labelFormationScripts = new Label();
             listBoxFormationScripts = new ListBox();
             panelTop = new Panel();
+            toolStripMain = new ToolStrip();
+            toolStripDropDownFile = new ToolStripDropDownButton();
+            saveScenebinToolStripMenuItem = new ToolStripMenuItem();
+            importScenesToolStripMenuItem = new ToolStripMenuItem();
+            exportScenesToolStripMenuItem = new ToolStripMenuItem();
+            toolStripDropDownEdit = new ToolStripDropDownButton();
+            selectedSceneToolStripMenuItem = new ToolStripMenuItem();
+            createNewSceneToolStripMenuItem = new ToolStripMenuItem();
+            sceneCopyToolStripMenuItem = new ToolStripMenuItem();
+            scenePasteToolStripMenuItem = new ToolStripMenuItem();
+            sceneDeleteToolStripMenuItem = new ToolStripMenuItem();
+            enemyToolStripMenuItem = new ToolStripMenuItem();
+            createNewEnemyToolStripMenuItem = new ToolStripMenuItem();
+            enemyCopyToolStripMenuItem = new ToolStripMenuItem();
+            enemyPasteToolStripMenuItem = new ToolStripMenuItem();
+            enemyDeleteToolStripMenuItem = new ToolStripMenuItem();
+            selectedAttackToolStripMenuItem = new ToolStripMenuItem();
+            createNewAttackToolStripMenuItem = new ToolStripMenuItem();
+            attackCopyToolStripMenuItem = new ToolStripMenuItem();
+            attackPasteToolStripMenuItem = new ToolStripMenuItem();
+            attackDeleteToolStripMenuItem = new ToolStripMenuItem();
+            selectedFormationToolStripMenuItem = new ToolStripMenuItem();
+            createNewFormationToolStripMenuItem = new ToolStripMenuItem();
+            formationCopyToolStripMenuItem = new ToolStripMenuItem();
+            formationPasteToolStripMenuItem = new ToolStripMenuItem();
+            formationDeleteToolStripMenuItem = new ToolStripMenuItem();
             buttonSearch = new Button();
             comboBoxFormation = new ComboBox();
             labelFormation = new Label();
@@ -237,13 +263,14 @@
             ((System.ComponentModel.ISupportInitialize)numericFormationPreBattleCamPosition).BeginInit();
             tabPageFormationAI.SuspendLayout();
             panelTop.SuspendLayout();
+            toolStripMain.SuspendLayout();
             panelBottom.SuspendLayout();
             SuspendLayout();
             // 
             // labelScenes
             // 
             labelScenes.AutoSize = true;
-            labelScenes.Location = new Point(13, 14);
+            labelScenes.Location = new Point(13, 33);
             labelScenes.Margin = new Padding(4, 0, 4, 0);
             labelScenes.Name = "labelScenes";
             labelScenes.Size = new Size(46, 15);
@@ -255,7 +282,7 @@
             comboBoxSceneList.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxSceneList.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxSceneList.FormattingEnabled = true;
-            comboBoxSceneList.Location = new Point(67, 11);
+            comboBoxSceneList.Location = new Point(67, 30);
             comboBoxSceneList.Margin = new Padding(4, 3, 4, 3);
             comboBoxSceneList.Name = "comboBoxSceneList";
             comboBoxSceneList.Size = new Size(704, 23);
@@ -268,10 +295,10 @@
             tabControlMain.Controls.Add(tabPageAttackData);
             tabControlMain.Controls.Add(tabPageFormationData);
             tabControlMain.Dock = DockStyle.Fill;
-            tabControlMain.Location = new Point(0, 73);
+            tabControlMain.Location = new Point(0, 90);
             tabControlMain.Name = "tabControlMain";
             tabControlMain.SelectedIndex = 0;
-            tabControlMain.Size = new Size(784, 483);
+            tabControlMain.Size = new Size(784, 466);
             tabControlMain.TabIndex = 10;
             // 
             // tabPageEnemyData
@@ -279,7 +306,7 @@
             tabPageEnemyData.Controls.Add(tabControlEnemyData);
             tabPageEnemyData.Location = new Point(4, 24);
             tabPageEnemyData.Name = "tabPageEnemyData";
-            tabPageEnemyData.Size = new Size(776, 455);
+            tabPageEnemyData.Size = new Size(776, 438);
             tabPageEnemyData.TabIndex = 6;
             tabPageEnemyData.Text = "Enemy Data";
             tabPageEnemyData.UseVisualStyleBackColor = true;
@@ -293,7 +320,7 @@
             tabControlEnemyData.Location = new Point(0, 0);
             tabControlEnemyData.Name = "tabControlEnemyData";
             tabControlEnemyData.SelectedIndex = 0;
-            tabControlEnemyData.Size = new Size(776, 455);
+            tabControlEnemyData.Size = new Size(776, 438);
             tabControlEnemyData.TabIndex = 0;
             // 
             // tabPageEnemyPage1
@@ -307,7 +334,7 @@
             tabPageEnemyPage1.Location = new Point(4, 24);
             tabPageEnemyPage1.Name = "tabPageEnemyPage1";
             tabPageEnemyPage1.Padding = new Padding(3);
-            tabPageEnemyPage1.Size = new Size(768, 427);
+            tabPageEnemyPage1.Size = new Size(768, 410);
             tabPageEnemyPage1.TabIndex = 0;
             tabPageEnemyPage1.Text = "Page 1";
             tabPageEnemyPage1.UseVisualStyleBackColor = true;
@@ -704,7 +731,7 @@
             tabPageEnemyPage2.Controls.Add(labelEnemyBackDamageMultiplier);
             tabPageEnemyPage2.Location = new Point(4, 24);
             tabPageEnemyPage2.Name = "tabPageEnemyPage2";
-            tabPageEnemyPage2.Size = new Size(768, 427);
+            tabPageEnemyPage2.Size = new Size(768, 410);
             tabPageEnemyPage2.TabIndex = 5;
             tabPageEnemyPage2.Text = "Page 2";
             tabPageEnemyPage2.UseVisualStyleBackColor = true;
@@ -967,7 +994,7 @@
             tabPageEnemyAI.Location = new Point(4, 24);
             tabPageEnemyAI.Name = "tabPageEnemyAI";
             tabPageEnemyAI.Padding = new Padding(3);
-            tabPageEnemyAI.Size = new Size(768, 427);
+            tabPageEnemyAI.Size = new Size(768, 410);
             tabPageEnemyAI.TabIndex = 1;
             tabPageEnemyAI.Text = "A.I. Scripts";
             tabPageEnemyAI.UseVisualStyleBackColor = true;
@@ -979,7 +1006,7 @@
             scriptControlEnemyAI.Location = new Point(181, 8);
             scriptControlEnemyAI.Name = "scriptControlEnemyAI";
             scriptControlEnemyAI.SelectedScriptIndex = -1;
-            scriptControlEnemyAI.Size = new Size(581, 416);
+            scriptControlEnemyAI.Size = new Size(581, 399);
             scriptControlEnemyAI.TabIndex = 5;
             scriptControlEnemyAI.DataChanged += scriptControl_DataChanged;
             scriptControlEnemyAI.ScriptAdded += scriptControlEnemyAI_ScriptAddedOrRemoved;
@@ -1011,7 +1038,7 @@
             tabPageAttackData.Controls.Add(listBoxAttacks);
             tabPageAttackData.Location = new Point(4, 24);
             tabPageAttackData.Name = "tabPageAttackData";
-            tabPageAttackData.Size = new Size(776, 455);
+            tabPageAttackData.Size = new Size(776, 438);
             tabPageAttackData.TabIndex = 4;
             tabPageAttackData.Text = "Attack Data";
             tabPageAttackData.UseVisualStyleBackColor = true;
@@ -1026,7 +1053,7 @@
             tabControlAttackData.Location = new Point(190, 9);
             tabControlAttackData.Name = "tabControlAttackData";
             tabControlAttackData.SelectedIndex = 0;
-            tabControlAttackData.Size = new Size(577, 425);
+            tabControlAttackData.Size = new Size(577, 409);
             tabControlAttackData.TabIndex = 39;
             // 
             // tabPageAttackPage1
@@ -1054,7 +1081,7 @@
             tabPageAttackPage1.Location = new Point(4, 24);
             tabPageAttackPage1.Name = "tabPageAttackPage1";
             tabPageAttackPage1.Padding = new Padding(3);
-            tabPageAttackPage1.Size = new Size(569, 397);
+            tabPageAttackPage1.Size = new Size(569, 381);
             tabPageAttackPage1.TabIndex = 0;
             tabPageAttackPage1.Text = "Page 1";
             tabPageAttackPage1.UseVisualStyleBackColor = true;
@@ -1265,7 +1292,7 @@
             tabPageAttackPage2.Location = new Point(4, 24);
             tabPageAttackPage2.Name = "tabPageAttackPage2";
             tabPageAttackPage2.Padding = new Padding(3);
-            tabPageAttackPage2.Size = new Size(569, 397);
+            tabPageAttackPage2.Size = new Size(569, 381);
             tabPageAttackPage2.TabIndex = 1;
             tabPageAttackPage2.Text = "Page 2";
             tabPageAttackPage2.UseVisualStyleBackColor = true;
@@ -1352,7 +1379,7 @@
             tabPageAttackPage3.Controls.Add(targetDataControlAttack);
             tabPageAttackPage3.Location = new Point(4, 24);
             tabPageAttackPage3.Name = "tabPageAttackPage3";
-            tabPageAttackPage3.Size = new Size(569, 397);
+            tabPageAttackPage3.Size = new Size(569, 381);
             tabPageAttackPage3.TabIndex = 2;
             tabPageAttackPage3.Text = "Page 3";
             tabPageAttackPage3.UseVisualStyleBackColor = true;
@@ -1373,7 +1400,7 @@
             listBoxAttacks.Location = new Point(9, 9);
             listBoxAttacks.Margin = new Padding(4, 3, 4, 3);
             listBoxAttacks.Name = "listBoxAttacks";
-            listBoxAttacks.Size = new Size(174, 424);
+            listBoxAttacks.Size = new Size(174, 409);
             listBoxAttacks.TabIndex = 38;
             listBoxAttacks.SelectedIndexChanged += listBoxAttacks_SelectedIndexChanged;
             // 
@@ -1382,7 +1409,7 @@
             tabPageFormationData.Controls.Add(tabControlFormationData);
             tabPageFormationData.Location = new Point(4, 24);
             tabPageFormationData.Name = "tabPageFormationData";
-            tabPageFormationData.Size = new Size(776, 455);
+            tabPageFormationData.Size = new Size(776, 438);
             tabPageFormationData.TabIndex = 2;
             tabPageFormationData.Text = "Formation Data";
             tabPageFormationData.UseVisualStyleBackColor = true;
@@ -1396,7 +1423,7 @@
             tabControlFormationData.Location = new Point(0, 0);
             tabControlFormationData.Name = "tabControlFormationData";
             tabControlFormationData.SelectedIndex = 0;
-            tabControlFormationData.Size = new Size(776, 455);
+            tabControlFormationData.Size = new Size(776, 438);
             tabControlFormationData.TabIndex = 0;
             // 
             // tabPageFormationDataInner
@@ -1406,7 +1433,7 @@
             tabPageFormationDataInner.Location = new Point(4, 24);
             tabPageFormationDataInner.Name = "tabPageFormationDataInner";
             tabPageFormationDataInner.Padding = new Padding(3);
-            tabPageFormationDataInner.Size = new Size(768, 427);
+            tabPageFormationDataInner.Size = new Size(768, 410);
             tabPageFormationDataInner.TabIndex = 0;
             tabPageFormationDataInner.Text = "Formation Data";
             tabPageFormationDataInner.UseVisualStyleBackColor = true;
@@ -1704,7 +1731,7 @@
             tabPageCameraData.Controls.Add(labelFormationCamPreBattlePosition);
             tabPageCameraData.Location = new Point(4, 24);
             tabPageCameraData.Name = "tabPageCameraData";
-            tabPageCameraData.Size = new Size(768, 427);
+            tabPageCameraData.Size = new Size(768, 410);
             tabPageCameraData.TabIndex = 4;
             tabPageCameraData.Text = "Camera Data";
             tabPageCameraData.UseVisualStyleBackColor = true;
@@ -1759,7 +1786,7 @@
             tabPageFormationAI.Controls.Add(listBoxFormationScripts);
             tabPageFormationAI.Location = new Point(4, 24);
             tabPageFormationAI.Name = "tabPageFormationAI";
-            tabPageFormationAI.Size = new Size(768, 427);
+            tabPageFormationAI.Size = new Size(768, 410);
             tabPageFormationAI.TabIndex = 3;
             tabPageFormationAI.Text = "Formation A.I.";
             tabPageFormationAI.UseVisualStyleBackColor = true;
@@ -1771,7 +1798,7 @@
             scriptControlFormations.Location = new Point(181, 8);
             scriptControlFormations.Name = "scriptControlFormations";
             scriptControlFormations.SelectedScriptIndex = -1;
-            scriptControlFormations.Size = new Size(581, 416);
+            scriptControlFormations.Size = new Size(581, 399);
             scriptControlFormations.TabIndex = 8;
             scriptControlFormations.DataChanged += scriptControl_DataChanged;
             scriptControlFormations.ScriptAdded += scriptControlFormations_ScriptAddedOrRemoved;
@@ -1800,6 +1827,8 @@
             // 
             // panelTop
             // 
+            panelTop.BackColor = SystemColors.Window;
+            panelTop.Controls.Add(toolStripMain);
             panelTop.Controls.Add(buttonSearch);
             panelTop.Controls.Add(comboBoxFormation);
             panelTop.Controls.Add(labelFormation);
@@ -1810,13 +1839,195 @@
             panelTop.Dock = DockStyle.Top;
             panelTop.Location = new Point(0, 0);
             panelTop.Name = "panelTop";
-            panelTop.Size = new Size(784, 73);
+            panelTop.Size = new Size(784, 90);
             panelTop.TabIndex = 11;
+            // 
+            // toolStripMain
+            // 
+            toolStripMain.GripStyle = ToolStripGripStyle.Hidden;
+            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownFile, toolStripDropDownEdit });
+            toolStripMain.Location = new Point(0, 0);
+            toolStripMain.Name = "toolStripMain";
+            toolStripMain.Padding = new Padding(5, 0, 1, 0);
+            toolStripMain.Size = new Size(784, 25);
+            toolStripMain.TabIndex = 15;
+            toolStripMain.Text = "toolStripMain";
+            // 
+            // toolStripDropDownFile
+            // 
+            toolStripDropDownFile.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownFile.DropDownItems.AddRange(new ToolStripItem[] { saveScenebinToolStripMenuItem, importScenesToolStripMenuItem, exportScenesToolStripMenuItem });
+            toolStripDropDownFile.Image = (Image)resources.GetObject("toolStripDropDownFile.Image");
+            toolStripDropDownFile.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownFile.Name = "toolStripDropDownFile";
+            toolStripDropDownFile.ShowDropDownArrow = false;
+            toolStripDropDownFile.Size = new Size(29, 22);
+            toolStripDropDownFile.Text = "File";
+            // 
+            // saveScenebinToolStripMenuItem
+            // 
+            saveScenebinToolStripMenuItem.Name = "saveScenebinToolStripMenuItem";
+            saveScenebinToolStripMenuItem.Size = new Size(165, 22);
+            saveScenebinToolStripMenuItem.Text = "Save scene.bin";
+            saveScenebinToolStripMenuItem.Click += buttonSave_Click;
+            // 
+            // importScenesToolStripMenuItem
+            // 
+            importScenesToolStripMenuItem.Name = "importScenesToolStripMenuItem";
+            importScenesToolStripMenuItem.Size = new Size(165, 22);
+            importScenesToolStripMenuItem.Text = "Import scene(s)...";
+            importScenesToolStripMenuItem.Click += buttonImport_Click;
+            // 
+            // exportScenesToolStripMenuItem
+            // 
+            exportScenesToolStripMenuItem.Name = "exportScenesToolStripMenuItem";
+            exportScenesToolStripMenuItem.Size = new Size(165, 22);
+            exportScenesToolStripMenuItem.Text = "Export scene(s)...";
+            exportScenesToolStripMenuItem.Click += buttonExport_Click;
+            // 
+            // toolStripDropDownEdit
+            // 
+            toolStripDropDownEdit.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownEdit.DropDownItems.AddRange(new ToolStripItem[] { selectedSceneToolStripMenuItem, enemyToolStripMenuItem, selectedAttackToolStripMenuItem, selectedFormationToolStripMenuItem });
+            toolStripDropDownEdit.Image = (Image)resources.GetObject("toolStripDropDownEdit.Image");
+            toolStripDropDownEdit.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownEdit.Name = "toolStripDropDownEdit";
+            toolStripDropDownEdit.ShowDropDownArrow = false;
+            toolStripDropDownEdit.Size = new Size(31, 22);
+            toolStripDropDownEdit.Text = "Edit";
+            // 
+            // selectedSceneToolStripMenuItem
+            // 
+            selectedSceneToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewSceneToolStripMenuItem, sceneCopyToolStripMenuItem, scenePasteToolStripMenuItem, sceneDeleteToolStripMenuItem });
+            selectedSceneToolStripMenuItem.Name = "selectedSceneToolStripMenuItem";
+            selectedSceneToolStripMenuItem.Size = new Size(183, 22);
+            selectedSceneToolStripMenuItem.Text = "Selected scene...";
+            // 
+            // createNewSceneToolStripMenuItem
+            // 
+            createNewSceneToolStripMenuItem.Name = "createNewSceneToolStripMenuItem";
+            createNewSceneToolStripMenuItem.Size = new Size(180, 22);
+            createNewSceneToolStripMenuItem.Text = "Create new scene";
+            // 
+            // sceneCopyToolStripMenuItem
+            // 
+            sceneCopyToolStripMenuItem.Name = "sceneCopyToolStripMenuItem";
+            sceneCopyToolStripMenuItem.Size = new Size(180, 22);
+            sceneCopyToolStripMenuItem.Text = "Copy";
+            // 
+            // scenePasteToolStripMenuItem
+            // 
+            scenePasteToolStripMenuItem.Name = "scenePasteToolStripMenuItem";
+            scenePasteToolStripMenuItem.Size = new Size(180, 22);
+            scenePasteToolStripMenuItem.Text = "Paste";
+            // 
+            // sceneDeleteToolStripMenuItem
+            // 
+            sceneDeleteToolStripMenuItem.Name = "sceneDeleteToolStripMenuItem";
+            sceneDeleteToolStripMenuItem.Size = new Size(180, 22);
+            sceneDeleteToolStripMenuItem.Text = "Delete";
+            // 
+            // enemyToolStripMenuItem
+            // 
+            enemyToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewEnemyToolStripMenuItem, enemyCopyToolStripMenuItem, enemyPasteToolStripMenuItem, enemyDeleteToolStripMenuItem });
+            enemyToolStripMenuItem.Name = "enemyToolStripMenuItem";
+            enemyToolStripMenuItem.Size = new Size(183, 22);
+            enemyToolStripMenuItem.Text = "Selected enemy...";
+            // 
+            // createNewEnemyToolStripMenuItem
+            // 
+            createNewEnemyToolStripMenuItem.Name = "createNewEnemyToolStripMenuItem";
+            createNewEnemyToolStripMenuItem.Size = new Size(172, 22);
+            createNewEnemyToolStripMenuItem.Text = "Create new enemy";
+            // 
+            // enemyCopyToolStripMenuItem
+            // 
+            enemyCopyToolStripMenuItem.Name = "enemyCopyToolStripMenuItem";
+            enemyCopyToolStripMenuItem.Size = new Size(172, 22);
+            enemyCopyToolStripMenuItem.Text = "Copy";
+            enemyCopyToolStripMenuItem.Click += enemyCopyToolStripMenuItem_Click;
+            // 
+            // enemyPasteToolStripMenuItem
+            // 
+            enemyPasteToolStripMenuItem.Name = "enemyPasteToolStripMenuItem";
+            enemyPasteToolStripMenuItem.Size = new Size(172, 22);
+            enemyPasteToolStripMenuItem.Text = "Paste";
+            enemyPasteToolStripMenuItem.Click += enemyPasteToolStripMenuItem_Click;
+            // 
+            // enemyDeleteToolStripMenuItem
+            // 
+            enemyDeleteToolStripMenuItem.Name = "enemyDeleteToolStripMenuItem";
+            enemyDeleteToolStripMenuItem.Size = new Size(172, 22);
+            enemyDeleteToolStripMenuItem.Text = "Delete";
+            // 
+            // selectedAttackToolStripMenuItem
+            // 
+            selectedAttackToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewAttackToolStripMenuItem, attackCopyToolStripMenuItem, attackPasteToolStripMenuItem, attackDeleteToolStripMenuItem });
+            selectedAttackToolStripMenuItem.Name = "selectedAttackToolStripMenuItem";
+            selectedAttackToolStripMenuItem.Size = new Size(183, 22);
+            selectedAttackToolStripMenuItem.Text = "Selected attack...";
+            // 
+            // createNewAttackToolStripMenuItem
+            // 
+            createNewAttackToolStripMenuItem.Name = "createNewAttackToolStripMenuItem";
+            createNewAttackToolStripMenuItem.Size = new Size(168, 22);
+            createNewAttackToolStripMenuItem.Text = "Create new attack";
+            // 
+            // attackCopyToolStripMenuItem
+            // 
+            attackCopyToolStripMenuItem.Name = "attackCopyToolStripMenuItem";
+            attackCopyToolStripMenuItem.Size = new Size(168, 22);
+            attackCopyToolStripMenuItem.Text = "Copy";
+            attackCopyToolStripMenuItem.Click += attackCopyToolStripMenuItem_Click;
+            // 
+            // attackPasteToolStripMenuItem
+            // 
+            attackPasteToolStripMenuItem.Name = "attackPasteToolStripMenuItem";
+            attackPasteToolStripMenuItem.Size = new Size(168, 22);
+            attackPasteToolStripMenuItem.Text = "Paste";
+            attackPasteToolStripMenuItem.Click += attackPasteToolStripMenuItem_Click;
+            // 
+            // attackDeleteToolStripMenuItem
+            // 
+            attackDeleteToolStripMenuItem.Name = "attackDeleteToolStripMenuItem";
+            attackDeleteToolStripMenuItem.Size = new Size(168, 22);
+            attackDeleteToolStripMenuItem.Text = "Delete";
+            // 
+            // selectedFormationToolStripMenuItem
+            // 
+            selectedFormationToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewFormationToolStripMenuItem, formationCopyToolStripMenuItem, formationPasteToolStripMenuItem, formationDeleteToolStripMenuItem });
+            selectedFormationToolStripMenuItem.Name = "selectedFormationToolStripMenuItem";
+            selectedFormationToolStripMenuItem.Size = new Size(183, 22);
+            selectedFormationToolStripMenuItem.Text = "Selected formation...";
+            // 
+            // createNewFormationToolStripMenuItem
+            // 
+            createNewFormationToolStripMenuItem.Name = "createNewFormationToolStripMenuItem";
+            createNewFormationToolStripMenuItem.Size = new Size(189, 22);
+            createNewFormationToolStripMenuItem.Text = "Create new formation";
+            // 
+            // formationCopyToolStripMenuItem
+            // 
+            formationCopyToolStripMenuItem.Name = "formationCopyToolStripMenuItem";
+            formationCopyToolStripMenuItem.Size = new Size(189, 22);
+            formationCopyToolStripMenuItem.Text = "Copy";
+            // 
+            // formationPasteToolStripMenuItem
+            // 
+            formationPasteToolStripMenuItem.Name = "formationPasteToolStripMenuItem";
+            formationPasteToolStripMenuItem.Size = new Size(189, 22);
+            formationPasteToolStripMenuItem.Text = "Paste";
+            // 
+            // formationDeleteToolStripMenuItem
+            // 
+            formationDeleteToolStripMenuItem.Name = "formationDeleteToolStripMenuItem";
+            formationDeleteToolStripMenuItem.Size = new Size(189, 22);
+            formationDeleteToolStripMenuItem.Text = "Delete";
             // 
             // buttonSearch
             // 
             buttonSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            buttonSearch.Location = new Point(681, 40);
+            buttonSearch.Location = new Point(681, 59);
             buttonSearch.Name = "buttonSearch";
             buttonSearch.Size = new Size(90, 23);
             buttonSearch.TabIndex = 14;
@@ -1828,7 +2039,7 @@
             // 
             comboBoxFormation.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxFormation.FormattingEnabled = true;
-            comboBoxFormation.Location = new Point(344, 40);
+            comboBoxFormation.Location = new Point(344, 59);
             comboBoxFormation.Name = "comboBoxFormation";
             comboBoxFormation.Size = new Size(331, 23);
             comboBoxFormation.TabIndex = 13;
@@ -1837,7 +2048,7 @@
             // labelFormation
             // 
             labelFormation.AutoSize = true;
-            labelFormation.Location = new Point(273, 43);
+            labelFormation.Location = new Point(273, 62);
             labelFormation.Name = "labelFormation";
             labelFormation.Size = new Size(65, 15);
             labelFormation.TabIndex = 12;
@@ -1847,7 +2058,7 @@
             // 
             comboBoxEnemy.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxEnemy.FormattingEnabled = true;
-            comboBoxEnemy.Location = new Point(67, 40);
+            comboBoxEnemy.Location = new Point(67, 59);
             comboBoxEnemy.Name = "comboBoxEnemy";
             comboBoxEnemy.Size = new Size(200, 23);
             comboBoxEnemy.TabIndex = 11;
@@ -1856,7 +2067,7 @@
             // labelEnemy
             // 
             labelEnemy.AutoSize = true;
-            labelEnemy.Location = new Point(15, 43);
+            labelEnemy.Location = new Point(15, 62);
             labelEnemy.Name = "labelEnemy";
             labelEnemy.Size = new Size(46, 15);
             labelEnemy.TabIndex = 10;
@@ -1995,6 +2206,8 @@
             tabPageFormationAI.PerformLayout();
             panelTop.ResumeLayout(false);
             panelTop.PerformLayout();
+            toolStripMain.ResumeLayout(false);
+            toolStripMain.PerformLayout();
             panelBottom.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -2159,5 +2372,31 @@
         private Label labelEnemyModelID;
         private TabPage tabPageAttackPage3;
         private KernelEditor.Controls.TargetDataControl targetDataControlAttack;
+        private ToolStrip toolStripMain;
+        private ToolStripDropDownButton toolStripDropDownFile;
+        private ToolStripDropDownButton toolStripDropDownEdit;
+        private ToolStripMenuItem enemyToolStripMenuItem;
+        private ToolStripMenuItem enemyCopyToolStripMenuItem;
+        private ToolStripMenuItem enemyPasteToolStripMenuItem;
+        private ToolStripMenuItem selectedAttackToolStripMenuItem;
+        private ToolStripMenuItem attackCopyToolStripMenuItem;
+        private ToolStripMenuItem attackPasteToolStripMenuItem;
+        private ToolStripMenuItem saveScenebinToolStripMenuItem;
+        private ToolStripMenuItem importScenesToolStripMenuItem;
+        private ToolStripMenuItem exportScenesToolStripMenuItem;
+        private ToolStripMenuItem createNewEnemyToolStripMenuItem;
+        private ToolStripMenuItem createNewAttackToolStripMenuItem;
+        private ToolStripMenuItem enemyDeleteToolStripMenuItem;
+        private ToolStripMenuItem attackDeleteToolStripMenuItem;
+        private ToolStripMenuItem selectedSceneToolStripMenuItem;
+        private ToolStripMenuItem createNewSceneToolStripMenuItem;
+        private ToolStripMenuItem sceneCopyToolStripMenuItem;
+        private ToolStripMenuItem scenePasteToolStripMenuItem;
+        private ToolStripMenuItem sceneDeleteToolStripMenuItem;
+        private ToolStripMenuItem selectedFormationToolStripMenuItem;
+        private ToolStripMenuItem createNewFormationToolStripMenuItem;
+        private ToolStripMenuItem formationCopyToolStripMenuItem;
+        private ToolStripMenuItem formationPasteToolStripMenuItem;
+        private ToolStripMenuItem formationDeleteToolStripMenuItem;
     }
 }

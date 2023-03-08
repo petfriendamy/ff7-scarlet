@@ -36,6 +36,7 @@ namespace FF7Scarlet.KernelEditor
 
         private readonly Dictionary<KernelSection, TabPage> tabPages = new();
         private readonly Dictionary<TabPage, bool> tabPageIsEnabled = new();
+        private readonly Dictionary<KernelSection, ToolStripMenuItem> toolStrips = new();
         private readonly Dictionary<KernelSection, ListBox> listBoxes = new();
         private readonly Dictionary<KernelSection, TextBox> nameTextBoxes = new();
         private readonly Dictionary<KernelSection, TextBox> descriptionTextBoxes = new();
@@ -82,6 +83,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 if (DataManager.AttackIsSynced(a.ID)) { syncedAttackIDs.Add(a.ID); }
             }
+            selectedAttackToolStripMenuItem.Enabled = false;
 
             //associate controls with kernel data
             //command data
@@ -95,6 +97,7 @@ namespace FF7Scarlet.KernelEditor
 
             //attack data
             tabPages.Add(KernelSection.AttackData, tabPageAttackData);
+            toolStrips.Add(KernelSection.AttackData, selectedAttackToolStripMenuItem);
             listBoxes.Add(KernelSection.AttackData, listBoxAttacks);
             nameTextBoxes.Add(KernelSection.AttackData, textBoxAttackName);
             descriptionTextBoxes.Add(KernelSection.AttackData, textBoxAttackDescription);
@@ -501,6 +504,12 @@ namespace FF7Scarlet.KernelEditor
                     nameTextBoxes[section].Text = kernel.GetAssociatedNames(section)[i];
                     descriptionTextBoxes[section].Text = kernel.GetAssociatedDescriptions(section)[i];
 
+                    //check for toolstrips
+                    if (toolStrips.ContainsKey(section))
+                    {
+                        toolStrips[section].Enabled = true;
+                    }
+
                     //check for camera movement ID(s)
                     if (cameraMovementSingle.ContainsKey(section))
                     {
@@ -615,6 +624,7 @@ namespace FF7Scarlet.KernelEditor
 
                         //attack data
                         case KernelSection.AttackData:
+                            attackPasteToolStripMenuItem.Enabled = DataManager.CopiedAttack != null;
                             var attack = kernel.Attacks[i];
                             j = i - SUMMON_OFFSET;
                             if (j >= 0 && j < kernel.SummonAttackNames.Strings.Length)
@@ -1625,6 +1635,11 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void buttonImport_Click(object sender, EventArgs e)
+        {
+            //stuff
+        }
+
         private void buttonExport_Click(object sender, EventArgs e)
         {
             if (attackNeedsSync && SelectedAttack != null) //sync unsaved attack data
@@ -1634,6 +1649,25 @@ namespace FF7Scarlet.KernelEditor
             using (var exportDialog = new KernelChunkExportForm(kernel))
             {
                 exportDialog.ShowDialog();
+            }
+        }
+
+        private void attackCopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedAttack != null)
+            {
+                DataManager.CopiedAttack = new Attack(SelectedAttack);
+                attackPasteToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        private void attackPasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedAttackIndex != -1 && DataManager.CopiedAttack != null)
+            {
+                kernel.Attacks[SelectedAttackIndex] = new Attack((ushort)SelectedAttackIndex,
+                    DataManager.CopiedAttack);
+                SetUnsaved(true);
             }
         }
 

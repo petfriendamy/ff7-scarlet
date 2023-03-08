@@ -30,6 +30,12 @@ namespace FF7Scarlet
         public static BattleLgp? BattleLgp { get; private set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
 
+        //clipboard
+        public static Scene? CopiedScene { get; set; }
+        public static Enemy? CopiedEnemy { get; set; }
+        public static Attack? CopiedAttack { get; set; }
+        public static Formation? CopiedFormation { get; set; }
+
         public static bool KernelFileIsLoaded
         {
             get { return !string.IsNullOrEmpty(KernelPath); }

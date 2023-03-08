@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Globalization;
-using System.Linq.Expressions;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -183,6 +182,30 @@ namespace FF7Scarlet.AIEditor
             IsFirst = true;
         }
 
+        private void SetAsSingle(string param)
+        {
+            SuspendLayout();
+
+            //move comboboxes over
+            int offset = comboBoxType.Location.X - checkBoxEnabled.Location.X,
+                x = comboBoxType.Location.X - offset, y = comboBoxType.Location.Y;
+            comboBoxType.Location = new Point(x, y);
+
+            x = comboBoxParameter.Location.X - offset;
+            comboBoxParameter.Location = new Point(x, y);
+            comboBoxParameter.Width += offset;
+
+            //remove extra controls
+            comboBoxModifiers.Visible = false;
+            comboBoxType.Items.Clear();
+            comboBoxType.Items.Add(param);
+            comboBoxType.SelectedIndex = 0;
+            singleParameter = true;
+            PForm?.SetAsSingleParameter(this, offset);
+
+            ResumeLayout();
+        }
+
         public void SetCode(byte paramType, FFText? parameter, bool isModifier = false)
         {
             loading = true;
@@ -197,23 +220,13 @@ namespace FF7Scarlet.AIEditor
                 //check what type of parameter it is and adjust settings appropriately
                 if (op.Group == OpcodeGroups.Jump)
                 {
-                    comboBoxType.Items.Clear();
-                    comboBoxType.Items.Add("Label");
-                    comboBoxType.SelectedIndex = 0;
-                    comboBoxParameter.Items.Clear();
-                    comboBoxParameter.DropDownHeight = 1;
-                    singleParameter = true;
-                    PForm?.SetAsSingleParameter(this);
+                    SetAsSingle("Label");
                 }
                 else if (op.ParameterType == ParameterTypes.String || op.ParameterType == ParameterTypes.Debug)
                 {
-                    comboBoxType.Items.Clear();
-                    comboBoxType.Items.Add("String");
-                    comboBoxType.SelectedIndex = 0;
+                    SetAsSingle("String");
                     comboBoxParameter.Items.Clear();
                     comboBoxParameter.DropDownHeight = 1;
-                    singleParameter = true;
-                    PForm?.SetAsSingleParameter(this);
                 }
                 else if (paramTypes.Contains(op))
                 {
@@ -272,6 +285,33 @@ namespace FF7Scarlet.AIEditor
             Modifier = opcode;
             comboBoxType.SelectedIndex = paramTypes.Count;
             checkBoxEnabled.Checked = true;
+        }
+
+        public void SetLabels(Opcodes code, int[] labels)
+        {
+            var op = OpcodeInfo.GetInfo(code);
+            if (op != null && op.Group == OpcodeGroups.Jump)
+            {
+                int curr;
+                if (int.TryParse(comboBoxParameter.Text, out curr))
+                {
+                    comboBoxParameter.Items.Clear();
+                    if (op.EnumValue == Opcodes.Label)
+                    {
+                        comboBoxParameter.Items.Add(curr);
+                    }
+                    else
+                    {
+                        foreach (var label in labels)
+                        {
+                            comboBoxParameter.Items.Add(label);
+                        }
+                    }
+                    comboBoxParameter.Items.Add("--Add new label--");
+                    comboBoxParameter.DropDownStyle = ComboBoxStyle.DropDownList;
+                    comboBoxParameter.SelectedIndex = labels.ToList().IndexOf(curr);
+                }
+            }
         }
 
         #endregion

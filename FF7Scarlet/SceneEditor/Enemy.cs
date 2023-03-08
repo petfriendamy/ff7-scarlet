@@ -104,6 +104,17 @@ namespace FF7Scarlet.SceneEditor
             else { ParseData(data); }
         }
 
+        public Enemy(Enemy other) :base(other.Parent)
+        {
+            ModelID = other.ModelID;
+            Name = other.Name;
+            ParseData(other.GetRawEnemyData());
+            for (int i = 0; i < SCRIPT_NUMBER; ++i)
+            {
+                Scripts[i] = new Script(other.Scripts[i]);
+            }
+        }
+
         private void ParseData(byte[] data)
         {
             var temp = new byte[8];

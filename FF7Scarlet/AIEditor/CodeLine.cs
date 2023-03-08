@@ -20,6 +20,14 @@ namespace FF7Scarlet.AIEditor
             Parameter = parameter;
         }
 
+        public CodeLine(CodeLine other) :base(other.Parent)
+        {
+            Header = other.Header;
+            Opcode = other.Opcode;
+            Parameter = other.Parameter;
+            PopCount = other.PopCount;
+        }
+
         public override ushort GetHeader()
         {
             return Header;

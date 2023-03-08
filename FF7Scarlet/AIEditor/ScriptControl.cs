@@ -82,10 +82,8 @@
 
         private void ReloadScript(int selected)
         {
-            //loading = true;
             DisplayScript(SelectedScriptIndex);
             listBoxCurrScript.SelectedIndex = selected;
-            //loading = false;
         }
 
         private void SetClipboard(bool cut)
@@ -192,15 +190,18 @@
             {
                 DialogResult result;
                 Code newCode;
+                bool createLabel;
 
                 using (var codeForm = new CodeForm(SelectedScript))
                 {
                     result = codeForm.ShowDialog();
                     newCode = codeForm.Code;
+                    createLabel = codeForm.CreateNewLabel;
                 }
 
                 if (result == DialogResult.OK)
                 {
+                    int i = 0;
                     if (SelectedScript.IsEmpty)
                     {
                         AIContainer.Scripts[SelectedScriptIndex] = new Script(AIContainer, newCode);
@@ -209,10 +210,15 @@
                     }
                     else
                     {
-                        int i = SelectedCodeIndex + 1;
+                        i = SelectedCodeIndex + 1;
                         SelectedScript.InsertCodeAtPosition(i, newCode);
-                        ReloadScript(i);
                     }
+                    if (createLabel)
+                    {
+                        SelectedScript.InsertCodeAtPosition(i + 1, new CodeLine(SelectedScript,
+                            HexParser.NULL_OFFSET_16_BIT, (byte)Opcodes.Label, newCode.GetParameter()));
+                    }
+                    ReloadScript(i);
                     InvokeDataChanged();
                 }
             }
@@ -224,11 +230,13 @@
             {
                 DialogResult result;
                 Code newCode;
+                bool createLabel;
 
                 using (var codeForm = new CodeForm(SelectedScript, SelectedCode))
                 {
                     result = codeForm.ShowDialog();
                     newCode = codeForm.Code;
+                    createLabel = codeForm.CreateNewLabel;
                 }
 
                 if (result == DialogResult.OK)
@@ -236,6 +244,12 @@
                     int i = SelectedCodeIndex;
                     newCode.SetParent(SelectedScript);
                     SelectedScript.ReplaceCodeAtPosition(i, newCode);
+
+                    if (createLabel)
+                    {
+                        SelectedScript.InsertCodeAtPosition(i + 1, new CodeLine(SelectedScript,
+                            HexParser.NULL_OFFSET_16_BIT, (byte)Opcodes.Label, newCode.GetParameter()));
+                    }
                     ReloadScript(i);
                     InvokeDataChanged();
                 }

@@ -287,6 +287,17 @@
             buttonImport = new Button();
             buttonExport = new Button();
             panelButtons = new Panel();
+            toolStripMain = new ToolStrip();
+            toolStripDropDownFile = new ToolStripDropDownButton();
+            saveKernelFilesToolStripMenuItem = new ToolStripMenuItem();
+            importToolStripMenuItem = new ToolStripMenuItem();
+            exportToolStripMenuItem = new ToolStripMenuItem();
+            toolStripDropDownEdit = new ToolStripDropDownButton();
+            selectedAttackToolStripMenuItem = new ToolStripMenuItem();
+            createNewAttackToolStripMenuItem = new ToolStripMenuItem();
+            attackCopyToolStripMenuItem = new ToolStripMenuItem();
+            attackPasteToolStripMenuItem = new ToolStripMenuItem();
+            attackDeleteToolStripMenuItem = new ToolStripMenuItem();
             tabControlMain.SuspendLayout();
             tabPageCommandData.SuspendLayout();
             tabPageAttackData.SuspendLayout();
@@ -359,6 +370,7 @@
             tabPageMateriaData.SuspendLayout();
             tabPageKeyItemText.SuspendLayout();
             panelButtons.SuspendLayout();
+            toolStripMain.SuspendLayout();
             SuspendLayout();
             // 
             // tabControlMain
@@ -375,11 +387,11 @@
             tabControlMain.Controls.Add(tabPageMateriaData);
             tabControlMain.Controls.Add(tabPageKeyItemText);
             tabControlMain.Dock = DockStyle.Fill;
-            tabControlMain.Location = new Point(0, 0);
+            tabControlMain.Location = new Point(0, 25);
             tabControlMain.Margin = new Padding(4, 3, 4, 3);
             tabControlMain.Name = "tabControlMain";
             tabControlMain.SelectedIndex = 0;
-            tabControlMain.Size = new Size(784, 561);
+            tabControlMain.Size = new Size(784, 490);
             tabControlMain.TabIndex = 0;
             // 
             // tabPageCommandData
@@ -400,7 +412,7 @@
             tabPageCommandData.Margin = new Padding(4, 3, 4, 3);
             tabPageCommandData.Name = "tabPageCommandData";
             tabPageCommandData.Padding = new Padding(4, 3, 4, 3);
-            tabPageCommandData.Size = new Size(776, 533);
+            tabPageCommandData.Size = new Size(776, 462);
             tabPageCommandData.TabIndex = 0;
             tabPageCommandData.Text = "Command";
             tabPageCommandData.UseVisualStyleBackColor = true;
@@ -512,7 +524,7 @@
             listBoxCommands.Location = new Point(9, 13);
             listBoxCommands.Margin = new Padding(4, 3, 4, 3);
             listBoxCommands.Name = "listBoxCommands";
-            listBoxCommands.Size = new Size(174, 469);
+            listBoxCommands.Size = new Size(174, 394);
             listBoxCommands.TabIndex = 3;
             listBoxCommands.SelectedIndexChanged += listBoxCommands_SelectedIndexChanged;
             // 
@@ -524,7 +536,7 @@
             tabPageAttackData.Margin = new Padding(4, 3, 4, 3);
             tabPageAttackData.Name = "tabPageAttackData";
             tabPageAttackData.Padding = new Padding(4, 3, 4, 3);
-            tabPageAttackData.Size = new Size(776, 533);
+            tabPageAttackData.Size = new Size(776, 462);
             tabPageAttackData.TabIndex = 1;
             tabPageAttackData.Text = "Attacks";
             tabPageAttackData.UseVisualStyleBackColor = true;
@@ -951,7 +963,7 @@
             tabPageBattleData.Controls.Add(tabControlBattleData);
             tabPageBattleData.Location = new Point(4, 24);
             tabPageBattleData.Name = "tabPageBattleData";
-            tabPageBattleData.Size = new Size(776, 533);
+            tabPageBattleData.Size = new Size(776, 462);
             tabPageBattleData.TabIndex = 10;
             tabPageBattleData.Text = "Battle Data";
             tabPageBattleData.UseVisualStyleBackColor = true;
@@ -965,7 +977,7 @@
             tabControlBattleData.Location = new Point(0, 0);
             tabControlBattleData.Name = "tabControlBattleData";
             tabControlBattleData.SelectedIndex = 0;
-            tabControlBattleData.Size = new Size(776, 533);
+            tabControlBattleData.Size = new Size(776, 462);
             tabControlBattleData.TabIndex = 11;
             // 
             // tabPageBattleText
@@ -976,7 +988,7 @@
             tabPageBattleText.Location = new Point(4, 24);
             tabPageBattleText.Name = "tabPageBattleText";
             tabPageBattleText.Padding = new Padding(3);
-            tabPageBattleText.Size = new Size(768, 505);
+            tabPageBattleText.Size = new Size(768, 434);
             tabPageBattleText.TabIndex = 0;
             tabPageBattleText.Text = "Battle Text";
             tabPageBattleText.UseVisualStyleBackColor = true;
@@ -989,7 +1001,7 @@
             listBoxBattleText.Location = new Point(7, 6);
             listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
             listBoxBattleText.Name = "listBoxBattleText";
-            listBoxBattleText.Size = new Size(174, 454);
+            listBoxBattleText.Size = new Size(174, 379);
             listBoxBattleText.TabIndex = 2;
             listBoxBattleText.SelectedIndexChanged += listBoxBattleText_SelectedIndexChanged;
             // 
@@ -1020,7 +1032,7 @@
             tabPageBattleRNGTable.Location = new Point(4, 24);
             tabPageBattleRNGTable.Name = "tabPageBattleRNGTable";
             tabPageBattleRNGTable.Padding = new Padding(3);
-            tabPageBattleRNGTable.Size = new Size(768, 505);
+            tabPageBattleRNGTable.Size = new Size(768, 434);
             tabPageBattleRNGTable.TabIndex = 1;
             tabPageBattleRNGTable.Text = "RNG Table";
             tabPageBattleRNGTable.UseVisualStyleBackColor = true;
@@ -1037,7 +1049,7 @@
             // 
             tabPageMagicOrder.Location = new Point(4, 24);
             tabPageMagicOrder.Name = "tabPageMagicOrder";
-            tabPageMagicOrder.Size = new Size(768, 505);
+            tabPageMagicOrder.Size = new Size(768, 434);
             tabPageMagicOrder.TabIndex = 2;
             tabPageMagicOrder.Text = "Magic Order";
             tabPageMagicOrder.UseVisualStyleBackColor = true;
@@ -1048,7 +1060,7 @@
             tabPageCharacters.Location = new Point(4, 24);
             tabPageCharacters.Margin = new Padding(4, 3, 4, 3);
             tabPageCharacters.Name = "tabPageCharacters";
-            tabPageCharacters.Size = new Size(776, 533);
+            tabPageCharacters.Size = new Size(776, 462);
             tabPageCharacters.TabIndex = 2;
             tabPageCharacters.Text = "Characters";
             tabPageCharacters.UseVisualStyleBackColor = true;
@@ -1062,7 +1074,7 @@
             tabControlCharacters.Location = new Point(0, 0);
             tabControlCharacters.Name = "tabControlCharacters";
             tabControlCharacters.SelectedIndex = 0;
-            tabControlCharacters.Size = new Size(776, 533);
+            tabControlCharacters.Size = new Size(776, 462);
             tabControlCharacters.TabIndex = 0;
             // 
             // tabPageInitCharacterStats
@@ -1094,7 +1106,7 @@
             tabPageInitCharacterStats.Location = new Point(4, 24);
             tabPageInitCharacterStats.Name = "tabPageInitCharacterStats";
             tabPageInitCharacterStats.Padding = new Padding(3);
-            tabPageInitCharacterStats.Size = new Size(768, 505);
+            tabPageInitCharacterStats.Size = new Size(768, 434);
             tabPageInitCharacterStats.TabIndex = 0;
             tabPageInitCharacterStats.Text = "Initial Stats";
             tabPageInitCharacterStats.UseVisualStyleBackColor = true;
@@ -1517,7 +1529,7 @@
             tabPageCharacterGrowth.Location = new Point(4, 24);
             tabPageCharacterGrowth.Name = "tabPageCharacterGrowth";
             tabPageCharacterGrowth.Padding = new Padding(3);
-            tabPageCharacterGrowth.Size = new Size(768, 505);
+            tabPageCharacterGrowth.Size = new Size(768, 434);
             tabPageCharacterGrowth.TabIndex = 0;
             tabPageCharacterGrowth.Text = "Growth Curves";
             tabPageCharacterGrowth.UseVisualStyleBackColor = true;
@@ -1539,7 +1551,7 @@
             tabPageCharacterAI.Location = new Point(4, 24);
             tabPageCharacterAI.Name = "tabPageCharacterAI";
             tabPageCharacterAI.Padding = new Padding(3);
-            tabPageCharacterAI.Size = new Size(768, 505);
+            tabPageCharacterAI.Size = new Size(768, 434);
             tabPageCharacterAI.TabIndex = 1;
             tabPageCharacterAI.Text = "Character A.I.";
             tabPageCharacterAI.UseVisualStyleBackColor = true;
@@ -1552,7 +1564,7 @@
             scriptControlCharacterAI.Location = new Point(187, 6);
             scriptControlCharacterAI.Name = "scriptControlCharacterAI";
             scriptControlCharacterAI.SelectedScriptIndex = -1;
-            scriptControlCharacterAI.Size = new Size(575, 455);
+            scriptControlCharacterAI.Size = new Size(575, 384);
             scriptControlCharacterAI.TabIndex = 5;
             scriptControlCharacterAI.DataChanged += scriptControlCharacterAI_DataChanged;
             scriptControlCharacterAI.ScriptAdded += scriptControlCharacterAI_ScriptAddedOrRemoved;
@@ -1610,7 +1622,7 @@
             tabPageInitInventory.Location = new Point(4, 24);
             tabPageInitInventory.Name = "tabPageInitInventory";
             tabPageInitInventory.Padding = new Padding(3);
-            tabPageInitInventory.Size = new Size(776, 533);
+            tabPageInitInventory.Size = new Size(776, 462);
             tabPageInitInventory.TabIndex = 1;
             tabPageInitInventory.Text = "Inventory";
             tabPageInitInventory.UseVisualStyleBackColor = true;
@@ -1809,7 +1821,7 @@
             tabPageItemData.Location = new Point(4, 24);
             tabPageItemData.Margin = new Padding(4, 3, 4, 3);
             tabPageItemData.Name = "tabPageItemData";
-            tabPageItemData.Size = new Size(776, 533);
+            tabPageItemData.Size = new Size(776, 462);
             tabPageItemData.TabIndex = 9;
             tabPageItemData.Text = "Items";
             tabPageItemData.UseVisualStyleBackColor = true;
@@ -2038,7 +2050,7 @@
             tabPageWeaponData.Location = new Point(4, 24);
             tabPageWeaponData.Margin = new Padding(4, 3, 4, 3);
             tabPageWeaponData.Name = "tabPageWeaponData";
-            tabPageWeaponData.Size = new Size(776, 533);
+            tabPageWeaponData.Size = new Size(776, 462);
             tabPageWeaponData.TabIndex = 4;
             tabPageWeaponData.Text = "Weapons";
             tabPageWeaponData.UseVisualStyleBackColor = true;
@@ -2355,7 +2367,7 @@
             tabPageArmorData.Location = new Point(4, 24);
             tabPageArmorData.Margin = new Padding(4, 3, 4, 3);
             tabPageArmorData.Name = "tabPageArmorData";
-            tabPageArmorData.Size = new Size(776, 533);
+            tabPageArmorData.Size = new Size(776, 462);
             tabPageArmorData.TabIndex = 5;
             tabPageArmorData.Text = "Armor";
             tabPageArmorData.UseVisualStyleBackColor = true;
@@ -2658,7 +2670,7 @@
             tabPageAccessoryData.Location = new Point(4, 24);
             tabPageAccessoryData.Margin = new Padding(4, 3, 4, 3);
             tabPageAccessoryData.Name = "tabPageAccessoryData";
-            tabPageAccessoryData.Size = new Size(776, 533);
+            tabPageAccessoryData.Size = new Size(776, 462);
             tabPageAccessoryData.TabIndex = 6;
             tabPageAccessoryData.Text = "Accessories";
             tabPageAccessoryData.UseVisualStyleBackColor = true;
@@ -2863,7 +2875,7 @@
             tabPageMateriaData.Location = new Point(4, 24);
             tabPageMateriaData.Margin = new Padding(4, 3, 4, 3);
             tabPageMateriaData.Name = "tabPageMateriaData";
-            tabPageMateriaData.Size = new Size(776, 533);
+            tabPageMateriaData.Size = new Size(776, 462);
             tabPageMateriaData.TabIndex = 7;
             tabPageMateriaData.Text = "Materia";
             tabPageMateriaData.UseVisualStyleBackColor = true;
@@ -3023,7 +3035,7 @@
             tabPageKeyItemText.Location = new Point(4, 24);
             tabPageKeyItemText.Margin = new Padding(4, 3, 4, 3);
             tabPageKeyItemText.Name = "tabPageKeyItemText";
-            tabPageKeyItemText.Size = new Size(776, 533);
+            tabPageKeyItemText.Size = new Size(776, 462);
             tabPageKeyItemText.TabIndex = 8;
             tabPageKeyItemText.Text = "Key Items";
             tabPageKeyItemText.UseVisualStyleBackColor = true;
@@ -3099,6 +3111,7 @@
             buttonImport.TabIndex = 2;
             buttonImport.Text = "Import...";
             buttonImport.UseVisualStyleBackColor = true;
+            buttonImport.Click += buttonImport_Click;
             // 
             // buttonExport
             // 
@@ -3124,13 +3137,101 @@
             panelButtons.Size = new Size(784, 46);
             panelButtons.TabIndex = 4;
             // 
+            // toolStripMain
+            // 
+            toolStripMain.GripStyle = ToolStripGripStyle.Hidden;
+            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownFile, toolStripDropDownEdit });
+            toolStripMain.Location = new Point(0, 0);
+            toolStripMain.Name = "toolStripMain";
+            toolStripMain.Padding = new Padding(5, 0, 1, 0);
+            toolStripMain.Size = new Size(784, 25);
+            toolStripMain.TabIndex = 5;
+            toolStripMain.Text = "toolStripMain";
+            // 
+            // toolStripDropDownFile
+            // 
+            toolStripDropDownFile.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownFile.DropDownItems.AddRange(new ToolStripItem[] { saveKernelFilesToolStripMenuItem, importToolStripMenuItem, exportToolStripMenuItem });
+            toolStripDropDownFile.Image = (Image)resources.GetObject("toolStripDropDownFile.Image");
+            toolStripDropDownFile.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownFile.Name = "toolStripDropDownFile";
+            toolStripDropDownFile.ShowDropDownArrow = false;
+            toolStripDropDownFile.Size = new Size(29, 22);
+            toolStripDropDownFile.Text = "File";
+            // 
+            // saveKernelFilesToolStripMenuItem
+            // 
+            saveKernelFilesToolStripMenuItem.Name = "saveKernelFilesToolStripMenuItem";
+            saveKernelFilesToolStripMenuItem.Size = new Size(165, 22);
+            saveKernelFilesToolStripMenuItem.Text = "Save kernel file(s)";
+            saveKernelFilesToolStripMenuItem.Click += buttonSave_Click;
+            // 
+            // importToolStripMenuItem
+            // 
+            importToolStripMenuItem.Name = "importToolStripMenuItem";
+            importToolStripMenuItem.Size = new Size(165, 22);
+            importToolStripMenuItem.Text = "Import...";
+            importToolStripMenuItem.Click += buttonImport_Click;
+            // 
+            // exportToolStripMenuItem
+            // 
+            exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            exportToolStripMenuItem.Size = new Size(165, 22);
+            exportToolStripMenuItem.Text = "Export...";
+            exportToolStripMenuItem.Click += buttonExport_Click;
+            // 
+            // toolStripDropDownEdit
+            // 
+            toolStripDropDownEdit.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownEdit.DropDownItems.AddRange(new ToolStripItem[] { selectedAttackToolStripMenuItem });
+            toolStripDropDownEdit.Image = (Image)resources.GetObject("toolStripDropDownEdit.Image");
+            toolStripDropDownEdit.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownEdit.Name = "toolStripDropDownEdit";
+            toolStripDropDownEdit.ShowDropDownArrow = false;
+            toolStripDropDownEdit.Size = new Size(31, 22);
+            toolStripDropDownEdit.Text = "Edit";
+            // 
+            // selectedAttackToolStripMenuItem
+            // 
+            selectedAttackToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewAttackToolStripMenuItem, attackCopyToolStripMenuItem, attackPasteToolStripMenuItem, attackDeleteToolStripMenuItem });
+            selectedAttackToolStripMenuItem.Name = "selectedAttackToolStripMenuItem";
+            selectedAttackToolStripMenuItem.Size = new Size(180, 22);
+            selectedAttackToolStripMenuItem.Text = "Selected attack...";
+            // 
+            // createNewAttackToolStripMenuItem
+            // 
+            createNewAttackToolStripMenuItem.Name = "createNewAttackToolStripMenuItem";
+            createNewAttackToolStripMenuItem.Size = new Size(180, 22);
+            createNewAttackToolStripMenuItem.Text = "Create new attack";
+            // 
+            // attackCopyToolStripMenuItem
+            // 
+            attackCopyToolStripMenuItem.Name = "attackCopyToolStripMenuItem";
+            attackCopyToolStripMenuItem.Size = new Size(180, 22);
+            attackCopyToolStripMenuItem.Text = "Copy";
+            attackCopyToolStripMenuItem.Click += attackCopyToolStripMenuItem_Click;
+            // 
+            // attackPasteToolStripMenuItem
+            // 
+            attackPasteToolStripMenuItem.Name = "attackPasteToolStripMenuItem";
+            attackPasteToolStripMenuItem.Size = new Size(180, 22);
+            attackPasteToolStripMenuItem.Text = "Paste";
+            attackPasteToolStripMenuItem.Click += attackPasteToolStripMenuItem_Click;
+            // 
+            // attackDeleteToolStripMenuItem
+            // 
+            attackDeleteToolStripMenuItem.Name = "attackDeleteToolStripMenuItem";
+            attackDeleteToolStripMenuItem.Size = new Size(180, 22);
+            attackDeleteToolStripMenuItem.Text = "Delete";
+            // 
             // KernelForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 561);
-            Controls.Add(panelButtons);
             Controls.Add(tabControlMain);
+            Controls.Add(toolStripMain);
+            Controls.Add(panelButtons);
             DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4, 3, 4, 3);
@@ -3231,7 +3332,10 @@
             tabPageKeyItemText.ResumeLayout(false);
             tabPageKeyItemText.PerformLayout();
             panelButtons.ResumeLayout(false);
+            toolStripMain.ResumeLayout(false);
+            toolStripMain.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -3494,5 +3598,16 @@
         private TabPage tabPageMagicOrder;
         private TabPage tabPageAttacks3;
         private Controls.TargetDataControl targetDataControlAttack;
+        private ToolStrip toolStripMain;
+        private ToolStripDropDownButton toolStripDropDownFile;
+        private ToolStripDropDownButton toolStripDropDownEdit;
+        private ToolStripMenuItem saveKernelFilesToolStripMenuItem;
+        private ToolStripMenuItem importToolStripMenuItem;
+        private ToolStripMenuItem exportToolStripMenuItem;
+        private ToolStripMenuItem selectedAttackToolStripMenuItem;
+        private ToolStripMenuItem createNewAttackToolStripMenuItem;
+        private ToolStripMenuItem attackCopyToolStripMenuItem;
+        private ToolStripMenuItem attackPasteToolStripMenuItem;
+        private ToolStripMenuItem attackDeleteToolStripMenuItem;
     }
 }
