@@ -278,7 +278,7 @@ namespace FF7Scarlet.AIEditor
                 var p = newCode.GetParameter();
                 if (p != null)
                 {
-                    labels.Add(p.ToInt(), newCode.GetHeader());
+                    AddLabel(p.ToInt());
                 }
             }
             headersAreCorrect = false;
@@ -294,7 +294,7 @@ namespace FF7Scarlet.AIEditor
                     var p = newCode.GetParameter();
                     if (p != null)
                     {
-                        labels.Add(p.ToInt(), newCode.GetHeader());
+                        AddLabel(p.ToInt());
                     }
                 }
                 headersAreCorrect = false;
@@ -348,6 +348,15 @@ namespace FF7Scarlet.AIEditor
         public int[] GetLabels()
         {
             return labels.Keys.ToArray();
+        }
+
+        public void AddLabel(int label)
+        {
+            if (!labels.ContainsKey(label))
+            {
+                labels.Add(label, HexParser.NULL_OFFSET_16_BIT);
+                headersAreCorrect = false;
+            }
         }
 
         public string[] Disassemble()
@@ -427,7 +436,12 @@ namespace FF7Scarlet.AIEditor
                     var p = c.GetParameter();
                     if (p != null)
                     {
-                        labels[p.ToInt()] = currPos;
+                        int pint = p.ToInt();
+                        if (!labels.ContainsKey(pint))
+                        {
+                            throw new ArgumentOutOfRangeException($"Label {pint}");
+                        }
+                        labels[pint] = currPos;
                     }
                 }
                 currPos = c.SetHeader(currPos);

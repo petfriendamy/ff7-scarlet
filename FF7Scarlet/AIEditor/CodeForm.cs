@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -11,8 +12,8 @@ namespace FF7Scarlet.AIEditor
         private CommandInfo? command;
         private Code? param1, param2;
         private FFText? strText;
-        private int label, popCount;
-        private List<OpcodeInfo> currList = new List<OpcodeInfo> { };
+        private int label = -1, popCount;
+        private List<OpcodeInfo> currList = new();
         private Script parentScript;
         private bool loading = true, unsavedChanges = false;
 
@@ -36,6 +37,7 @@ namespace FF7Scarlet.AIEditor
                 opcode = currList[0];
                 command = CommandInfo.COMMAND_LIST[0];
                 Code = command.GenerateCode(script);
+                unsavedChanges = true;
             }
             else
             {
@@ -49,7 +51,7 @@ namespace FF7Scarlet.AIEditor
                 }
             }
 
-            if (command != null)
+            if (command != null) //known command
             {
                 comboBoxCommands.SelectedIndex = CommandInfo.COMMAND_LIST.ToList().IndexOf(command);
                 var ptype = command.ParameterType1;
@@ -84,8 +86,14 @@ namespace FF7Scarlet.AIEditor
                     ptype = command.ParameterType2;
                 }
                 UpdateCommandParameters();
+
+                if (Code is CodeLine) //update manual parameters too
+                {
+                    var c = Code as CodeLine;
+                    if (c != null) { UpdateManualParameters(c); }
+                }
             }
-            else if (Code is CodeBlock)
+            else if (Code is CodeBlock) //unknown command
             {
                 command = CommandInfo.GetInfo(0xFF);
                 if (command != null)
@@ -95,23 +103,13 @@ namespace FF7Scarlet.AIEditor
                 }
                 UpdateCommandParameters();
             }
-            else if (Code is CodeLine)
+            else if (Code is CodeLine) //single opcode
             {
+                tabControlOptions.SelectedTab = tabPageManual;
                 var c = Code as CodeLine;
                 if (c != null)
                 {
-                    var o = OpcodeInfo.GetInfo(c.Opcode);
-                    if (o != null)
-                    {
-                        tabControlOptions.SelectedTab = tabPageManual;
-                        comboBoxOpcodeGroups.SelectedIndex = (int)o.Group;
-                        comboBoxOpcodes.SelectedIndex = currList.IndexOf(o);
-
-                        if (o.ParameterType != ParameterTypes.None && c.Parameter != null)
-                        {
-                            comboBoxManualParameter.Text = c.Parameter.ToString();
-                        }
-                    }
+                    UpdateManualParameters(c);
                 }
             }
             loading = false;
@@ -144,7 +142,8 @@ namespace FF7Scarlet.AIEditor
                             textbox.Text = strText?.ToString();
                             break;
                         case ParameterTypes.Label:
-                            textbox.Text = label.ToString();
+                            if (label == -1) { textbox.Text = "(New label)"; }
+                            else { textbox.Text = label.ToString(); }
                             break;
                         default:
                             textbox.Text = currParam?.Disassemble(false);
@@ -154,6 +153,21 @@ namespace FF7Scarlet.AIEditor
                 ptype = command.ParameterType2;
                 textbox = textBoxParameter2;
                 currParam = param2;
+            }
+        }
+
+        private void UpdateManualParameters(CodeLine code)
+        {
+            var op = OpcodeInfo.GetInfo(code.Opcode);
+            if (op != null)
+            {
+                comboBoxOpcodeGroups.SelectedIndex = (int)op.Group;
+                comboBoxOpcodes.SelectedIndex = currList.IndexOf(op);
+
+                if (op.ParameterType != ParameterTypes.None && code.Parameter != null)
+                {
+                    comboBoxManualParameter.Text = code.Parameter.ToString();
+                }
             }
         }
 
@@ -401,6 +415,7 @@ namespace FF7Scarlet.AIEditor
             if (!loading)
             {
                 UpdateCommandParameters();
+                unsavedChanges = true;
             }
         }
 
@@ -434,7 +449,7 @@ namespace FF7Scarlet.AIEditor
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (unsavedChanges || Code == null)
+            if (unsavedChanges)
             {
                 try
                 {
@@ -445,14 +460,19 @@ namespace FF7Scarlet.AIEditor
                         {
                             if ((byte)command.Opcode == 0xFF) //unknown block
                             {
-                                if (param1 != null)
+                                if (param1 == null)
                                 {
-                                    Code = param1;
+                                    throw new ArgumentNullException("Parameter was null.");
                                 }
+                                else { Code = param1; }
                             }
                             else if (command.OpcodeInfo?.PopCount > 0) //two parameters
                             {
-                                if (param1 != null)
+                                if (param1 == null)
+                                {
+                                    throw new ArgumentNullException("Parameter was null.");
+                                }
+                                else
                                 {
                                     FFText? p = null;
                                     if (command.ParameterType2 == ParameterTypes.Label)
@@ -480,7 +500,7 @@ namespace FF7Scarlet.AIEditor
                                 if (command.ParameterType1 == ParameterTypes.Label && label == -1) //new label
                                 {
                                     param = new FFText(GetNewLabel().ToString("X4"));
-                                    CreateNewLabel = command.Opcode != Opcodes.Label;
+                                    CreateNewLabel = true;
                                 }
                                 else
                                 {

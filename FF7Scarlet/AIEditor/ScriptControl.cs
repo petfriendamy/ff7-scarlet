@@ -152,11 +152,9 @@
             if (SelectedCode != null && SelectedScript != null)
             {
                 int temp = SelectedCodeIndex;
-                //loading = true;
                 SelectedScript.MoveCodeUp(temp);
                 DisplayScript(SelectedScriptIndex);
                 listBoxCurrScript.SelectedIndex = temp - 1;
-                //loading = false;
                 InvokeDataChanged();
             }
         }
@@ -166,12 +164,23 @@
             if (SelectedCode != null && SelectedScript != null)
             {
                 int temp = SelectedCodeIndex;
-                //loading = true;
                 SelectedScript.MoveCodeDown(temp);
                 DisplayScript(SelectedScriptIndex);
                 listBoxCurrScript.SelectedIndex = temp + 1;
-                //loading = false;
                 InvokeDataChanged();
+            }
+        }
+
+        private void CreateLabelAtPosition(byte opcode, FFText label, int pos)
+        {
+            if (SelectedScript != null)
+            {
+                if (opcode != (byte)Opcodes.Label) //don't add the label if it's already been added
+                {
+                    SelectedScript.InsertCodeAtPosition(pos, new CodeLine(SelectedScript,
+                        HexParser.NULL_OFFSET_16_BIT, (byte)Opcodes.Label, label));
+                }
+                SelectedScript.AddLabel(label.ToInt());
             }
         }
 
@@ -215,8 +224,11 @@
                     }
                     if (createLabel)
                     {
-                        SelectedScript.InsertCodeAtPosition(i + 1, new CodeLine(SelectedScript,
-                            HexParser.NULL_OFFSET_16_BIT, (byte)Opcodes.Label, newCode.GetParameter()));
+                        var param = newCode.GetParameter();
+                        if (param != null)
+                        {
+                            CreateLabelAtPosition(newCode.GetPrimaryOpcode(), param, i + 1);
+                        }
                     }
                     ReloadScript(i);
                     InvokeDataChanged();
@@ -247,8 +259,11 @@
 
                     if (createLabel)
                     {
-                        SelectedScript.InsertCodeAtPosition(i + 1, new CodeLine(SelectedScript,
-                            HexParser.NULL_OFFSET_16_BIT, (byte)Opcodes.Label, newCode.GetParameter()));
+                        var param = newCode.GetParameter();
+                        if (param != null)
+                        {
+                            CreateLabelAtPosition(newCode.GetPrimaryOpcode(), param, i + 1);
+                        }
                     }
                     ReloadScript(i);
                     InvokeDataChanged();

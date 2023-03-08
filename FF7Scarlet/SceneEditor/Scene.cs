@@ -530,13 +530,6 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        /*public byte[] GetRawData()
-        {
-            var copy = new byte[rawData.Length];
-            Array.Copy(rawData, copy, rawData.Length);
-            return copy;
-        }*/
-
         private byte[] GetRawScriptData(int containerCount, int blockSize, AIContainer?[] aiContainers,
             ref ushort[] offsets)
         {

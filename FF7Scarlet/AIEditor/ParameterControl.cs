@@ -298,7 +298,7 @@ namespace FF7Scarlet.AIEditor
                     comboBoxParameter.Items.Clear();
                     if (op.EnumValue == Opcodes.Label)
                     {
-                        comboBoxParameter.Items.Add(curr);
+                        if (curr != -1) { comboBoxParameter.Items.Add(curr); }
                     }
                     else
                     {
@@ -309,7 +309,9 @@ namespace FF7Scarlet.AIEditor
                     }
                     comboBoxParameter.Items.Add("--Add new label--");
                     comboBoxParameter.DropDownStyle = ComboBoxStyle.DropDownList;
-                    comboBoxParameter.SelectedIndex = labels.ToList().IndexOf(curr);
+                    int selected = labels.ToList().IndexOf(curr);
+                    if (selected < 0) { selected = comboBoxParameter.Items.Count - 1; }
+                    comboBoxParameter.SelectedIndex = selected;
                 }
             }
         }
