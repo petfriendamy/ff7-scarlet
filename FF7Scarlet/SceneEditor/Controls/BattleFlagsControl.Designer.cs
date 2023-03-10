@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             groupBoxMain = new GroupBox();
+            checkBoxNoVictoryPoses = new CheckBox();
             checkBoxNoPreemptive = new CheckBox();
             checkBoxCantEscape = new CheckBox();
             checkBoxUnknown = new CheckBox();
-            checkBoxNoVictoryPoses = new CheckBox();
             groupBoxMain.SuspendLayout();
             SuspendLayout();
             // 
@@ -50,6 +50,17 @@
             groupBoxMain.TabStop = false;
             groupBoxMain.Text = "Battle flags";
             // 
+            // checkBoxNoVictoryPoses
+            // 
+            checkBoxNoVictoryPoses.AutoSize = true;
+            checkBoxNoVictoryPoses.Location = new Point(6, 47);
+            checkBoxNoVictoryPoses.Name = "checkBoxNoVictoryPoses";
+            checkBoxNoVictoryPoses.Size = new Size(114, 19);
+            checkBoxNoVictoryPoses.TabIndex = 4;
+            checkBoxNoVictoryPoses.Text = "No victory poses";
+            checkBoxNoVictoryPoses.UseVisualStyleBackColor = true;
+            checkBoxNoVictoryPoses.CheckedChanged += CheckBoxChanged;
+            // 
             // checkBoxNoPreemptive
             // 
             checkBoxNoPreemptive.AutoSize = true;
@@ -59,6 +70,7 @@
             checkBoxNoPreemptive.TabIndex = 3;
             checkBoxNoPreemptive.Text = "No pre-emptive";
             checkBoxNoPreemptive.UseVisualStyleBackColor = true;
+            checkBoxNoPreemptive.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxCantEscape
             // 
@@ -69,6 +81,7 @@
             checkBoxCantEscape.TabIndex = 2;
             checkBoxCantEscape.Text = "Can't escape";
             checkBoxCantEscape.UseVisualStyleBackColor = true;
+            checkBoxCantEscape.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxUnknown
             // 
@@ -79,16 +92,7 @@
             checkBoxUnknown.TabIndex = 1;
             checkBoxUnknown.Text = "Unknown";
             checkBoxUnknown.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxNoVictoryPoses
-            // 
-            checkBoxNoVictoryPoses.AutoSize = true;
-            checkBoxNoVictoryPoses.Location = new Point(6, 47);
-            checkBoxNoVictoryPoses.Name = "checkBoxNoVictoryPoses";
-            checkBoxNoVictoryPoses.Size = new Size(114, 19);
-            checkBoxNoVictoryPoses.TabIndex = 4;
-            checkBoxNoVictoryPoses.Text = "No victory poses";
-            checkBoxNoVictoryPoses.UseVisualStyleBackColor = true;
+            checkBoxUnknown.CheckedChanged += CheckBoxChanged;
             // 
             // BattleFlagsControl
             // 

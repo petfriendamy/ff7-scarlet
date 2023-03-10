@@ -2,17 +2,42 @@
 {
     public partial class BattleFlagsControl : UserControl
     {
+        private CheckBox[] checkBoxes;
+        private BattleFlags[] battleFlags;
+        public event EventHandler? FlagsChanged;
+
         public BattleFlagsControl()
         {
             InitializeComponent();
+
+            battleFlags = Enum.GetValues<BattleFlags>();
+            checkBoxes = new CheckBox[]
+            {
+                checkBoxUnknown, checkBoxCantEscape, checkBoxNoVictoryPoses, checkBoxNoPreemptive
+            };
         }
 
         public void SetFlags(BattleFlags flags)
         {
-            checkBoxUnknown.Checked = flags.HasFlag(BattleFlags.Unknown);
-            checkBoxCantEscape.Checked = flags.HasFlag(BattleFlags.CantEscape);
-            checkBoxNoVictoryPoses.Checked = flags.HasFlag(BattleFlags.NoVictoryPoses);
-            checkBoxNoPreemptive.Checked = flags.HasFlag(BattleFlags.NoPreemptive);
+            for (int i = 0; i < battleFlags.Length; ++i)
+            {
+                checkBoxes[i].Checked = flags.HasFlag(battleFlags[i]);
+            }
+        }
+
+        public BattleFlags GetFlags()
+        {
+            BattleFlags flags = 0;
+            for (int i = 0; i < battleFlags.Length; ++i)
+            {
+                if (checkBoxes[i].Checked) { flags |= battleFlags[i]; }
+            }
+            return flags;
+        }
+
+        private void CheckBoxChanged(object? sender, EventArgs e)
+        {
+            FlagsChanged?.Invoke(this, e);
         }
     }
 }

@@ -83,6 +83,7 @@
             checkBox9.TabIndex = 15;
             checkBox9.Text = "9";
             checkBox9.UseVisualStyleBackColor = true;
+            checkBox9.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox10
             // 
@@ -93,6 +94,7 @@
             checkBox10.TabIndex = 14;
             checkBox10.Text = "10";
             checkBox10.UseVisualStyleBackColor = true;
+            checkBox10.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox11
             // 
@@ -103,6 +105,7 @@
             checkBox11.TabIndex = 13;
             checkBox11.Text = "11";
             checkBox11.UseVisualStyleBackColor = true;
+            checkBox11.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox12
             // 
@@ -113,6 +116,7 @@
             checkBox12.TabIndex = 12;
             checkBox12.Text = "12";
             checkBox12.UseVisualStyleBackColor = true;
+            checkBox12.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox13
             // 
@@ -123,6 +127,7 @@
             checkBox13.TabIndex = 11;
             checkBox13.Text = "13";
             checkBox13.UseVisualStyleBackColor = true;
+            checkBox13.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox14
             // 
@@ -133,6 +138,7 @@
             checkBox14.TabIndex = 10;
             checkBox14.Text = "14";
             checkBox14.UseVisualStyleBackColor = true;
+            checkBox14.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox15
             // 
@@ -143,6 +149,7 @@
             checkBox15.TabIndex = 9;
             checkBox15.Text = "15";
             checkBox15.UseVisualStyleBackColor = true;
+            checkBox15.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox16
             // 
@@ -153,6 +160,7 @@
             checkBox16.TabIndex = 8;
             checkBox16.Text = "16";
             checkBox16.UseVisualStyleBackColor = true;
+            checkBox16.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox5
             // 
@@ -163,6 +171,7 @@
             checkBox5.TabIndex = 7;
             checkBox5.Text = "5";
             checkBox5.UseVisualStyleBackColor = true;
+            checkBox5.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox6
             // 
@@ -173,6 +182,7 @@
             checkBox6.TabIndex = 6;
             checkBox6.Text = "6";
             checkBox6.UseVisualStyleBackColor = true;
+            checkBox6.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox7
             // 
@@ -183,6 +193,7 @@
             checkBox7.TabIndex = 5;
             checkBox7.Text = "7";
             checkBox7.UseVisualStyleBackColor = true;
+            checkBox7.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox8
             // 
@@ -193,6 +204,7 @@
             checkBox8.TabIndex = 4;
             checkBox8.Text = "8";
             checkBox8.UseVisualStyleBackColor = true;
+            checkBox8.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox4
             // 
@@ -203,6 +215,7 @@
             checkBox4.TabIndex = 3;
             checkBox4.Text = "4";
             checkBox4.UseVisualStyleBackColor = true;
+            checkBox4.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox3
             // 
@@ -213,6 +226,7 @@
             checkBox3.TabIndex = 2;
             checkBox3.Text = "3";
             checkBox3.UseVisualStyleBackColor = true;
+            checkBox3.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox2
             // 
@@ -223,6 +237,7 @@
             checkBox2.TabIndex = 1;
             checkBox2.Text = "2";
             checkBox2.UseVisualStyleBackColor = true;
+            checkBox2.CheckedChanged += CheckBoxChanged;
             // 
             // checkBox1
             // 
@@ -233,6 +248,7 @@
             checkBox1.TabIndex = 0;
             checkBox1.Text = "1";
             checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += CheckBoxChanged;
             // 
             // CoverFlagsControl
             // 

@@ -23,10 +23,12 @@ namespace FF7Scarlet.AIEditor
             parentScript = script;
 
             //get command list
+            comboBoxCommands.BeginUpdate();
             foreach (var command in CommandInfo.COMMAND_LIST)
             {
                 comboBoxCommands.Items.Add(command.Description);
             }
+            comboBoxCommands.EndUpdate();
             comboBoxOpcodeGroups.SelectedIndex = 0;
             comboBoxOpcodes.SelectedIndex = 0;
             comboBoxCommands.SelectedIndex = 0;
@@ -174,7 +176,7 @@ namespace FF7Scarlet.AIEditor
         private void UpdateOpcodesList()
         {
             int selected = comboBoxOpcodeGroups.SelectedIndex;
-            if (Enum.IsDefined(typeof(OpcodeGroups), selected))
+            if (Enum.IsDefined((OpcodeGroups)selected))
             {
                 var currGroup = (OpcodeGroups)selected;
                 currList =
@@ -182,6 +184,7 @@ namespace FF7Scarlet.AIEditor
                      where o.Group == currGroup
                      select o).ToList();
 
+                comboBoxOpcodes.BeginUpdate();
                 comboBoxOpcodes.Items.Clear();
                 foreach (var opcode in currList)
                 {
@@ -194,6 +197,7 @@ namespace FF7Scarlet.AIEditor
                         comboBoxOpcodes.Items.Add($"{opcode.Code:X2} -- {opcode.Name}");
                     }
                 }
+                comboBoxOpcodes.EndUpdate();
                 comboBoxOpcodes.SelectedIndex = 0;
             }
             if (!loading) { unsavedChanges = true; }

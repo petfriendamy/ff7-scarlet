@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 
 namespace FF7Scarlet.SceneEditor.Controls
 {
@@ -18,6 +10,7 @@ namespace FF7Scarlet.SceneEditor.Controls
             get { return groupBoxMain.Text; }
             set { groupBoxMain.Text = value; }
         }
+        public event EventHandler? DataChanged;
 
         public CameraPositionControl()
         {
@@ -32,6 +25,23 @@ namespace FF7Scarlet.SceneEditor.Controls
             numericAngleX.Value = angle.X;
             numericAngleY.Value = angle.Y;
             numericUpAngleZ.Value = angle.Z;
+        }
+
+        public Point3D GetPosition()
+        {
+            return new Point3D((ushort)numericPositionX.Value, (ushort)numericPositionY.Value,
+                (ushort)numericPositionZ.Value);
+        }
+
+        public Point3D GetAngle()
+        {
+            return new Point3D((ushort)numericAngleX.Value, (ushort)numericAngleY.Value,
+                (ushort)numericUpAngleZ.Value);
+        }
+
+        private void NumericValueChanged(object? sender, EventArgs e)
+        {
+            DataChanged?.Invoke(this, e);
         }
     }
 }

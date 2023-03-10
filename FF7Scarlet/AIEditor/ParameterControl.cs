@@ -143,22 +143,31 @@ namespace FF7Scarlet.AIEditor
                             && op.ParameterType != ParameterTypes.Debug)
                           select op).ToList();
 
+            comboBoxOperand.BeginUpdate();
             foreach (var op in operands)
             {
                 comboBoxOperand.Items.Add(op.ShortName);
             }
+            comboBoxOperand.EndUpdate();
+
+            comboBoxModifiers.BeginUpdate();
             comboBoxModifiers.Items.Add(" ");
             foreach (var op in modifiers)
             {
                 comboBoxModifiers.Items.Add(op.ShortName);
             }
+            comboBoxModifiers.EndUpdate();
             comboBoxModifiers.SelectedIndex = 0;
+
+            comboBoxType.BeginUpdate();
             foreach (var op in paramTypes)
             {
                 comboBoxType.Items.Add(op.ShortName);
             }
             comboBoxType.Items.Add("(Modify above)");
+            comboBoxType.EndUpdate();
 
+            comboBoxParameter.BeginUpdate();
             foreach (int gv in Enum.GetValues(typeof(CommonVars.Globals)))
             {
                 comboBoxParameter.Items.Add($"{gv:X4} ({(CommonVars.Globals)gv})");
@@ -168,6 +177,7 @@ namespace FF7Scarlet.AIEditor
             {
                 comboBoxParameter.Items.Add($"{gv:X4} ({(CommonVars.ActorGlobals)gv})");
             }
+            comboBoxParameter.EndUpdate();
             loading = false;
         }
 
@@ -295,6 +305,7 @@ namespace FF7Scarlet.AIEditor
                 int curr;
                 if (int.TryParse(comboBoxParameter.Text, out curr))
                 {
+                    comboBoxParameter.BeginUpdate();
                     comboBoxParameter.Items.Clear();
                     if (op.EnumValue == Opcodes.Label)
                     {
@@ -309,6 +320,7 @@ namespace FF7Scarlet.AIEditor
                     }
                     comboBoxParameter.Items.Add("--Add new label--");
                     comboBoxParameter.DropDownStyle = ComboBoxStyle.DropDownList;
+                    comboBoxParameter.EndUpdate();
                     int selected = labels.ToList().IndexOf(curr);
                     if (selected < 0) { selected = comboBoxParameter.Items.Count - 1; }
                     comboBoxParameter.SelectedIndex = selected;

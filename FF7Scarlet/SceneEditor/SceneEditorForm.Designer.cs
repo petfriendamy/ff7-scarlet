@@ -1464,6 +1464,7 @@
             battleFlagsControlFormation.Name = "battleFlagsControlFormation";
             battleFlagsControlFormation.Size = new Size(339, 89);
             battleFlagsControlFormation.TabIndex = 11;
+            battleFlagsControlFormation.FlagsChanged += FormationDataChanged;
             // 
             // labelFormationLocation
             // 
@@ -1483,6 +1484,7 @@
             comboBoxFormationLocation.Name = "comboBoxFormationLocation";
             comboBoxFormationLocation.Size = new Size(339, 23);
             comboBoxFormationLocation.TabIndex = 1;
+            comboBoxFormationLocation.SelectedIndexChanged += FormationDataChanged;
             // 
             // labelFormationNext
             // 
@@ -1503,6 +1505,7 @@
             comboBoxFormationBattleType.Name = "comboBoxFormationBattleType";
             comboBoxFormationBattleType.Size = new Size(168, 23);
             comboBoxFormationBattleType.TabIndex = 8;
+            comboBoxFormationBattleType.SelectedIndexChanged += FormationDataChanged;
             // 
             // comboBoxFormationNext
             // 
@@ -1513,6 +1516,7 @@
             comboBoxFormationNext.Name = "comboBoxFormationNext";
             comboBoxFormationNext.Size = new Size(168, 23);
             comboBoxFormationNext.TabIndex = 3;
+            comboBoxFormationNext.SelectedIndexChanged += FormationDataChanged;
             // 
             // labelFormationBattleType
             // 
@@ -1586,6 +1590,7 @@
             numericFormationEscapeCounter.Name = "numericFormationEscapeCounter";
             numericFormationEscapeCounter.Size = new Size(168, 23);
             numericFormationEscapeCounter.TabIndex = 5;
+            numericFormationEscapeCounter.ValueChanged += FormationDataChanged;
             // 
             // groupBoxFormationEnemies
             // 
@@ -1615,6 +1620,7 @@
             coverFlagsControlFormationEnemy.Name = "coverFlagsControlFormationEnemy";
             coverFlagsControlFormationEnemy.Size = new Size(213, 141);
             coverFlagsControlFormationEnemy.TabIndex = 12;
+            coverFlagsControlFormationEnemy.FlagsChanged += FormationEnemyDataChanged;
             // 
             // initialConditionControlEnemy
             // 
@@ -1622,6 +1628,7 @@
             initialConditionControlEnemy.Name = "initialConditionControlEnemy";
             initialConditionControlEnemy.Size = new Size(319, 94);
             initialConditionControlEnemy.TabIndex = 11;
+            initialConditionControlEnemy.FlagsChanged += FormationEnemyDataChanged;
             // 
             // numericFormationEnemyRow
             // 
@@ -1630,6 +1637,7 @@
             numericFormationEnemyRow.Name = "numericFormationEnemyRow";
             numericFormationEnemyRow.Size = new Size(70, 23);
             numericFormationEnemyRow.TabIndex = 10;
+            numericFormationEnemyRow.ValueChanged += FormationEnemyDataChanged;
             // 
             // labelFormationEnemyRow
             // 
@@ -1647,6 +1655,7 @@
             numericFormationEnemyZ.Name = "numericFormationEnemyZ";
             numericFormationEnemyZ.Size = new Size(70, 23);
             numericFormationEnemyZ.TabIndex = 8;
+            numericFormationEnemyZ.ValueChanged += FormationEnemyDataChanged;
             // 
             // labelFormationEnemyZ
             // 
@@ -1664,6 +1673,7 @@
             numericFormationEnemyY.Name = "numericFormationEnemyY";
             numericFormationEnemyY.Size = new Size(70, 23);
             numericFormationEnemyY.TabIndex = 6;
+            numericFormationEnemyY.ValueChanged += FormationEnemyDataChanged;
             // 
             // labelFormationEnemyY
             // 
@@ -1681,6 +1691,7 @@
             numericFormationEnemyX.Name = "numericFormationEnemyX";
             numericFormationEnemyX.Size = new Size(70, 23);
             numericFormationEnemyX.TabIndex = 4;
+            numericFormationEnemyX.ValueChanged += FormationEnemyDataChanged;
             // 
             // labelFormationEnemyX
             // 
@@ -1743,6 +1754,7 @@
             cameraPositionControlExtra2.Name = "cameraPositionControlExtra2";
             cameraPositionControlExtra2.Size = new Size(239, 116);
             cameraPositionControlExtra2.TabIndex = 13;
+            cameraPositionControlExtra2.DataChanged += FormationDataChanged;
             // 
             // cameraPositionControlExtra1
             // 
@@ -1751,6 +1763,7 @@
             cameraPositionControlExtra1.Name = "cameraPositionControlExtra1";
             cameraPositionControlExtra1.Size = new Size(239, 116);
             cameraPositionControlExtra1.TabIndex = 12;
+            cameraPositionControlExtra1.DataChanged += FormationDataChanged;
             // 
             // cameraPositionControlMain
             // 
@@ -1759,6 +1772,7 @@
             cameraPositionControlMain.Name = "cameraPositionControlMain";
             cameraPositionControlMain.Size = new Size(239, 116);
             cameraPositionControlMain.TabIndex = 11;
+            cameraPositionControlMain.DataChanged += FormationDataChanged;
             // 
             // numericFormationPreBattleCamPosition
             // 
@@ -1768,6 +1782,7 @@
             numericFormationPreBattleCamPosition.Name = "numericFormationPreBattleCamPosition";
             numericFormationPreBattleCamPosition.Size = new Size(108, 23);
             numericFormationPreBattleCamPosition.TabIndex = 10;
+            numericFormationPreBattleCamPosition.ValueChanged += FormationDataChanged;
             // 
             // labelFormationCamPreBattlePosition
             // 
@@ -1906,25 +1921,25 @@
             // createNewSceneToolStripMenuItem
             // 
             createNewSceneToolStripMenuItem.Name = "createNewSceneToolStripMenuItem";
-            createNewSceneToolStripMenuItem.Size = new Size(180, 22);
+            createNewSceneToolStripMenuItem.Size = new Size(166, 22);
             createNewSceneToolStripMenuItem.Text = "Create new scene";
             // 
             // sceneCopyToolStripMenuItem
             // 
             sceneCopyToolStripMenuItem.Name = "sceneCopyToolStripMenuItem";
-            sceneCopyToolStripMenuItem.Size = new Size(180, 22);
+            sceneCopyToolStripMenuItem.Size = new Size(166, 22);
             sceneCopyToolStripMenuItem.Text = "Copy";
             // 
             // scenePasteToolStripMenuItem
             // 
             scenePasteToolStripMenuItem.Name = "scenePasteToolStripMenuItem";
-            scenePasteToolStripMenuItem.Size = new Size(180, 22);
+            scenePasteToolStripMenuItem.Size = new Size(166, 22);
             scenePasteToolStripMenuItem.Text = "Paste";
             // 
             // sceneDeleteToolStripMenuItem
             // 
             sceneDeleteToolStripMenuItem.Name = "sceneDeleteToolStripMenuItem";
-            sceneDeleteToolStripMenuItem.Size = new Size(180, 22);
+            sceneDeleteToolStripMenuItem.Size = new Size(166, 22);
             sceneDeleteToolStripMenuItem.Text = "Delete";
             // 
             // enemyToolStripMenuItem

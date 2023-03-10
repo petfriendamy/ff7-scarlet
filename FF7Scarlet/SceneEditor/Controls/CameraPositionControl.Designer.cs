@@ -29,25 +29,25 @@
         private void InitializeComponent()
         {
             groupBoxMain = new GroupBox();
-            numericPositionZ = new NumericUpDown();
-            labelPositionZ = new Label();
-            numericPositionY = new NumericUpDown();
-            labelPositionY = new Label();
-            numericPositionX = new NumericUpDown();
-            labelPositionX = new Label();
             numericUpAngleZ = new NumericUpDown();
             labelAngleZ = new Label();
             numericAngleY = new NumericUpDown();
             labelAngleY = new Label();
             numericAngleX = new NumericUpDown();
             labelAngleX = new Label();
+            numericPositionZ = new NumericUpDown();
+            labelPositionZ = new Label();
+            numericPositionY = new NumericUpDown();
+            labelPositionY = new Label();
+            numericPositionX = new NumericUpDown();
+            labelPositionX = new Label();
             groupBoxMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericPositionZ).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericPositionY).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericPositionX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpAngleZ).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAngleY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAngleX).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericPositionZ).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericPositionY).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericPositionX).BeginInit();
             SuspendLayout();
             // 
             // groupBoxMain
@@ -72,57 +72,6 @@
             groupBoxMain.TabStop = false;
             groupBoxMain.Text = "Position";
             // 
-            // numericPositionZ
-            // 
-            numericPositionZ.Location = new Point(157, 37);
-            numericPositionZ.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
-            numericPositionZ.Name = "numericPositionZ";
-            numericPositionZ.Size = new Size(70, 23);
-            numericPositionZ.TabIndex = 14;
-            // 
-            // labelPositionZ
-            // 
-            labelPositionZ.AutoSize = true;
-            labelPositionZ.Location = new Point(157, 19);
-            labelPositionZ.Name = "labelPositionZ";
-            labelPositionZ.Size = new Size(63, 15);
-            labelPositionZ.TabIndex = 13;
-            labelPositionZ.Text = "Z position:";
-            // 
-            // numericPositionY
-            // 
-            numericPositionY.Location = new Point(81, 37);
-            numericPositionY.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
-            numericPositionY.Name = "numericPositionY";
-            numericPositionY.Size = new Size(70, 23);
-            numericPositionY.TabIndex = 12;
-            // 
-            // labelPositionY
-            // 
-            labelPositionY.AutoSize = true;
-            labelPositionY.Location = new Point(81, 19);
-            labelPositionY.Name = "labelPositionY";
-            labelPositionY.Size = new Size(63, 15);
-            labelPositionY.TabIndex = 11;
-            labelPositionY.Text = "Y position:";
-            // 
-            // numericPositionX
-            // 
-            numericPositionX.Location = new Point(6, 37);
-            numericPositionX.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
-            numericPositionX.Name = "numericPositionX";
-            numericPositionX.Size = new Size(70, 23);
-            numericPositionX.TabIndex = 10;
-            // 
-            // labelPositionX
-            // 
-            labelPositionX.AutoSize = true;
-            labelPositionX.Location = new Point(6, 19);
-            labelPositionX.Name = "labelPositionX";
-            labelPositionX.Size = new Size(63, 15);
-            labelPositionX.TabIndex = 9;
-            labelPositionX.Text = "X position:";
-            // 
             // numericUpAngleZ
             // 
             numericUpAngleZ.Location = new Point(157, 81);
@@ -130,6 +79,7 @@
             numericUpAngleZ.Name = "numericUpAngleZ";
             numericUpAngleZ.Size = new Size(70, 23);
             numericUpAngleZ.TabIndex = 20;
+            numericUpAngleZ.ValueChanged += NumericValueChanged;
             // 
             // labelAngleZ
             // 
@@ -147,6 +97,7 @@
             numericAngleY.Name = "numericAngleY";
             numericAngleY.Size = new Size(70, 23);
             numericAngleY.TabIndex = 18;
+            numericAngleY.ValueChanged += NumericValueChanged;
             // 
             // labelAngleY
             // 
@@ -164,6 +115,7 @@
             numericAngleX.Name = "numericAngleX";
             numericAngleX.Size = new Size(70, 23);
             numericAngleX.TabIndex = 16;
+            numericAngleX.ValueChanged += NumericValueChanged;
             // 
             // labelAngleX
             // 
@@ -173,6 +125,60 @@
             labelAngleX.Size = new Size(49, 15);
             labelAngleX.TabIndex = 15;
             labelAngleX.Text = "X angle:";
+            // 
+            // numericPositionZ
+            // 
+            numericPositionZ.Location = new Point(157, 37);
+            numericPositionZ.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numericPositionZ.Name = "numericPositionZ";
+            numericPositionZ.Size = new Size(70, 23);
+            numericPositionZ.TabIndex = 14;
+            numericPositionZ.ValueChanged += NumericValueChanged;
+            // 
+            // labelPositionZ
+            // 
+            labelPositionZ.AutoSize = true;
+            labelPositionZ.Location = new Point(157, 19);
+            labelPositionZ.Name = "labelPositionZ";
+            labelPositionZ.Size = new Size(63, 15);
+            labelPositionZ.TabIndex = 13;
+            labelPositionZ.Text = "Z position:";
+            // 
+            // numericPositionY
+            // 
+            numericPositionY.Location = new Point(81, 37);
+            numericPositionY.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numericPositionY.Name = "numericPositionY";
+            numericPositionY.Size = new Size(70, 23);
+            numericPositionY.TabIndex = 12;
+            numericPositionY.ValueChanged += NumericValueChanged;
+            // 
+            // labelPositionY
+            // 
+            labelPositionY.AutoSize = true;
+            labelPositionY.Location = new Point(81, 19);
+            labelPositionY.Name = "labelPositionY";
+            labelPositionY.Size = new Size(63, 15);
+            labelPositionY.TabIndex = 11;
+            labelPositionY.Text = "Y position:";
+            // 
+            // numericPositionX
+            // 
+            numericPositionX.Location = new Point(6, 37);
+            numericPositionX.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numericPositionX.Name = "numericPositionX";
+            numericPositionX.Size = new Size(70, 23);
+            numericPositionX.TabIndex = 10;
+            numericPositionX.ValueChanged += NumericValueChanged;
+            // 
+            // labelPositionX
+            // 
+            labelPositionX.AutoSize = true;
+            labelPositionX.Location = new Point(6, 19);
+            labelPositionX.Name = "labelPositionX";
+            labelPositionX.Size = new Size(63, 15);
+            labelPositionX.TabIndex = 9;
+            labelPositionX.Text = "X position:";
             // 
             // CameraPositionControl
             // 
@@ -184,12 +190,12 @@
             Size = new Size(239, 116);
             groupBoxMain.ResumeLayout(false);
             groupBoxMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericPositionZ).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericPositionY).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericPositionX).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpAngleZ).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericAngleY).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericAngleX).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericPositionZ).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericPositionY).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericPositionX).EndInit();
             ResumeLayout(false);
         }
 

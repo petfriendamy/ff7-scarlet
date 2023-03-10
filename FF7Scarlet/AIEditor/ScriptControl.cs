@@ -50,6 +50,7 @@
 
         private void DisplayScript(int scriptID)
         {
+            listBoxCurrScript.BeginUpdate();
             listBoxCurrScript.Items.Clear();
             if (scriptID >= 0 && scriptID < Script.SCRIPT_COUNT)
             {
@@ -78,6 +79,7 @@
                     }
                 }
             }
+            listBoxCurrScript.EndUpdate();
         }
 
         private void ReloadScript(int selected)

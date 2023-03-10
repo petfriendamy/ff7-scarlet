@@ -61,6 +61,7 @@
             checkBoxMainScriptActive.TabIndex = 4;
             checkBoxMainScriptActive.Text = "Main script active";
             checkBoxMainScriptActive.UseVisualStyleBackColor = true;
+            checkBoxMainScriptActive.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxTargetable
             // 
@@ -71,6 +72,7 @@
             checkBoxTargetable.TabIndex = 3;
             checkBoxTargetable.Text = "Targetable";
             checkBoxTargetable.UseVisualStyleBackColor = true;
+            checkBoxTargetable.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxUnknown
             // 
@@ -81,6 +83,7 @@
             checkBoxUnknown.TabIndex = 2;
             checkBoxUnknown.Text = "Unknown";
             checkBoxUnknown.UseVisualStyleBackColor = true;
+            checkBoxUnknown.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxLeftSide
             // 
@@ -91,6 +94,7 @@
             checkBoxLeftSide.TabIndex = 1;
             checkBoxLeftSide.Text = "Left side (in pincer)";
             checkBoxLeftSide.UseVisualStyleBackColor = true;
+            checkBoxLeftSide.CheckedChanged += CheckBoxChanged;
             // 
             // checkBoxVisible
             // 
@@ -101,6 +105,7 @@
             checkBoxVisible.TabIndex = 0;
             checkBoxVisible.Text = "Visible";
             checkBoxVisible.UseVisualStyleBackColor = true;
+            checkBoxVisible.CheckedChanged += CheckBoxChanged;
             // 
             // InitialConditionControl
             // 
