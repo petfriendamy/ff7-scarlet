@@ -29,7 +29,7 @@ namespace FF7Scarlet.SceneEditor
                 //find all scenes that have matching enemy names
                 var foundScenes = new List<SceneSearchResult>();
                 string? currentName;
-                for (int i = 0; i < DataManager.SCENE_COUNT; ++i)
+                for (int i = 0; i < Scene.SCENE_COUNT; ++i)
                 {
                     for (int j = 0; j < Scene.ENEMY_COUNT; ++j)
                     {

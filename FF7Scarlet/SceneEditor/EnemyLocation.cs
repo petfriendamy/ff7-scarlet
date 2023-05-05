@@ -7,13 +7,19 @@ namespace FF7Scarlet.SceneEditor
         public const int BLOCK_SIZE = 16;
         private bool[] coverFlags = new bool[16];
 
-        public ushort EnemyID { get; set; }
+        public ushort EnemyID { get; set; } = HexParser.NULL_OFFSET_16_BIT;
         public Point3D Location { get; set; }
         public ushort Row { get; set; }
         public InitialConditions InitialConditionFlags { get; set; }
         public bool[] CoverFlags
         {
             get { return coverFlags; }
+        }
+
+        public EnemyLocation()
+        {
+            Location = new Point3D(HexParser.NULL_OFFSET_16_BIT, HexParser.NULL_OFFSET_16_BIT,
+                HexParser.NULL_OFFSET_16_BIT);
         }
 
         public EnemyLocation(byte[] data)

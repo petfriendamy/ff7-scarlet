@@ -5,7 +5,8 @@ namespace FF7Scarlet.SceneEditor
 {
     public class Scene : IAttackContainer
     {
-        public const int ENEMY_COUNT = 3, FORMATION_COUNT = 4, ALL_FORMATIONS_COUNT = 1024,
+        public const int SCENE_COUNT = 256, COMPRESSED_BLOCK_SIZE = 0x2000, UNCOMPRESSED_BLOCK_SIZE = 7808,
+            HEADER_COUNT = 16, ENEMY_COUNT = 3, FORMATION_COUNT = 4, ALL_FORMATIONS_COUNT = 1024,
             ATTACK_COUNT = 32, NAME_LENGTH = 32;
         private readonly Enemy?[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
@@ -15,7 +16,7 @@ namespace FF7Scarlet.SceneEditor
         private ushort[] enemyAIoffset = new ushort[ENEMY_COUNT];
         private readonly byte[] formationAIRaw = new byte[Formation.AI_BLOCK_SIZE];
         private readonly byte[] enemyAIraw = new byte[Enemy.AI_BLOCK_SIZE];
-        private byte[] rawData;
+        private readonly byte[] rawData = new byte[UNCOMPRESSED_BLOCK_SIZE];
 
         public Enemy?[] Enemies
         {
@@ -30,6 +31,14 @@ namespace FF7Scarlet.SceneEditor
             get { return attackList; }
         }
         public bool ScriptsLoaded { get; private set; } = false;
+
+        public Scene() :base()
+        {
+            for (int i = 0; i < FORMATION_COUNT; ++i)
+            {
+                Formations[i] = new Formation(this);
+            }
+        }
 
         public Scene(string filePath) :base()
         {

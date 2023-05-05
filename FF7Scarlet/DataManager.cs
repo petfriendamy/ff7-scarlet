@@ -15,12 +15,9 @@ namespace FF7Scarlet
         private static StartupForm? startupForm = null;
         private static KernelForm? kernelForm = null;
         private static SceneEditorForm? sceneEditorForm = null;
-        private static readonly Scene[] sceneList = new Scene[SCENE_COUNT];
+        private static readonly Scene[] sceneList = new Scene[Scene.SCENE_COUNT];
         private static readonly byte[] sceneLookupTable = new byte[64];
         private static Dictionary<ushort, Attack> syncedAttacks = new();
-
-        public const int SCENE_COUNT = 256;
-        private const int COMPRESSED_BLOCK_SIZE = 0x2000, UNCOMPRESSED_BLOCK_SIZE = 7808, HEADER_COUNT = 16;
 
         public static string KernelPath { get; private set; } = string.Empty;
         public static string Kernel2Path { get; private set; } = string.Empty;
@@ -224,8 +221,8 @@ namespace FF7Scarlet
 
         public static Scene[] CopySceneList()
         {
-            var copy = new Scene[SCENE_COUNT];
-            for (int i = 0; i < SCENE_COUNT; ++i)
+            var copy = new Scene[Scene.SCENE_COUNT];
+            for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
                 copy[i] = new Scene(sceneList[i]);
             }
@@ -239,7 +236,7 @@ namespace FF7Scarlet
 
         public static void UpdateAllScenes(Form caller, Scene[] newScenes)
         {
-            for (int i = 0; i < SCENE_COUNT; ++i)
+            for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
                 UpdateScene(caller, newScenes[i], i);
             }
@@ -376,8 +373,8 @@ namespace FF7Scarlet
 
             int i, j, currScene = 0, currBlock = 0;
             uint currHeader, nextHeader, currOffset = 0;
-            var sceneOffset = new uint[SCENE_COUNT];
-            var sceneSize = new uint[SCENE_COUNT];
+            var sceneOffset = new uint[Scene.SCENE_COUNT];
+            var sceneSize = new uint[Scene.SCENE_COUNT];
             byte[] compressedData, headerBytes = new byte[4];
 
             //fill the scene lookup table with 0xFF
@@ -391,7 +388,7 @@ namespace FF7Scarlet
             {
                 sceneLookupTable[currBlock] = (byte)currScene;
                 j = 0;
-                for (i = 0; i < HEADER_COUNT; ++i)
+                for (i = 0; i < Scene.HEADER_COUNT; ++i)
                 {
                     Array.Copy(fileData, currOffset + j, headerBytes, 0, 4);
                     currHeader = BitConverter.ToUInt32(headerBytes, 0);
@@ -409,7 +406,7 @@ namespace FF7Scarlet
                         sceneOffset[currScene] = (currHeader * 4) + currOffset;
                         if (nextHeader == HexParser.NULL_OFFSET_32_BIT)
                         {
-                            sceneSize[currScene] = COMPRESSED_BLOCK_SIZE - (currHeader * 4);
+                            sceneSize[currScene] = Scene.COMPRESSED_BLOCK_SIZE - (currHeader * 4);
                         }
                         else
                         {
@@ -419,23 +416,23 @@ namespace FF7Scarlet
                     }
                     j += 4;
                 }
-                currOffset += COMPRESSED_BLOCK_SIZE;
+                currOffset += Scene.COMPRESSED_BLOCK_SIZE;
                 currBlock++;
             }
 
             //get and decompress each of the scene files
             int decompressedSize;
-            for (i = 0; i < SCENE_COUNT; ++i)
+            for (i = 0; i < Scene.SCENE_COUNT; ++i)
             {
                 compressedData = new byte[sceneSize[i]];
                 Array.Copy(fileData, sceneOffset[i], compressedData, 0, sceneSize[i]);
-                var uncompressedData = new byte[UNCOMPRESSED_BLOCK_SIZE];
+                var uncompressedData = new byte[Scene.UNCOMPRESSED_BLOCK_SIZE];
 
                 using (var inputStream = new MemoryStream(compressedData))
                 using (var outputStream = new MemoryStream())
                 using (var gzipper = new GZipStream(inputStream, CompressionMode.Decompress))
                 {
-                    while ((decompressedSize = gzipper.Read(uncompressedData, 0, UNCOMPRESSED_BLOCK_SIZE)) != 0)
+                    while ((decompressedSize = gzipper.Read(uncompressedData, 0, Scene.UNCOMPRESSED_BLOCK_SIZE)) != 0)
                     {
                         outputStream.Write(uncompressedData, 0, decompressedSize);
                     }
@@ -455,11 +452,11 @@ namespace FF7Scarlet
 
             var compressedScenes = new List<byte[]> { };
             byte[] compressedData;
-            var headers = new uint[SCENE_COUNT];
-            var sceneBlock = new int[SCENE_COUNT];
+            var headers = new uint[Scene.SCENE_COUNT];
+            var sceneBlock = new int[Scene.SCENE_COUNT];
             var blockSize = new List<uint> { };
             int i, j, n = 0, currBlock = 0, currScene = 0;
-            uint currHeader = HEADER_COUNT * 4, calculatedSize;
+            uint currHeader = Scene.HEADER_COUNT * 4, calculatedSize;
 
             //fill the scene lookup table with 0xFF
             for (i = 0; i < 64; ++i)
@@ -469,7 +466,7 @@ namespace FF7Scarlet
             sceneLookupTable[0] = 0; //always 0
 
             //create the scene.bin
-            for (i = 0; i < SCENE_COUNT; ++i)
+            for (i = 0; i < Scene.SCENE_COUNT; ++i)
             {
                 compressedData = GetCompressedData(sceneList[i].GetRawData());
 
@@ -488,12 +485,12 @@ namespace FF7Scarlet
                 //calculate position of this scene
                 n++;
                 calculatedSize = currHeader + (uint)compressedData.Length;
-                if (n >= HEADER_COUNT || calculatedSize >= COMPRESSED_BLOCK_SIZE)
+                if (n >= Scene.HEADER_COUNT || calculatedSize >= Scene.COMPRESSED_BLOCK_SIZE)
                 {
                     n = 0;
                     blockSize.Add(calculatedSize);
                     currBlock++;
-                    currHeader = HEADER_COUNT * 4;
+                    currHeader = Scene.HEADER_COUNT * 4;
                     sceneLookupTable[currBlock] = (byte)i;
                 }
                 headers[i] = currHeader / 4;
@@ -509,9 +506,9 @@ namespace FF7Scarlet
                 for (i = 0; i < blockSize.Count; ++i)
                 {
                     //write headers for this block
-                    for (j = 0; j < HEADER_COUNT; ++j)
+                    for (j = 0; j < Scene.HEADER_COUNT; ++j)
                     {
-                        if (currScene + j < SCENE_COUNT && sceneBlock[currScene + j] == i)
+                        if (currScene + j < Scene.SCENE_COUNT && sceneBlock[currScene + j] == i)
                         {
                             writer.Write(headers[currScene + j]);
                         }
@@ -519,14 +516,14 @@ namespace FF7Scarlet
                     }
 
                     //write the scenes assigned to this block
-                    while (currScene < SCENE_COUNT && sceneBlock[currScene] == i)
+                    while (currScene < Scene.SCENE_COUNT && sceneBlock[currScene] == i)
                     {
                         writer.Write(compressedScenes[currScene]);
                         currScene++;
                     }
 
                     //add padding until the block is full
-                    while (fs.Length % COMPRESSED_BLOCK_SIZE != 0)
+                    while (fs.Length % Scene.COMPRESSED_BLOCK_SIZE != 0)
                     {
                         writer.Write((byte)0xFF);
                     }

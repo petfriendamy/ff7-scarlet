@@ -16,6 +16,17 @@
             get { return cameraDirections; }
         }
 
+        public CameraPlacementData()
+        {
+            for (int i = 0; i < POSITION_COUNT; ++i)
+            {
+                CameraPositions[i] = new Point3D(HexParser.NULL_OFFSET_16_BIT, HexParser.NULL_OFFSET_16_BIT,
+                    HexParser.NULL_OFFSET_16_BIT);
+                CameraDirections[i] = new Point3D(HexParser.NULL_OFFSET_16_BIT, HexParser.NULL_OFFSET_16_BIT,
+                    HexParser.NULL_OFFSET_16_BIT);
+            }
+        }
+
         public CameraPlacementData(byte[] data)
         {
             ushort x, y, z;

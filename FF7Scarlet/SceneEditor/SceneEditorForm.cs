@@ -226,7 +226,7 @@ namespace FF7Scarlet.SceneEditor
             this.syncedAttacks = syncedAttacks;
             lastAttackID = 0;
             comboBoxSceneList.BeginUpdate();
-            for (int i = 0; i < DataManager.SCENE_COUNT; ++i)
+            for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
                 comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
                 foreach (var atk in sceneList[i].AttackList)
@@ -317,9 +317,10 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        private void LoadSceneData(Scene scene, bool clearLoadingWhenDone)
+        private void LoadSceneData(int sceneIndex, bool clearLoadingWhenDone, bool ignoreNull)
         {
             loading = true;
+            var scene = sceneList[sceneIndex];
             if (!scene.ScriptsLoaded) { scene.ParseAIScripts(); }
             int i;
 
@@ -386,57 +387,44 @@ namespace FF7Scarlet.SceneEditor
             comboBoxEnemy.EndUpdate();
             comboBoxFormationSelectedEnemy.EndUpdate();
             comboBoxEnemy.SelectedIndex = 0;
-            LoadEnemyData(scene.Enemies[0], false);
+            LoadEnemyData(scene.Enemies[0], false, ignoreNull);
 
             //get formations
-            comboBoxFormation.BeginUpdate();
-            comboBoxFormation.Items.Clear();
-            for (i = 0; i < Scene.FORMATION_COUNT; ++i)
+            UpdateFormations(sceneIndex, false);
+            if (SelectedFormation != null)
             {
-                comboBoxFormation.Items.Add($"{(Scene.FORMATION_COUNT *
-                    SelectedSceneIndex) + i}: {scene.GetFormationEnemyNames(i)}");
+                LoadFormationData(SelectedFormation, false);
             }
-            comboBoxFormation.EndUpdate();
-            comboBoxFormation.SelectedIndex = 0;
-            LoadFormationData(scene.Formations[0], false);
 
             if (clearLoadingWhenDone) { loading = false; }
         }
 
-        private void LoadEnemyData(Enemy? enemy, bool clearLoadingWhenDone)
+        private void LoadEnemyData(Enemy? enemy, bool clearLoadingWhenDone, bool ignoreNull)
         {
             loading = true;
             if (enemy == null) //no enemy data to load
             {
-                var result = MessageBox.Show("There is no enemy data in the selected slot. Would you like to create a new enemy?",
-                    "No Enemy Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = DialogResult.None;
+                if (!ignoreNull)
+                {
+                    result = MessageBox.Show("There is no enemy data in the selected slot. Would you like to create a new enemy?",
+                        "No Enemy Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                }
 
                 if (result == DialogResult.Yes)
                 {
-                    if (SelectedScene != null && SelectedEnemyIndex != -1)
-                    {
-                        ushort id = 0;
-                        while (SelectedScene.GetEnemyByID(id) != null)
-                        {
-                            id++;
-                        }
-                        SelectedScene.Enemies[SelectedEnemyIndex] = new Enemy(SelectedScene, id,
-                            new FFText(), null);
-                        if (SelectedEnemy != null)
-                        {
-                            validEnemies.Add(SelectedEnemy);
-                            comboBoxFormationSelectedEnemy.Items.Add(SelectedEnemy.GetNameString());
-                        }
-                        UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
-                        SetUnsaved(true);
-                        LoadEnemyData(SelectedEnemy, false);
-                    }
+                    CreateNewEnemy(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
                 }
-                else { tabControlEnemyData.Enabled = false; }
+                else
+                {
+                    tabControlEnemyData.Enabled = false;
+                    enemyDeleteToolStripMenuItem.Enabled = false;
+                }
             }
             else //load data
             {
                 tabControlEnemyData.Enabled = true;
+                enemyDeleteToolStripMenuItem.Enabled = true;
 
                 //page 1
                 textBoxEnemyName.Text = enemy.Name.ToString();
@@ -533,24 +521,60 @@ namespace FF7Scarlet.SceneEditor
             if (clearLoadingWhenDone) { loading = false; }
         }
 
+        private void CreateNewEnemy(int sceneIndex, int enemyIndex, int formationIndex)
+        {
+            var scene = sceneList[sceneIndex];
+            if (scene != null && enemyIndex != -1)
+            {
+                //get a valid model ID
+                ushort id = 0;
+                var enemy = scene.Enemies[enemyIndex];
+                if (enemy != null)
+                {
+                    id = enemy.ModelID;
+                }
+                else
+                {
+                    while (scene.GetEnemyByID(id) != null)
+                    {
+                        id++;
+                    }
+                }
+
+                enemy = new Enemy(scene, id, new FFText(), null);
+                scene.Enemies[enemyIndex] = enemy;
+                validEnemies.Add(enemy);
+                comboBoxFormationSelectedEnemy.Items.Add(enemy.GetNameString());
+                tabControlMain.SelectedTab = tabPageEnemyData;
+                UpdateSelectedEnemyName(sceneIndex, enemyIndex, formationIndex);
+                enemyNeedsSync = false;
+                SetUnsaved(true);
+                LoadEnemyData(enemy, false, true);
+            }
+        }
+
         private void UpdateSelectedEnemyName(int scene, int enemy, int formation)
         {
-            if (scene >= 0 && scene < DataManager.SCENE_COUNT)
+            if (scene >= 0 && scene < Scene.SCENE_COUNT)
             {
                 comboBoxSceneList.SelectedIndex = scene;
                 if (enemy >= 0 && enemy < Scene.ENEMY_COUNT)
                 {
                     var e = sceneList[scene].Enemies[enemy];
+                    comboBoxEnemy.SelectedIndex = enemy;
+
+                    loading = true;
+                    comboBoxSceneList.Items[scene] = $"{scene}: {sceneList[scene].GetEnemyNames()}";
+                    string name;
+                    if (e == null) { name = "(none)"; }
+                    else { name = sceneList[scene].GetEnemyName(e.ModelID); }
+                    comboBoxEnemy.Items[enemy] = name;
+
+                    //update name in formation data
+                    UpdateFormations(scene, false);
+                    var f = sceneList[scene].Formations[formation];
                     if (e != null)
                     {
-                        comboBoxEnemy.SelectedIndex = enemy;
-                        loading = true;
-                        comboBoxSceneList.Items[scene] = $"{scene}: {sceneList[scene].GetEnemyNames()}";
-                        string name = sceneList[scene].GetEnemyName(e.ModelID);
-                        comboBoxEnemy.Items[enemy] = name;
-
-                        //update name in formation data
-                        var f = sceneList[scene].Formations[formation];
                         for (int i = 0; i < Formation.ENEMY_COUNT; ++i)
                         {
                             if (f.EnemyLocations[i].EnemyID == e.ModelID)
@@ -560,8 +584,8 @@ namespace FF7Scarlet.SceneEditor
                         }
                         int j = validEnemies.IndexOf(e);
                         comboBoxFormationSelectedEnemy.Items[j] = name;
-                        loading = false;
                     }
+                    loading = false;
                 }
             }
         }
@@ -643,11 +667,16 @@ namespace FF7Scarlet.SceneEditor
                         CreateNewAttack(SelectedScene, SelectedAttackIndex);
                     }
                 }
-                else { tabControlAttackData.Enabled = false; }
+                else
+                {
+                    tabControlAttackData.Enabled = false;
+                    attackDeleteToolStripMenuItem.Enabled = false;
+                }
             }
             else
             {
                 tabControlAttackData.Enabled = true;
+                attackDeleteToolStripMenuItem.Enabled = true;
 
                 //page 1
                 textBoxAttackID.Text = attack.ID.ToString("X4");
@@ -701,6 +730,7 @@ namespace FF7Scarlet.SceneEditor
             UpdateSelectedAttackName(scene, SelectedEnemy, attack);
             validAttacks.Add(newAttack);
             comboBoxEnemyAttackID.Items.Add(name);
+            tabControlMain.SelectedTab = tabPageAttackData;
             SetUnsaved(true);
             LoadAttackData(SelectedAttack, false);
         }
@@ -838,6 +868,22 @@ namespace FF7Scarlet.SceneEditor
             if (clearLoadingWhenDone) { loading = false; }
         }
 
+        private void UpdateFormations(int scene, bool clearLoadingWhenDone)
+        {
+            loading = true;
+            int index = Math.Max(0, comboBoxFormation.SelectedIndex);
+            comboBoxFormation.BeginUpdate();
+            comboBoxFormation.Items.Clear();
+            for (int i = 0; i < Scene.FORMATION_COUNT; ++i)
+            {
+                comboBoxFormation.Items.Add($"{(Scene.FORMATION_COUNT *
+                    SelectedSceneIndex) + i}: {sceneList[scene].GetFormationEnemyNames(i)}");
+            }
+            comboBoxFormation.EndUpdate();
+            comboBoxFormation.SelectedIndex = index;
+            if (clearLoadingWhenDone) { loading = false; }
+        }
+
         private void SyncFormationData(Formation formation)
         {
             //battle setup data
@@ -952,10 +998,10 @@ namespace FF7Scarlet.SceneEditor
             int i = 0;
             try
             {
-                for (i = 0; i < DataManager.SCENE_COUNT; ++i)
+                for (i = 0; i < Scene.SCENE_COUNT; ++i)
                 {
                     await UpdateDataAsync(i);
-                    progressBarSaving.Value = ((i + 1) / DataManager.SCENE_COUNT) * 100;
+                    progressBarSaving.Value = ((i + 1) / Scene.SCENE_COUNT) * 100;
                 }
                 await Task.Delay(500);
 
@@ -1015,7 +1061,7 @@ namespace FF7Scarlet.SceneEditor
                     }
                 }
                 prevScene = SelectedSceneIndex;
-                LoadSceneData(SelectedScene, true);
+                LoadSceneData(SelectedSceneIndex, true, false);
             }
         }
 
@@ -1032,7 +1078,7 @@ namespace FF7Scarlet.SceneEditor
                     }
                 }
                 prevEnemy = SelectedEnemyIndex;
-                LoadEnemyData(SelectedEnemy, true);
+                LoadEnemyData(SelectedEnemy, true, false);
             }
         }
 
@@ -1809,7 +1855,115 @@ namespace FF7Scarlet.SceneEditor
 
         private void buttonImport_Click(object sender, EventArgs e)
         {
-            //stuff
+            SyncAllUnsavedData();
+            DialogResult result;
+            string[] paths;
+            using (var import = new OpenFileDialog())
+            {
+                import.Filter = "Scene files|scene.*.bin";
+                import.Multiselect = true;
+                result = import.ShowDialog();
+                paths = import.FileNames;
+            }
+
+            if (result == DialogResult.OK && paths.Length > 0)
+            {
+                var successfulImports = new List<int>();
+                var unsuccessfulImports = new List<int>();
+
+                foreach (var path in paths)
+                {
+                    //attempt to get the scene's number
+                    string temp = Path.GetFileNameWithoutExtension(path);
+                    temp = temp.Substring(temp.IndexOf('.') + 1);
+                    int sceneIndex;
+                    if (!int.TryParse(temp, out sceneIndex))
+                    {
+                        MessageBox.Show($"Invalid scene file: {Path.GetFileName(path)}", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        //if only one file is selected, prompt to import into the current scene
+                        if (paths.Length == 1 && SelectedSceneIndex != sceneIndex && SelectedSceneIndex >= 0)
+                        {
+                            result = MessageBox.Show("Import into the currently selected scene? Otherwise, the scene will be imported into the scene matching the file name.",
+                                "Import Selected?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                            switch (result)
+                            {
+                                case DialogResult.Cancel:
+                                    return;
+                                case DialogResult.Yes:
+                                    sceneIndex = SelectedSceneIndex;
+                                    break;
+                            }
+                        }
+
+                        //attempt to insert the scene at the correct place
+                        try
+                        {
+                            var newScene = new Scene(path);
+                            sceneList[sceneIndex] = newScene;
+                            comboBoxSceneList.Items[sceneIndex] = $"{sceneIndex}: {newScene.GetEnemyNames()}";
+                            successfulImports.Add(sceneIndex);
+                        }
+                        catch
+                        {
+                            unsuccessfulImports.Add(sceneIndex);
+                        }
+                    }
+                }
+
+                //display which scenes imported correctly
+                successfulImports.Sort();
+                if (successfulImports.Count == 0)
+                {
+                    MessageBox.Show("Failed to import scene(s).", "Error", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+                else
+                {
+                    string output = "Successfully imported the following scene(s): ";
+                    int i;
+                    for (i = 0; i < successfulImports.Count; ++i)
+                    {
+                        if (i == successfulImports.Count - 1)
+                        {
+                            output += successfulImports[i].ToString();
+                        }
+                        else
+                        {
+                            output += $"{successfulImports[i]}, ";
+                        }
+                    }
+
+                    //if any scenes failed to import, list those
+                    if (unsuccessfulImports.Count > 0)
+                    {
+                        unsuccessfulImports.Sort();
+                        output += "\n\nThe following scene(s) failed to import: ";
+                        for (i = 0; i < unsuccessfulImports.Count; ++i)
+                        {
+                            if (i == unsuccessfulImports.Count - 1)
+                            {
+                                output += unsuccessfulImports[i].ToString();
+                            }
+                            else
+                            {
+                                output += $"{unsuccessfulImports[i]}, ";
+                            }
+                        }
+                    }
+
+                    MessageBox.Show(output, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    comboBoxSceneList.SelectedIndex = successfulImports[0];
+                    if (SelectedScene != null)
+                    {
+                        LoadSceneData(SelectedSceneIndex, true, true);
+                    }
+                    SetUnsaved(true);
+                }
+            }
         }
 
         private void buttonExport_Click(object sender, EventArgs e)
@@ -1819,6 +1973,62 @@ namespace FF7Scarlet.SceneEditor
             {
                 export.ShowDialog();
             }
+        }
+
+        private void sceneCopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedScene != null)
+            {
+                DataManager.CopiedScene = new Scene(SelectedScene);
+                scenePasteToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        private void scenePasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedSceneIndex != -1 && DataManager.CopiedScene != null)
+            {
+                sceneList[SelectedSceneIndex] = new Scene(DataManager.CopiedScene);
+                LoadSceneData(SelectedSceneIndex, true, true);
+                enemyNeedsSync = false;
+                attackNeedsSync = false;
+                formationNeedsSync = false;
+                formationEnemyNeedsSync = false;
+                SetUnsaved(true);
+            }
+        }
+
+        private void sceneClearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedScene != null)
+            {
+                var result = MessageBox.Show("This will delete ALL enemies, attacks, and formations contained within this scene. Are you sure you want to do this?",
+                    "Delete Scene?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    loading = true;
+                    sceneList[SelectedSceneIndex] = new Scene();
+                    comboBoxSceneList.Items[SelectedSceneIndex] = $"{SelectedSceneIndex}: {sceneList[SelectedSceneIndex].GetEnemyNames()}";
+                    LoadSceneData(SelectedSceneIndex, false, true);
+                    enemyNeedsSync = false;
+                    attackNeedsSync = false;
+                    formationNeedsSync = false;
+                    formationEnemyNeedsSync = false;
+                    loading = false;
+                    SetUnsaved(true);
+                }
+            }
+        }
+
+        private void createNewEnemyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedEnemy != null)
+            {
+                var result = MessageBox.Show("There is already enemy data in the selected slot. Are you sure you want to overwrite it?",
+                    "Overwrite?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.No) { return; }
+            }
+            CreateNewEnemy(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
         }
 
         private void enemyCopyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1835,9 +2045,50 @@ namespace FF7Scarlet.SceneEditor
             if (SelectedEnemyIndex != -1 && SelectedScene != null && DataManager.CopiedEnemy != null)
             {
                 SelectedScene.Enemies[SelectedEnemyIndex] = new Enemy(DataManager.CopiedEnemy);
-                LoadEnemyData(SelectedEnemy, true);
+                LoadEnemyData(SelectedEnemy, true, true);
                 UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
+                tabControlMain.SelectedTab = tabPageEnemyData;
+                enemyNeedsSync = false;
                 SetUnsaved(true);
+            }
+        }
+
+        private void enemyDeleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedEnemy != null && SelectedScene != null && SelectedFormation != null)
+            {
+                var result = MessageBox.Show("Are you sure you want to delete the selected enemy? This can't be undone!",
+                    "Delete Enemy?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    //remove the enemy from all formations
+                    ushort id = SelectedEnemy.ModelID;
+                    int i, j;
+                    for (i = 0; i < Scene.FORMATION_COUNT; ++i)
+                    {
+                        for (j = 0; j < Formation.ENEMY_COUNT; ++j)
+                        {
+                            if (SelectedScene.Formations[i].EnemyLocations[j].EnemyID == id)
+                            {
+                                SelectedScene.Formations[i].EnemyLocations[j].EnemyID = HexParser.NULL_OFFSET_16_BIT;
+                            }
+                        }
+                    }
+                    LoadFormationData(SelectedFormation, true);
+
+                    //remove enemy from valid enemies list
+                    i = validEnemies.IndexOf(SelectedEnemy);
+                    validEnemies.RemoveAt(i);
+                    comboBoxFormationSelectedEnemy.Items.RemoveAt(i);
+
+                    //delete the enemy
+                    SelectedScene.Enemies[SelectedEnemyIndex] = null;
+                    UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
+                    tabControlEnemyData.Enabled = false;
+                    enemyDeleteToolStripMenuItem.Enabled = false;
+                    enemyNeedsSync = false;
+                    SetUnsaved(true);
+                }
             }
         }
 

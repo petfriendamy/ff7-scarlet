@@ -5,8 +5,8 @@
         public const int BATTLE_ARENA_ID_COUNT = 4, BLOCK_SIZE = 20;
         private readonly ushort[] battleArenaIDs = new ushort[BATTLE_ARENA_ID_COUNT];
 
-        public LocationInfo? Location { get; set; }
-        public ushort NextSceneID { get; set; }
+        public LocationInfo? Location { get; set; } = null;
+        public ushort NextSceneID { get; set; } = HexParser.NULL_OFFSET_16_BIT;
         public ushort EscapeCounter { get; set; }
         public BattleFlags BattleFlags { get; set; }
         public BattleType BattleType { get; set; }
@@ -14,6 +14,14 @@
         public ushort[] BattleArenaIDs
         {
             get { return battleArenaIDs; }
+        }
+
+        public BattleSetupData()
+        {
+            for (int i = 0; i <  BATTLE_ARENA_ID_COUNT; ++i)
+            {
+                BattleArenaIDs[i] = HexParser.NULL_OFFSET_16_BIT;
+            }
         }
 
         public BattleSetupData(byte[] data)

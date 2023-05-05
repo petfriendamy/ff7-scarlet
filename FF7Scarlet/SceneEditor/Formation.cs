@@ -14,6 +14,16 @@ namespace FF7Scarlet.SceneEditor
             get { return enemyLocations; }
         }
 
+        public Formation(Scene parent) :base(parent)
+        {
+            BattleSetupData = new BattleSetupData();
+            CameraPlacementData = new CameraPlacementData();
+            for (int i = 0; i < ENEMY_COUNT; ++i)
+            {
+                EnemyLocations[i] = new EnemyLocation();
+            }
+        }
+
         public Formation(Scene parent, BattleSetupData setupData, CameraPlacementData cameraData,
             EnemyLocation[] enemyLocations) :base(parent)
         {

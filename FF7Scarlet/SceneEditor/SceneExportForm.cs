@@ -12,7 +12,7 @@
             scenes = sceneList;
             selectedScene = selected;
 
-            for (int i = 0; i < DataManager.SCENE_COUNT; ++i)
+            for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
                 listBoxSceneList.Items.Add($"{i}: {scenes[i].GetEnemyNames()}");
             }
@@ -38,7 +38,7 @@
         private void buttonSelectAll_Click(object sender, EventArgs e)
         {
             listBoxSceneList.SelectedIndices.Clear();
-            for (int i = 0; i < DataManager.SCENE_COUNT; ++i)
+            for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
                 listBoxSceneList.SelectedIndices.Add(i);
             }
