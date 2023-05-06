@@ -207,6 +207,15 @@ namespace FF7Scarlet.SceneEditor
             return (id != HexParser.NULL_OFFSET_16_BIT && ManipAttackIDs.ToList().Contains(id));
         }
 
+        public bool ManipListIsEmpty()
+        {
+            foreach (var atk in ManipAttackIDs)
+            {
+                if (atk != HexParser.NULL_OFFSET_16_BIT) { return false; }
+            }
+            return true;
+        }
+
         public byte[] GetRawEnemyData()
         {
             var data = new byte[DATA_BLOCK_SIZE + Scene.NAME_LENGTH];

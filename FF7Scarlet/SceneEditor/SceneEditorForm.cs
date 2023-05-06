@@ -1277,19 +1277,23 @@ namespace FF7Scarlet.SceneEditor
                 loading = true;
                 comboBoxEnemyAttackID.Enabled = true;
                 var atk = SelectedScene.GetAttackByID(SelectedEnemy.AttackIDs[i]);
-                if (atk == null)
+                if (atk == null) //no attack selected
                 {
                     comboBoxEnemyAttackID.SelectedIndex = 0;
                     comboBoxEnemyAttackCamID.Text = HexParser.NULL_OFFSET_16_BIT.ToString("X4");
                     EnableOrDisableGroupBox(groupBoxEnemyAttacks, false, true, comboBoxEnemyAttackID);
                 }
-                else
+                else //select an attack
                 {
                     EnableOrDisableGroupBox(groupBoxEnemyAttacks, true, false);
                     comboBoxEnemyAttackID.SelectedIndex = validAttacks.IndexOf(atk) + 1;
                     numericAttackAnimationIndex.Value = SelectedEnemy.ActionAnimationIndexes[i];
                     comboBoxEnemyAttackCamID.Text = SelectedEnemy.CameraMovementIDs[i].ToString("X4");
                     checkBoxEnemyAttackIsManipable.Checked = SelectedEnemy.AttackIsManipable(atk.ID);
+                    if (SelectedEnemy.ManipListIsEmpty())
+                    {
+                        buttonViewManipList.Enabled = false;
+                    }
                 }
                 loading = false;
             }
@@ -1303,13 +1307,13 @@ namespace FF7Scarlet.SceneEditor
                 && newAttack <= validAttacks.Count && SelectedEnemy != null)
             {
                 loading = true;
-                if (newAttack == 0)
+                if (newAttack == 0) //none
                 {
                     SelectedEnemy.AttackIDs[selectedAttack] = HexParser.NULL_OFFSET_16_BIT;
                     listBoxEnemyAttacks.Items[selectedAttack] = "(none)";
                     EnableOrDisableGroupBox(groupBoxEnemyAttacks, false, true, comboBoxEnemyAttackID);
                 }
-                else
+                else //add attack
                 {
                     var atk = validAttacks[newAttack - 1];
                     SelectedEnemy.AttackIDs[selectedAttack] = atk.ID;
@@ -1366,6 +1370,7 @@ namespace FF7Scarlet.SceneEditor
                         if (SelectedEnemy.ManipAttackIDs[j] == HexParser.NULL_OFFSET_16_BIT)
                         {
                             SelectedEnemy.ManipAttackIDs[j] = SelectedEnemy.AttackIDs[i];
+                            buttonViewManipList.Enabled = true;
                             SetUnsaved(true);
                             return;
                         }
@@ -1393,7 +1398,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else //remove attack from the list
                 {
-                    for (j = 0; i < Enemy.MANIP_ATTACK_COUNT; ++j)
+                    for (j = 0; j < Enemy.MANIP_ATTACK_COUNT; ++j)
                     {
                         if (SelectedEnemy.ManipAttackIDs[j] == SelectedEnemy.AttackIDs[i])
                         {
@@ -1403,12 +1408,52 @@ namespace FF7Scarlet.SceneEditor
                             }
                             SelectedEnemy.ManipAttackIDs[Enemy.MANIP_ATTACK_COUNT - 1] =
                                 HexParser.NULL_OFFSET_16_BIT;
+                            if (SelectedEnemy.ManipListIsEmpty())
+                            {
+                                buttonViewManipList.Enabled = false;
+                            }
                             SetUnsaved(true);
                             return;
                         }
                     }
                 }
                 loading = false;
+            }
+        }
+
+        private void buttonViewManipList_Click(object sender, EventArgs e)
+        {
+            if (SelectedScene != null && SelectedEnemy != null)
+            {
+                if (SelectedEnemy.ManipListIsEmpty())
+                {
+                    MessageBox.Show("The manip list is empty.", "No Attacks", MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    DialogResult result;
+                    ushort[] manipList;
+                    using (var form = new ManipListForm(SelectedScene, SelectedEnemyIndex))
+                    {
+                        result = form.ShowDialog();
+                        manipList = form.ManipList;
+                    }
+
+                    //update the manip list
+                    if (result == DialogResult.OK)
+                    {
+                        Array.Copy(manipList, SelectedEnemy.ManipAttackIDs, Enemy.MANIP_ATTACK_COUNT);
+                        var manipAttack = SelectedScene.GetAttackByID(SelectedEnemy.AttackIDs[listBoxEnemyAttacks.SelectedIndex]);
+                        if (manipAttack != null)
+                        {
+                            loading = true;
+                            checkBoxEnemyAttackIsManipable.Checked = SelectedEnemy.AttackIsManipable(manipAttack.ID);
+                            loading = false;
+                        }
+                        SetUnsaved(true);
+                    }
+                }
             }
         }
 

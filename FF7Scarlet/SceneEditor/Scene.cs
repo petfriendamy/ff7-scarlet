@@ -137,6 +137,10 @@ namespace FF7Scarlet.SceneEditor
             {
                 return atk.GetNameString();
             }
+            else if (id == HexParser.NULL_OFFSET_16_BIT)
+            {
+                return "(none)";
+            }
             return $"Unknown ({id:X4})";
         }
 

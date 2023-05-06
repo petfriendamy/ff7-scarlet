@@ -880,6 +880,7 @@
             buttonViewManipList.TabIndex = 8;
             buttonViewManipList.Text = "View manip list";
             buttonViewManipList.UseVisualStyleBackColor = true;
+            buttonViewManipList.Click += buttonViewManipList_Click;
             // 
             // numericAttackAnimationIndex
             // 
@@ -1919,21 +1920,21 @@
             // sceneCopyToolStripMenuItem
             // 
             sceneCopyToolStripMenuItem.Name = "sceneCopyToolStripMenuItem";
-            sceneCopyToolStripMenuItem.Size = new Size(180, 22);
+            sceneCopyToolStripMenuItem.Size = new Size(102, 22);
             sceneCopyToolStripMenuItem.Text = "Copy";
             sceneCopyToolStripMenuItem.Click += sceneCopyToolStripMenuItem_Click;
             // 
             // scenePasteToolStripMenuItem
             // 
             scenePasteToolStripMenuItem.Name = "scenePasteToolStripMenuItem";
-            scenePasteToolStripMenuItem.Size = new Size(180, 22);
+            scenePasteToolStripMenuItem.Size = new Size(102, 22);
             scenePasteToolStripMenuItem.Text = "Paste";
             scenePasteToolStripMenuItem.Click += scenePasteToolStripMenuItem_Click;
             // 
             // sceneClearToolStripMenuItem
             // 
             sceneClearToolStripMenuItem.Name = "sceneClearToolStripMenuItem";
-            sceneClearToolStripMenuItem.Size = new Size(180, 22);
+            sceneClearToolStripMenuItem.Size = new Size(102, 22);
             sceneClearToolStripMenuItem.Text = "Clear";
             sceneClearToolStripMenuItem.Click += sceneClearToolStripMenuItem_Click;
             // 
@@ -1982,27 +1983,27 @@
             // createNewAttackToolStripMenuItem
             // 
             createNewAttackToolStripMenuItem.Name = "createNewAttackToolStripMenuItem";
-            createNewAttackToolStripMenuItem.Size = new Size(180, 22);
+            createNewAttackToolStripMenuItem.Size = new Size(168, 22);
             createNewAttackToolStripMenuItem.Text = "Create new attack";
             // 
             // attackCopyToolStripMenuItem
             // 
             attackCopyToolStripMenuItem.Name = "attackCopyToolStripMenuItem";
-            attackCopyToolStripMenuItem.Size = new Size(180, 22);
+            attackCopyToolStripMenuItem.Size = new Size(168, 22);
             attackCopyToolStripMenuItem.Text = "Copy";
             attackCopyToolStripMenuItem.Click += attackCopyToolStripMenuItem_Click;
             // 
             // attackPasteToolStripMenuItem
             // 
             attackPasteToolStripMenuItem.Name = "attackPasteToolStripMenuItem";
-            attackPasteToolStripMenuItem.Size = new Size(180, 22);
+            attackPasteToolStripMenuItem.Size = new Size(168, 22);
             attackPasteToolStripMenuItem.Text = "Paste";
             attackPasteToolStripMenuItem.Click += attackPasteToolStripMenuItem_Click;
             // 
             // attackDeleteToolStripMenuItem
             // 
             attackDeleteToolStripMenuItem.Name = "attackDeleteToolStripMenuItem";
-            attackDeleteToolStripMenuItem.Size = new Size(180, 22);
+            attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
             // 
             // selectedFormationToolStripMenuItem
@@ -2015,19 +2016,19 @@
             // formationCopyToolStripMenuItem
             // 
             formationCopyToolStripMenuItem.Name = "formationCopyToolStripMenuItem";
-            formationCopyToolStripMenuItem.Size = new Size(180, 22);
+            formationCopyToolStripMenuItem.Size = new Size(102, 22);
             formationCopyToolStripMenuItem.Text = "Copy";
             // 
             // formationPasteToolStripMenuItem
             // 
             formationPasteToolStripMenuItem.Name = "formationPasteToolStripMenuItem";
-            formationPasteToolStripMenuItem.Size = new Size(180, 22);
+            formationPasteToolStripMenuItem.Size = new Size(102, 22);
             formationPasteToolStripMenuItem.Text = "Paste";
             // 
             // formationClearToolStripMenuItem
             // 
             formationClearToolStripMenuItem.Name = "formationClearToolStripMenuItem";
-            formationClearToolStripMenuItem.Size = new Size(180, 22);
+            formationClearToolStripMenuItem.Size = new Size(102, 22);
             formationClearToolStripMenuItem.Text = "Clear";
             // 
             // buttonSearch
