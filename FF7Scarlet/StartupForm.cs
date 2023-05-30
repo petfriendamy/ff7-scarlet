@@ -1,4 +1,5 @@
-﻿using FF7Scarlet.SceneEditor;
+﻿using FF7Scarlet.ExeEditor;
+using FF7Scarlet.SceneEditor;
 using System.Configuration;
 
 namespace FF7Scarlet
@@ -18,6 +19,25 @@ namespace FF7Scarlet
             var settings = config.AppSettings.Settings;
             if (settings != null)
             {
+                //check ff7.exe
+                if (settings[ExeData.CONFIG_KEY] != null)
+                {
+                    string path = settings[ExeData.CONFIG_KEY].Value;
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(path))
+                        {
+                            DataManager.SetFilePath(FileClass.EXE, path, true);
+                        }
+                    }
+                    catch //if the file can't be loaded, remove it from settings
+                    {
+                        settings[ExeData.CONFIG_KEY].Value = string.Empty;
+                        config.Save();
+                    }
+                }
+
+                //check battle.lgp
                 if (settings[BattleLgp.CONFIG_KEY] != null)
                 {
                     string path = settings[BattleLgp.CONFIG_KEY].Value;
@@ -39,23 +59,24 @@ namespace FF7Scarlet
 
         private void UpdateTextBoxes()
         {
+            textBoxEXE.Text = DataManager.ExePath;
             textBoxKernel.Text = DataManager.KernelPath;
             textBoxKernel2.Text = DataManager.Kernel2Path;
             textBoxScene.Text = DataManager.ScenePath;
-            if (!string.IsNullOrEmpty(textBoxKernel.Text))
+            if (DataManager.KernelFilePathExists)
             {
+                buttonKernelEditor.Enabled = true;
                 textBoxKernel2.Enabled = true;
                 buttonKernel2Browse.Enabled = true;
                 toolTipHoverText.RemoveAll();
             }
-
-            if (DataManager.KernelFileIsLoaded)
+            if (DataManager.SceneFilePathExists)
             {
-                buttonKernelEditor.Enabled = true;
+                buttonSceneEditor.Enabled = true;
             }
-            if (DataManager.SceneFileIsLoaded)
+            if (DataManager.ExePathExists)
             {
-                buttonBattleDataEditor.Enabled = true;
+                buttonExeEditor.Enabled = true;
             }
         }
 
@@ -67,7 +88,10 @@ namespace FF7Scarlet
                     buttonKernelEditor.Enabled = true;
                     break;
                 case FormType.SceneEditor:
-                    buttonBattleDataEditor.Enabled = true;
+                    buttonSceneEditor.Enabled = true;
+                    break;
+                case FormType.ExeEditor:
+                    buttonExeEditor.Enabled = true;
                     break;
             }
         }
@@ -75,7 +99,7 @@ namespace FF7Scarlet
         private void CheckLookupTable()
         {
             //check lookup table
-            if (DataManager.KernelFileIsLoaded && DataManager.SceneFileIsLoaded)
+            if (DataManager.KernelFilePathExists && DataManager.SceneFilePathExists)
             {
                 if (!DataManager.LookupTableIsCorrect())
                 {
@@ -86,6 +110,23 @@ namespace FF7Scarlet
                         DataManager.SyncLookupTable();
                     }
                 }
+            }
+        }
+
+        private void buttonEXEbrowse_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            string file;
+            using (var loadFile = new OpenFileDialog())
+            {
+                loadFile.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7_es.exe;ff7_fr.exe;ff7_de.exe;ff7.exe";
+                result = loadFile.ShowDialog();
+                file = loadFile.FileName;
+            }
+            if (result == DialogResult.OK)
+            {
+                DataManager.SetFilePath(FileClass.EXE, file);
+                UpdateTextBoxes();
             }
         }
 
@@ -148,10 +189,16 @@ namespace FF7Scarlet
             buttonKernelEditor.Enabled = false;
         }
 
-        private void buttonBattleDataEditor_Click(object sender, EventArgs e)
+        private void buttonSceneEditor_Click(object sender, EventArgs e)
         {
             DataManager.OpenForm(FormType.SceneEditor);
-            buttonBattleDataEditor.Enabled = false;
+            buttonSceneEditor.Enabled = false;
+        }
+
+        private void buttonEXEeditor_Click(object sender, EventArgs e)
+        {
+            DataManager.OpenForm(FormType.ExeEditor);
+            buttonExeEditor.Enabled = false;
         }
 
         private void buttonSettings_Click(object sender, EventArgs e)

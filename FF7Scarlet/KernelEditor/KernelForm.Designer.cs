@@ -115,18 +115,18 @@
             labelCharacterKillCount = new Label();
             comboBoxCharacterFlags = new ComboBox();
             labelCharacterFlags = new Label();
-            characterLimitControl = new Controls.CharacterLimitControl();
+            characterLimitControl = new FF7Scarlet.Shared.Controls.CharacterLimitControl();
             numericCharacterCurrentEXP = new NumericUpDown();
             labelCharacterCurrentEXP = new Label();
             groupBoxCharacterArmor = new GroupBox();
             buttonCharacterArmorChangeMateria = new Button();
-            materiaSlotSelectorCharacterArmor = new Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorCharacterArmor = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             comboBoxCharacterArmor = new ComboBox();
             groupBoxCharacterWeapon = new GroupBox();
             buttonCharacterWeaponChangeMateria = new Button();
-            materiaSlotSelectorCharacterWeapon = new Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorCharacterWeapon = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             comboBoxCharacterWeapon = new ComboBox();
-            characterStatsControl = new Controls.CharacterStatsControl();
+            characterStatsControl = new FF7Scarlet.Shared.Controls.CharacterStatsControl();
             checkBoxCharacterBackRow = new CheckBox();
             numericCharacterLevel = new NumericUpDown();
             labelCharacterLevel = new Label();
@@ -198,7 +198,7 @@
             numericWeaponModelIndex = new NumericUpDown();
             labelWeaponModelIndex = new Label();
             groupBoxWeaponMateriaSlots = new GroupBox();
-            materiaSlotSelectorWeapon = new Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorWeapon = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             labelWeaponMateriaGrowth = new Label();
             comboBoxWeaponMateriaGrowth = new ComboBox();
             labelWeaponCritChance = new Label();
@@ -235,7 +235,7 @@
             textBoxArmorName = new TextBox();
             labelArmorDescription = new Label();
             groupBoxArmorMateriaSlots = new GroupBox();
-            materiaSlotSelectorArmor = new Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorArmor = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             labelArmorMateriaGrowth = new Label();
             comboBoxArmorMateriaGrowth = new ComboBox();
             textBoxArmorDescription = new TextBox();
@@ -1308,7 +1308,7 @@
             characterLimitControl.LimitLevel = 0;
             characterLimitControl.Location = new Point(158, 298);
             characterLimitControl.Name = "characterLimitControl";
-            characterLimitControl.Size = new Size(373, 148);
+            characterLimitControl.Size = new Size(373, 130);
             characterLimitControl.TabIndex = 22;
             // 
             // numericCharacterCurrentEXP
@@ -1362,7 +1362,7 @@
             materiaSlotSelectorCharacterArmor.Name = "materiaSlotSelectorCharacterArmor";
             materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
             materiaSlotSelectorCharacterArmor.Size = new Size(211, 35);
-            materiaSlotSelectorCharacterArmor.SlotSelectorType = KernelEditor.Controls.SlotSelectorType.Slots;
+            materiaSlotSelectorCharacterArmor.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterArmor.TabIndex = 15;
             // 
             // comboBoxCharacterArmor
@@ -1408,7 +1408,7 @@
             materiaSlotSelectorCharacterWeapon.Name = "materiaSlotSelectorCharacterWeapon";
             materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
             materiaSlotSelectorCharacterWeapon.Size = new Size(211, 35);
-            materiaSlotSelectorCharacterWeapon.SlotSelectorType = KernelEditor.Controls.SlotSelectorType.Slots;
+            materiaSlotSelectorCharacterWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterWeapon.TabIndex = 15;
             // 
             // comboBoxCharacterWeapon
@@ -2205,7 +2205,7 @@
             materiaSlotSelectorWeapon.Name = "materiaSlotSelectorWeapon";
             materiaSlotSelectorWeapon.SelectedSlot = -1;
             materiaSlotSelectorWeapon.Size = new Size(211, 35);
-            materiaSlotSelectorWeapon.SlotSelectorType = KernelEditor.Controls.SlotSelectorType.Slots;
+            materiaSlotSelectorWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorWeapon.TabIndex = 3;
             // 
             // labelWeaponMateriaGrowth
@@ -2589,7 +2589,7 @@
             materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
             materiaSlotSelectorArmor.SelectedSlot = -1;
             materiaSlotSelectorArmor.Size = new Size(211, 35);
-            materiaSlotSelectorArmor.SlotSelectorType = KernelEditor.Controls.SlotSelectorType.Slots;
+            materiaSlotSelectorArmor.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorArmor.TabIndex = 4;
             // 
             // labelArmorMateriaGrowth
@@ -3195,33 +3195,33 @@
             // 
             selectedAttackToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewAttackToolStripMenuItem, attackCopyToolStripMenuItem, attackPasteToolStripMenuItem, attackDeleteToolStripMenuItem });
             selectedAttackToolStripMenuItem.Name = "selectedAttackToolStripMenuItem";
-            selectedAttackToolStripMenuItem.Size = new Size(180, 22);
+            selectedAttackToolStripMenuItem.Size = new Size(162, 22);
             selectedAttackToolStripMenuItem.Text = "Selected attack...";
             // 
             // createNewAttackToolStripMenuItem
             // 
             createNewAttackToolStripMenuItem.Name = "createNewAttackToolStripMenuItem";
-            createNewAttackToolStripMenuItem.Size = new Size(180, 22);
+            createNewAttackToolStripMenuItem.Size = new Size(168, 22);
             createNewAttackToolStripMenuItem.Text = "Create new attack";
             // 
             // attackCopyToolStripMenuItem
             // 
             attackCopyToolStripMenuItem.Name = "attackCopyToolStripMenuItem";
-            attackCopyToolStripMenuItem.Size = new Size(180, 22);
+            attackCopyToolStripMenuItem.Size = new Size(168, 22);
             attackCopyToolStripMenuItem.Text = "Copy";
             attackCopyToolStripMenuItem.Click += attackCopyToolStripMenuItem_Click;
             // 
             // attackPasteToolStripMenuItem
             // 
             attackPasteToolStripMenuItem.Name = "attackPasteToolStripMenuItem";
-            attackPasteToolStripMenuItem.Size = new Size(180, 22);
+            attackPasteToolStripMenuItem.Size = new Size(168, 22);
             attackPasteToolStripMenuItem.Text = "Paste";
             attackPasteToolStripMenuItem.Click += attackPasteToolStripMenuItem_Click;
             // 
             // attackDeleteToolStripMenuItem
             // 
             attackDeleteToolStripMenuItem.Name = "attackDeleteToolStripMenuItem";
-            attackDeleteToolStripMenuItem.Size = new Size(180, 22);
+            attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
             // 
             // KernelForm
@@ -3235,7 +3235,7 @@
             DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4, 3, 4, 3);
-            MinimumSize = new Size(639, 456);
+            MinimumSize = new Size(800, 600);
             Name = "KernelForm";
             Text = "Scarlet - Kernel Editor";
             FormClosing += KernelForm_FormClosing;
@@ -3340,62 +3340,62 @@
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControlMain;
-        private System.Windows.Forms.TabPage tabPageCommandData;
-        private System.Windows.Forms.TabPage tabPageAttackData;
-        private System.Windows.Forms.Button buttonSave;
-        private System.Windows.Forms.Button buttonImport;
-        private System.Windows.Forms.Button buttonExport;
-        private System.Windows.Forms.Panel panelButtons;
-        private System.Windows.Forms.TabPage tabPageCharacters;
-        private System.Windows.Forms.TabPage tabPageWeaponData;
-        private System.Windows.Forms.TabPage tabPageArmorData;
-        private System.Windows.Forms.TabPage tabPageAccessoryData;
-        private System.Windows.Forms.TabPage tabPageMateriaData;
-        private System.Windows.Forms.TabPage tabPageKeyItemText;
-        private System.Windows.Forms.TabPage tabPageItemData;
-        private System.Windows.Forms.ListBox listBoxItems;
-        private System.Windows.Forms.ListBox listBoxWeapons;
-        private System.Windows.Forms.ListBox listBoxArmor;
-        private System.Windows.Forms.ListBox listBoxAccessories;
-        private System.Windows.Forms.ListBox listBoxMateria;
-        private System.Windows.Forms.ListBox listBoxCommands;
-        private System.Windows.Forms.ListBox listBoxAttacks;
-        private System.Windows.Forms.TextBox textBoxAttackName;
-        private System.Windows.Forms.Label labelAttackName;
-        private System.Windows.Forms.TextBox textBoxAttackDescription;
-        private System.Windows.Forms.Label labelAttackDescription;
-        private System.Windows.Forms.TextBox textBoxSummonText;
-        private System.Windows.Forms.Label labelSummonText;
-        private System.Windows.Forms.ListBox listBoxKeyItems;
-        private System.Windows.Forms.TextBox textBoxKeyItemDescription;
-        private System.Windows.Forms.Label labelKeyItemDescription;
-        private System.Windows.Forms.TextBox textBoxKeyItemName;
-        private System.Windows.Forms.Label labelKeyItemName;
-        private System.Windows.Forms.TextBox textBoxItemDescription;
-        private System.Windows.Forms.Label labelItemDescription;
-        private System.Windows.Forms.TextBox textBoxItemName;
-        private System.Windows.Forms.Label labelItemName;
-        private System.Windows.Forms.TextBox textBoxWeaponDescription;
-        private System.Windows.Forms.Label labelWeaponDescription;
-        private System.Windows.Forms.TextBox textBoxWeaponName;
-        private System.Windows.Forms.Label labelWeaponName;
-        private System.Windows.Forms.TextBox textBoxArmorDescription;
-        private System.Windows.Forms.Label labelArmorDescription;
-        private System.Windows.Forms.TextBox textBoxArmorName;
-        private System.Windows.Forms.Label labelArmorName;
-        private System.Windows.Forms.TextBox textBoxAccessoryDescription;
-        private System.Windows.Forms.Label labelAccessoryDescription;
-        private System.Windows.Forms.TextBox textBoxAccessoryName;
-        private System.Windows.Forms.Label labelAccessoryName;
-        private System.Windows.Forms.TextBox textBoxMateriaDescription;
-        private System.Windows.Forms.Label labelMateriaDescription;
-        private System.Windows.Forms.TextBox textBoxMateriaName;
-        private System.Windows.Forms.Label labelMateriaName;
-        private System.Windows.Forms.TextBox textBoxCommandDescription;
-        private System.Windows.Forms.Label labelCommandDescription;
-        private System.Windows.Forms.TextBox textBoxCommandName;
-        private System.Windows.Forms.Label labelCommandName;
+        private TabControl tabControlMain;
+        private TabPage tabPageCommandData;
+        private TabPage tabPageAttackData;
+        private Button buttonSave;
+        private Button buttonImport;
+        private Button buttonExport;
+        private Panel panelButtons;
+        private TabPage tabPageCharacters;
+        private TabPage tabPageWeaponData;
+        private TabPage tabPageArmorData;
+        private TabPage tabPageAccessoryData;
+        private TabPage tabPageMateriaData;
+        private TabPage tabPageKeyItemText;
+        private TabPage tabPageItemData;
+        private ListBox listBoxItems;
+        private ListBox listBoxWeapons;
+        private ListBox listBoxArmor;
+        private ListBox listBoxAccessories;
+        private ListBox listBoxMateria;
+        private ListBox listBoxCommands;
+        private ListBox listBoxAttacks;
+        private TextBox textBoxAttackName;
+        private Label labelAttackName;
+        private TextBox textBoxAttackDescription;
+        private Label labelAttackDescription;
+        private TextBox textBoxSummonText;
+        private Label labelSummonText;
+        private ListBox listBoxKeyItems;
+        private TextBox textBoxKeyItemDescription;
+        private Label labelKeyItemDescription;
+        private TextBox textBoxKeyItemName;
+        private Label labelKeyItemName;
+        private TextBox textBoxItemDescription;
+        private Label labelItemDescription;
+        private TextBox textBoxItemName;
+        private Label labelItemName;
+        private TextBox textBoxWeaponDescription;
+        private Label labelWeaponDescription;
+        private TextBox textBoxWeaponName;
+        private Label labelWeaponName;
+        private TextBox textBoxArmorDescription;
+        private Label labelArmorDescription;
+        private TextBox textBoxArmorName;
+        private Label labelArmorName;
+        private TextBox textBoxAccessoryDescription;
+        private Label labelAccessoryDescription;
+        private TextBox textBoxAccessoryName;
+        private Label labelAccessoryName;
+        private TextBox textBoxMateriaDescription;
+        private Label labelMateriaDescription;
+        private TextBox textBoxMateriaName;
+        private Label labelMateriaName;
+        private TextBox textBoxCommandDescription;
+        private Label labelCommandDescription;
+        private TextBox textBoxCommandName;
+        private Label labelCommandName;
         private ComboBox comboBoxMateriaType;
         private Label labelMateriaType;
         private ComboBox comboBoxMateriaElement;
@@ -3530,7 +3530,7 @@
         private Label labelCharacterAccessory;
         private ComboBox comboBoxCharacterArmor;
         private ComboBox comboBoxCharacterWeapon;
-        private Controls.CharacterStatsControl characterStatsControl;
+        private FF7Scarlet.Shared.Controls.CharacterStatsControl characterStatsControl;
         private GroupBox groupBoxInitInventory;
         private NumericUpDown numericInitItemAmount;
         private Label labelInitItemAmount;
@@ -3542,17 +3542,17 @@
         private Button buttonInitMateriaEdit;
         private ComboBox comboBoxInitMateria;
         private Label labelInitMateria;
-        private Controls.MateriaSlotSelectorControl materiaSlotSelectorWeapon;
-        private Controls.MateriaSlotSelectorControl materiaSlotSelectorArmor;
+        private FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl materiaSlotSelectorWeapon;
+        private FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl materiaSlotSelectorArmor;
         private GroupBox groupBoxCharacterArmor;
-        private Controls.MateriaSlotSelectorControl materiaSlotSelectorCharacterArmor;
+        private FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl materiaSlotSelectorCharacterArmor;
         private GroupBox groupBoxCharacterWeapon;
-        private Controls.MateriaSlotSelectorControl materiaSlotSelectorCharacterWeapon;
+        private FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl materiaSlotSelectorCharacterWeapon;
         private Button buttonCharacterArmorChangeMateria;
         private Button buttonCharacterWeaponChangeMateria;
         private NumericUpDown numericCharacterCurrentEXP;
         private Label labelCharacterCurrentEXP;
-        private Controls.CharacterLimitControl characterLimitControl;
+        private FF7Scarlet.Shared.Controls.CharacterLimitControl characterLimitControl;
         private ComboBox comboBoxCharacterFlags;
         private Label labelCharacterFlags;
         private NumericUpDown numericCharacterKillCount;

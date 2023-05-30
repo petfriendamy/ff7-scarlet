@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.Shared
 {
     public enum CharacterNames
     {
@@ -32,10 +32,12 @@ namespace FF7Scarlet.KernelEditor
 
     public class Character
     {
-        public const int CHARACTER_COUNT = 11, PLAYABLE_CHARACTER_COUNT = 9;
+        public const int CHARACTER_COUNT = 11, PLAYABLE_CHARACTER_COUNT = 9, NAME_LENGTH = 12,
+            CHARACTER_DATA_LENGTH = 132;
 
         private readonly InventoryMateria[] weaponMateria = new InventoryMateria[8];
         private readonly InventoryMateria[] armorMateria = new InventoryMateria[8];
+        private int unknown;
 
         public FFText Name { get; set; }
         public byte ID { get; set; }
@@ -103,7 +105,7 @@ namespace FF7Scarlet.KernelEditor
                 LuckBonus = reader.ReadByte();
                 LimitLevel = reader.ReadByte();
                 CurrentLimitBar = reader.ReadByte();
-                Name = new FFText(reader.ReadBytes(12));
+                Name = new FFText(reader.ReadBytes(NAME_LENGTH));
                 WeaponID = reader.ReadByte();
                 ArmorID = reader.ReadByte();
                 AccessoryID = reader.ReadByte();
@@ -119,7 +121,7 @@ namespace FF7Scarlet.KernelEditor
                 BaseHP = reader.ReadUInt16();
                 CurrentMP = reader.ReadUInt16();
                 BaseMP = reader.ReadUInt16();
-                reader.ReadInt32(); //unknown
+                unknown = reader.ReadInt32(); //unknown
                 MaxHP = reader.ReadUInt16();
                 MaxMP = reader.ReadUInt16();
                 CurrentEXP = reader.ReadUInt32();
@@ -133,6 +135,73 @@ namespace FF7Scarlet.KernelEditor
                 }
                 EXPtoNextLevel = reader.ReadUInt32();
             }
+        }
+
+        public byte[] GetRawData()
+        {
+            var data = new byte[CHARACTER_DATA_LENGTH];
+            using (var ms = new MemoryStream(data, true))
+            using (var writer = new BinaryWriter(ms))
+            {
+                writer.Write(ID);
+                writer.Write(Level);
+                writer.Write(Strength);
+                writer.Write(Vitality);
+                writer.Write(Magic);
+                writer.Write(Spirit);
+                writer.Write(Dexterity);
+                writer.Write(Luck);
+                writer.Write(StrengthBonus);
+                writer.Write(VitalityBonus);
+                writer.Write(MagicBonus);
+                writer.Write(SpiritBonus);
+                writer.Write(DexterityBonus);
+                writer.Write(LuckBonus);
+                writer.Write(LimitLevel);
+                writer.Write(CurrentLimitBar);
+                writer.Write(Name.GetBytes(NAME_LENGTH));
+                writer.Write(WeaponID);
+                writer.Write(ArmorID);
+                writer.Write(AccessoryID);
+                writer.Write((byte)CharacterFlags);
+                if (IsBackRow) { writer.Write((byte)0xFE); }
+                else { writer.Write((byte)0xFF); }
+                writer.Write(LevelProgressBar);
+                writer.Write((ushort)LearnedLimits);
+                writer.Write(KillCount);
+                writer.Write(Limit1Uses);
+                writer.Write(Limit2Uses);
+                writer.Write(Limit3Uses);
+                writer.Write(CurrentHP);
+                writer.Write(BaseHP);
+                writer.Write(CurrentMP);
+                writer.Write(BaseMP);
+                writer.Write(unknown);
+                writer.Write(MaxHP);
+                writer.Write(MaxMP);
+                writer.Write(CurrentEXP);
+                foreach (var m in WeaponMateria)
+                {
+                    writer.Write(m.GetBytes());
+                }
+                foreach (var m in ArmorMateria)
+                {
+                    writer.Write(m.GetBytes());
+                }
+                writer.Write(EXPtoNextLevel);
+            }
+            return data;
+        }
+
+        public bool HasDifferences(Character other)
+        {
+            var temp1 = GetRawData();
+            var temp2 = other.GetRawData();
+            for (int i = 0; i < CHARACTER_DATA_LENGTH; ++i)
+            {
+                if (temp1[i] != temp2[i]) { return true; }
+            }
+            return false;
         }
     }
 }

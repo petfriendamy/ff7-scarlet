@@ -6,6 +6,7 @@ using Shojy.FF7.Elena.Materias;
 using FF7Scarlet.KernelEditor.Controls;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
+using FF7Scarlet.Shared.Controls;
 using System.Globalization;
 using System.Media;
 using FF7Scarlet.SceneEditor;
@@ -239,13 +240,13 @@ namespace FF7Scarlet.KernelEditor
             //inventory
             foreach (var inv in kernel.InitialData.InventoryItems)
             {
-                if (inv.Type == ItemType.None)
+                if (inv.Item.Type == ItemType.None)
                 {
                     listBoxInitInventory.Items.Add("(empty)");
                 }
                 else
                 {
-                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv)} x{inv.Amount}");
+                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv.Item)} x{inv.Amount}");
                 }
             }
             foreach (var invm in kernel.InitialData.InventoryMateria)
@@ -433,12 +434,12 @@ namespace FF7Scarlet.KernelEditor
             if (tabPages.ContainsKey(section))
             {
                 list.Add(listBoxes[section]);
-                if (!DataManager.BothKernelFilesLoaded)
+                if (!DataManager.BothKernelFilePathsExist)
                 {
                     list.Add(nameTextBoxes[section]);
                     list.Add(descriptionTextBoxes[section]);
                 }
-                if (!DataManager.SceneFileIsLoaded)
+                if (!DataManager.SceneFilePathExists)
                 {
                     list.Add(checkBoxAttackSyncWithSceneBin);
                 }
@@ -817,26 +818,26 @@ namespace FF7Scarlet.KernelEditor
                 var item = kernel.InitialData.InventoryItems[i];
                 loading = true;
                 comboBoxInitItem.Enabled = true;
-                switch (item.Type)
+                switch (item.Item.Type)
                 {
                     case ItemType.Item:
-                        comboBoxInitItem.SelectedIndex = item.Index + 1;
+                        comboBoxInitItem.SelectedIndex = item.Item.Index + 1;
                         break;
                     case ItemType.Weapon:
-                        comboBoxInitItem.SelectedIndex = item.Index + InventoryItem.WEAPON_START + 1;
+                        comboBoxInitItem.SelectedIndex = item.Item.Index + InventoryItem.WEAPON_START + 1;
                         break;
                     case ItemType.Armor:
-                        comboBoxInitItem.SelectedIndex = item.Index + InventoryItem.ARMOR_START + 1;
+                        comboBoxInitItem.SelectedIndex = item.Item.Index + InventoryItem.ARMOR_START + 1;
                         break;
                     case ItemType.Accessory:
-                        comboBoxInitItem.SelectedIndex = item.Index + InventoryItem.ACCESSORY_START + 1;
+                        comboBoxInitItem.SelectedIndex = item.Item.Index + InventoryItem.ACCESSORY_START + 1;
                         break;
                     default:
                         comboBoxInitItem.SelectedIndex = 0;
                         break;
                 }
 
-                if (item.Type == ItemType.None)
+                if (item.Item.Type == ItemType.None)
                 {
                     numericInitItemAmount.Value = 0;
                     numericInitItemAmount.Enabled = false;
@@ -960,7 +961,7 @@ namespace FF7Scarlet.KernelEditor
                 var item = kernel.InitialData.InventoryItems[selectedItem];
                 if (newItemIndex == 0) //none
                 {
-                    item.SetItem(ItemType.None, 0);
+                    item.Item.SetItem(ItemType.None, 0);
                     listBoxInitInventory.Items[selectedItem] = "(empty)";
                     numericInitItemAmount.Value = 0;
                     numericInitItemAmount.Enabled = false;
@@ -977,9 +978,9 @@ namespace FF7Scarlet.KernelEditor
                     var type = InventoryItem.GetType((ushort)(newItemIndex - 1));
                     byte index = InventoryItem.GetIndex((ushort)(newItemIndex - 1));
 
-                    item.SetItem(type, index);
+                    item.Item.SetItem(type, index);
                     item.Amount = amount;
-                    var name = kernel.GetInventoryItemName(item);
+                    var name = kernel.GetInventoryItemName(item.Item);
                     listBoxInitInventory.Items[selectedItem] = $"{name} x{amount}";
                 }
                 loading = false;

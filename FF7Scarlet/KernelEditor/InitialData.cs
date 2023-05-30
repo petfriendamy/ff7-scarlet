@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -10,7 +11,7 @@ namespace FF7Scarlet.KernelEditor
     {
         public const int INVENTORY_SIZE = 320, MATERIA_INVENTORY_SIZE = 200, STOLEN_MATERIA_COUNT = 48;
         private readonly Character[] characters = new Character[Character.PLAYABLE_CHARACTER_COUNT];
-        private readonly InventoryItem[] inventoryItems = new InventoryItem[INVENTORY_SIZE];
+        private readonly ItemStack[] inventoryItems = new ItemStack[INVENTORY_SIZE];
         private readonly InventoryMateria[] inventoryMateria = new InventoryMateria[MATERIA_INVENTORY_SIZE];
         private readonly InventoryMateria[] stolenMateria = new InventoryMateria[STOLEN_MATERIA_COUNT];
 
@@ -18,7 +19,7 @@ namespace FF7Scarlet.KernelEditor
         {
             get { return characters; }
         }
-        public InventoryItem[] InventoryItems
+        public ItemStack[] InventoryItems
         {
             get { return inventoryItems; }
         }
@@ -42,7 +43,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
                 {
-                    Characters[i] = new Character(reader.ReadBytes(132));
+                    Characters[i] = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
                 }
                 Party1 = reader.ReadByte();
                 Party2 = reader.ReadByte();
@@ -51,7 +52,7 @@ namespace FF7Scarlet.KernelEditor
 
                 for (i = 0; i < INVENTORY_SIZE; ++i)
                 {
-                    InventoryItems[i] = new InventoryItem(reader.ReadBytes(2));
+                    InventoryItems[i] = new ItemStack(reader.ReadBytes(2));
                 }
                 for (i = 0; i < MATERIA_INVENTORY_SIZE; ++i)
                 {

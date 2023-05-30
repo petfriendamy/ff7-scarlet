@@ -26,7 +26,7 @@ namespace FF7Scarlet.KernelEditor
 
         private void KernelChunkExportForm_Load(object sender, EventArgs e)
         {
-            if (!DataManager.BothKernelFilesLoaded)
+            if (!DataManager.BothKernelFilePathsExist)
             {
                 groupBoxKernel2Chunks.Enabled = false;
             }
@@ -52,7 +52,7 @@ namespace FF7Scarlet.KernelEditor
         private void buttonSelectAll_Click(object sender, EventArgs e)
         {
             int max = Kernel.SECTION_COUNT;
-            if (!DataManager.BothKernelFilesLoaded) { max = Kernel.KERNEL1_END; }
+            if (!DataManager.BothKernelFilePathsExist) { max = Kernel.KERNEL1_END; }
             for (int i = 0; i < max; ++i)
             {
                 checkBoxes[i].Checked = true;

@@ -1,4 +1,5 @@
-﻿using Shojy.FF7.Elena;
+﻿using FF7Scarlet.Shared;
+using Shojy.FF7.Elena;
 
 namespace FF7Scarlet.KernelEditor
 {

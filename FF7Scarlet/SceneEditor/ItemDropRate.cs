@@ -1,9 +1,4 @@
-﻿using FF7Scarlet.KernelEditor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.SceneEditor
 {

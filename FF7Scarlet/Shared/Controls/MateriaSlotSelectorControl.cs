@@ -1,7 +1,7 @@
 ﻿using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Materias;
 
-namespace FF7Scarlet.KernelEditor.Controls
+namespace FF7Scarlet.Shared.Controls
 {
     public enum SlotSelectorType { Slots, Equips }
 

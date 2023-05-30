@@ -1,5 +1,4 @@
 ﻿using FF7Scarlet.AIEditor;
-using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Battle;
 using System.Globalization;
@@ -267,31 +266,31 @@ namespace FF7Scarlet.SceneEditor
 
             comboBoxEnemyDropItemID.Items.Add("None");
             comboBoxEnemyMorphItem.Items.Add("None");
-            if (DataManager.KernelFileIsLoaded && DataManager.Kernel != null)
+            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
             {
                 foreach (var item in DataManager.Kernel.ItemData.Items)
                 {
                     comboBoxEnemyDropItemID.Items.Add(item.Name);
                     comboBoxEnemyMorphItem.Items.Add(item.Name);
-                    itemList.Add(new InventoryItem((byte)item.Index, 1, ItemType.Item));
+                    itemList.Add(new InventoryItem((byte)item.Index, ItemType.Item));
                 }
                 foreach (var wpn in DataManager.Kernel.WeaponData.Weapons)
                 {
                     comboBoxEnemyDropItemID.Items.Add(wpn.Name);
                     comboBoxEnemyMorphItem.Items.Add(wpn.Name);
-                    itemList.Add(new InventoryItem((byte)wpn.Index, 1, ItemType.Weapon));
+                    itemList.Add(new InventoryItem((byte)wpn.Index, ItemType.Weapon));
                 }
                 foreach (var armor in DataManager.Kernel.ArmorData.Armors)
                 {
                     comboBoxEnemyDropItemID.Items.Add(armor.Name);
                     comboBoxEnemyMorphItem.Items.Add(armor.Name);
-                    itemList.Add(new InventoryItem((byte)armor.Index, 1, ItemType.Armor));
+                    itemList.Add(new InventoryItem((byte)armor.Index, ItemType.Armor));
                 }
                 foreach (var acc in DataManager.Kernel.AccessoryData.Accessories)
                 {
                     comboBoxEnemyDropItemID.Items.Add(acc.Name);
                     comboBoxEnemyMorphItem.Items.Add(acc.Name);
-                    itemList.Add(new InventoryItem((byte)acc.Index, 1, ItemType.Accessory));
+                    itemList.Add(new InventoryItem((byte)acc.Index, ItemType.Accessory));
                 }
             }
             else
@@ -307,7 +306,7 @@ namespace FF7Scarlet.SceneEditor
 
         private void LoadModelData()
         {
-            if (DataManager.BattleLgpIsLoaded && DataManager.BattleLgp != null)
+            if (DataManager.BattleLgpPathExists && DataManager.BattleLgp != null)
             {
                 comboBoxEnemyModelID.DropDownStyle = ComboBoxStyle.DropDownList;
                 foreach (var m in DataManager.BattleLgp.Models)
@@ -477,7 +476,7 @@ namespace FF7Scarlet.SceneEditor
                 numericEnemyBackDamageMultiplier.Value = enemy.BackAttackMultiplier;
 
                 //kernel data
-                if (DataManager.KernelFileIsLoaded && DataManager.Kernel != null)
+                if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
                 {
                     listBoxEnemyItemDropRates.BeginUpdate();
                     listBoxEnemyItemDropRates.Items.Clear();
@@ -505,7 +504,7 @@ namespace FF7Scarlet.SceneEditor
                 }
 
                 //model ID
-                if (DataManager.BattleLgpIsLoaded)
+                if (DataManager.BattleLgpPathExists)
                 {
                     comboBoxEnemyModelID.SelectedIndex = enemy.ModelID;
                 }
@@ -598,10 +597,10 @@ namespace FF7Scarlet.SceneEditor
 
             //get name
             string name = $"Unknown item (ID {rate.ItemID:X4})";
-            if (DataManager.KernelFileIsLoaded && DataManager.Kernel != null)
+            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
             {
                 //get item name
-                var item = new InventoryItem(rate.ItemID, 1);
+                var item = new InventoryItem(rate.ItemID);
                 name = DataManager.Kernel.GetInventoryItemName(item);
             }
             text += name;
@@ -631,7 +630,7 @@ namespace FF7Scarlet.SceneEditor
             enemy.Gil = (uint)numericEnemyGil.Value;
             enemy.StatusImmunities = statusesControlEnemyImmunities.GetStatuses();
 
-            if (DataManager.KernelFileIsLoaded && DataManager.Kernel != null)
+            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
             {
                 if (comboBoxEnemyMorphItem.SelectedIndex == 0)
                 {
@@ -1005,7 +1004,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 await Task.Delay(500);
 
-                if (!DataManager.KernelFileIsLoaded)
+                if (!DataManager.KernelFilePathExists)
                 {
                     MessageBox.Show("No kernel file is selected, so the lookup table cannot be updated. This scene.bin file may not work correctly in FF7.",
                         "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1460,7 +1459,7 @@ namespace FF7Scarlet.SceneEditor
         private void listBoxEnemyItemDropRates_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = listBoxEnemyItemDropRates.SelectedIndex;
-            if (!loading && i >= 0 && i < 4 && SelectedEnemy != null && DataManager.KernelFileIsLoaded &
+            if (!loading && i >= 0 && i < 4 && SelectedEnemy != null && DataManager.KernelFilePathExists &
                 DataManager.Kernel != null)
             {
                 comboBoxEnemyDropItemID.Enabled = true;
@@ -1485,7 +1484,7 @@ namespace FF7Scarlet.SceneEditor
             int selectedItem = listBoxEnemyItemDropRates.SelectedIndex,
                 newItem = comboBoxEnemyDropItemID.SelectedIndex;
             if (!loading && selectedItem >= 0 && selectedItem < Enemy.DROP_ITEM_COUNT && SelectedEnemy != null
-                && DataManager.KernelFileIsLoaded && DataManager.Kernel != null)
+                && DataManager.KernelFilePathExists && DataManager.Kernel != null)
             {
                 loading = true;
                 if (newItem == 0)
@@ -1557,7 +1556,7 @@ namespace FF7Scarlet.SceneEditor
         private void comboBoxEnemyModelID_SelectedIndexChanged(object sender, EventArgs e)
         {
             //this one runs when battle.lgp is loaded
-            if (!loading && SelectedEnemy != null && DataManager.BattleLgpIsLoaded
+            if (!loading && SelectedEnemy != null && DataManager.BattleLgpPathExists
                 && DataManager.BattleLgp != null)
             {
                 ushort newID = (ushort)comboBoxEnemyModelID.SelectedIndex, oldID = SelectedEnemy.ModelID;
@@ -1582,7 +1581,7 @@ namespace FF7Scarlet.SceneEditor
         private void comboBoxEnemyModelID_TextChanged(object sender, EventArgs e)
         {
             //this one runs when battle.lgp is NOT loaded
-            if (!loading && !DataManager.BattleLgpIsLoaded && SelectedEnemy != null)
+            if (!loading && !DataManager.BattleLgpPathExists && SelectedEnemy != null)
             {
                 string text = comboBoxEnemyModelID.Text;
                 if (text.Length == 4)

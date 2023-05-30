@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using FF7Scarlet.AIEditor;
-using FF7Scarlet.KernelEditor;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet
 {

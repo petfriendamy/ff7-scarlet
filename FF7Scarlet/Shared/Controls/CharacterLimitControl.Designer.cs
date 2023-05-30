@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet.KernelEditor.Controls
+﻿namespace FF7Scarlet.Shared.Controls
 {
     partial class CharacterLimitControl
     {

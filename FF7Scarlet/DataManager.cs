@@ -2,27 +2,32 @@
 using Shojy.FF7.Elena;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
+using FF7Scarlet.ExeEditor;
 using FF7Scarlet.Shared;
 using System.Configuration;
 
 namespace FF7Scarlet
 {
-    public enum FormType { KernelEditor, SceneEditor }
-    public enum FileClass { Kernel, Kernel2, Scene, BattleLgp }
+    public enum FormType { KernelEditor, SceneEditor, ExeEditor }
+    public enum FileClass { EXE, Kernel, Kernel2, Scene, BattleLgp }
 
     public static class DataManager
     {
         private static StartupForm? startupForm = null;
         private static KernelForm? kernelForm = null;
         private static SceneEditorForm? sceneEditorForm = null;
+        private static ExeEditorForm? exeEditorForm = null;
         private static readonly Scene[] sceneList = new Scene[Scene.SCENE_COUNT];
         private static readonly byte[] sceneLookupTable = new byte[64];
         private static Dictionary<ushort, Attack> syncedAttacks = new();
 
+        public static string ExePath { get; private set; } = string.Empty;
+        public static string VanillaExePath { get; private set; } = string.Empty;
         public static string KernelPath { get; private set; } = string.Empty;
         public static string Kernel2Path { get; private set; } = string.Empty;
         public static string ScenePath { get; private set; } = string.Empty;
         public static string BattleLgpPath { get; private set; } = string.Empty;
+        public static ExeData? VanillaExe { get; private set; }
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
@@ -33,22 +38,32 @@ namespace FF7Scarlet
         public static Attack? CopiedAttack { get; set; }
         public static Formation? CopiedFormation { get; set; }
 
-        public static bool KernelFileIsLoaded
+        public static bool ExePathExists
+        {
+            get { return !string.IsNullOrEmpty(ExePath); }
+        }
+
+        public static bool VanillaExePathExists
+        {
+            get { return !string.IsNullOrEmpty(VanillaExePath); }
+        }
+
+        public static bool KernelFilePathExists
         {
             get { return !string.IsNullOrEmpty(KernelPath); }
         }
 
-        public static bool BothKernelFilesLoaded
+        public static bool BothKernelFilePathsExist
         {
-            get { return KernelFileIsLoaded && !string.IsNullOrEmpty(Kernel2Path); }
+            get { return KernelFilePathExists && !string.IsNullOrEmpty(Kernel2Path); }
         }
 
-        public static bool SceneFileIsLoaded
+        public static bool SceneFilePathExists
         {
             get { return !string.IsNullOrEmpty(ScenePath); }
         }
 
-        public static bool BattleLgpIsLoaded
+        public static bool BattleLgpPathExists
         {
             get { return !string.IsNullOrEmpty(BattleLgpPath); }
         }
@@ -62,35 +77,92 @@ namespace FF7Scarlet
             startupForm = form;
         }
 
-        public static void SetFilePath(FileClass fileClass, string path)
+        public static void SetFilePath(FileClass fileClass, string path, bool isSetting = false)
         {
-            if (ValidateFile(fileClass, path))
+            if (ValidateFile(fileClass, path, isSetting))
             {
-                if (fileClass != FileClass.BattleLgp)
+                if (fileClass != FileClass.BattleLgp && !isSetting)
                 {
                     var result = MessageBox.Show("Would you like to auto-detect the other files based on this one's location?",
                         "Auto-Detect Files", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                     if (result == DialogResult.Yes)
                     {
-                        string? kernelDir = null, battleDir = null;
-                        if (fileClass == FileClass.Scene)
+                        string? exeDir = null, languageDir = null, kernelDir = null, battleDir = null, temp;
+                        string code = "en";
+
+                        //figure out relative file paths
+                        if (fileClass == FileClass.EXE)
                         {
-                            battleDir = Path.GetDirectoryName(path);
-                            if (battleDir != null)
+                            //check for region code
+                            string exeName = Path.GetFileNameWithoutExtension(path);
+                            if (exeName.EndsWith("es")) { code = "es"; }
+                            else if (exeName.EndsWith("fr")) { code = "fr"; }
+                            else if (exeName.EndsWith("de")) { code = "de"; }
+
+                            //find kernel and scene files
+                            exeDir = Directory.GetParent(path)?.FullName;
+                            if (exeDir != null)
                             {
-                                kernelDir = Directory.GetParent(battleDir)?.FullName + @"\kernel";
+                                kernelDir = exeDir + @"\data\lang-" + code + @"\kernel";
+                                battleDir = exeDir + @"\data\lang-" + code + @"\battle";
                             }
                         }
-                        else
+                        else //kernel/scene
                         {
-                            kernelDir = Path.GetDirectoryName(path);
-                            if (kernelDir != null)
+                            if (fileClass == FileClass.Scene)
                             {
-                                battleDir = Directory.GetParent(kernelDir)?.FullName + @"\battle";
+                                battleDir = Path.GetDirectoryName(path);
+                                if (battleDir != null)
+                                {
+                                    languageDir = Directory.GetParent(battleDir)?.FullName;
+                                    if (languageDir != null)
+                                    {
+                                        kernelDir = languageDir + @"\kernel";
+                                    }
+                                }
+                            }
+                            else //kernel
+                            {
+                                kernelDir = Path.GetDirectoryName(path);
+                                if (kernelDir != null)
+                                {
+                                    languageDir = Directory.GetParent(kernelDir)?.FullName;
+                                    if (languageDir != null)
+                                    {
+                                        battleDir = languageDir + @"\battle";
+                                    }
+                                }
+                            }
+
+                            //get EXE directory
+                            if (languageDir != null)
+                            {
+                                //check for region code
+                                string? langDirName = Path.GetDirectoryName(languageDir);
+                                if (langDirName != null)
+                                {
+                                    if (langDirName.EndsWith("es")) { code = "es"; }
+                                    else if (langDirName.EndsWith("fr")) { code = "fr"; }
+                                    else if (langDirName.EndsWith("de")) { code = "de"; }
+                                }
+
+                                temp = Directory.GetParent(languageDir)?.FullName;
+                                if (temp != null)
+                                {
+                                    exeDir = Directory.GetParent(temp)?.FullName;
+                                }
                             }
                         }
 
+                        //attempt to find the files in their directories
+                        if (exeDir != null && fileClass != FileClass.EXE)
+                        {
+                            if (!ValidateFile(FileClass.EXE, exeDir + @"\ff7_" + code + ".exe"))
+                            {
+                                ValidateFile(FileClass.EXE, exeDir + @"\FF7.exe");
+                            }
+                        }
                         if (kernelDir != null)
                         {
                             if (fileClass != FileClass.Kernel)
@@ -102,28 +174,33 @@ namespace FF7Scarlet
                                 ValidateFile(FileClass.Kernel2, kernelDir + @"\kernel2.bin");
                             }
                         }
-                        if (battleDir != null)
+                        if (battleDir != null &&fileClass != FileClass.Scene)
                         {
-                            if (fileClass != FileClass.Scene)
-                            {
-                                ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
-                            }
+                            ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
                         }
                     }
                 }
             }
             else
             {
-                MessageBox.Show("Invalid file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new FileFormatException(Path.GetFileName(path));
             }
         }
 
-        private static bool ValidateFile(FileClass fileClass, string path)
+        private static bool ValidateFile(FileClass fileClass, string path, bool isSetting = false)
         {
             if (File.Exists(path))
             {
                 switch (fileClass)
                 {
+                    case FileClass.EXE:
+                        if (ExeData.ValidateEXE(path))
+                        {
+                            if (isSetting) { VanillaExePath = path; }
+                            else { ExePath = path; }
+                            return true;
+                        }
+                        return false;
                     case FileClass.Kernel:
                         try
                         {
@@ -159,6 +236,14 @@ namespace FF7Scarlet
             return false;
         }
 
+        public static void LoadVanillaEXE()
+        {
+            if (VanillaExePathExists)
+            {
+                VanillaExe = new ExeData(VanillaExePath);
+            }
+        }
+
         public static void OpenForm(FormType type)
         {
             switch (type)
@@ -179,6 +264,14 @@ namespace FF7Scarlet
                         sceneEditorForm.Show();
                     }
                     break;
+                case FormType.ExeEditor:
+                    if (exeEditorForm == null)
+                    {
+                        exeEditorForm = new ExeEditorForm();
+                        exeEditorForm.FormClosed += new FormClosedEventHandler(exeFormClosed);
+                        exeEditorForm.Show();
+                    }
+                    break;
             }
         }
 
@@ -189,21 +282,23 @@ namespace FF7Scarlet
                 case FormType.KernelEditor:
                     return kernelForm != null;
                 case FormType.SceneEditor:
-                    return false;
+                    return sceneEditorForm != null;
+                case FormType.ExeEditor:
+                    return exeEditorForm != null;
             }
             return false;
         }
 
         public static Kernel CopyKernel()
         {
-            if (!KernelFileIsLoaded)
+            if (!KernelFilePathExists)
             {
                 throw new FileNotFoundException("No kernel file is loaded.");
             }
             else
             {
                 var k = new Kernel(KernelPath);
-                if (BothKernelFilesLoaded)
+                if (BothKernelFilePathsExist)
                 {
                     k.MergeKernel2Data(Kernel2Path);
                 }
@@ -244,7 +339,7 @@ namespace FF7Scarlet
 
         public static bool LookupTableIsCorrect()
         {
-            if (KernelFileIsLoaded && SceneFileIsLoaded && Kernel != null)
+            if (KernelFilePathExists && SceneFilePathExists && Kernel != null)
             {
                 var table = Kernel.GetLookupTable();
                 for (int i = 0; i < 64; ++i)
@@ -260,7 +355,7 @@ namespace FF7Scarlet
 
         public static void SyncLookupTable()
         {
-            if (KernelFileIsLoaded && SceneFileIsLoaded && Kernel != null)
+            if (KernelFilePathExists && SceneFilePathExists && Kernel != null)
             {
                 Kernel.UpdateLookupTable(sceneLookupTable);
                 if (kernelForm == null) //kernel form is not open, so update lookup table quietly
@@ -327,7 +422,7 @@ namespace FF7Scarlet
 
         public static void CreateKernel(bool updateKernel2)
         {
-            if (!KernelFileIsLoaded || Kernel == null || KernelPath == null)
+            if (!KernelFilePathExists || Kernel == null || KernelPath == null)
             {
                 throw new FileNotFoundException("No kernel.bin file is loaded.");
             }
@@ -360,7 +455,7 @@ namespace FF7Scarlet
             }
             File.WriteAllBytes(KernelPath, data.ToArray());
 
-            if (updateKernel2 && BothKernelFilesLoaded)
+            if (updateKernel2 && BothKernelFilePathsExist)
             {
                 //stuff
             }
@@ -445,7 +540,7 @@ namespace FF7Scarlet
         public static void CreateSceneBin()
         {
             //again, based on code from SegaChief
-            if (!SceneFileIsLoaded || ScenePath == null)
+            if (!SceneFilePathExists || ScenePath == null)
             {
                 throw new FileNotFoundException("No scene.bin file is loaded.");
             }
@@ -561,6 +656,12 @@ namespace FF7Scarlet
         {
             sceneEditorForm = null;
             startupForm?.EnableFormButton(FormType.SceneEditor);
+        }
+
+        private static void exeFormClosed(object? sender, FormClosedEventArgs e)
+        {
+            exeEditorForm = null;
+            startupForm?.EnableFormButton(FormType.ExeEditor);
         }
     }
 }

@@ -118,97 +118,127 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Aeris" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\Aeris.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Barret" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\Barret.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CaitSith" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\CaitSith.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Chocobo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\Chocobo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Cid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\Cid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Cloud" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\Cloud.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\GUI\logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot6" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_command1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_command1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_command1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_command2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_command2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_command2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_command3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_command3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_command3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_independent1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_independent1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_independent1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_independent2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_independent2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_independent2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_independent3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_independent3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_independent3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_magic1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_magic1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_magic1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_magic2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_magic2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_magic2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_magic3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_magic3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_magic3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_summon1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_summon1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_summon1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_summon2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_summon2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_summon2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_summon3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_summon3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_summon3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_support1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_support1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_support1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_support2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_support2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_support2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="materia_slot_support3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\materia_slot_support3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MateriaSlots\materia_slot_support3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="menu_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\menu_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MenuButtons\menu_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="menu_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\menu_copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MenuButtons\menu_copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="menu_cut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\menu_cut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MenuButtons\menu_cut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="menu_delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\menu_delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MenuButtons\menu_delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="menu_down" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\menu_down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MenuButtons\menu_down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="menu_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\menu_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MenuButtons\menu_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="menu_paste" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\menu_paste.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MenuButtons\menu_paste.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="menu_up" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\GUI\menu_up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\GUI\MenuButtons\menu_up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RedXIII" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\RedXIII.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Tifa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\Tifa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Vincent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\Vincent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yuffie" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\Portraits\Yuffie.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

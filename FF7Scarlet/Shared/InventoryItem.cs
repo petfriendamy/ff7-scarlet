@@ -1,67 +1,52 @@
-﻿using System.Collections;
+﻿using Shojy.FF7.Elena.Equipment;
+using Shojy.FF7.Elena.Materias;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.Shared
 {
     public enum ItemType
     {
-        None, Item, Weapon, Armor, Accessory
+        None, Item, Weapon, Armor, Accessory, Materia
     }
 
     public class InventoryItem
     {
         #region Properties
 
-        public const ushort WEAPON_START = 128, ARMOR_START = 256, ACCESSORY_START = 288, MAX_INDEX = 319;
+        public const ushort WEAPON_START = 128, ARMOR_START = 256, ACCESSORY_START = 288, MAX_INDEX = 319,
+            ITEM_COUNT = WEAPON_START,
+            WEAPON_COUNT = ARMOR_START - WEAPON_START,
+            ARMOR_COUNT = ACCESSORY_START - ARMOR_START,
+            ACCESSORY_COUNT = MAX_INDEX - ACCESSORY_START + 1;
 
         public byte Index { get; private set; }
-        public int Amount { get; set; }
         public ItemType Type { get; private set; }
 
         #endregion
 
         #region Constructors
 
-        public InventoryItem(ushort itemIndex, int amount)
+        public InventoryItem(ushort itemIndex)
         {
             Index = GetIndex(itemIndex);
-            Amount = amount;
             Type = GetType(itemIndex);
         }
 
-        public InventoryItem(byte index, int amount, ItemType type)
+        public InventoryItem(byte index, ItemType type)
         {
             Index = index;
-            Amount = amount;
             Type = type;
         }
 
-        public InventoryItem(byte[] data)
+        public InventoryItem(Accessory accessory)
         {
-            var source = new BitArray(data);
-            var indexBits = new bool[16];
-            var amountBits = new bool[8];
+            Type = ItemType.Accessory;
+            Index = (byte)accessory.Index;
+        }
 
-            int i;
-            for (i = 0; i < 9; ++i)
-            {
-                indexBits[i] = source[i];
-            }
-            for (i = 0; i < 7; ++i)
-            {
-                amountBits[i] = source[i + 9];
-            }
-
-            var converter = new BitArray(indexBits);
-            var indexBytes = new byte[2];
-            converter.CopyTo(indexBytes, 0);
-            ushort value = BitConverter.ToUInt16(indexBytes);
-            Type = GetType(value);
-            Index = GetIndex(value);
-
-            converter = new BitArray(amountBits);
-            var amountBytes = new byte[1];
-            converter.CopyTo(amountBytes, 0);
-            Amount = amountBytes[0];
+        public InventoryItem(Materia materia)
+        {
+            Type = ItemType.Materia;
+            Index = (byte)materia.Index;
         }
 
         #endregion
@@ -107,13 +92,18 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        public ushort GetCombinedIndex()
+        {
+            return GetCombinedIndex(Type, Index);
+        }
+
         public static ItemType GetType(ushort value)
         {
             if (value > MAX_INDEX)
             {
                 return ItemType.None;
             }
-            if (value < WEAPON_START)
+            else if (value < WEAPON_START)
             {
                 return ItemType.Item;
             }

@@ -1,4 +1,5 @@
-﻿using Shojy.FF7.Elena.Sections;
+﻿using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Sections;
 
 namespace FF7Scarlet.KernelEditor
 {

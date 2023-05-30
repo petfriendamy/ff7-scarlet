@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.Shared
 {
     public class InventoryMateria
     {
@@ -29,6 +29,14 @@ namespace FF7Scarlet.KernelEditor
         public InventoryMateria Copy()
         {
             return new InventoryMateria(Index, CurrentAP);
+        }
+
+        public byte[] GetBytes()
+        {
+            var data = new byte[4];
+            data[0] = Index;
+            Array.Copy(BitConverter.GetBytes(CurrentAP), 0, data, 1, 3);
+            return data;
         }
     }
 }

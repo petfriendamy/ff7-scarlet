@@ -9,7 +9,7 @@ using Shojy.FF7.Elena.Sections;
 
 namespace FF7Scarlet.KernelEditor
 {
-    
+
 
     public class Kernel : KernelReader, IAttackContainer
     {
@@ -236,20 +236,24 @@ namespace FF7Scarlet.KernelEditor
             {
                 case ItemType.Item:
                     var i = GetItemByID(item.Index);
-                    if (i == null) { return "(unknown)"; }
+                    if (i == null) { return $"(Item ID {item.Index})"; }
                     else { return i.Name; }
                 case ItemType.Weapon:
                     var w = GetWeaponByID(item.Index);
-                    if (w == null) { return "(unknown)"; }
+                    if (w == null) { return $"(Weapon ID {item.Index})"; }
                     else { return w.Name; }
                 case ItemType.Armor:
                     var ar = GetArmorByID(item.Index);
-                    if (ar == null) { return "(unknown)"; }
+                    if (ar == null) { return $"(Armor ID {item.Index})"; }
                     else { return ar.Name; }
                 case ItemType.Accessory:
                     var acc = GetAccessoryByID(item.Index);
-                    if (acc == null) { return "(unknown)"; }
+                    if (acc == null) { return $"(Accessory ID {item.Index})"; }
                     else { return acc.Name; }
+                case ItemType.Materia:
+                    var m = GetMateriaByID(item.Index);
+                    if (m == null) { return $"(Materia ID {item.Index})"; }
+                    else { return m.Name; }
                 default:
                     return "(none)";
             }
