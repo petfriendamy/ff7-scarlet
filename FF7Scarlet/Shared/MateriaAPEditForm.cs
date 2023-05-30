@@ -1,7 +1,6 @@
-﻿using FF7Scarlet.Shared;
-using Shojy.FF7.Elena.Sections;
+﻿using Shojy.FF7.Elena.Sections;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.Shared
 {
     public partial class MateriaAPEditForm : Form
     {

@@ -133,6 +133,16 @@ namespace FF7Scarlet.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap materia_slot_command_dl {
+            get {
+                object obj = ResourceManager.GetObject("materia_slot_command_dl", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap materia_slot_command1 {
             get {
                 object obj = ResourceManager.GetObject("materia_slot_command1", resourceCulture);
@@ -156,6 +166,36 @@ namespace FF7Scarlet.Properties {
         internal static System.Drawing.Bitmap materia_slot_command3 {
             get {
                 object obj = ResourceManager.GetObject("materia_slot_command3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap materia_slot_dl1 {
+            get {
+                object obj = ResourceManager.GetObject("materia_slot_dl1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap materia_slot_dl2 {
+            get {
+                object obj = ResourceManager.GetObject("materia_slot_dl2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap materia_slot_independent_dl {
+            get {
+                object obj = ResourceManager.GetObject("materia_slot_independent_dl", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,6 +233,16 @@ namespace FF7Scarlet.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap materia_slot_magic_dl {
+            get {
+                object obj = ResourceManager.GetObject("materia_slot_magic_dl", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap materia_slot_magic1 {
             get {
                 object obj = ResourceManager.GetObject("materia_slot_magic1", resourceCulture);
@@ -223,6 +273,16 @@ namespace FF7Scarlet.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap materia_slot_summon_dl {
+            get {
+                object obj = ResourceManager.GetObject("materia_slot_summon_dl", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap materia_slot_summon1 {
             get {
                 object obj = ResourceManager.GetObject("materia_slot_summon1", resourceCulture);
@@ -246,6 +306,16 @@ namespace FF7Scarlet.Properties {
         internal static System.Drawing.Bitmap materia_slot_summon3 {
             get {
                 object obj = ResourceManager.GetObject("materia_slot_summon3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap materia_slot_support_dl {
+            get {
+                object obj = ResourceManager.GetObject("materia_slot_support_dl", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

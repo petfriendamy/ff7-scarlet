@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Data;
 
 using FF7Scarlet.Shared;
@@ -10,13 +11,35 @@ namespace FF7Scarlet.ExeEditor
 {
     public partial class ExeEditorForm : Form
     {
+        #region Properties
+
+        private const string WINDOW_TITLE = "Scarlet - EXE Editor";
         private ExeData editor;
         //private ReadOnlyCollection<Weapon> csWeaponList, vWeaponList;
         private ReadOnlyCollection<Accessory> arrangedAccessoryList;
         private ReadOnlyCollection<Materia> arrangedMateriaList;
         private TextBox[] nameTextBoxes;
         private ComboBox[] ShopItemList;
-        private bool loading = true;
+        private bool loading = true, unsavedChanges = false;
+
+        private Character? SelectedCharacter
+        {
+            get
+            {
+                if (comboBoxSelectedCharacter.SelectedIndex == 0)
+                {
+                    return editor.CaitSith;
+                }
+                else
+                {
+                    return editor.Vincent;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Constructor
 
         public ExeEditorForm()
         {
@@ -83,7 +106,7 @@ namespace FF7Scarlet.ExeEditor
                 arrangedMateriaList = mLinq.ToArray().AsReadOnly();
 
                 //set materia slot selectors to equips
-                materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Equips;
+                materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Materia;
 
                 //populate comboboxes
                 SuspendOrResumeComboBoxes(tabControlMain, false);
@@ -171,6 +194,16 @@ namespace FF7Scarlet.ExeEditor
             {
                 buttonHext.Enabled = false;
             }
+        }
+
+        #endregion
+
+        #region User Methods
+
+        private void SetUnsaved(bool unsaved)
+        {
+            unsavedChanges = unsaved;
+            Text = $"{(unsaved ? "*" : "")}{WINDOW_TITLE}";
         }
 
         //sync controls with EXE data
@@ -311,6 +344,80 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        //update a character's name
+        private void ChangeName(TextBox textBox, int charID)
+        {
+            if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
+            if (!loading)
+            {
+                try
+                {
+                    editor.CharacterNames[charID] = new FFText(textBox.Text);
+                    SetUnsaved(true);
+                }
+                catch (ArgumentException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    loading = true;
+                    textBox.Text = editor.CharacterNames[charID].ToString();
+                    loading = false;
+                }
+            }
+        }
+
+        private int GetItemIndex(InventoryItem item)
+        {
+            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+            {
+                if (item.Type == ItemType.Accessory)
+                {
+                    var acc = DataManager.Kernel.GetAccessoryByID(item.Index);
+                    if (acc != null)
+                    {
+                        return arrangedAccessoryList.IndexOf(acc) + InventoryItem.ACCESSORY_START;
+                    }
+                }
+                else if (item.Type == ItemType.Materia)
+                {
+                    var mat = DataManager.Kernel.GetMateriaByID(item.Index);
+                    if (mat != null)
+                    {
+                        return arrangedMateriaList.IndexOf(mat) + InventoryItem.MAX_INDEX + 1;
+                    }
+                }
+                else
+                {
+                    return item.GetCombinedIndex();
+                }
+            }
+            return 0;
+        }
+
+        private InventoryItem GetShopItem(int index)
+        {
+            if (DataManager.Kernel == null)
+            {
+                throw new ArgumentNullException(nameof(DataManager.Kernel));
+            }
+
+            if (index < InventoryItem.ACCESSORY_START)
+            {
+                return new InventoryItem((ushort)index);
+            }
+            else if (index <= InventoryItem.MAX_INDEX)
+            {
+                return new InventoryItem(arrangedAccessoryList[index - InventoryItem.ACCESSORY_START]);
+            }
+            else
+            {
+                return new InventoryItem(arrangedMateriaList[index - InventoryItem.MAX_INDEX - 1]);
+            }
+        }
+
+        #endregion
+
+        #region Event Methods
+
         //populate controls with character data
         private void comboBoxSelectedCharacter_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -348,7 +455,7 @@ namespace FF7Scarlet.ExeEditor
                     if (wpn != null)
                     {
                         comboBoxCharacterWeapon.SelectedIndex = character.WeaponID;
-                        materiaSlotSelectorCharacterWeapon.SetSlotsFromWeapon(wpn);
+                        materiaSlotSelectorCharacterWeapon.SetSlots(wpn);
                         for (int j = 0; j < 8; ++j)
                         {
                             var mat = DataManager.Kernel.GetMateriaByID(character.WeaponMateria[j].Index);
@@ -360,7 +467,7 @@ namespace FF7Scarlet.ExeEditor
                     if (armor != null)
                     {
                         comboBoxCharacterArmor.SelectedIndex = character.ArmorID;
-                        materiaSlotSelectorCharacterArmor.SetSlotsFromArmor(armor);
+                        materiaSlotSelectorCharacterArmor.SetSlots(armor);
                         for (int j = 0; j < 8; ++j)
                         {
                             var mat = DataManager.Kernel.GetMateriaByID(character.ArmorMateria[j].Index);
@@ -383,22 +490,60 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        //update a character's name
-        private void ChangeName(TextBox textBox, int charID)
+        private void materiaSlotSelectorCharacter_MultiLinkEnabled(object sender, EventArgs e)
         {
-            if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
-            if (!loading)
+            materiaSlotSelectorCharacterWeapon.EnableMultiLinkSlots();
+            materiaSlotSelectorCharacterArmor.EnableMultiLinkSlots();
+        }
+
+        private void materiaSlotSelectorCharacterWeapon_SelectedSlotChanged(object sender, EventArgs e)
+        {
+            buttonCharacterWeaponChangeMateria.Enabled = materiaSlotSelectorCharacterWeapon.SelectedSlot != -1;
+        }
+
+        private void materiaSlotSelectorCharacterArmor_SelectedSlotChanged(object sender, EventArgs e)
+        {
+            buttonCharacterArmorChangeMateria.Enabled = materiaSlotSelectorCharacterArmor.SelectedSlot != -1;
+        }
+
+        private void buttonCharacterWeaponChangeMateria_Click(object sender, EventArgs e)
+        {
+            if (SelectedCharacter != null && DataManager.Kernel != null)
             {
-                try
+                int slot = materiaSlotSelectorCharacterWeapon.SelectedSlot;
+                if (slot != -1)
                 {
-                    editor.CharacterNames[charID] = new FFText(textBox.Text);
+                    var mat = SelectedCharacter.WeaponMateria[slot].Copy();
+                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData))
+                    {
+                        if (edit.ShowDialog() == DialogResult.OK)
+                        {
+                            SelectedCharacter.WeaponMateria[slot] = mat;
+                            materiaSlotSelectorCharacterWeapon.SetMateria(slot, mat, DataManager.Kernel);
+                            SetUnsaved(true);
+                        }
+                    }
                 }
-                catch (ArgumentException ex)
+            }
+        }
+
+        private void buttonCharacterArmorChangeMateria_Click(object sender, EventArgs e)
+        {
+            if (SelectedCharacter != null && DataManager.Kernel != null)
+            {
+                int slot = materiaSlotSelectorCharacterArmor.SelectedSlot;
+                if (slot != -1)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    loading = true;
-                    textBox.Text = editor.CharacterNames[charID].ToString();
-                    loading = false;
+                    var mat = SelectedCharacter.ArmorMateria[slot].Copy();
+                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData))
+                    {
+                        if (edit.ShowDialog() == DialogResult.OK)
+                        {
+                            SelectedCharacter.ArmorMateria[slot] = mat;
+                            materiaSlotSelectorCharacterArmor.SetMateria(slot, mat, DataManager.Kernel);
+                            SetUnsaved(true);
+                        }
+                    }
                 }
             }
         }
@@ -532,55 +677,6 @@ namespace FF7Scarlet.ExeEditor
                     pos = Array.IndexOf(DataManager.Kernel.MateriaData.Materias, arrangedMateriaList[i]);
                 editor.MateriaPrices[pos] = (uint)numericMateriaPrice.Value;
                 listBoxMateriaPrices.Items[i] = $"{arrangedMateriaList[i].Name} - {editor.MateriaPrices[pos]}";
-            }
-        }
-
-        private int GetItemIndex(InventoryItem item)
-        {
-            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
-            {
-                if (item.Type == ItemType.Accessory)
-                {
-                    var acc = DataManager.Kernel.GetAccessoryByID(item.Index);
-                    if (acc != null)
-                    {
-                        return arrangedAccessoryList.IndexOf(acc) + InventoryItem.ACCESSORY_START;
-                    }
-                }
-                else if (item.Type == ItemType.Materia)
-                {
-                    var mat = DataManager.Kernel.GetMateriaByID(item.Index);
-                    if (mat != null)
-                    {
-                        return arrangedMateriaList.IndexOf(mat) + InventoryItem.MAX_INDEX + 1;
-                    }
-                }
-                else
-                {
-                    return item.GetCombinedIndex();
-                }
-            }
-            return 0;
-        }
-
-        private InventoryItem GetShopItem(int index)
-        {
-            if (DataManager.Kernel == null)
-            {
-                throw new ArgumentNullException(nameof(DataManager.Kernel));
-            }
-
-            if (index < InventoryItem.ACCESSORY_START)
-            {
-                return new InventoryItem((ushort)index);
-            }
-            else if (index <= InventoryItem.MAX_INDEX)
-            {
-                return new InventoryItem(arrangedAccessoryList[index - InventoryItem.ACCESSORY_START]);
-            }
-            else
-            {
-                return new InventoryItem(arrangedMateriaList[index - InventoryItem.MAX_INDEX - 1]);
             }
         }
 
@@ -724,7 +820,6 @@ namespace FF7Scarlet.ExeEditor
                 try
                 {
                     editor.WriteFile(path);
-                    MessageBox.Show("Saved successfully!");
                 }
                 catch (IOException ex)
                 {
@@ -735,7 +830,7 @@ namespace FF7Scarlet.ExeEditor
         }
 
         //checks if mouse is over certain controls
-        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        private void ExeEditorForm_MouseMove(object sender, MouseEventArgs e)
         {
             var control = GetChildAtPoint(e.Location);
             if (control == null)
@@ -820,7 +915,6 @@ namespace FF7Scarlet.ExeEditor
                         try
                         {
                             editor.CreateHextFile(path, DataManager.VanillaExe);
-                            MessageBox.Show("Saved successfully!");
                         }
                         catch (IOException ex)
                         {
@@ -843,7 +937,7 @@ namespace FF7Scarlet.ExeEditor
             {
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
                 editor.WriteEXE();
-                MessageBox.Show("Saved successfully!");
+                SetUnsaved(false);
             }
             catch (IOException ex)
             {
@@ -851,5 +945,18 @@ namespace FF7Scarlet.ExeEditor
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void ExeEditorForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (unsavedChanges)
+            {
+                var result = MessageBox.Show("Unsaved changes will be lost. Are you sure?", "Unsaved changes",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                e.Cancel = result == DialogResult.No;
+            }
+        }
+
+        #endregion
     }
 }

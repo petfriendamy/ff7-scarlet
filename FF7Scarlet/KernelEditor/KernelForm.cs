@@ -1,15 +1,17 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Media;
+
 using Shojy.FF7.Elena;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Materias;
+
+using FF7Scarlet.SceneEditor;
 using FF7Scarlet.KernelEditor.Controls;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
-using System.Globalization;
-using System.Media;
-using FF7Scarlet.SceneEditor;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -220,7 +222,7 @@ namespace FF7Scarlet.KernelEditor
                             var name2 = Enum.GetName((CharacterNames)(i + 3));
                             if (name2 != null)
                             {
-                                parsedName += $"/{StringParser.AddSpace(name2)}";
+                                parsedName = StringParser.AddSpace(name2); //+= $"/{StringParser.AddSpace(name2)}";
                             }
                         }
                         listBoxInitCharacters.Items.Add(parsedName);
@@ -345,8 +347,8 @@ namespace FF7Scarlet.KernelEditor
 
             //show/hide controls that are invalid
             itemRestrictionsWeapon.ShowThrowable = true;
-            materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Equips;
-            materiaSlotSelectorCharacterArmor.SlotSelectorType = SlotSelectorType.Equips;
+            materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Materia;
+            materiaSlotSelectorCharacterArmor.SlotSelectorType = SlotSelectorType.Materia;
             materiaSlotSelectorWeapon.SlotSelectorType = SlotSelectorType.Slots;
             materiaSlotSelectorArmor.SlotSelectorType = SlotSelectorType.Slots;
             statIncreaseControlAccessory.Count = 2;
@@ -558,10 +560,7 @@ namespace FF7Scarlet.KernelEditor
                         var slots = kernel.GetMateriaSlots(section, i);
                         var rate = kernel.GetGrowthRate(section, i);
                         materiaSlots[section].GrowthRate = rate;
-                        for (j = 0; j < slots.Length; j++)
-                        {
-                            materiaSlots[section].SetSlot(j, slots[j]);
-                        }
+                        materiaSlots[section].SetSlots(slots, rate);
                         materiaGrowthComboBoxes[section].SelectedIndex = (int)rate;
                     }
 
@@ -778,7 +777,7 @@ namespace FF7Scarlet.KernelEditor
                 if (wpn != null)
                 {
                     comboBoxCharacterWeapon.SelectedIndex = character.WeaponID;
-                    materiaSlotSelectorCharacterWeapon.SetSlotsFromWeapon(wpn);
+                    materiaSlotSelectorCharacterWeapon.SetSlots(wpn);
                     for (int i = 0; i < 8; ++i)
                     {
                         var mat = kernel.GetMateriaByID(character.WeaponMateria[i].Index);
@@ -786,11 +785,12 @@ namespace FF7Scarlet.KernelEditor
                         materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
                     }
                 }
+                buttonCharacterWeaponChangeMateria.Enabled = false;
                 var armor = kernel.GetArmorByID(character.ArmorID);
                 if (armor != null)
                 {
                     comboBoxCharacterArmor.SelectedIndex = character.ArmorID;
-                    materiaSlotSelectorCharacterArmor.SetSlotsFromArmor(armor);
+                    materiaSlotSelectorCharacterArmor.SetSlots(armor);
                     for (int i = 0; i < 8; ++i)
                     {
                         var mat = kernel.GetMateriaByID(character.ArmorMateria[i].Index);
@@ -798,6 +798,7 @@ namespace FF7Scarlet.KernelEditor
                         materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
                     }
                 }
+                buttonCharacterArmorChangeMateria.Enabled = false;
                 var acc = kernel.GetAccessoryByID(character.AccessoryID);
                 if (acc == null)
                 {
@@ -1181,6 +1182,26 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void materiaSlotSelector_MultiLinkEnabled(object sender, EventArgs e)
+        {
+            foreach (var s in materiaSlots.Values)
+            {
+                s?.EnableMultiLinkSlots();
+            }
+            materiaSlotSelectorCharacterWeapon.EnableMultiLinkSlots();
+            materiaSlotSelectorCharacterArmor.EnableMultiLinkSlots();
+        }
+
+        private void materiaSlotSelectorCharacterWeapon_SelectedSlotChanged(object sender, EventArgs e)
+        {
+            buttonCharacterWeaponChangeMateria.Enabled = materiaSlotSelectorCharacterWeapon.SelectedSlot != -1;
+        }
+
+        private void materiaSlotSelectorCharacterArmor_SelectedSlotChanged(object sender, EventArgs e)
+        {
+            buttonCharacterArmorChangeMateria.Enabled = materiaSlotSelectorCharacterArmor.SelectedSlot != -1;
+        }
+
         private void buttonCharacterWeaponChangeMateria_Click(object sender, EventArgs e)
         {
             int chara = listBoxInitCharacters.SelectedIndex,
@@ -1193,6 +1214,8 @@ namespace FF7Scarlet.KernelEditor
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
                         kernel.InitialData.Characters[chara].WeaponMateria[slot] = mat;
+                        materiaSlotSelectorCharacterWeapon.SetMateria(slot, mat, kernel);
+                        SetUnsaved(true);
                     }
                 }
             }
@@ -1210,6 +1233,8 @@ namespace FF7Scarlet.KernelEditor
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
                         kernel.InitialData.Characters[chara].ArmorMateria[slot] = mat;
+                        materiaSlotSelectorCharacterArmor.SetMateria(slot, mat, kernel);
+                        SetUnsaved(true);
                     }
                 }
             }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF7Scarlet.KernelEditor
+namespace FF7Scarlet.Shared
 {
     [Flags]
     public enum EnemySkills

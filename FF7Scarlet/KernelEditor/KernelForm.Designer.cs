@@ -115,18 +115,18 @@
             labelCharacterKillCount = new Label();
             comboBoxCharacterFlags = new ComboBox();
             labelCharacterFlags = new Label();
-            characterLimitControl = new FF7Scarlet.Shared.Controls.CharacterLimitControl();
+            characterLimitControl = new Shared.Controls.CharacterLimitControl();
             numericCharacterCurrentEXP = new NumericUpDown();
             labelCharacterCurrentEXP = new Label();
             groupBoxCharacterArmor = new GroupBox();
             buttonCharacterArmorChangeMateria = new Button();
-            materiaSlotSelectorCharacterArmor = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorCharacterArmor = new Shared.Controls.MateriaSlotSelectorControl();
             comboBoxCharacterArmor = new ComboBox();
             groupBoxCharacterWeapon = new GroupBox();
             buttonCharacterWeaponChangeMateria = new Button();
-            materiaSlotSelectorCharacterWeapon = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorCharacterWeapon = new Shared.Controls.MateriaSlotSelectorControl();
             comboBoxCharacterWeapon = new ComboBox();
-            characterStatsControl = new FF7Scarlet.Shared.Controls.CharacterStatsControl();
+            characterStatsControl = new Shared.Controls.CharacterStatsControl();
             checkBoxCharacterBackRow = new CheckBox();
             numericCharacterLevel = new NumericUpDown();
             labelCharacterLevel = new Label();
@@ -198,7 +198,7 @@
             numericWeaponModelIndex = new NumericUpDown();
             labelWeaponModelIndex = new Label();
             groupBoxWeaponMateriaSlots = new GroupBox();
-            materiaSlotSelectorWeapon = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorWeapon = new Shared.Controls.MateriaSlotSelectorControl();
             labelWeaponMateriaGrowth = new Label();
             comboBoxWeaponMateriaGrowth = new ComboBox();
             labelWeaponCritChance = new Label();
@@ -235,7 +235,7 @@
             textBoxArmorName = new TextBox();
             labelArmorDescription = new Label();
             groupBoxArmorMateriaSlots = new GroupBox();
-            materiaSlotSelectorArmor = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorArmor = new Shared.Controls.MateriaSlotSelectorControl();
             labelArmorMateriaGrowth = new Label();
             comboBoxArmorMateriaGrowth = new ComboBox();
             textBoxArmorDescription = new TextBox();
@@ -1364,6 +1364,7 @@
             materiaSlotSelectorCharacterArmor.Size = new Size(211, 35);
             materiaSlotSelectorCharacterArmor.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterArmor.TabIndex = 15;
+            materiaSlotSelectorCharacterArmor.SelectedSlotChanged += materiaSlotSelectorCharacterArmor_SelectedSlotChanged;
             // 
             // comboBoxCharacterArmor
             // 
@@ -1410,6 +1411,7 @@
             materiaSlotSelectorCharacterWeapon.Size = new Size(211, 35);
             materiaSlotSelectorCharacterWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterWeapon.TabIndex = 15;
+            materiaSlotSelectorCharacterWeapon.SelectedSlotChanged += materiaSlotSelectorCharacterWeapon_SelectedSlotChanged;
             // 
             // comboBoxCharacterWeapon
             // 
@@ -2207,6 +2209,7 @@
             materiaSlotSelectorWeapon.Size = new Size(211, 35);
             materiaSlotSelectorWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorWeapon.TabIndex = 3;
+            materiaSlotSelectorWeapon.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
             // 
             // labelWeaponMateriaGrowth
             // 

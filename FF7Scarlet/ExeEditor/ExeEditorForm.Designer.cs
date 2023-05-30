@@ -510,12 +510,14 @@ namespace FF7Scarlet.ExeEditor
             // buttonCharacterArmorChangeMateria
             // 
             buttonCharacterArmorChangeMateria.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonCharacterArmorChangeMateria.Enabled = false;
             buttonCharacterArmorChangeMateria.Location = new Point(6, 99);
             buttonCharacterArmorChangeMateria.Name = "buttonCharacterArmorChangeMateria";
             buttonCharacterArmorChangeMateria.Size = new Size(211, 23);
             buttonCharacterArmorChangeMateria.TabIndex = 18;
             buttonCharacterArmorChangeMateria.Text = "Change selected materia...";
             buttonCharacterArmorChangeMateria.UseVisualStyleBackColor = true;
+            buttonCharacterArmorChangeMateria.Click += buttonCharacterArmorChangeMateria_Click;
             // 
             // materiaSlotSelectorCharacterArmor
             // 
@@ -528,6 +530,7 @@ namespace FF7Scarlet.ExeEditor
             materiaSlotSelectorCharacterArmor.Size = new Size(211, 35);
             materiaSlotSelectorCharacterArmor.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterArmor.TabIndex = 15;
+            materiaSlotSelectorCharacterArmor.SelectedSlotChanged += materiaSlotSelectorCharacterArmor_SelectedSlotChanged;
             // 
             // comboBoxCharacterArmor
             // 
@@ -554,12 +557,14 @@ namespace FF7Scarlet.ExeEditor
             // buttonCharacterWeaponChangeMateria
             // 
             buttonCharacterWeaponChangeMateria.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonCharacterWeaponChangeMateria.Enabled = false;
             buttonCharacterWeaponChangeMateria.Location = new Point(6, 99);
             buttonCharacterWeaponChangeMateria.Name = "buttonCharacterWeaponChangeMateria";
             buttonCharacterWeaponChangeMateria.Size = new Size(211, 23);
             buttonCharacterWeaponChangeMateria.TabIndex = 16;
             buttonCharacterWeaponChangeMateria.Text = "Change selected materia...";
             buttonCharacterWeaponChangeMateria.UseVisualStyleBackColor = true;
+            buttonCharacterWeaponChangeMateria.Click += buttonCharacterWeaponChangeMateria_Click;
             // 
             // materiaSlotSelectorCharacterWeapon
             // 
@@ -573,6 +578,8 @@ namespace FF7Scarlet.ExeEditor
             materiaSlotSelectorCharacterWeapon.Size = new Size(211, 35);
             materiaSlotSelectorCharacterWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterWeapon.TabIndex = 15;
+            materiaSlotSelectorCharacterWeapon.SelectedSlotChanged += materiaSlotSelectorCharacterWeapon_SelectedSlotChanged;
+            materiaSlotSelectorCharacterWeapon.MultiLinkEnabled += materiaSlotSelectorCharacter_MultiLinkEnabled;
             // 
             // comboBoxCharacterWeapon
             // 
@@ -1265,7 +1272,8 @@ namespace FF7Scarlet.ExeEditor
             MinimumSize = new Size(800, 600);
             Name = "ExeEditorForm";
             Text = "Scarlet - EXE Editor";
-            MouseMove += MainForm_MouseMove;
+            FormClosing += ExeEditorForm_FormClosing;
+            MouseMove += ExeEditorForm_MouseMove;
             tabControlMain.ResumeLayout(false);
             tabPageInitialData.ResumeLayout(false);
             tabPageInitialData.PerformLayout();

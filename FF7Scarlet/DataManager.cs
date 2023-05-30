@@ -30,6 +30,7 @@ namespace FF7Scarlet
         public static ExeData? VanillaExe { get; private set; }
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
+        public static bool MultiLinkedSlotsEnabled { get; set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
 
         //clipboard
