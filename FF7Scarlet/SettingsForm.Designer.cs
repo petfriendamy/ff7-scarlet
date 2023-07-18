@@ -131,7 +131,7 @@
             label1.Name = "label1";
             label1.Size = new Size(420, 43);
             label1.TabIndex = 6;
-            label1.Text = "This should be a completely unedited ff7.exe file, to be referenced when creating Hext files.";
+            label1.Text = "This should be a completely unedited ff7.exe file, to be referenced when creating Hext files. Currently only English EXEs are supported.";
             // 
             // textBoxVanillaExe
             // 

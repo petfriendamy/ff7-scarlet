@@ -31,7 +31,6 @@ namespace FF7Scarlet.ExeEditor
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExeEditorForm));
             buttonSaveEXE = new Button();
             buttonLoadFile = new Button();
@@ -165,7 +164,6 @@ namespace FF7Scarlet.ExeEditor
             labelItemPrices = new Label();
             listBoxItemPrices = new ListBox();
             buttonHext = new Button();
-            toolTip = new ToolTip(components);
             panelButtons = new Panel();
             tabControlMain.SuspendLayout();
             tabPageInitialData.SuspendLayout();
@@ -1667,7 +1665,6 @@ namespace FF7Scarlet.ExeEditor
             Name = "ExeEditorForm";
             Text = "Scarlet - EXE Editor";
             FormClosing += ExeEditorForm_FormClosing;
-            MouseMove += ExeEditorForm_MouseMove;
             tabControlMain.ResumeLayout(false);
             tabPageInitialData.ResumeLayout(false);
             tabPageInitialData.PerformLayout();
@@ -1750,7 +1747,6 @@ namespace FF7Scarlet.ExeEditor
         private TextBox textBoxChocobo;
         private PictureBox pictureBoxChocobo;
         private Button buttonHext;
-        private ToolTip toolTip;
         private TabPage tabPageShopData;
         private ListBox listBoxItemPrices;
         private Label labelItemPrices;

@@ -1,5 +1,6 @@
 ﻿using FF7Scarlet.Shared;
 using Shojy.FF7.Elena;
+using System.IO;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -183,30 +184,40 @@ namespace FF7Scarlet.ExeEditor
             return false;
         }
 
+        public static Language GetLanguage(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException();
+            }
+
+            //check EXE language
+            string name = Path.GetFileNameWithoutExtension(path);
+            if (name.EndsWith("_es"))
+            {
+                return Language.Spanish;
+            }
+            else if (name.EndsWith("_fr"))
+            {
+                return Language.French;
+            }
+            else if (name.EndsWith("_de"))
+            {
+                return Language.German;
+            }
+            else
+            {
+                return Language.English;
+            }
+        }
+
         public void ReadEXE(string path)
         {
             try
             {
                 if (File.Exists(path))
                 {
-                    //check EXE language
-                    string name = Path.GetFileNameWithoutExtension(path);
-                    if (name.EndsWith("_es"))
-                    {
-                        Language = Language.Spanish;
-                    }
-                    else if (name.EndsWith("_fr"))
-                    {
-                        Language = Language.French;
-                    }
-                    else if (name.EndsWith("_de"))
-                    {
-                        Language = Language.German;
-                    }
-                    else
-                    {
-                        Language = Language.English;
-                    }
+                    Language = GetLanguage(path);
 
                     //attempt to open and read the EXE
                     int i;

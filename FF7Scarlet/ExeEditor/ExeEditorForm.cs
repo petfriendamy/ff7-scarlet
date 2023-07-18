@@ -226,16 +226,6 @@ namespace FF7Scarlet.ExeEditor
             {
                 comboBoxShopIndex.SelectedIndex = 0;
             }
-
-            //disable Hext button if vanilla EXE is not loaded, or if language doesn't match
-            if (DataManager.VanillaExe == null)
-            {
-                buttonHext.Enabled = false;
-            }
-            else if (DataManager.VanillaExe.Language != editor.Language)
-            {
-                buttonHext.Enabled = false;
-            }
         }
 
         #endregion
@@ -1095,31 +1085,6 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        //checks if mouse is over certain controls
-        private void ExeEditorForm_MouseMove(object sender, MouseEventArgs e)
-        {
-            var control = GetChildAtPoint(e.Location);
-            if (control == null)
-            {
-                toolTip.ShowAlways = false;
-            }
-            else if (editor != null)
-            {
-                if (control == buttonHext && editor.Language != Language.English)
-                {
-                    if (!toolTip.ShowAlways)
-                    {
-                        toolTip.ShowAlways = true;
-                        toolTip.Show("Currently unavailable for this language.", control, control.Width / 2, control.Height / 2);
-                    }
-                }
-                else
-                {
-                    toolTip.ShowAlways = false;
-                }
-            }
-        }
-
         //create a Hext file
         private void buttonHext_Click(object sender, EventArgs e)
         {
@@ -1137,11 +1102,11 @@ namespace FF7Scarlet.ExeEditor
                     }
                     else
                     {
-                        MessageBox.Show("You will need to provide an unmodified EXE for the Hext comparison.",
+                        MessageBox.Show("You will need to provide an unmodified English EXE for the Hext comparison.",
                         "EXE Needed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         using (var openDialog = new OpenFileDialog())
                         {
-                            openDialog.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7_es.exe;ff7_fr.exe;ff7_de.exe;ff7.exe";
+                            openDialog.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7.exe";
                             result = openDialog.ShowDialog();
                             path = openDialog.FileName;
                         }

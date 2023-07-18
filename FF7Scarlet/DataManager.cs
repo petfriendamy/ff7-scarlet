@@ -184,7 +184,7 @@ namespace FF7Scarlet
             }
             else
             {
-                throw new FileFormatException(Path.GetFileName(path));
+                throw new FileFormatException($"An error occurred while reading {Path.GetFileName(path)}.");
             }
         }
 
@@ -199,7 +199,15 @@ namespace FF7Scarlet
                         case FileClass.EXE:
                             if (ExeData.ValidateEXE(path))
                             {
-                                if (isSetting) { VanillaExePath = path; }
+                                if (isSetting)
+                                {
+                                    if (ExeData.GetLanguage(path) == Language.English)
+                                    {
+                                        VanillaExePath = path;
+                                        LoadVanillaEXE();
+                                    }
+                                    else { return false; }
+                                }
                                 else { ExePath = path; }
                                 return true;
                             }

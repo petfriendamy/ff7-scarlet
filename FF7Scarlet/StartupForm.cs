@@ -135,10 +135,9 @@ namespace FF7Scarlet
                     UpdateTextBoxes();
                 }
             }
-            catch (FileFormatException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while reading {ex.Message}.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -161,10 +160,9 @@ namespace FF7Scarlet
                     CheckLookupTable();
                 }
             }
-            catch (FileFormatException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while reading {ex.Message}.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -186,10 +184,9 @@ namespace FF7Scarlet
                     UpdateTextBoxes();
                 }
             }
-            catch (FileFormatException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while reading {ex.Message}.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -212,10 +209,9 @@ namespace FF7Scarlet
                     CheckLookupTable();
                 }
             }
-            catch (FileFormatException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while reading {ex.Message}.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
