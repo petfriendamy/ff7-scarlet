@@ -190,49 +190,56 @@ namespace FF7Scarlet
 
         private static bool ValidateFile(FileClass fileClass, string path, bool isSetting = false)
         {
-            if (File.Exists(path))
+            try
             {
-                switch (fileClass)
+                if (File.Exists(path))
                 {
-                    case FileClass.EXE:
-                        if (ExeData.ValidateEXE(path))
-                        {
-                            if (isSetting) { VanillaExePath = path; }
-                            else { ExePath = path; }
+                    switch (fileClass)
+                    {
+                        case FileClass.EXE:
+                            if (ExeData.ValidateEXE(path))
+                            {
+                                if (isSetting) { VanillaExePath = path; }
+                                else { ExePath = path; }
+                                return true;
+                            }
+                            return false;
+                        case FileClass.Kernel:
+                            try
+                            {
+                                Kernel = new Kernel(path);
+                                KernelPath = path;
+                                return true;
+                            }
+                            catch { return false; }
+                        case FileClass.Kernel2:
+                            if (Kernel != null)
+                            {
+                                Kernel.MergeKernel2Data(path);
+                                Kernel2Path = path;
+                            }
                             return true;
-                        }
-                        return false;
-                    case FileClass.Kernel:
-                        try
-                        {
-                            Kernel = new Kernel(path);
-                            KernelPath = path;
-                            return true;
-                        }
-                        catch { return false; }
-                    case FileClass.Kernel2:
-                        if (Kernel != null)
-                        {
-                            Kernel.MergeKernel2Data(path);
-                            Kernel2Path = path;
-                        }
-                        return true;
-                    case FileClass.Scene:
-                        try
-                        {
-                            LoadSceneBin(path);
-                            return true;
-                        }
-                        catch { return false; }
-                    case FileClass.BattleLgp:
-                        try
-                        {
-                            BattleLgp = new BattleLgp(path);
-                            BattleLgpPath = path;
-                            return true;
-                        }
-                        catch { return false; }
+                        case FileClass.Scene:
+                            try
+                            {
+                                LoadSceneBin(path);
+                                return true;
+                            }
+                            catch { return false; }
+                        case FileClass.BattleLgp:
+                            try
+                            {
+                                BattleLgp = new BattleLgp(path);
+                                BattleLgpPath = path;
+                                return true;
+                            }
+                            catch { return false; }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
         }

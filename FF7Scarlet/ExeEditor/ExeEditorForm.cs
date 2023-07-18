@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Data;
-
+using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
 using Shojy.FF7.Elena.Equipment;
@@ -62,35 +62,65 @@ namespace FF7Scarlet.ExeEditor
                 comboBoxShopItem6, comboBoxShopItem7, comboBoxShopItem8, comboBoxShopItem9, comboBoxShopItem10
             };
 
-            if (DataManager.Kernel == null) //no kernel loaded
+            //add limit breaks
+            listBoxLimits.BeginUpdate();
+            for (i = 0; i < ExeData.NUM_LIMITS; ++i)
             {
-                arrangedMateriaList = Array.Empty<Materia>().AsReadOnly();
-                arrangedAccessoryList = Array.Empty<Accessory>().AsReadOnly();
-                foreach (Control c in tabPageInitialData.Controls)
+                string name = $"(Limit break #{i + 1})";
+                if (DataManager.BothKernelFilePathsExist && DataManager.Kernel != null)
                 {
-                    c.Enabled = false;
+                    name = DataManager.Kernel.MagicNames.Strings[i + Kernel.ATTACK_COUNT];
                 }
-                foreach (Control c in tabPageShopData.Controls)
+                listBoxLimits.Items.Add(name);
+            }
+            listBoxLimits.EndUpdate();
+
+            //populate comboboxes
+            SuspendOrResumeComboBoxes(tabControlMain, false);
+
+            //character flags
+            foreach (var f in Enum.GetNames<CharacterFlags>())
+            {
+                comboBoxCharacterFlags.Items.Add(f);
+            }
+
+            //limit status change
+            comboBoxLimitStatusChange.Items.Add("None");
+            foreach (var s in Enum.GetValues<StatusChange>())
+            {
+                if (s != StatusChange.None)
                 {
-                    c.Enabled = false;
+                    comboBoxLimitStatusChange.Items.Add(s);
+                    //statusChanges.Add(s);
                 }
             }
-            else
+
+            //limit condition submenu
+            comboBoxLimitConditionSubMenu.Items.Add("None");
+            foreach (var c in Enum.GetValues<AttackConditions>())
             {
-                //get Cait Sith weapons
-                /*var cLinq =
-                    from w in DataManager.Kernel.WeaponData.Weapons
-                    where w.EquipableBy.HasFlag(EquipableBy.CaitSith)
-                    select w;
-                csWeaponList = cLinq.ToArray().AsReadOnly();
+                if (c != AttackConditions.None)
+                {
+                    comboBoxLimitConditionSubMenu.Items.Add(c);
+                }
+            }
 
-                //get Vincent weapons
-                var vLinq =
-                    from w in DataManager.Kernel.WeaponData.Weapons
-                    where w.EquipableBy.HasFlag(EquipableBy.Vincent)
-                    select w;
-                vWeaponList = vLinq.ToArray().AsReadOnly();*/
+            //add shop data
+            for (i = 0; i < ExeData.NUM_SHOPS; ++i)
+            {
+                if (ShopData.SHOP_NAMES.ContainsKey(i))
+                {
+                    comboBoxShopIndex.Items.Add(ShopData.SHOP_NAMES[i]);
+                }
+                else
+                {
+                    comboBoxShopIndex.Items.Add($"[Shop ID {i}]");
+                }
+            }
 
+            //kernel-synced data
+            if (DataManager.BothKernelFilePathsExist && DataManager.Kernel != null)
+            {
                 //arrange accessory list
                 var aLinq =
                     from a in DataManager.Kernel.AccessoryData.Accessories
@@ -108,12 +138,7 @@ namespace FF7Scarlet.ExeEditor
                 //set materia slot selectors to equips
                 materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Materia;
 
-                //populate comboboxes
-                SuspendOrResumeComboBoxes(tabControlMain, false);
-                foreach (var f in Enum.GetNames<CharacterFlags>())
-                {
-                    comboBoxCharacterFlags.Items.Add(f);
-                }
+                //items
                 foreach (var item in DataManager.Kernel.ItemData.Items)
                 {
                     foreach (var InventoryItem in ShopItemList)
@@ -122,6 +147,8 @@ namespace FF7Scarlet.ExeEditor
                         InventoryItem.SelectedIndex = 0;
                     }
                 }
+
+                //weapons
                 foreach (var weapon in DataManager.Kernel.WeaponData.Weapons)
                 {
                     comboBoxCharacterWeapon.Items.Add(weapon.Name);
@@ -130,6 +157,8 @@ namespace FF7Scarlet.ExeEditor
                         InventoryItem.Items.Add(weapon.Name);
                     }
                 }
+
+                //armors
                 foreach (var armor in DataManager.Kernel.ArmorData.Armors)
                 {
                     comboBoxCharacterArmor.Items.Add(armor.Name);
@@ -138,6 +167,8 @@ namespace FF7Scarlet.ExeEditor
                         InventoryItem.Items.Add(armor.Name);
                     }
                 }
+
+                //accessories
                 comboBoxCharacterAccessory.Items.Add("None");
                 foreach (var accessory in arrangedAccessoryList)
                 {
@@ -147,6 +178,8 @@ namespace FF7Scarlet.ExeEditor
                         InventoryItem.Items.Add(accessory.Name);
                     }
                 }
+
+                //materia
                 foreach (var materia in arrangedMateriaList)
                 {
                     //check if name is empty
@@ -161,23 +194,22 @@ namespace FF7Scarlet.ExeEditor
                         InventoryItem.Items.Add(name);
                     }
                 }
-
-                //add shop data
-                for (i = 0; i < ExeData.NUM_SHOPS; ++i)
-                {
-                    if (ShopData.SHOP_NAMES.ContainsKey(i))
-                    {
-                        comboBoxShopIndex.Items.Add(ShopData.SHOP_NAMES[i]);
-                    }
-                    else
-                    {
-                        comboBoxShopIndex.Items.Add($"[Shop ID {i}]");
-                    }
-                }
-
-                //resume combo boxes
-                SuspendOrResumeComboBoxes(tabControlMain, true);
             }
+            else //no kernel loaded
+            {
+                arrangedMateriaList = Array.Empty<Materia>().AsReadOnly();
+                arrangedAccessoryList = Array.Empty<Accessory>().AsReadOnly();
+                groupBoxCharacterWeapon.Enabled = false;
+                groupBoxCharacterArmor.Enabled = false;
+                comboBoxCharacterAccessory.Enabled = false;
+                foreach (Control c in tabPageShopData.Controls)
+                {
+                    c.Enabled = false;
+                }
+            }
+
+            //resume combo boxes
+            SuspendOrResumeComboBoxes(tabControlMain, true);
 
             //set numeric max values
             numericItemPrice.Maximum = uint.MaxValue;
@@ -185,12 +217,22 @@ namespace FF7Scarlet.ExeEditor
 
             UpdateFormData();
             loading = false;
+
+            //select character
+            comboBoxSelectedCharacter.SelectedIndex = 0;
+
+            //select shop
             if (DataManager.Kernel != null)
             {
-                comboBoxSelectedCharacter.SelectedIndex = 0;
                 comboBoxShopIndex.SelectedIndex = 0;
             }
-            if (editor.Language != Language.English)
+
+            //disable Hext button if vanilla EXE is not loaded, or if language doesn't match
+            if (DataManager.VanillaExe == null)
+            {
+                buttonHext.Enabled = false;
+            }
+            else if (DataManager.VanillaExe.Language != editor.Language)
             {
                 buttonHext.Enabled = false;
             }
@@ -422,7 +464,7 @@ namespace FF7Scarlet.ExeEditor
         private void comboBoxSelectedCharacter_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = comboBoxSelectedCharacter.SelectedIndex;
-            if (!loading && i >= 0 && i < 2 && DataManager.Kernel != null)
+            if (!loading && i >= 0 && i < 2)
             {
                 loading = true;
                 Character? character;
@@ -450,43 +492,193 @@ namespace FF7Scarlet.ExeEditor
                     characterLimitControl.LimitLevel = character.LimitLevel;
                     characterLimitControl.LearnedLimits = character.LearnedLimits;
                     characterLimitControl.LimitBar = character.CurrentLimitBar;
-
-                    var wpn = DataManager.Kernel.GetWeaponByID(character.WeaponID);
-                    if (wpn != null)
-                    {
-                        comboBoxCharacterWeapon.SelectedIndex = character.WeaponID;
-                        materiaSlotSelectorCharacterWeapon.SetSlots(wpn);
-                        for (int j = 0; j < 8; ++j)
-                        {
-                            var mat = DataManager.Kernel.GetMateriaByID(character.WeaponMateria[j].Index);
-                            materiaSlotSelectorCharacterWeapon.SetMateria(j, mat);
-                            materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
-                        }
-                    }
-                    var armor = DataManager.Kernel.GetArmorByID(character.ArmorID);
-                    if (armor != null)
-                    {
-                        comboBoxCharacterArmor.SelectedIndex = character.ArmorID;
-                        materiaSlotSelectorCharacterArmor.SetSlots(armor);
-                        for (int j = 0; j < 8; ++j)
-                        {
-                            var mat = DataManager.Kernel.GetMateriaByID(character.ArmorMateria[j].Index);
-                            materiaSlotSelectorCharacterArmor.SetMateria(j, mat);
-                            materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
-                        }
-                    }
-                    var acc = DataManager.Kernel.GetAccessoryByID(character.AccessoryID);
-                    if (acc == null)
-                    {
-                        comboBoxCharacterAccessory.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        comboBoxCharacterAccessory.SelectedIndex = character.AccessoryID + 1;
-                    }
                     characterStatsControl.SetStats(character);
+
+                    //check if kernel is loaded
+                    if (DataManager.Kernel != null)
+                    {
+                        var wpn = DataManager.Kernel.GetWeaponByID(character.WeaponID);
+                        if (wpn != null)
+                        {
+                            comboBoxCharacterWeapon.SelectedIndex = character.WeaponID;
+                            materiaSlotSelectorCharacterWeapon.SetSlots(wpn);
+                            for (int j = 0; j < 8; ++j)
+                            {
+                                var mat = DataManager.Kernel.GetMateriaByID(character.WeaponMateria[j].Index);
+                                materiaSlotSelectorCharacterWeapon.SetMateria(j, mat);
+                                materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
+                            }
+                        }
+                        var armor = DataManager.Kernel.GetArmorByID(character.ArmorID);
+                        if (armor != null)
+                        {
+                            comboBoxCharacterArmor.SelectedIndex = character.ArmorID;
+                            materiaSlotSelectorCharacterArmor.SetSlots(armor);
+                            for (int j = 0; j < 8; ++j)
+                            {
+                                var mat = DataManager.Kernel.GetMateriaByID(character.ArmorMateria[j].Index);
+                                materiaSlotSelectorCharacterArmor.SetMateria(j, mat);
+                                materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
+                            }
+                        }
+                        var acc = DataManager.Kernel.GetAccessoryByID(character.AccessoryID);
+                        if (acc == null)
+                        {
+                            comboBoxCharacterAccessory.SelectedIndex = 0;
+                        }
+                        else
+                        {
+                            comboBoxCharacterAccessory.SelectedIndex = character.AccessoryID + 1;
+                        }
+                    }
                 }
                 loading = false;
+            }
+        }
+
+        private void numericCharacterID_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.ID = (byte)numericCharacterID.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void textBoxCharacterName_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.Name = new FFText(textBoxCharacterName.Text);
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterLevel_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.Level = (byte)numericCharacterLevel.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterCurrentEXP_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.CurrentEXP = (uint)numericCharacterCurrentEXP.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterEXPtoNext_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.EXPtoNextLevel = (uint)numericCharacterEXPtoNext.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void characterStatsControl_CharacterStatsChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                //stuff
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterCurrHP_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.CurrentHP = (ushort)numericCharacterCurrHP.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterBaseHP_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.BaseHP = (ushort)numericCharacterBaseHP.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterMaxHP_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.MaxHP = (ushort)numericCharacterMaxHP.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterCurrMP_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.CurrentMP = (ushort)numericCharacterCurrMP.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterBaseMP_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.BaseMP = (ushort)numericCharacterBaseMP.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterMaxMP_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.MaxMP = (ushort)numericCharacterMaxMP.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void comboBoxCharacterWeapon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null && DataManager.Kernel != null)
+            {
+                var wpn = DataManager.Kernel.WeaponData.Weapons[comboBoxCharacterWeapon.SelectedIndex];
+                SelectedCharacter.WeaponID = (byte)wpn.Index;
+                SetUnsaved(true);
+            }
+        }
+
+        private void comboBoxCharacterArmor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null && DataManager.Kernel != null)
+            {
+                var armor = DataManager.Kernel.ArmorData.Armors[comboBoxCharacterArmor.SelectedIndex];
+                SelectedCharacter.ArmorID = (byte)armor.Index;
+                SetUnsaved(true);
+            }
+        }
+
+        private void comboBoxCharacterAccessory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null && DataManager.Kernel != null)
+            {
+                int i = comboBoxCharacterAccessory.SelectedIndex;
+                if (i == 0)
+                {
+                    SelectedCharacter.AccessoryID = 0xFF;
+                }
+                else
+                {
+                    var acc = DataManager.Kernel.AccessoryData.Accessories[i - 1];
+                    SelectedCharacter.AccessoryID = (byte)acc.Index;
+                }
+                SetUnsaved(true);
             }
         }
 
@@ -546,6 +738,80 @@ namespace FF7Scarlet.ExeEditor
                     }
                 }
             }
+        }
+
+        private void comboBoxCharacterFlags_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //stuff
+        }
+
+        private void checkBoxCharacterBackRow_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.IsBackRow = checkBoxCharacterBackRow.Checked;
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCharacterKillCount_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedCharacter != null)
+            {
+                SelectedCharacter.KillCount = (ushort)numericCharacterKillCount.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        //populate controls with limit data
+        private void listBoxLimits_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            loading = true;
+            int i = listBoxLimits.SelectedIndex;
+
+            if (i >= 0 && i < ExeData.NUM_LIMITS)
+            {
+                var attack = editor.Limits[i];
+                tabControlLimits.Enabled = true;
+
+                //page 1
+                numericLimitAttackPercent.Value = attack.AccuracyRate;
+                numericLimitMPCost.Value = attack.MPCost;
+                comboBoxLimitAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
+                comboBoxLimitImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
+                elementsControlLimit.SetElements(attack.Elements);
+                comboBoxLimitCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
+                comboBoxLimitCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
+                comboBoxLimitHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
+                damageCalculationControlLimit.AttackPower = attack.AttackStrength;
+                damageCalculationControlLimit.ActualValue = attack.DamageCalculationID;
+
+                //page 2
+                specialAttackFlagsControlLimit.SetFlags(attack.SpecialAttackFlags);
+                statusesControlLimit.SetStatuses(attack.StatusEffects);
+                if (attack.AttackConditions == AttackConditions.None)
+                {
+                    comboBoxLimitConditionSubMenu.SelectedIndex = 0;
+                }
+                else
+                {
+                    comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
+                }
+                numericLimitStatusChangeChance.Value = attack.StatusChangeChance;
+                if (attack.StatusChange == StatusChange.None)
+                {
+                    comboBoxLimitStatusChange.SelectedIndex = 0;
+                }
+                else
+                {
+                    var s = Enum.GetValues<StatusChange>().ToList();
+                    comboBoxLimitStatusChange.SelectedIndex = s.IndexOf(attack.StatusChange) + 1;
+                }
+
+                //page 3
+                targetDataControlLimit.SetTargetData(attack.TargetFlags);
+            }
+            loading = false;
         }
 
         //update character names

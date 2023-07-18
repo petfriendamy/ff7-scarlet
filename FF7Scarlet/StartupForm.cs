@@ -32,6 +32,8 @@ namespace FF7Scarlet
                     }
                     catch //if the file can't be loaded, remove it from settings
                     {
+                        MessageBox.Show($"The file at '{path}' could not be loaded, and has been removed from settings.",
+                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         settings[ExeData.CONFIG_KEY].Value = string.Empty;
                         config.Save();
                     }
@@ -50,6 +52,8 @@ namespace FF7Scarlet
                     }
                     catch //if the file can't be loaded, remove it from settings
                     {
+                        MessageBox.Show($"The file at '{path}' could not be loaded, and has been removed from settings.",
+                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         settings[BattleLgp.CONFIG_KEY].Value = string.Empty;
                         config.Save();
                     }
@@ -115,71 +119,103 @@ namespace FF7Scarlet
 
         private void buttonEXEbrowse_Click(object sender, EventArgs e)
         {
-            DialogResult result;
-            string file;
-            using (var loadFile = new OpenFileDialog())
+            try
             {
-                loadFile.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7_es.exe;ff7_fr.exe;ff7_de.exe;ff7.exe";
-                result = loadFile.ShowDialog();
-                file = loadFile.FileName;
+                DialogResult result;
+                string file;
+                using (var loadFile = new OpenFileDialog())
+                {
+                    loadFile.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7_es.exe;ff7_fr.exe;ff7_de.exe;ff7.exe";
+                    result = loadFile.ShowDialog();
+                    file = loadFile.FileName;
+                }
+                if (result == DialogResult.OK)
+                {
+                    DataManager.SetFilePath(FileClass.EXE, file);
+                    UpdateTextBoxes();
+                }
             }
-            if (result == DialogResult.OK)
+            catch (FileFormatException ex)
             {
-                DataManager.SetFilePath(FileClass.EXE, file);
-                UpdateTextBoxes();
+                MessageBox.Show($"An error occurred while reading {ex.Message}.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonKernelBrowse_Click(object sender, EventArgs e)
         {
-            DialogResult result;
-            string file;
-            using (var loadFile = new OpenFileDialog())
+            try
             {
-                loadFile.Filter = "kernel.bin|kernel.bin";
-                result = loadFile.ShowDialog();
-                file = loadFile.FileName;
+                DialogResult result;
+                string file;
+                using (var loadFile = new OpenFileDialog())
+                {
+                    loadFile.Filter = "kernel.bin|kernel.bin";
+                    result = loadFile.ShowDialog();
+                    file = loadFile.FileName;
+                }
+                if (result == DialogResult.OK)
+                {
+                    DataManager.SetFilePath(FileClass.Kernel, file);
+                    UpdateTextBoxes();
+                    CheckLookupTable();
+                }
             }
-            if (result == DialogResult.OK)
+            catch (FileFormatException ex)
             {
-                DataManager.SetFilePath(FileClass.Kernel, file);
-                UpdateTextBoxes();
-                CheckLookupTable();
+                MessageBox.Show($"An error occurred while reading {ex.Message}.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonKernel2Browse_Click(object sender, EventArgs e)
         {
-            DialogResult result;
-            string file;
-            using (var loadFile = new OpenFileDialog())
+            try
             {
-                loadFile.Filter = "kernel2.bin|kernel2.bin";
-                result = loadFile.ShowDialog();
-                file = loadFile.FileName;
+                DialogResult result;
+                string file;
+                using (var loadFile = new OpenFileDialog())
+                {
+                    loadFile.Filter = "kernel2.bin|kernel2.bin";
+                    result = loadFile.ShowDialog();
+                    file = loadFile.FileName;
+                }
+                if (result == DialogResult.OK)
+                {
+                    DataManager.SetFilePath(FileClass.Kernel2, file);
+                    UpdateTextBoxes();
+                }
             }
-            if (result == DialogResult.OK)
+            catch (FileFormatException ex)
             {
-                DataManager.SetFilePath(FileClass.Kernel2, file);
-                UpdateTextBoxes();
+                MessageBox.Show($"An error occurred while reading {ex.Message}.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonSceneBrowse_Click(object sender, EventArgs e)
         {
-            DialogResult result;
-            string file;
-            using (var loadFile = new OpenFileDialog())
+            try
             {
-                loadFile.Filter = "scene.bin|scene.bin";
-                result = loadFile.ShowDialog();
-                file = loadFile.FileName;
+                DialogResult result;
+                string file;
+                using (var loadFile = new OpenFileDialog())
+                {
+                    loadFile.Filter = "scene.bin|scene.bin";
+                    result = loadFile.ShowDialog();
+                    file = loadFile.FileName;
+                }
+                if (result == DialogResult.OK)
+                {
+                    DataManager.SetFilePath(FileClass.Scene, file);
+                    UpdateTextBoxes();
+                    CheckLookupTable();
+                }
             }
-            if (result == DialogResult.OK)
+            catch (FileFormatException ex)
             {
-                DataManager.SetFilePath(FileClass.Scene, file);
-                UpdateTextBoxes();
-                CheckLookupTable();
+                MessageBox.Show($"An error occurred while reading {ex.Message}.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

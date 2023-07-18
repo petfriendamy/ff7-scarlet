@@ -10,13 +10,14 @@ namespace FF7Scarlet.ExeEditor
         //constants
         private static readonly int[] EXE_HEADER = new int[3] { 0x4D, 0x5A, 0x90 };
         public const string CONFIG_KEY = "VanillaExePath";
-        public const int NUM_NAMES = 10, NUM_SHOPS = 80;
+        public const int NUM_LIMITS = 71, NUM_NAMES = 10, NUM_SHOPS = 80;
         private const long
             HEXT_OFFSET_1 = 0x400C00,
             HEXT_OFFSET_2 = 0x401600,
 
             AP_MULTIPLIER_POS = 0x31F14F,
             AP_MASTER_OFFSET = 0x4F,
+            LIMIT_BREAK_POS = 0x51E0D4,
             NAME_DATA_POS = 0x5206B8,
             CAIT_SITH_DATA_POS = 0x520C10,
             SHOP_NAME_POS = 0x5219C8,
@@ -25,18 +26,21 @@ namespace FF7Scarlet.ExeEditor
             MATERIA_PRICE_DATA_POS = 0x523E58,
 
             AP_MULTIPLIER_ES_OFFSET = 0x8B6E2,
+            LIMIT_ES_OFFSET = 0x779D8,
             NAME_ES_OFFSET = 0x780E0,
             CAIT_ES_OFFSET = 0x78110,
             MENU_TEXT_ES_OFFSET = 0x783F0,
             SHOP_ES_OFFSET = 0x784A0,
 
             AP_MULTIPLIER_FR_OFFSET = 0x8B365,
+            LIMIT_FR_OFFSET = 0x777C0,
             NAME_FR_OFFSET = 0x77E70,
             CAIT_FR_OFFSET = 0x77E90,
             MENU_TEXT_FR_OFFSET = 0x780B8,
             SHOP_FR_OFFSET = 0x78A10,
 
             AP_MULTIPLIER_DE_OFFSET = 0x8B017,
+            LIMIT_DE_OFFSET = 0x76EB8,
             NAME_DE_OFFSET = 0x77370,
             CAIT_DE_OFFSET = 0x77388,
             MENU_TEXT_DE_OFFSET = 0x77650,
@@ -45,6 +49,7 @@ namespace FF7Scarlet.ExeEditor
         //properties
         public string FilePath { get; private set; } = string.Empty;
         public Language Language { get; private set; }
+        public Attack[] Limits { get; } = new Attack[NUM_LIMITS];
         public FFText[] CharacterNames { get; } = new FFText[NUM_NAMES];
         public Character? CaitSith { get; private set; }
         public Character? Vincent { get; private set; }
@@ -77,6 +82,21 @@ namespace FF7Scarlet.ExeEditor
                     return AP_MULTIPLIER_FR_OFFSET;
                 case Language.German:
                     return AP_MULTIPLIER_DE_OFFSET;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetLimitOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return LIMIT_ES_OFFSET;
+                case Language.French:
+                    return LIMIT_FR_OFFSET;
+                case Language.German:
+                    return LIMIT_DE_OFFSET;
                 default:
                     return 0;
             }
@@ -165,103 +185,118 @@ namespace FF7Scarlet.ExeEditor
 
         public void ReadEXE(string path)
         {
-            if (File.Exists(path))
+            try
             {
-                //check EXE language
-                string name = Path.GetFileNameWithoutExtension(path);
-                if (name.EndsWith("_es"))
+                if (File.Exists(path))
                 {
-                    Language = Language.Spanish;
-                }
-                else if (name.EndsWith("_fr"))
-                {
-                    Language = Language.French;
-                }
-                else if (name.EndsWith("_de"))
-                {
-                    Language = Language.German;
-                }
-                else
-                {
-                    Language = Language.English;
-                }
-
-                //attempt to open and read the EXE
-                int i;
-                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-                using (var reader = new BinaryReader(stream))
-                {
-                    //check if header is correct
-                    if (!ValidateEXE(path))
+                    //check EXE language
+                    string name = Path.GetFileNameWithoutExtension(path);
+                    if (name.EndsWith("_es"))
                     {
-                        throw new FormatException("EXE appears to be invalid.");
+                        Language = Language.Spanish;
+                    }
+                    else if (name.EndsWith("_fr"))
+                    {
+                        Language = Language.French;
+                    }
+                    else if (name.EndsWith("_de"))
+                    {
+                        Language = Language.German;
+                    }
+                    else
+                    {
+                        Language = Language.English;
                     }
 
-                    //get AP multiplier
-                    stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
-                    APPriceMultiplier = reader.ReadByte();
-
-                    //get character names
-                    stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
-                    for (i = 0; i < NUM_NAMES; ++i)
+                    //attempt to open and read the EXE
+                    int i;
+                    using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                    using (var reader = new BinaryReader(stream))
                     {
-                        CharacterNames[i] = new FFText(reader.ReadBytes(Character.NAME_LENGTH));
+                        //check if header is correct
+                        if (!ValidateEXE(path))
+                        {
+                            throw new FormatException("EXE appears to be invalid.");
+                        }
+
+                        //get AP multiplier
+                        stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
+                        APPriceMultiplier = reader.ReadByte();
+
+                        //get limit breaks
+                        stream.Seek(LIMIT_BREAK_POS + GetLimitOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < NUM_LIMITS; ++i)
+                        {
+                            Limits[i] = new Attack((ushort)i, new FFText($"(Limit #{i})"),
+                                reader.ReadBytes(Attack.BLOCK_SIZE));
+                        }
+
+                        //get character names
+                        stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < NUM_NAMES; ++i)
+                        {
+                            CharacterNames[i] = new FFText(reader.ReadBytes(Character.NAME_LENGTH));
+                        }
+
+                        //get Cait Sith + Vincent data
+                        stream.Seek(CAIT_SITH_DATA_POS + GetCaitOffset(), SeekOrigin.Begin);
+                        CaitSith = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
+                        Vincent = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
+
+                        //get shop names
+                        stream.Seek(SHOP_NAME_POS + GetMenuTextOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < 9; ++i)
+                        {
+                            int length = ShopData.SHOP_NAME_LENGTH;
+                            if (Language == Language.Spanish || Language == Language.German)
+                            {
+                                length *= 2; //double-length strings
+                            }
+                            ShopNames[i] = new FFText(reader.ReadBytes(length));
+                        }
+
+                        //get shop inventories
+                        stream.Seek(SHOP_INVENTORY_POS + GetShopOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < NUM_SHOPS; ++i)
+                        {
+                            Shops[i] = new ShopInventory(reader.ReadBytes(ShopInventory.SHOP_DATA_LENGTH));
+                        }
+
+                        //get item prices
+                        if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+                        {
+                            stream.Seek(ITEM_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
+                            for (i = 0; i < ItemPrices.Length; ++i)
+                            {
+                                ItemPrices[i] = reader.ReadUInt32();
+                            }
+                            for (i = 0; i < WeaponPrices.Length; ++i)
+                            {
+                                WeaponPrices[i] = reader.ReadUInt32();
+                            }
+                            for (i = 0; i < ArmorPrices.Length; ++i)
+                            {
+                                ArmorPrices[i] = reader.ReadUInt32();
+                            }
+                            for (i = 0; i < AccessoryPrices.Length; ++i)
+                            {
+                                AccessoryPrices[i] = reader.ReadUInt32();
+                            }
+
+                            //get materia prices
+                            stream.Seek(MATERIA_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
+                            for (i = 0; i < MateriaPrices.Length; ++i)
+                            {
+                                MateriaPrices[i] = reader.ReadUInt32();
+                            }
+                        }
                     }
-
-                    //get Cait Sith + Vincent data
-                    stream.Seek(CAIT_SITH_DATA_POS + GetCaitOffset(), SeekOrigin.Begin);
-                    CaitSith = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
-                    Vincent = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
-
-                    //get shop names
-                    stream.Seek(SHOP_NAME_POS + GetMenuTextOffset(), SeekOrigin.Begin);
-                    for (i = 0; i < 9; ++i)
-                    {
-                        int length = ShopData.SHOP_NAME_LENGTH;
-                        if (Language == Language.Spanish || Language == Language.German)
-                        {
-                            length *= 2; //double-length strings
-                        }
-                        ShopNames[i] = new FFText(reader.ReadBytes(length));
-                    }
-
-                    //get shop inventories
-                    stream.Seek(SHOP_INVENTORY_POS + GetShopOffset(), SeekOrigin.Begin);
-                    for (i = 0; i < NUM_SHOPS; ++i)
-                    {
-                        Shops[i] = new ShopInventory(reader.ReadBytes(ShopInventory.SHOP_DATA_LENGTH));
-                    }
-
-                    //get item prices
-                    if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
-                    {
-                        stream.Seek(ITEM_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < ItemPrices.Length; ++i)
-                        {
-                            ItemPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < WeaponPrices.Length; ++i)
-                        {
-                            WeaponPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < ArmorPrices.Length; ++i)
-                        {
-                            ArmorPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < AccessoryPrices.Length; ++i)
-                        {
-                            AccessoryPrices[i] = reader.ReadUInt32();
-                        }
-
-                        //get materia prices
-                        stream.Seek(MATERIA_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < MateriaPrices.Length; ++i)
-                        {
-                            MateriaPrices[i] = reader.ReadUInt32();
-                        }
-                    }
+                    FilePath = path;
                 }
-                FilePath = path;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

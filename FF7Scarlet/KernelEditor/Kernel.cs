@@ -163,7 +163,9 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.AttackData:
                 case KernelSection.MagicNames:
                 case KernelSection.MagicDescriptions:
-                    return MagicNames.Strings;
+                    var temp = new string[ATTACK_COUNT];
+                    Array.Copy(MagicNames.Strings, temp, ATTACK_COUNT);
+                    return temp;
                 case KernelSection.ItemData:
                 case KernelSection.ItemNames:
                 case KernelSection.ItemDescriptions:
