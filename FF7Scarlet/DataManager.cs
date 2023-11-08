@@ -445,17 +445,16 @@ namespace FF7Scarlet
 
             var data = new List<byte> { };
             byte[] uncompressedSection, compressedSection;
-            ushort compressedLength, uncompressedLength;
-            int appendFF;
+            ushort compressedLength, uncompressedLength, appendFF;
             for (ushort i = 0; i < Kernel.SECTION_COUNT; ++i)
             {
                 uncompressedSection = Kernel.GetSectionRawData((KernelSection)(i + 1));
                 uncompressedLength = (ushort)uncompressedSection.Length;
                 compressedSection = GetCompressedData(uncompressedSection);
                 compressedLength = (ushort)compressedSection.Length;
-                appendFF = compressedLength % 4;
+                appendFF = (ushort)(compressedLength % 4);
 
-                data.AddRange(BitConverter.GetBytes(compressedLength + appendFF));
+                data.AddRange(BitConverter.GetBytes((ushort)(compressedLength + appendFF)));
                 data.AddRange(BitConverter.GetBytes(uncompressedLength));
                 if (i >= Kernel.KERNEL1_END)
                 {
