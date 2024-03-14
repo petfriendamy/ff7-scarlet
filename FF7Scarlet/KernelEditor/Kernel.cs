@@ -70,7 +70,7 @@ namespace FF7Scarlet.KernelEditor
         public void UpdateLookupTable(byte[] table)
         {
             BattleAndGrowthData.UpdateLookupTable(table);
-            Array.Copy(table, 0, KernelData[KernelSection.BattleAndGrowthData], 0xF1C, 64);
+            //Array.Copy(table, 0, KernelData[KernelSection.BattleAndGrowthData], 0xF1C, 64);
         }
 
         public int GetCount(KernelSection section)
@@ -152,40 +152,76 @@ namespace FF7Scarlet.KernelEditor
             return null;
         }
 
-        public string[] GetAssociatedNames(KernelSection section)
+        private KernelSection GetDataSection(KernelSection section)
         {
             switch (section)
             {
                 case KernelSection.CommandData:
                 case KernelSection.CommandNames:
                 case KernelSection.CommandDescriptions:
-                    return CommandNames.Strings;
+                    return KernelSection.CommandData;
+
                 case KernelSection.AttackData:
                 case KernelSection.MagicNames:
                 case KernelSection.MagicDescriptions:
-                    var temp = new string[ATTACK_COUNT];
-                    Array.Copy(MagicNames.Strings, temp, ATTACK_COUNT);
-                    return temp;
+                    return KernelSection.AttackData;
+
                 case KernelSection.ItemData:
                 case KernelSection.ItemNames:
                 case KernelSection.ItemDescriptions:
-                    return ItemNames.Strings;
+                    return KernelSection.ItemData;
+
                 case KernelSection.WeaponData:
                 case KernelSection.WeaponNames:
                 case KernelSection.WeaponDescriptions:
-                    return WeaponNames.Strings;
+                    return KernelSection.WeaponData;
+
                 case KernelSection.ArmorData:
                 case KernelSection.ArmorNames:
                 case KernelSection.ArmorDescriptions:
-                    return ArmorNames.Strings;
+                    return KernelSection.ArmorData;
+
                 case KernelSection.AccessoryData:
                 case KernelSection.AccessoryNames:
                 case KernelSection.AccessoryDescriptions:
-                    return AccessoryNames.Strings;
+                    return KernelSection.AccessoryData;
+
                 case KernelSection.MateriaData:
                 case KernelSection.MateriaNames:
                 case KernelSection.MateriaDescriptions:
+                    return KernelSection.MateriaData;
+            }
+            return section;
+        }
+
+        public string[] GetAssociatedNames(KernelSection section)
+        {
+            var ds = GetDataSection(section);
+            switch (ds)
+            {
+                case KernelSection.CommandData:
+                    return CommandNames.Strings;
+
+                case KernelSection.AttackData:
+                    var temp = new string[ATTACK_COUNT];
+                    Array.Copy(MagicNames.Strings, temp, ATTACK_COUNT);
+                    return temp;
+
+                case KernelSection.ItemData:
+                    return ItemNames.Strings;
+
+                case KernelSection.WeaponData:
+                    return WeaponNames.Strings;
+
+                case KernelSection.ArmorData:
+                    return ArmorNames.Strings;
+
+                case KernelSection.AccessoryData:
+                    return AccessoryNames.Strings;
+
+                case KernelSection.MateriaData:
                     return MateriaNames.Strings;
+
                 case KernelSection.KeyItemNames:
                 case KernelSection.KeyItemDescriptions:
                     return KeyItemNames.Strings;
@@ -193,38 +229,68 @@ namespace FF7Scarlet.KernelEditor
             return new string[0];
         }
 
+        public void UpdateName(KernelSection section, string name, int pos)
+        {
+            var ds = GetDataSection(section);
+            var names = GetAssociatedNames(ds);
+            if (names.Length > 0)
+            {
+                names[pos] = name;
+                switch (ds) //update associated item name (if it exists)
+                {
+                    case KernelSection.AttackData:
+                        Attacks[pos].Name = new FFText(name);
+                        break;
+
+                    case KernelSection.ItemData:
+                        ItemData.Items[pos].Name = name;
+                        break;
+
+                    case KernelSection.WeaponData:
+                        WeaponData.Weapons[pos].Name = name;
+                        break;
+
+                    case KernelSection.ArmorData:
+                        ArmorData.Armors[pos].Name = name;
+                        break;
+
+                    case KernelSection.AccessoryData:
+                        AccessoryData.Accessories[pos].Name = name;
+                        break;
+
+                    case KernelSection.MateriaData:
+                        MateriaData.Materias[pos].Name = name;
+                        break;
+                }
+            }
+        }
+
         public string[] GetAssociatedDescriptions(KernelSection section)
         {
-            switch (section)
+            var ds = GetDataSection(section);
+            switch (ds)
             {
                 case KernelSection.CommandData:
-                case KernelSection.CommandNames:
-                case KernelSection.CommandDescriptions:
                     return CommandDescriptions.Strings;
+
                 case KernelSection.AttackData:
-                case KernelSection.MagicNames:
-                case KernelSection.MagicDescriptions:
                     return MagicDescriptions.Strings;
+
                 case KernelSection.ItemData:
-                case KernelSection.ItemNames:
-                case KernelSection.ItemDescriptions:
                     return ItemDescriptions.Strings;
+
                 case KernelSection.WeaponData:
-                case KernelSection.WeaponNames:
-                case KernelSection.WeaponDescriptions:
                     return WeaponDescriptions.Strings;
+
                 case KernelSection.ArmorData:
-                case KernelSection.ArmorNames:
-                case KernelSection.ArmorDescriptions:
                     return ArmorDescriptions.Strings;
+
                 case KernelSection.AccessoryData:
-                case KernelSection.AccessoryNames:
-                case KernelSection.AccessoryDescriptions:
                     return AccessoryDescriptions.Strings;
+
                 case KernelSection.MateriaData:
-                case KernelSection.MateriaNames:
-                case KernelSection.MateriaDescriptions:
                     return MateriaDescriptions.Strings;
+
                 case KernelSection.KeyItemNames:
                 case KernelSection.KeyItemDescriptions:
                     return KeyItemDescriptions.Strings;
@@ -521,6 +587,15 @@ namespace FF7Scarlet.KernelEditor
             if ((int)section > KERNEL1_END && !isKernel2)
             {
                 return kernel1TextSections[section];
+            }
+
+            //update data before writing it
+            if (section == KernelSection.BattleAndGrowthData)
+            {
+                if (BattleAndGrowthData != null)
+                {
+                    Array.Copy(BattleAndGrowthData.GetRawData(), KernelData[section], KernelData[section].Length);
+                }
             }
             return KernelData[section];
         }

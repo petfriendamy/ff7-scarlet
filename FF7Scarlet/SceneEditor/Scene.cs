@@ -477,7 +477,7 @@ namespace FF7Scarlet.SceneEditor
                         //formation data
                         try
                         {
-                            Array.Copy(GetRawScriptData(FORMATION_COUNT, Formation.AI_BLOCK_SIZE, formations,
+                            Array.Copy(AIContainer.GetGroupedScriptBlock(FORMATION_COUNT, Formation.AI_BLOCK_SIZE, formations,
                                 ref formationAIoffset), formationAIRaw, Formation.AI_BLOCK_SIZE);
 
                             foreach (var o in formationAIoffset)
@@ -498,7 +498,7 @@ namespace FF7Scarlet.SceneEditor
                         //enemy A.I. data
                         try
                         {
-                            Array.Copy(GetRawScriptData(ENEMY_COUNT, Enemy.AI_BLOCK_SIZE, enemies,
+                            Array.Copy(AIContainer.GetGroupedScriptBlock(ENEMY_COUNT, Enemy.AI_BLOCK_SIZE, enemies,
                                 ref enemyAIoffset), enemyAIraw, Enemy.AI_BLOCK_SIZE);
 
                             foreach (var o in enemyAIoffset)
@@ -541,71 +541,6 @@ namespace FF7Scarlet.SceneEditor
             {
                 throw new FormatException(ex.Message);
             }
-        }
-
-        private byte[] GetRawScriptData(int containerCount, int blockSize, AIContainer?[] aiContainers,
-            ref ushort[] offsets)
-        {
-            var scriptList = new List<byte[]> { };
-            byte[] currData;
-            int i, j, sum;
-            ushort currPos = 6;
-            var length = new int[containerCount];
-            for (i = 0; i < containerCount; ++i)
-            {
-                var container = aiContainers[i];
-                if (container == null || !container.HasScripts())
-                {
-                    offsets[i] = HexParser.NULL_OFFSET_16_BIT;
-                    length[i] = 0;
-                    scriptList.Add(new byte[0]);
-                }
-                else
-                {
-                    offsets[i] = currPos;
-                    currData = container.GetRawAIData();
-                    scriptList.Add(currData);
-                    length[i] = currData.Length;
-                    while (length[i] % 2 != 0) { length[i]++; }
-                    currPos += (ushort)length[i];
-                }
-            }
-
-            sum = length.Sum();
-            if (sum > blockSize)
-            {
-                throw new ScriptTooLongException();
-            }
-
-            var data = new byte[blockSize];
-            using (var ms = new MemoryStream(data, true))
-            using (var writer = new BinaryWriter(ms))
-            {
-                for (i = 0; i < containerCount; ++i)
-                {
-                    if (scriptList[i].Length != 0)
-                    {
-                        writer.Write(scriptList[i]);
-                        for (j = scriptList[i].Length; j < length[i]; ++j)
-                        {
-                            writer.Write((byte)0xFF);
-                        }
-                    }
-                }
-                bool end = false;
-                while (!end)
-                {
-                    try
-                    {
-                        writer.Write((byte)0xFF);
-                    }
-                    catch (Exception)
-                    {
-                        end = true;
-                    }
-                }
-            }
-            return data;
         }
     }
 }

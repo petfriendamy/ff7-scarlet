@@ -1,4 +1,6 @@
-﻿using FF7Scarlet.Shared;
+﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.SceneEditor;
+using FF7Scarlet.Shared;
 using Shojy.FF7.Elena;
 
 namespace FF7Scarlet.KernelEditor
@@ -19,11 +21,12 @@ namespace FF7Scarlet.KernelEditor
             hpStatCurves = new StatCurve[9],
             mpStatCurves = new StatCurve[9],
             expStatCurves = new StatCurve[9];
-        private readonly ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
+        private ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
         private readonly CharacterAI[] characterAI = new CharacterAI[AI_BLOCK_COUNT];
+        private byte[] rawData;
 
         public Kernel Parent { get; }
-        public CharacterGrowth[] CharacterGrowth
+        public CharacterGrowth[] CharGrowth
         {
             get { return characterGrowth; }
         }
@@ -68,6 +71,7 @@ namespace FF7Scarlet.KernelEditor
         public BattleAndGrowthData(Kernel parent, byte[] data)
         {
             Parent = parent;
+            rawData = data.ToArray();
 
             int i;
             using (var ms = new MemoryStream(data))
@@ -75,7 +79,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
                 {
-                    CharacterGrowth[i] = new CharacterGrowth(reader.ReadBytes(56));
+                    CharGrowth[i] = new CharacterGrowth(reader.ReadBytes(CharacterGrowth.DATA_LENGTH));
                 }
                 for (i = 0; i < 12; ++i)
                 {
@@ -114,6 +118,74 @@ namespace FF7Scarlet.KernelEditor
                 sceneLookupTable = reader.ReadBytes(64);
                 //spell order
             }
+        }
+
+        public byte[] GetRawData()
+        {
+            int i;
+            using (var ms = new MemoryStream(rawData))
+            using (var writer = new BinaryWriter(ms))
+            {
+                for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
+                {
+                    writer.Write(CharGrowth[i].GetRawData());
+                }
+                for (i = 0; i < 12; ++i)
+                {
+                    writer.Write(RandomBonusToPrimaryStats[i]);
+                }
+                for (i = 0; i < 12; ++i)
+                {
+                    writer.Write(RandomBonusToHP[i]);
+                }
+                for (i = 0; i < 12; ++i)
+                {
+                    writer.Write(RandomBonusToMP[i]);
+                }
+                for (i = 0; i < 37; ++i)
+                {
+                    writer.Write(PrimaryStatCurves[i].GetRawData());
+                }
+                for (i = 0; i < 9; ++i)
+                {
+                    writer.Write(HPStatCurves[i].GetRawData());
+                }
+                for (i = 0; i < 9; ++i)
+                {
+                    writer.Write(MPStatCurves[i].GetRawData());
+                }
+                for (i = 0; i < 9; ++i)
+                {
+                    writer.Write(EXPStatCurves[i].GetRawData());
+                }
+
+                //write AI data
+                try
+                {
+                    if (ScriptsLoaded) //don't update scripts if not loaded
+                    {
+                        Array.Copy(AIContainer.GetGroupedScriptBlock(AI_BLOCK_COUNT, AI_BLOCK_SIZE,
+                            characterAI, ref characterAIoffsets), rawAIdata, AI_BLOCK_SIZE);
+                    }
+                    foreach (var o in characterAIoffsets)
+                    {
+                        writer.Write(o);
+                    }
+                    writer.Write(rawAIdata);
+                }
+                catch (ScriptTooLongException)
+                {
+                    throw new ScriptTooLongException("Character A.I. block is too long!");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Compiler error in A.I. scripts: {ex.Message}");
+                }
+
+                writer.Write(rngTable);
+                writer.Write(sceneLookupTable);
+            }
+            return rawData;
         }
 
         public void ParseAIScripts()

@@ -34,6 +34,7 @@ namespace FF7Scarlet.KernelEditor
         private int prevAttack;
         private bool
             attackNeedsSync = false,
+            itemsNeedSync = false,
             unsavedChanges = false,
             loading = true;
 
@@ -57,6 +58,21 @@ namespace FF7Scarlet.KernelEditor
         private readonly Dictionary<KernelSection, StatusesControl> statusLists = new();
         private readonly Dictionary<KernelSection, ComboBox> equipmentStatus = new();
         private readonly Dictionary<KernelSection, SpecialAttackFlagsControl> specialAttackFlags = new();
+
+        private KernelSection CurrentSection
+        {
+            get
+            {
+                foreach (var p in tabPages)
+                {
+                    if (p.Value == tabControlMain.SelectedTab)
+                    {
+                        return p.Key;
+                    }
+                }
+                throw new ArgumentNullException();
+            }
+        }
 
         private Attack? SelectedAttack
         {
@@ -240,41 +256,7 @@ namespace FF7Scarlet.KernelEditor
             rngTableControl.SetValues(kernel.BattleAndGrowthData.RNGTable);
 
             //inventory
-            foreach (var inv in kernel.InitialData.InventoryItems)
-            {
-                if (inv.Item.Type == ItemType.None)
-                {
-                    listBoxInitInventory.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv.Item)} x{inv.Amount}");
-                }
-            }
-            foreach (var invm in kernel.InitialData.InventoryMateria)
-            {
-                var m = kernel.GetMateriaByID(invm.Index);
-                if (m == null)
-                {
-                    listBoxInitMateria.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitMateria.Items.Add(m.Name);
-                }
-            }
-            foreach (var sm in kernel.InitialData.StolenMateria)
-            {
-                var m = kernel.GetMateriaByID(sm.Index);
-                if (m == null)
-                {
-                    listBoxInitMateriaStolen.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitMateriaStolen.Items.Add(m.Name);
-                }
-            }
+            PopulateInventoryListBoxes();
 
             //element modifiers
             foreach (var cb in elementDamageModifiers.Values)
@@ -454,6 +436,7 @@ namespace FF7Scarlet.KernelEditor
             loading = true;
 
             //items
+            comboBoxInitItem.Items.Clear();
             comboBoxInitItem.Items.Add("None");
             foreach (var item in kernel.ItemData.Items)
             {
@@ -461,6 +444,7 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //weapons
+            comboBoxCharacterWeapon.Items.Clear();
             foreach (var wpn in kernel.WeaponData.Weapons)
             {
                 comboBoxCharacterWeapon.Items.Add(wpn.Name);
@@ -468,6 +452,7 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //armor
+            comboBoxCharacterArmor.Items.Clear();
             foreach (var armor in kernel.ArmorData.Armors)
             {
                 comboBoxCharacterArmor.Items.Add(armor.Name);
@@ -475,6 +460,7 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //accessories
+            comboBoxCharacterAccessory.Items.Clear();
             comboBoxCharacterAccessory.Items.Add("None");
             foreach (var acc in kernel.AccessoryData.Accessories)
             {
@@ -483,6 +469,7 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //materia
+            comboBoxInitMateria.Items.Clear();
             comboBoxInitMateria.Items.Add("None");
             comboBoxInitMateriaStolen.Items.Add("None");
             foreach (var mat in kernel.MateriaData.Materias)
@@ -491,7 +478,56 @@ namespace FF7Scarlet.KernelEditor
                 comboBoxInitMateriaStolen.Items.Add(mat.Name);
             }
 
-            loading = true;
+            loading = false;
+        }
+
+        private void PopulateInventoryListBoxes()
+        {
+            listBoxInitInventory.SuspendLayout();
+            listBoxInitMateria.SuspendLayout();
+            listBoxInitMateriaStolen.SuspendLayout();
+
+            listBoxInitInventory.Items.Clear();
+            foreach (var inv in kernel.InitialData.InventoryItems)
+            {
+                if (inv.Item.Type == ItemType.None)
+                {
+                    listBoxInitInventory.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv.Item)} x{inv.Amount}");
+                }
+            }
+            listBoxInitMateria.Items.Clear();
+            foreach (var invm in kernel.InitialData.InventoryMateria)
+            {
+                var m = kernel.GetMateriaByID(invm.Index);
+                if (m == null)
+                {
+                    listBoxInitMateria.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitMateria.Items.Add(m.Name);
+                }
+            }
+            listBoxInitMateriaStolen.Items.Clear();
+            foreach (var sm in kernel.InitialData.StolenMateria)
+            {
+                var m = kernel.GetMateriaByID(sm.Index);
+                if (m == null)
+                {
+                    listBoxInitMateriaStolen.Items.Add("(empty)");
+                }
+                else
+                {
+                    listBoxInitMateriaStolen.Items.Add(m.Name);
+                }
+            }
+            listBoxInitInventory.ResumeLayout();
+            listBoxInitMateria.ResumeLayout();
+            listBoxInitMateriaStolen.ResumeLayout();
         }
 
         //fills the current tab with data from the selected item
@@ -1086,6 +1122,21 @@ namespace FF7Scarlet.KernelEditor
 
         #region Event Methods
 
+        private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (itemsNeedSync) //sync item names
+            {
+                var tab = tabControlMain.SelectedTab;
+                if (tab == tabPageInitInventory || tab == tabPageCharacters)
+                {
+                    LoadItemLists();
+                    PopulateInitCharacterDataTab(listBoxInitCharacters.SelectedIndex);
+                    PopulateInventoryListBoxes();
+                    itemsNeedSync = false;
+                }
+            }
+        }
+
         private void listBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!loading)
@@ -1182,6 +1233,43 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void textBoxName_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                var curr = CurrentSection;
+                int selected = listBoxes[curr].SelectedIndex;
+                if (selected >= 0 && selected < listBoxes[curr].Items.Count)
+                {
+                    loading = true;
+                    kernel.UpdateName(curr, nameTextBoxes[curr].Text, selected);
+                    listBoxes[curr].Items[selected] = nameTextBoxes[curr].Text;
+                    if (curr == KernelSection.ItemData || curr == KernelSection.WeaponData
+                        || curr == KernelSection.ArmorData || curr == KernelSection.AccessoryData
+                        || curr == KernelSection.MateriaData)
+                    {
+                        itemsNeedSync = true;
+                    }
+                    SetUnsaved(true);
+                    loading = false;
+                }
+            }
+        }
+
+        private void textBoxDescription_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                var curr = CurrentSection;
+                int selected = listBoxes[curr].SelectedIndex;
+                if (selected >= 0 && selected < listBoxes[curr].Items.Count)
+                {
+                    kernel.GetAssociatedDescriptions(curr)[selected] = descriptionTextBoxes[curr].Text;
+                    SetUnsaved(true);
+                }
+            }
+        }
+
         private void materiaSlotSelector_MultiLinkEnabled(object sender, EventArgs e)
         {
             foreach (var s in materiaSlots.Values)
@@ -1264,7 +1352,7 @@ namespace FF7Scarlet.KernelEditor
 
         private void scriptControlCharacterAI_ScriptAddedOrRemoved(object? sender, EventArgs e)
         {
-            UpdateCharacterAIScripts(listBoxCharacterScripts.SelectedIndex);
+            UpdateCharacterAIScripts(listBoxCharacterAI.SelectedIndex);
         }
 
         private void listBoxInitInventory_SelectedIndexChanged(object sender, EventArgs e)
@@ -1602,62 +1690,65 @@ namespace FF7Scarlet.KernelEditor
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (attackNeedsSync && SelectedAttack != null) //sync unsaved attack data
+            if (DataManager.Kernel != null)
             {
-                SyncAttackData(SelectedAttack);
-            }
-            try
-            {
-                bool result = false, saveSceneBin = false;
-
-                //check if there are any attacks that need to be synced
-                if (syncedAttackIDs.Count > 0)
+                if (attackNeedsSync && SelectedAttack != null) //sync unsaved attack data
                 {
-                    //if the scene editor is not open, offer to save scene.bin as well
-                    if (!DataManager.FormIsOpen(FormType.SceneEditor))
-                    {
-                        var dialogResult = MessageBox.Show("Update scene.bin also?", "Update scene.bin?", MessageBoxButtons.YesNoCancel,
-                        MessageBoxIcon.Question);
-
-                        if (dialogResult == DialogResult.Cancel) { return; }
-                        else if (dialogResult == DialogResult.No)
-                        {
-                            result = true;
-                        }
-                        else
-                        {
-                            saveSceneBin = true;
-                        }
-                    }
-
-                    //sync the attack data
-                    int count = 0;
-                    foreach (var i in syncedAttackIDs)
-                    {
-                        var atk = kernel.GetAttackByID(i);
-                        if (atk != null)
-                        {
-                            count += DataManager.SyncAttack(atk, saveSceneBin);
-                        }
-                    }
-
-                    //display a message
-                    if (saveSceneBin)
-                    {
-                        MessageBox.Show($"{count} attack(s) updated.", "Attacks synced", MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                        if (count > 0)
-                        {
-                            DataManager.CreateSceneBin();
-                        }
-                    }
+                    SyncAttackData(SelectedAttack);
                 }
-                DataManager.CreateKernel(true);
-                SetUnsaved(result);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                try
+                {
+                    bool result = false, saveSceneBin = false;
+
+                    //check if there are any attacks that need to be synced
+                    if (syncedAttackIDs.Count > 0)
+                    {
+                        //if the scene editor is not open, offer to save scene.bin as well
+                        if (!DataManager.FormIsOpen(FormType.SceneEditor))
+                        {
+                            var dialogResult = MessageBox.Show("Update scene.bin also?", "Update scene.bin?", MessageBoxButtons.YesNoCancel,
+                            MessageBoxIcon.Question);
+
+                            if (dialogResult == DialogResult.Cancel) { return; }
+                            else if (dialogResult == DialogResult.No)
+                            {
+                                result = true;
+                            }
+                            else
+                            {
+                                saveSceneBin = true;
+                            }
+                        }
+
+                        //sync the attack data
+                        int count = 0;
+                        foreach (var i in syncedAttackIDs)
+                        {
+                            var atk = kernel.GetAttackByID(i);
+                            if (atk != null)
+                            {
+                                count += DataManager.SyncAttack(atk, saveSceneBin);
+                            }
+                        }
+
+                        //display a message
+                        if (saveSceneBin)
+                        {
+                            MessageBox.Show($"{count} attack(s) updated.", "Attacks synced", MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                            if (count > 0)
+                            {
+                                DataManager.CreateSceneBin();
+                            }
+                        }
+                    }
+                    DataManager.CreateKernel(true, kernel);
+                    SetUnsaved(result);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

@@ -1009,6 +1009,7 @@
             scriptControlEnemyAI.TabIndex = 5;
             scriptControlEnemyAI.DataChanged += scriptControl_DataChanged;
             scriptControlEnemyAI.ScriptAdded += scriptControlEnemyAI_ScriptAddedOrRemoved;
+            scriptControlEnemyAI.ScriptRemoved += scriptControlEnemyAI_ScriptAddedOrRemoved;
             // 
             // labelEnemyScripts
             // 

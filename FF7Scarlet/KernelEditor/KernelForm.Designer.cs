@@ -391,8 +391,9 @@
             tabControlMain.Margin = new Padding(4, 3, 4, 3);
             tabControlMain.Name = "tabControlMain";
             tabControlMain.SelectedIndex = 0;
-            tabControlMain.Size = new Size(784, 490);
+            tabControlMain.Size = new Size(784, 530);
             tabControlMain.TabIndex = 0;
+            tabControlMain.SelectedIndexChanged += tabControlMain_SelectedIndexChanged;
             // 
             // tabPageCommandData
             // 
@@ -487,6 +488,7 @@
             textBoxCommandDescription.Name = "textBoxCommandDescription";
             textBoxCommandDescription.Size = new Size(573, 23);
             textBoxCommandDescription.TabIndex = 16;
+            textBoxCommandDescription.TextChanged += textBoxDescription_TextChanged;
             // 
             // labelCommandDescription
             // 
@@ -505,6 +507,7 @@
             textBoxCommandName.Name = "textBoxCommandName";
             textBoxCommandName.Size = new Size(226, 23);
             textBoxCommandName.TabIndex = 14;
+            textBoxCommandName.TextChanged += textBoxName_TextChanged;
             // 
             // labelCommandName
             // 
@@ -811,7 +814,7 @@
             tabPageAttacks2.Location = new Point(4, 24);
             tabPageAttacks2.Name = "tabPageAttacks2";
             tabPageAttacks2.Padding = new Padding(3);
-            tabPageAttacks2.Size = new Size(569, 441);
+            tabPageAttacks2.Size = new Size(569, 411);
             tabPageAttacks2.TabIndex = 1;
             tabPageAttacks2.Text = "Page 2";
             tabPageAttacks2.UseVisualStyleBackColor = true;
@@ -899,7 +902,7 @@
             tabPageAttacks3.Controls.Add(groupBoxAttackSpecialActions);
             tabPageAttacks3.Location = new Point(4, 24);
             tabPageAttacks3.Name = "tabPageAttacks3";
-            tabPageAttacks3.Size = new Size(569, 441);
+            tabPageAttacks3.Size = new Size(569, 411);
             tabPageAttacks3.TabIndex = 2;
             tabPageAttacks3.Text = "Page 3";
             tabPageAttacks3.UseVisualStyleBackColor = true;
@@ -1060,7 +1063,7 @@
             tabPageCharacters.Location = new Point(4, 24);
             tabPageCharacters.Margin = new Padding(4, 3, 4, 3);
             tabPageCharacters.Name = "tabPageCharacters";
-            tabPageCharacters.Size = new Size(776, 462);
+            tabPageCharacters.Size = new Size(776, 502);
             tabPageCharacters.TabIndex = 2;
             tabPageCharacters.Text = "Characters";
             tabPageCharacters.UseVisualStyleBackColor = true;
@@ -1074,7 +1077,7 @@
             tabControlCharacters.Location = new Point(0, 0);
             tabControlCharacters.Name = "tabControlCharacters";
             tabControlCharacters.SelectedIndex = 0;
-            tabControlCharacters.Size = new Size(776, 462);
+            tabControlCharacters.Size = new Size(776, 502);
             tabControlCharacters.TabIndex = 0;
             // 
             // tabPageInitCharacterStats
@@ -1553,7 +1556,7 @@
             tabPageCharacterAI.Location = new Point(4, 24);
             tabPageCharacterAI.Name = "tabPageCharacterAI";
             tabPageCharacterAI.Padding = new Padding(3);
-            tabPageCharacterAI.Size = new Size(768, 434);
+            tabPageCharacterAI.Size = new Size(768, 474);
             tabPageCharacterAI.TabIndex = 1;
             tabPageCharacterAI.Text = "Character A.I.";
             tabPageCharacterAI.UseVisualStyleBackColor = true;
@@ -1566,7 +1569,7 @@
             scriptControlCharacterAI.Location = new Point(187, 6);
             scriptControlCharacterAI.Name = "scriptControlCharacterAI";
             scriptControlCharacterAI.SelectedScriptIndex = -1;
-            scriptControlCharacterAI.Size = new Size(575, 384);
+            scriptControlCharacterAI.Size = new Size(575, 424);
             scriptControlCharacterAI.TabIndex = 5;
             scriptControlCharacterAI.DataChanged += scriptControlCharacterAI_DataChanged;
             scriptControlCharacterAI.ScriptAdded += scriptControlCharacterAI_ScriptAddedOrRemoved;
@@ -1901,6 +1904,7 @@
             textBoxItemName.Name = "textBoxItemName";
             textBoxItemName.Size = new Size(230, 23);
             textBoxItemName.TabIndex = 10;
+            textBoxItemName.TextChanged += textBoxName_TextChanged;
             // 
             // targetDataControlItem
             // 
@@ -1928,6 +1932,7 @@
             textBoxItemDescription.Name = "textBoxItemDescription";
             textBoxItemDescription.Size = new Size(556, 23);
             textBoxItemDescription.TabIndex = 12;
+            textBoxItemDescription.TextChanged += textBoxDescription_TextChanged;
             // 
             // comboBoxItemAttackEffectID
             // 
@@ -2256,6 +2261,7 @@
             textBoxWeaponName.Name = "textBoxWeaponName";
             textBoxWeaponName.Size = new Size(230, 23);
             textBoxWeaponName.TabIndex = 10;
+            textBoxWeaponName.TextChanged += textBoxName_TextChanged;
             // 
             // labelWeaponName
             // 
@@ -2285,6 +2291,7 @@
             textBoxWeaponDescription.Name = "textBoxWeaponDescription";
             textBoxWeaponDescription.Size = new Size(556, 23);
             textBoxWeaponDescription.TabIndex = 12;
+            textBoxWeaponDescription.TextChanged += textBoxDescription_TextChanged;
             // 
             // tabPageWeapon2
             // 
@@ -2559,6 +2566,7 @@
             textBoxArmorName.Name = "textBoxArmorName";
             textBoxArmorName.Size = new Size(230, 23);
             textBoxArmorName.TabIndex = 10;
+            textBoxArmorName.TextChanged += textBoxName_TextChanged;
             // 
             // labelArmorDescription
             // 
@@ -2623,6 +2631,7 @@
             textBoxArmorDescription.Name = "textBoxArmorDescription";
             textBoxArmorDescription.Size = new Size(556, 23);
             textBoxArmorDescription.TabIndex = 12;
+            textBoxArmorDescription.TextChanged += textBoxDescription_TextChanged;
             // 
             // tabPageArmor2
             // 
@@ -2774,6 +2783,7 @@
             textBoxAccessoryName.Name = "textBoxAccessoryName";
             textBoxAccessoryName.Size = new Size(230, 23);
             textBoxAccessoryName.TabIndex = 10;
+            textBoxAccessoryName.TextChanged += textBoxName_TextChanged;
             // 
             // labelAccessoryDescription
             // 
@@ -2793,6 +2803,7 @@
             textBoxAccessoryDescription.Name = "textBoxAccessoryDescription";
             textBoxAccessoryDescription.Size = new Size(556, 23);
             textBoxAccessoryDescription.TabIndex = 12;
+            textBoxAccessoryDescription.TextChanged += textBoxDescription_TextChanged;
             // 
             // tabPageAccessory2
             // 
@@ -2987,6 +2998,7 @@
             textBoxMateriaDescription.Name = "textBoxMateriaDescription";
             textBoxMateriaDescription.Size = new Size(573, 23);
             textBoxMateriaDescription.TabIndex = 12;
+            textBoxMateriaDescription.TextChanged += textBoxDescription_TextChanged;
             // 
             // labelMateriaDescription
             // 
@@ -3005,6 +3017,7 @@
             textBoxMateriaName.Name = "textBoxMateriaName";
             textBoxMateriaName.Size = new Size(226, 23);
             textBoxMateriaName.TabIndex = 10;
+            textBoxMateriaName.TextChanged += textBoxName_TextChanged;
             // 
             // labelMateriaName
             // 
@@ -3051,6 +3064,7 @@
             textBoxKeyItemDescription.Name = "textBoxKeyItemDescription";
             textBoxKeyItemDescription.Size = new Size(573, 23);
             textBoxKeyItemDescription.TabIndex = 8;
+            textBoxKeyItemDescription.TextChanged += textBoxDescription_TextChanged;
             // 
             // labelKeyItemDescription
             // 
@@ -3069,6 +3083,7 @@
             textBoxKeyItemName.Name = "textBoxKeyItemName";
             textBoxKeyItemName.Size = new Size(226, 23);
             textBoxKeyItemName.TabIndex = 6;
+            textBoxKeyItemName.TextChanged += textBoxName_TextChanged;
             // 
             // labelKeyItemName
             // 
@@ -3134,7 +3149,7 @@
             panelButtons.Controls.Add(buttonSave);
             panelButtons.Controls.Add(buttonImport);
             panelButtons.Dock = DockStyle.Bottom;
-            panelButtons.Location = new Point(0, 515);
+            panelButtons.Location = new Point(0, 555);
             panelButtons.Margin = new Padding(4, 3, 4, 3);
             panelButtons.Name = "panelButtons";
             panelButtons.Size = new Size(784, 46);
@@ -3231,7 +3246,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(784, 561);
+            ClientSize = new Size(784, 601);
             Controls.Add(tabControlMain);
             Controls.Add(toolStripMain);
             Controls.Add(panelButtons);

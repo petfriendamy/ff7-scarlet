@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 
@@ -168,6 +169,10 @@ namespace FF7Scarlet
                 case ParameterTypes.ThreeByte:
                     Array.Copy(BitConverter.GetBytes(ToInt()), threeByteInt, 3);
                     return threeByteInt;
+                case ParameterTypes.Debug:
+                    var temp = ToString();
+                    if (temp == null) { return new byte[0]; }
+                    return Encoding.ASCII.GetBytes(temp);
                 default:
                     return data;
             }

@@ -436,9 +436,14 @@ namespace FF7Scarlet
             return copy;
         }
 
-        public static void CreateKernel(bool updateKernel2)
+        public static void CreateKernel(bool updateKernel2, Kernel? kernel = null)
         {
-            if (!KernelFilePathExists || Kernel == null || KernelPath == null)
+            bool reload = kernel != null;
+            if (!reload) //load default kernel
+            {
+                kernel = Kernel;
+            }
+            if (kernel == null) //if kernel is still null, error
             {
                 throw new FileNotFoundException("No kernel.bin file is loaded.");
             }
@@ -448,7 +453,7 @@ namespace FF7Scarlet
             ushort compressedLength, uncompressedLength, appendFF;
             for (ushort i = 0; i < Kernel.SECTION_COUNT; ++i)
             {
-                uncompressedSection = Kernel.GetSectionRawData((KernelSection)(i + 1));
+                uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1));
                 uncompressedLength = (ushort)uncompressedSection.Length;
                 compressedSection = GetCompressedData(uncompressedSection);
                 compressedLength = (ushort)compressedSection.Length;
@@ -473,6 +478,11 @@ namespace FF7Scarlet
             if (updateKernel2 && BothKernelFilePathsExist)
             {
                 //stuff
+            }
+
+            if (reload) //reload the kernel
+            {
+                Kernel = new Kernel(KernelPath);
             }
         }
 

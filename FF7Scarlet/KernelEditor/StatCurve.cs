@@ -31,5 +31,20 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
         }
+
+        public byte[] GetRawData()
+        {
+            var bytes = new byte[16];
+            using (var ms = new MemoryStream(bytes))
+            using (var writer = new BinaryWriter(ms))
+            {
+                for (int i = 0; i < 8; ++i)
+                {
+                    writer.Write(Gradients[i]);
+                    writer.Write(Bases[i]);
+                }
+            }
+            return bytes;
+        }
     }
 }

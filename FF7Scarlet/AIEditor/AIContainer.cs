@@ -81,7 +81,7 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
-        public byte[] GetRawAIData()
+        public byte[] GetScriptBlock()
         {
             ushort currPos = SCRIPT_NUMBER * 2;
             var offsets = new ushort[SCRIPT_NUMBER];
@@ -123,6 +123,71 @@ namespace FF7Scarlet.AIEditor
                 i++;
             }
             return data.ToArray();
+        }
+
+        public static byte[] GetGroupedScriptBlock(int containerCount, int blockSize, AIContainer?[] aiContainers,
+            ref ushort[] offsets)
+        {
+            var scriptList = new List<byte[]> { };
+            byte[] currData;
+            int i, j, sum;
+            ushort currPos = (ushort)(containerCount * 2);
+            var length = new int[containerCount];
+            for (i = 0; i < containerCount; ++i)
+            {
+                var container = aiContainers[i];
+                if (container == null || !container.HasScripts())
+                {
+                    offsets[i] = HexParser.NULL_OFFSET_16_BIT;
+                    length[i] = 0;
+                    scriptList.Add(new byte[0]);
+                }
+                else
+                {
+                    offsets[i] = currPos;
+                    currData = container.GetScriptBlock();
+                    scriptList.Add(currData);
+                    length[i] = currData.Length;
+                    while (length[i] % 2 != 0) { length[i]++; }
+                    currPos += (ushort)length[i];
+                }
+            }
+
+            sum = length.Sum();
+            if (sum > blockSize)
+            {
+                throw new ScriptTooLongException();
+            }
+
+            var data = new byte[blockSize];
+            using (var ms = new MemoryStream(data, true))
+            using (var writer = new BinaryWriter(ms))
+            {
+                for (i = 0; i < containerCount; ++i)
+                {
+                    if (scriptList[i].Length != 0)
+                    {
+                        writer.Write(scriptList[i]);
+                        for (j = scriptList[i].Length; j < length[i]; ++j)
+                        {
+                            writer.Write((byte)0xFF);
+                        }
+                    }
+                }
+                bool end = false;
+                while (!end)
+                {
+                    try
+                    {
+                        writer.Write((byte)0xFF);
+                    }
+                    catch (Exception)
+                    {
+                        end = true;
+                    }
+                }
+            }
+            return data;
         }
     }
 }

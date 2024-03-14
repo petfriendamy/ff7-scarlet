@@ -253,7 +253,7 @@ namespace FF7Scarlet.AIEditor
                         if (Parameter != null) { length += Parameter.Length; }
                         break;
                     case ParameterTypes.Debug:
-                        if (Parameter != null) { length += Parameter.Length + 1; }
+                        if (Parameter != null) { length += Parameter.Length + 2; }
                         break;
                 }
             }
