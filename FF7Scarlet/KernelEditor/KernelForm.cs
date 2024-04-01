@@ -12,6 +12,8 @@ using FF7Scarlet.KernelEditor.Controls;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
+using Shojy.FF7.Elena.Items;
+using static System.Collections.Specialized.BitVector32;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -31,10 +33,18 @@ namespace FF7Scarlet.KernelEditor
         private const int SUMMON_OFFSET = 56;
         private List<ushort> syncedAttackIDs = new();
         private List<StatusChange> statusChanges = new();
-        private int prevAttack;
+        private int prevCommand, prevAttack, prevCharacter, prevItem,
+            prevWeapon, prevArmor, prevAccessory, prevMateria;
         private bool
+            commandNeedsSync = false,
             attackNeedsSync = false,
-            itemsNeedSync = false,
+            initialStatsNeedSync = false,
+            itemDataNeedsSync = false,
+            weaponNeedsSync = false,
+            armorNeedsSync = false,
+            accessoryNeedsSync = false,
+            materiaNeedsSync = false,
+            itemNamesNeedSync = false,
             unsavedChanges = false,
             loading = true;
 
@@ -46,6 +56,7 @@ namespace FF7Scarlet.KernelEditor
         private readonly Dictionary<KernelSection, TextBox> descriptionTextBoxes = new();
         private readonly Dictionary<KernelSection, ComboBox> cameraMovementSingle = new();
         private readonly Dictionary<KernelSection, ComboBox> cameraMovementMulti = new();
+        private readonly Dictionary<KernelSection, ComboBox> attackEffectIDs = new();
         private readonly Dictionary<KernelSection, StatIncreaseControl> statIncreases = new();
         private readonly Dictionary<KernelSection, TargetDataControl> targetData = new();
         private readonly Dictionary<KernelSection, DamageCalculationControl> damageCalculationControls = new();
@@ -57,6 +68,7 @@ namespace FF7Scarlet.KernelEditor
         private readonly Dictionary<KernelSection, ComboBox> elementDamageModifiers = new();
         private readonly Dictionary<KernelSection, StatusesControl> statusLists = new();
         private readonly Dictionary<KernelSection, ComboBox> equipmentStatus = new();
+        private readonly Dictionary<KernelSection, ComboBox> statusChangeComboBoxes = new();
         private readonly Dictionary<KernelSection, SpecialAttackFlagsControl> specialAttackFlags = new();
 
         private KernelSection CurrentSection
@@ -74,6 +86,23 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private MenuCommand? SelectedCommand
+        {
+            get
+            {
+                if (SelectedCommandIndex >= 0 && SelectedCommandIndex < kernel.Commands.Length)
+                {
+                    return kernel.Commands[SelectedCommandIndex];
+                }
+                return null;
+            }
+        }
+
+        private int SelectedCommandIndex
+        {
+            get { return listBoxCommands.SelectedIndex; }
+        }
+
         private Attack? SelectedAttack
         {
             get
@@ -88,6 +117,111 @@ namespace FF7Scarlet.KernelEditor
         private int SelectedAttackIndex
         {
             get { return listBoxAttacks.SelectedIndex; }
+        }
+
+        private Character? SelectedInitCharacter
+        {
+            get
+            {
+                if (SelectedInitCharacterIndex >= 0 &&
+                    SelectedInitCharacterIndex < Character.CHARACTER_COUNT)
+                {
+                    return kernel.InitialData.Characters[SelectedInitCharacterIndex];
+                }
+                return null;
+            }
+        }
+
+        private int SelectedInitCharacterIndex
+        {
+            get { return listBoxInitCharacters.SelectedIndex; }
+        }
+
+        private Item? SelectedItem
+        {
+            get
+            {
+                if (SelectedItemIndex >= 0 && SelectedItemIndex < kernel.ItemData.Items.Length)
+                {
+                    return kernel.ItemData.Items[SelectedItemIndex];
+                }
+                return null;
+            }
+        }
+
+        private int SelectedItemIndex
+        {
+            get { return listBoxItems.SelectedIndex; }
+        }
+
+        private Weapon? SelectedWeapon
+        {
+            get
+            {
+                if (SelectedWeaponIndex >= 0 && SelectedWeaponIndex < kernel.WeaponData.Weapons.Length)
+                {
+                    return kernel.WeaponData.Weapons[SelectedWeaponIndex];
+                }
+                return null;
+            }
+        }
+
+        private int SelectedWeaponIndex
+        {
+            get { return listBoxWeapons.SelectedIndex; }
+        }
+
+        private Armor? SelectedArmor
+        {
+            get
+            {
+                if (SelectedArmorIndex >= 0 && SelectedArmorIndex < kernel.ArmorData.Armors.Length)
+                {
+                    return kernel.ArmorData.Armors[SelectedArmorIndex];
+                }
+                return null;
+            }
+        }
+
+        private int SelectedArmorIndex
+        {
+            get { return listBoxArmor.SelectedIndex; }
+        }
+
+        private Accessory? SelectedAccessory
+        {
+            get
+            {
+                if (SelectedAccessoryIndex >= 0
+                    && SelectedAccessoryIndex < kernel.AccessoryData.Accessories.Length)
+                {
+                    return kernel.AccessoryData.Accessories[SelectedAccessoryIndex];
+                }
+                return null;
+            }
+        }
+
+        private int SelectedAccessoryIndex
+        {
+            get { return listBoxAccessories.SelectedIndex; }
+        }
+
+        private Materia? SelectedMateria
+        {
+            get
+            {
+                if (SelectedMateriaIndex >= 0
+                    && SelectedMateriaIndex < kernel.MateriaData.Materias.Length)
+                {
+                    return kernel.MateriaData.Materias[SelectedMateriaIndex];
+                }
+                return null;
+            }
+        }
+
+        private int SelectedMateriaIndex
+        {
+            get { return listBoxMateria.SelectedIndex; }
         }
 
         #endregion
@@ -122,10 +256,12 @@ namespace FF7Scarlet.KernelEditor
             descriptionTextBoxes.Add(KernelSection.AttackData, textBoxAttackDescription);
             cameraMovementSingle.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDSingle);
             cameraMovementMulti.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDMulti);
+            attackEffectIDs.Add(KernelSection.AttackData, comboBoxAttackAttackEffectID);
             targetData.Add(KernelSection.AttackData, targetDataControlAttack);
             damageCalculationControls.Add(KernelSection.AttackData, damageCalculationControlAttack);
             elementLists.Add(KernelSection.AttackData, elementsControlAttack);
             statusLists.Add(KernelSection.AttackData, statusesControlAttack);
+            statusChangeComboBoxes.Add(KernelSection.AttackData, comboBoxAttackStatusChange);
             specialAttackFlags.Add(KernelSection.AttackData, specialAttackFlagsControlAttack);
 
             //item data
@@ -134,11 +270,13 @@ namespace FF7Scarlet.KernelEditor
             nameTextBoxes.Add(KernelSection.ItemData, textBoxItemName);
             descriptionTextBoxes.Add(KernelSection.ItemData, textBoxItemDescription);
             cameraMovementSingle.Add(KernelSection.ItemData, comboBoxItemCamMovementID);
+            attackEffectIDs.Add(KernelSection.ItemData, comboBoxItemAttackEffectID);
             targetData.Add(KernelSection.ItemData, targetDataControlItem);
             damageCalculationControls.Add(KernelSection.ItemData, damageCalculationControlItem);
             itemRestrictionLists.Add(KernelSection.ItemData, itemRestrictionsItem);
             elementLists.Add(KernelSection.ItemData, elementsControlItem);
             statusLists.Add(KernelSection.ItemData, statusesControlItem);
+            statusChangeComboBoxes.Add(KernelSection.ItemData, comboBoxItemStatusChange);
             specialAttackFlags.Add(KernelSection.ItemData, specialAttackFlagsControlItem);
 
             //weapon data
@@ -285,11 +423,13 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
             comboBoxAttackStatusChange.Items.Add("None");
+            comboBoxItemStatusChange.Items.Add("None");
             foreach (var s in Enum.GetValues<StatusChange>())
             {
                 if (s != StatusChange.None)
                 {
                     comboBoxAttackStatusChange.Items.Add(s);
+                    comboBoxItemStatusChange.Items.Add(s);
                     statusChanges.Add(s);
                 }
             }
@@ -354,6 +494,8 @@ namespace FF7Scarlet.KernelEditor
             unsavedChanges = unsaved;
             Text = $"{(unsaved ? "*" : "")}{WINDOW_TITLE}";
         }
+
+        #region Load Data
 
         private void EnableOrDisableTabPageControls(KernelSection section, bool enabled)
         {
@@ -425,7 +567,7 @@ namespace FF7Scarlet.KernelEditor
                 }
                 if (!DataManager.SceneFilePathExists)
                 {
-                    list.Add(checkBoxAttackSyncWithSceneBin);
+                    list.Add(groupBoxAttackSpecialActions);
                 }
             }
             return list.AsReadOnly();
@@ -607,14 +749,14 @@ namespace FF7Scarlet.KernelEditor
                     }
                     if (elementDamageModifiers.ContainsKey(section))
                     {
-                        int modifier = (int)kernel.GetDamageModifier(section, i);
-                        if (modifier == 0xFF)
+                        var modifier = kernel.GetDamageModifier(section, i);
+                        if (modifier == DamageModifier.Normal)
                         {
                             elementDamageModifiers[section].SelectedIndex = 0;
                         }
                         else
                         {
-                            elementDamageModifiers[section].SelectedIndex = modifier + 1;
+                            elementDamageModifiers[section].SelectedIndex = (int)modifier + 1;
                         }
                     }
 
@@ -781,6 +923,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (charIndex >= 0 && charIndex < 9)
             {
+                loading = true;
                 if (!tabPageIsEnabled.ContainsKey(tabPageInitCharacterStats))
                 {
                     EnableOrDisableInner(tabPageInitCharacterStats, true, null);
@@ -813,28 +956,12 @@ namespace FF7Scarlet.KernelEditor
                 if (wpn != null)
                 {
                     comboBoxCharacterWeapon.SelectedIndex = character.WeaponID;
-                    materiaSlotSelectorCharacterWeapon.SetSlots(wpn);
-                    for (int i = 0; i < 8; ++i)
-                    {
-                        var mat = kernel.GetMateriaByID(character.WeaponMateria[i].Index);
-                        materiaSlotSelectorCharacterWeapon.SetMateria(i, mat);
-                        materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
-                    }
                 }
-                buttonCharacterWeaponChangeMateria.Enabled = false;
                 var armor = kernel.GetArmorByID(character.ArmorID);
                 if (armor != null)
                 {
                     comboBoxCharacterArmor.SelectedIndex = character.ArmorID;
-                    materiaSlotSelectorCharacterArmor.SetSlots(armor);
-                    for (int i = 0; i < 8; ++i)
-                    {
-                        var mat = kernel.GetMateriaByID(character.ArmorMateria[i].Index);
-                        materiaSlotSelectorCharacterArmor.SetMateria(i, mat);
-                        materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
-                    }
                 }
-                buttonCharacterArmorChangeMateria.Enabled = false;
                 var acc = kernel.GetAccessoryByID(character.AccessoryID);
                 if (acc == null)
                 {
@@ -844,7 +971,8 @@ namespace FF7Scarlet.KernelEditor
                 {
                     comboBoxCharacterAccessory.SelectedIndex = character.AccessoryID + 1;
                 }
-                characterStatsControl.SetStats(character);
+                characterStatsControl.SetStatsFromCharacter(character);
+                loading = false;
             }
         }
 
@@ -986,6 +1114,273 @@ namespace FF7Scarlet.KernelEditor
             scriptControlCharacterAI.SelectedScriptIndex = scriptID;
         }
 
+        #endregion
+
+        #region Sync Unsaved Data
+
+        private void SyncCommandData(MenuCommand command)
+        {
+            int i = comboBoxCommandInitialCursorAction.SelectedIndex;
+            if (i <= 0)
+            {
+                command.InitialCursorAction = 0xFF;
+            }
+            else
+            {
+                command.InitialCursorAction = (byte)(i - 1);
+            }
+            command.TargetFlags = targetDataControlCommand.GetTargetData();
+            commandNeedsSync = true;
+        }
+
+        private void SyncAttackData(Attack attack)
+        {
+            attack.AccuracyRate = (byte)numericAttackAttackPercent.Value;
+            attack.MPCost = (ushort)numericAttackMPCost.Value;
+            attack.TargetFlags = targetDataControlAttack.GetTargetData();
+            attack.DamageCalculationID = damageCalculationControlAttack.ActualValue;
+            attack.AttackStrength = damageCalculationControlAttack.AttackPower;
+            if (comboBoxAttackConditionSubMenu.SelectedIndex == 0)
+            {
+                attack.AttackConditions = AttackConditions.None;
+            }
+            else
+            {
+                attack.AttackConditions = (AttackConditions)(comboBoxAttackConditionSubMenu.SelectedIndex - 1);
+            }
+            attack.StatusEffects = statusesControlAttack.GetStatuses();
+            attack.Elements = elementsControlAttack.GetElements();
+            attack.SpecialAttackFlags = specialAttackFlagsControlAttack.GetFlags();
+
+            attackNeedsSync = false;
+        }
+
+        private void SyncInitialStats(Character chara)
+        {
+            chara.ID = (byte)numericCharacterID.Value;
+            chara.Name = new FFText(textBoxCharacterName.Text);
+            chara.Level = (byte)numericCharacterLevel.Value;
+            chara.CurrentEXP = (uint)numericCharacterCurrentEXP.Value;
+            chara.EXPtoNextLevel = (uint)numericCharacterEXPtoNext.Value;
+            chara.CurrentHP = (ushort)numericCharacterCurrHP.Value;
+            chara.BaseHP = (ushort)numericCharacterBaseHP.Value;
+            chara.MaxHP = (ushort)numericCharacterMaxHP.Value;
+            chara.CurrentMP = (ushort)numericCharacterCurrMP.Value;
+            chara.BaseMP = (ushort)numericCharacterBaseMP.Value;
+            chara.MaxMP = (ushort)numericCharacterMaxMP.Value;
+            characterStatsControl.CopyStatsToCharacter(chara);
+            var flags = Enum.GetValues<CharacterFlags>();
+            chara.CharacterFlags = flags[comboBoxCharacterFlags.SelectedIndex];
+            chara.IsBackRow = checkBoxCharacterBackRow.Checked;
+            chara.KillCount = (ushort)numericCharacterKillCount.Value;
+            chara.LimitLevel = characterLimitControl.LimitLevel;
+            chara.CurrentLimitBar = characterLimitControl.LimitBar;
+            chara.LearnedLimits = characterLimitControl.LearnedLimits;
+            if (comboBoxCharacterAccessory.SelectedIndex == 0)
+            {
+                chara.AccessoryID = 0xFF;
+            }
+            else
+            {
+                chara.AccessoryID = (byte)(comboBoxCharacterAccessory.SelectedIndex - 1);
+            }
+
+            initialStatsNeedSync = false;
+        }
+
+        private void SyncItemData(Item item)
+        {
+            item.DamageCalculationId = damageCalculationControlItem.ActualValue;
+            item.AttackPower = damageCalculationControlItem.AttackPower;
+            item.TargetData = targetDataControlItem.GetTargetData();
+            item.Restrictions = itemRestrictionsItem.GetItemRestrictions();
+            item.Element = elementsControlItem.GetElements();
+            item.Status = statusesControlItem.GetStatuses();
+            item.Special = specialAttackFlagsControlItem.GetFlags();
+
+            itemDataNeedsSync = false;
+        }
+
+        private void SyncWeaponData(Weapon weapon)
+        {
+            weapon.AccuracyRate = (byte)numericWeaponHitChance.Value;
+            weapon.CriticalRate = (byte)numericWeaponCritChance.Value;
+            byte modelIndex = HexParser.MergeNybbles((byte)numericWeaponAnimationIndex.Value,
+                (byte)numericWeaponModelIndex.Value);
+            weapon.WeaponModelId = modelIndex;
+
+            var increases = statIncreaseControlWeapon.GetStatIncreases();
+            weapon.BoostedStat1 = increases[0].Stat;
+            weapon.BoostedStat1Bonus = increases[0].Amount;
+            weapon.BoostedStat2 = increases[1].Stat;
+            weapon.BoostedStat2Bonus = increases[1].Amount;
+            weapon.BoostedStat3 = increases[2].Stat;
+            weapon.BoostedStat3Bonus = increases[2].Amount;
+            weapon.BoostedStat4 = increases[3].Stat;
+            weapon.BoostedStat4Bonus = increases[3].Amount;
+
+            var slots = materiaSlotSelectorWeapon.GetSlots();
+            for (int i = 0; i < 8; ++i)
+            {
+                weapon.MateriaSlots[i] = slots[i];
+            }
+
+            weapon.AttackElements = elementsControlWeapon.GetElements();
+            int s = comboBoxWeaponStatus.SelectedIndex;
+            if (s == 0)
+            {
+                weapon.Status = EquipmentStatus.None;
+            }
+            else
+            {
+                weapon.Status = (EquipmentStatus)(s - 1);
+            }
+            weapon.DamageCalculationId = damageCalculationControlWeapon.ActualValue;
+            weapon.Targets = targetDataControlWeapon.GetTargetData();
+            weapon.EquipableBy = equipableListWeapon.GetEquipableFlags();
+            weapon.Restrictions = itemRestrictionsWeapon.GetItemRestrictions();
+
+            weaponNeedsSync = false;
+        }
+
+        private void SyncArmorData(Armor armor)
+        {
+            armor.Defense = (byte)numericArmorDefense.Value;
+            armor.Evade = (byte)numericArmorDefensePercent.Value;
+            armor.MagicDefense = (byte)numericArmorMagicDefense.Value;
+            armor.MagicEvade = (byte)numericArmorMagicDefensePercent.Value;
+
+            var increases = statIncreaseControlArmor.GetStatIncreases();
+            armor.BoostedStat1 = increases[0].Stat;
+            armor.BoostedStat1Bonus = increases[0].Amount;
+            armor.BoostedStat2 = increases[1].Stat;
+            armor.BoostedStat2Bonus = increases[1].Amount;
+            armor.BoostedStat3 = increases[2].Stat;
+            armor.BoostedStat3Bonus = increases[2].Amount;
+            armor.BoostedStat4 = increases[3].Stat;
+            armor.BoostedStat4Bonus = increases[3].Amount;
+
+            var slots = materiaSlotSelectorWeapon.GetSlots();
+            for (int i = 0; i < 8; ++i)
+            {
+                armor.MateriaSlots[i] = slots[i];
+            }
+
+            int temp;
+            armor.ElementalDefense = elementsControlArmor.GetElements();
+            temp = comboBoxArmorElementModifier.SelectedIndex;
+            if (temp == 0)
+            {
+                armor.ElementDamageModifier = DamageModifier.Normal;
+            }
+            else
+            {
+                armor.ElementDamageModifier = (DamageModifier)(temp - 1);
+            }
+            temp = comboBoxArmorStatus.SelectedIndex;
+            if (temp == 0)
+            {
+                armor.Status = EquipmentStatus.None;
+            }
+            else
+            {
+                armor.Status = (EquipmentStatus)(temp - 1);
+            }
+            armor.EquipableBy = equipableListArmor.GetEquipableFlags();
+            armor.Restrictions = itemRestrictionsArmor.GetItemRestrictions();
+
+            armorNeedsSync = false;
+        }
+
+        private void SyncAccessoryData(Accessory acc)
+        {
+            acc.ElementalDefense = elementsControlAccessory.GetElements();
+            int temp = temp = comboBoxArmorElementModifier.SelectedIndex;
+            if (temp == 0)
+            {
+                acc.ElementalDamageModifier = DamageModifier.Normal;
+            }
+            else
+            {
+                acc.ElementalDamageModifier = (DamageModifier)(temp - 1);
+            }
+
+            var increases = statIncreaseControlAccessory.GetStatIncreases();
+            acc.BoostedStat1 = increases[0].Stat;
+            acc.BoostedStat1Bonus = increases[0].Amount;
+            acc.BoostedStat2 = increases[1].Stat;
+            acc.BoostedStat2Bonus = increases[1].Amount;
+
+            acc.StatusDefense = statusesControlAccessory.GetStatuses();
+            temp = comboBoxAccessorySpecialEffects.SelectedIndex;
+            if (temp == 0)
+            {
+                acc.SpecialEffect = AccessoryEffect.None;
+            }
+            else
+            {
+                acc.SpecialEffect = (AccessoryEffect)(temp - 1);
+            }
+            acc.EquipableBy = equipableListAccessory.GetEquipableFlags();
+            acc.Restrictions = itemRestrictionsAccessory.GetItemRestrictions();
+
+            accessoryNeedsSync = false;
+        }
+
+        private void SyncMateriaData(Materia materia)
+        {
+            var elem = Enum.GetValues<MateriaElements>();
+            materia.Element = elem[comboBoxMateriaElement.SelectedIndex];
+            //type, subtype, equip attribules
+            materia.Status = statusesControlMateria.GetStatuses();
+            materia.Level2AP = materiaLevelControl.Lvl2APValue;
+            materia.Level3AP = materiaLevelControl.Lvl3APValue;
+            materia.Level4AP = materiaLevelControl.Lvl4APValue;
+            materia.Level5AP = materiaLevelControl.Lvl5APValue;
+
+            materiaNeedsSync = false;
+        }
+
+        private void SyncAllUnsaved()
+        {
+            if (commandNeedsSync && SelectedCommand != null)
+            {
+                SyncCommandData(SelectedCommand);
+            }
+            if (attackNeedsSync && SelectedAttack != null)
+            {
+                SyncAttackData(SelectedAttack);
+            }
+            if (initialStatsNeedSync && SelectedInitCharacter != null)
+            {
+                SyncInitialStats(SelectedInitCharacter);
+            }
+            if (itemDataNeedsSync && SelectedItem != null)
+            {
+                SyncItemData(SelectedItem);
+            }
+            if (weaponNeedsSync && SelectedWeapon != null)
+            {
+                SyncWeaponData(SelectedWeapon);
+            }
+            if (armorNeedsSync && SelectedArmor != null)
+            {
+                SyncArmorData(SelectedArmor);
+            }
+            if (accessoryNeedsSync && SelectedAccessory != null)
+            {
+                SyncAccessoryData(SelectedAccessory);
+            }
+            if (materiaNeedsSync && SelectedMateria != null)
+            {
+                SyncMateriaData(SelectedMateria);
+            }
+        }
+
+        #endregion
+
+        #region Manual Data Updates
+
         private void SetInventoryItem()
         {
             int selectedItem = listBoxInitInventory.SelectedIndex,
@@ -1091,28 +1486,6 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private void SyncAttackData(Attack attack)
-        {
-            attack.AccuracyRate = (byte)numericAttackAttackPercent.Value;
-            attack.MPCost = (ushort)numericAttackMPCost.Value;
-            attack.TargetFlags = targetDataControlAttack.GetTargetData();
-            attack.DamageCalculationID = damageCalculationControlAttack.ActualValue;
-            attack.AttackStrength = damageCalculationControlAttack.AttackPower;
-            if (comboBoxAttackConditionSubMenu.SelectedIndex == 0)
-            {
-                attack.AttackConditions = AttackConditions.None;
-            }
-            else
-            {
-                attack.AttackConditions = (AttackConditions)(comboBoxAttackConditionSubMenu.SelectedIndex - 1);
-            }
-            attack.StatusEffects = statusesControlAttack.GetStatuses();
-            attack.Elements = elementsControlAttack.GetElements();
-            attack.SpecialAttackFlags = specialAttackFlagsControlAttack.GetFlags();
-
-            attackNeedsSync = false;
-        }
-
         public void UpdateLookupTable(byte[] table)
         {
             kernel.UpdateLookupTable(table);
@@ -1120,27 +1493,51 @@ namespace FF7Scarlet.KernelEditor
 
         #endregion
 
+        #endregion
+
         #region Event Methods
 
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (itemsNeedSync) //sync item names
+            if (itemNamesNeedSync) //sync item names
             {
                 var tab = tabControlMain.SelectedTab;
                 if (tab == tabPageInitInventory || tab == tabPageCharacters)
                 {
                     LoadItemLists();
-                    PopulateInitCharacterDataTab(listBoxInitCharacters.SelectedIndex);
+                    PopulateInitCharacterDataTab(SelectedInitCharacterIndex);
                     PopulateInventoryListBoxes();
-                    itemsNeedSync = false;
+                    itemNamesNeedSync = false;
                 }
             }
         }
+
+        private void KernelForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (unsavedChanges)
+            {
+                var result = MessageBox.Show("Unsaved changes will be lost. Are you sure?", "Unsaved changes",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                e.Cancel = result == DialogResult.No;
+            }
+        }
+
+        #region ListBox Index Changed
 
         private void listBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!loading)
             {
+                if (commandNeedsSync) //sync unsaved command data
+                {
+                    var command = kernel.Commands[prevCommand];
+                    if (command != null)
+                    {
+                        SyncCommandData(command);
+                    }
+                }
+                prevCommand = SelectedCommandIndex;
                 PopulateTabWithSelected(KernelSection.CommandData);
             }
         }
@@ -1162,10 +1559,36 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void listBoxInitCharacters_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                if (initialStatsNeedSync) //sync unsaved stat data
+                {
+                    var chara = kernel.InitialData.Characters[prevCharacter];
+                    if (chara != null)
+                    {
+                        SyncInitialStats(chara);
+                    }
+                }
+                prevCharacter = SelectedInitCharacterIndex;
+                PopulateInitCharacterDataTab(SelectedInitCharacterIndex);
+            }
+        }
+
         private void listBoxItems_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!loading)
             {
+                if (itemDataNeedsSync) //sync unsaved item data
+                {
+                    var item = kernel.ItemData.Items[prevItem];
+                    if (item != null)
+                    {
+                        SyncItemData(item);
+                    }
+                }
+                prevItem = SelectedItemIndex;
                 PopulateTabWithSelected(KernelSection.ItemData);
             }
 
@@ -1175,6 +1598,15 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading)
             {
+                if (weaponNeedsSync) //sync unsaved weapon data
+                {
+                    var wpn = kernel.WeaponData.Weapons[prevWeapon];
+                    if (wpn != null)
+                    {
+                        SyncWeaponData(wpn);
+                    }
+                }
+                prevWeapon = SelectedWeaponIndex;
                 PopulateTabWithSelected(KernelSection.WeaponData);
             }
         }
@@ -1183,6 +1615,15 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading)
             {
+                if (armorNeedsSync) //sync unsaved armor data
+                {
+                    var armor = kernel.ArmorData.Armors[prevArmor];
+                    if (armor != null)
+                    {
+                        SyncArmorData(armor);
+                    }
+                }
+                prevArmor = SelectedArmorIndex;
                 PopulateTabWithSelected(KernelSection.ArmorData);
             }
         }
@@ -1191,6 +1632,15 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading)
             {
+                if (accessoryNeedsSync) //sync unsaved accessory data
+                {
+                    var acc = kernel.AccessoryData.Accessories[prevAccessory];
+                    if (acc != null)
+                    {
+                        SyncAccessoryData(acc);
+                    }
+                }
+                prevAccessory = SelectedAccessoryIndex;
                 PopulateTabWithSelected(KernelSection.AccessoryData);
             }
         }
@@ -1199,6 +1649,15 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading)
             {
+                if (materiaNeedsSync) //sync unsaved materia data
+                {
+                    var mat = kernel.MateriaData.Materias[prevMateria];
+                    if (mat != null)
+                    {
+                        SyncMateriaData(mat);
+                    }
+                }
+                prevMateria = SelectedMateriaIndex;
                 PopulateTabWithSelected(KernelSection.MateriaData);
             }
         }
@@ -1218,20 +1677,18 @@ namespace FF7Scarlet.KernelEditor
                 int i = listBoxBattleText.SelectedIndex;
                 if (i >= 0 && i < kernel.GetCount(KernelSection.BattleText))
                 {
+                    loading = true;
                     labelBattleText.Enabled = true;
                     textBoxBattleText.Enabled = true;
                     textBoxBattleText.Text = kernel.BattleText.Strings[i];
+                    loading = false;
                 }
             }
         }
 
-        private void listBoxInitCharacters_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                PopulateInitCharacterDataTab(listBoxInitCharacters.SelectedIndex);
-            }
-        }
+        #endregion
+
+        #region Common Controls
 
         private void textBoxName_TextChanged(object sender, EventArgs e)
         {
@@ -1248,7 +1705,7 @@ namespace FF7Scarlet.KernelEditor
                         || curr == KernelSection.ArmorData || curr == KernelSection.AccessoryData
                         || curr == KernelSection.MateriaData)
                     {
-                        itemsNeedSync = true;
+                        itemNamesNeedSync = true;
                     }
                     SetUnsaved(true);
                     loading = false;
@@ -1270,6 +1727,412 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void comboBoxCamMovementIDSingle_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && cameraMovementSingle.ContainsKey(CurrentSection))
+            {
+                var text = cameraMovementSingle[CurrentSection].Text;
+                if (text.Length == 4)
+                {
+                    ushort newID;
+                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        switch (CurrentSection)
+                        {
+                            case KernelSection.CommandData:
+                                if (SelectedCommand != null)
+                                {
+                                    SelectedCommand.CameraMovementIDSingle = newID;
+                                }
+                                break;
+                            case KernelSection.AttackData:
+                                if (SelectedAttack != null)
+                                {
+                                    SelectedAttack.CameraMovementIDSingle = newID;
+                                }
+                                break;
+                            case KernelSection.ItemData:
+                                if (SelectedItem != null)
+                                {
+                                    SelectedItem.CameraMovementId = newID;
+                                }
+                                break;
+                        }
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxCamMovementIDMulti_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && cameraMovementMulti.ContainsKey(CurrentSection))
+            {
+                var text = cameraMovementMulti[CurrentSection].Text;
+                if (text.Length == 4)
+                {
+                    ushort newID;
+                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        switch (CurrentSection)
+                        {
+                            case KernelSection.CommandData:
+                                if (SelectedCommand != null)
+                                {
+                                    SelectedCommand.CameraMovementIDMulti = newID;
+                                }
+                                break;
+                            case KernelSection.AttackData:
+                                if (SelectedAttack != null)
+                                {
+                                    SelectedAttack.CameraMovementIDMulti = newID;
+                                }
+                                break;
+                        }
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxAttackEffectID_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && attackEffectIDs.ContainsKey(CurrentSection))
+            {
+                var text = attackEffectIDs[CurrentSection].Text;
+                if (text.Length == 2)
+                {
+                    byte newID;
+                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        switch (CurrentSection)
+                        {
+                            case KernelSection.AttackData:
+                                if (SelectedAttack != null)
+                                {
+                                    SelectedAttack.AttackEffectID = newID;
+                                }
+                                break;
+                            case KernelSection.ItemData:
+                                if (SelectedItem != null)
+                                {
+                                    SelectedItem.AttackEffectId = newID;
+                                }
+                                break;
+                        }
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxStatusChange_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (statusChangeComboBoxes.ContainsKey(CurrentSection))
+            {
+                int i = statusChangeComboBoxes[CurrentSection].SelectedIndex;
+                var status = StatusChange.None;
+                bool hasStatus = i > 0;
+                if (hasStatus)
+                {
+                    status = statusChanges[i - 1];
+                }
+                statusLists[CurrentSection].Enabled = hasStatus;
+                switch (CurrentSection)
+                {
+                    case KernelSection.AttackData:
+                        if (SelectedAttack != null)
+                        {
+                            numericAttackStatusChangeChance.Enabled = hasStatus;
+                            statusesControlAttack.Enabled = hasStatus;
+                            SelectedAttack.StatusChange = status;
+                        }
+                        break;
+                    case KernelSection.ItemData:
+                        if (SelectedItem != null)
+                        {
+                            //SelectedItem.StatusChange = status;
+                        }
+                        break;
+                }
+                SetUnsaved(true);
+            }
+        }
+
+        #endregion
+
+        #region Data Changed
+
+        private void CommandDataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                commandNeedsSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        private void AttackDataChanged(object? sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                attackNeedsSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        private void InitCharacterDataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                initialStatsNeedSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        private void ItemDataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                itemDataNeedsSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        private void WeaponDataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                weaponNeedsSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        private void ArmorDataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                armorNeedsSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        private void AccessoryDataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                accessoryNeedsSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        private void MateriaDataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                materiaNeedsSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        #endregion
+
+        #region Attack Controls
+
+        private void textBoxAttackName_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedAttack != null)
+            {
+                loading = true;
+                string name = textBoxAttackName.Text;
+                SelectedAttack.Name = new FFText(name);
+                kernel.MagicNames.Strings[SelectedAttackIndex] = name;
+                listBoxAttacks.Items[SelectedAttackIndex] = name;
+                SetUnsaved(true);
+                loading = false;
+            }
+        }
+
+        private void textBoxAttackDescription_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedAttack != null)
+            {
+                string desc = textBoxAttackDescription.Text;
+                SelectedAttack.Description = new FFText(desc);
+                kernel.MagicDescriptions.Strings[SelectedAttackIndex] = desc;
+                SetUnsaved(true);
+            }
+        }
+
+        private void textBoxSummonText_TextChanged(object sender, EventArgs e)
+        {
+            int i = SelectedAttackIndex - SUMMON_OFFSET;
+            if (!loading && i >= 0 && i < kernel.SummonAttackNames.Strings.Length)
+            {
+                kernel.SummonAttackNames.Strings[i] = textBoxSummonText.Text;
+                SetUnsaved(true);
+            }
+        }
+
+        private void comboBoxAttackImpactEffectID_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedAttack != null)
+            {
+                var text = comboBoxAttackImpactEffectID.Text;
+                if (text.Length == 2)
+                {
+                    byte newID;
+                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        SelectedAttack.ImpactEffectID = newID;
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxAttackHurtActionIndex_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedAttack != null)
+            {
+                var text = comboBoxAttackHurtActionIndex.Text;
+                if (text.Length == 2)
+                {
+                    byte newID;
+                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        SelectedAttack.TargetHurtActionIndex = newID;
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void numericAttackStatusChangeChance_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedAttack != null)
+            {
+                SelectedAttack.StatusChangeChance = (byte)numericAttackStatusChangeChance.Value;
+                SetUnsaved(true);
+            }
+        }
+
+        private void checkBoxAttackSyncWithSceneBin_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                bool isChecked = checkBoxAttackSyncWithSceneBin.Checked;
+                var selected = listBoxAttacks.SelectedIndex;
+                if (selected >= 0 && selected < kernel.GetCount(KernelSection.AttackData))
+                {
+                    var atk = kernel.Attacks[selected];
+                    loading = true;
+                    if (isChecked)
+                    {
+                        bool result = MessageBox.Show("All instances of this attack in scene.bin will be synced with this one. Is that okay?",
+                            "Sync Attack?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                        if (result)
+                        {
+                            SyncAttack(atk.ID);
+                            SetUnsaved(true);
+                        }
+                        checkBoxAttackSyncWithSceneBin.Checked = result;
+                    }
+                    else
+                    {
+                        if (DataManager.AttackIsSynced(atk.ID))
+                        {
+                            bool result = MessageBox.Show("This will desync this attack from every instance of this attack in scene.bin. Are you sure you want to do this?",
+                                "Desync Attack?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                            if (result)
+                            {
+                                syncedAttackIDs.Remove(atk.ID);
+                                DataManager.UnsyncAttack(atk.ID);
+                                kernel.Attacks[selected] = new Attack(atk.ID, atk.Name, atk.GetRawData());
+                                SetUnsaved(true);
+                            }
+                            checkBoxAttackSyncWithSceneBin.Checked = result;
+                        }
+                    }
+                    loading = false;
+                }
+            }
+        }
+
+        private void buttonAttackSyncAll_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show("This will sync EVERY attack shared between kernel.bin and scene.bin. Are you sure you want to do this?",
+                "Sync All?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                loading = true;
+                foreach (var a in kernel.Attacks)
+                {
+                    SyncAttack(a.ID);
+                }
+                checkBoxAttackSyncWithSceneBin.Checked = true;
+                loading = false;
+            }
+        }
+
+        #endregion
+
+        #region Character Controls
+
+        private void comboBoxCharacterWeapon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SelectedInitCharacter != null)
+            {
+                if (!loading)
+                {
+                    SelectedInitCharacter.WeaponID = (byte)comboBoxCharacterWeapon.SelectedIndex;
+                    SetUnsaved(true);
+                }
+                var wpn = kernel.GetWeaponByID(SelectedInitCharacter.WeaponID);
+                if (wpn != null)
+                {
+                    materiaSlotSelectorCharacterWeapon.SetSlots(wpn);
+                    for (int i = 0; i < 8; ++i)
+                    {
+                        var mat = kernel.GetMateriaByID(SelectedInitCharacter.WeaponMateria[i].Index);
+                        materiaSlotSelectorCharacterWeapon.SetMateria(i, mat);
+                        materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
+                    }
+                }
+                buttonCharacterWeaponChangeMateria.Enabled = false;
+            }
+        }
+
+        private void comboBoxCharacterArmor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SelectedInitCharacter != null)
+            {
+                if (!loading)
+                {
+                    SelectedInitCharacter.ArmorID = (byte)comboBoxCharacterArmor.SelectedIndex;
+                    SetUnsaved(true);
+                }
+                var arm = kernel.GetArmorByID(SelectedInitCharacter.ArmorID);
+                if (arm != null)
+                {
+                    materiaSlotSelectorCharacterArmor.SetSlots(arm);
+                    for (int i = 0; i < 8; ++i)
+                    {
+                        var mat = kernel.GetMateriaByID(SelectedInitCharacter.ArmorMateria[i].Index);
+                        materiaSlotSelectorCharacterArmor.SetMateria(i, mat);
+                        materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
+                    }
+                }
+                buttonCharacterArmorChangeMateria.Enabled = false;
+            }
+        }
+
         private void materiaSlotSelector_MultiLinkEnabled(object sender, EventArgs e)
         {
             foreach (var s in materiaSlots.Values)
@@ -1282,26 +2145,27 @@ namespace FF7Scarlet.KernelEditor
 
         private void materiaSlotSelectorCharacterWeapon_SelectedSlotChanged(object sender, EventArgs e)
         {
-            buttonCharacterWeaponChangeMateria.Enabled = materiaSlotSelectorCharacterWeapon.SelectedSlot != -1;
+            buttonCharacterWeaponChangeMateria.Enabled =
+                materiaSlotSelectorCharacterWeapon.SelectedSlot != -1;
         }
 
         private void materiaSlotSelectorCharacterArmor_SelectedSlotChanged(object sender, EventArgs e)
         {
-            buttonCharacterArmorChangeMateria.Enabled = materiaSlotSelectorCharacterArmor.SelectedSlot != -1;
+            buttonCharacterArmorChangeMateria.Enabled =
+                materiaSlotSelectorCharacterArmor.SelectedSlot != -1;
         }
 
         private void buttonCharacterWeaponChangeMateria_Click(object sender, EventArgs e)
         {
-            int chara = listBoxInitCharacters.SelectedIndex,
-                slot = materiaSlotSelectorCharacterWeapon.SelectedSlot;
-            if (slot != -1)
+            int slot = materiaSlotSelectorCharacterWeapon.SelectedSlot;
+            if (slot != -1 && SelectedInitCharacter != null)
             {
-                var mat = kernel.InitialData.Characters[chara].WeaponMateria[slot].Copy();
+                var mat = SelectedInitCharacter.WeaponMateria[slot].Copy();
                 using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
-                        kernel.InitialData.Characters[chara].WeaponMateria[slot] = mat;
+                        SelectedInitCharacter.WeaponMateria[slot] = mat;
                         materiaSlotSelectorCharacterWeapon.SetMateria(slot, mat, kernel);
                         SetUnsaved(true);
                     }
@@ -1311,16 +2175,15 @@ namespace FF7Scarlet.KernelEditor
 
         private void buttonCharacterArmorChangeMateria_Click(object sender, EventArgs e)
         {
-            int chara = listBoxInitCharacters.SelectedIndex,
-                slot = materiaSlotSelectorCharacterArmor.SelectedSlot;
-            if (slot != -1)
+            int slot = materiaSlotSelectorCharacterArmor.SelectedSlot;
+            if (slot != -1 && SelectedInitCharacter != null)
             {
-                var mat = kernel.InitialData.Characters[chara].ArmorMateria[slot].Copy();
+                var mat = SelectedInitCharacter.ArmorMateria[slot].Copy();
                 using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
-                        kernel.InitialData.Characters[chara].ArmorMateria[slot] = mat;
+                        SelectedInitCharacter.ArmorMateria[slot] = mat;
                         materiaSlotSelectorCharacterArmor.SetMateria(slot, mat, kernel);
                         SetUnsaved(true);
                     }
@@ -1354,6 +2217,10 @@ namespace FF7Scarlet.KernelEditor
         {
             UpdateCharacterAIScripts(listBoxCharacterAI.SelectedIndex);
         }
+
+        #endregion
+
+        #region Inventory Controls
 
         private void listBoxInitInventory_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1443,226 +2310,9 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private void textBoxAttackName_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                loading = true;
-                string name = textBoxAttackName.Text;
-                SelectedAttack.Name = new FFText(name);
-                kernel.MagicNames.Strings[SelectedAttackIndex] = name;
-                listBoxAttacks.Items[SelectedAttackIndex] = name;
-                SetUnsaved(true);
-                loading = false;
-            }
-        }
+        #endregion
 
-        private void textBoxAttackDescription_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                string desc = textBoxAttackDescription.Text;
-                SelectedAttack.Description = new FFText(desc);
-                kernel.MagicDescriptions.Strings[SelectedAttackIndex] = desc;
-                SetUnsaved(true);
-            }
-        }
-
-        private void textBoxSummonText_TextChanged(object sender, EventArgs e)
-        {
-            int i = SelectedAttackIndex - SUMMON_OFFSET;
-            if (!loading && i >= 0 && i < kernel.SummonAttackNames.Strings.Length)
-            {
-                kernel.SummonAttackNames.Strings[i] = textBoxSummonText.Text;
-                SetUnsaved(true);
-            }
-        }
-
-        private void comboBoxAttackAttackEffectID_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackAttackEffectID.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.AttackEffectID = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackImpactEffectID_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackImpactEffectID.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.ImpactEffectID = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackCamMovementIDSingle_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackCamMovementIDSingle.Text;
-                if (text.Length == 4)
-                {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.CameraMovementIDSingle = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackCamMovementIDMulti_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackCamMovementIDMulti.Text;
-                if (text.Length == 4)
-                {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.CameraMovementIDMulti = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackHurtActionIndex_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackHurtActionIndex.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.TargetHurtActionIndex = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackStatusChange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int i = comboBoxAttackStatusChange.SelectedIndex;
-            numericAttackStatusChangeChance.Enabled = (i > 0);
-            statusesControlAttack.Enabled = (i > 0);
-            if (!loading && SelectedAttack != null)
-            {
-                if (i == 0)
-                {
-                    SelectedAttack.StatusChange = StatusChange.None;
-                }
-                else
-                {
-                    SelectedAttack.StatusChange = statusChanges[i - 1];
-                }
-                SetUnsaved(true);
-            }
-        }
-
-        private void numericAttackStatusChangeChance_ValueChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                SelectedAttack.StatusChangeChance = (byte)numericAttackStatusChangeChance.Value;
-                SetUnsaved(true);
-            }
-        }
-
-        private void AttackDataChanged(object? sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                attackNeedsSync = true;
-                SetUnsaved(true);
-            }
-        }
-
-        private void checkBoxAttackSyncWithSceneBin_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                bool isChecked = checkBoxAttackSyncWithSceneBin.Checked;
-                var selected = listBoxAttacks.SelectedIndex;
-                if (selected >= 0 && selected < kernel.GetCount(KernelSection.AttackData))
-                {
-                    var atk = kernel.Attacks[selected];
-                    loading = true;
-                    if (isChecked)
-                    {
-                        bool result = MessageBox.Show("All instances of this attack in scene.bin will be synced with this one. Is that okay?",
-                            "Sync Attack?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-                        if (result)
-                        {
-                            SyncAttack(atk.ID);
-                            SetUnsaved(true);
-                        }
-                        checkBoxAttackSyncWithSceneBin.Checked = result;
-                    }
-                    else
-                    {
-                        if (DataManager.AttackIsSynced(atk.ID))
-                        {
-                            bool result = MessageBox.Show("This will desync this attack from every instance of this attack in scene.bin. Are you sure you want to do this?",
-                                "Desync Attack?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-                            if (result)
-                            {
-                                syncedAttackIDs.Remove(atk.ID);
-                                DataManager.UnsyncAttack(atk.ID);
-                                kernel.Attacks[selected] = new Attack(atk.ID, atk.Name, atk.GetRawData());
-                                SetUnsaved(true);
-                            }
-                            checkBoxAttackSyncWithSceneBin.Checked = result;
-                        }
-                    }
-                    loading = false;
-                }
-            }
-        }
-
-        private void buttonAttackSyncAll_Click(object sender, EventArgs e)
-        {
-            var result = MessageBox.Show("This will sync EVERY attack shared between kernel.bin and scene.bin. Are you sure you want to do this?",
-                "Sync All?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
-            {
-                loading = true;
-                foreach (var a in kernel.Attacks)
-                {
-                    SyncAttack(a.ID);
-                }
-                checkBoxAttackSyncWithSceneBin.Checked = true;
-                loading = false;
-            }
-        }
+        #region Other Controls
 
         private void comboBoxWeaponMateriaGrowth_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1672,6 +2322,10 @@ namespace FF7Scarlet.KernelEditor
                 if (Enum.IsDefined(rate))
                 {
                     materiaSlotSelectorWeapon.GrowthRate = rate;
+                    if (SelectedWeapon != null)
+                    {
+                        SelectedWeapon.GrowthRate = rate;
+                    }
                 }
             }
         }
@@ -1684,18 +2338,37 @@ namespace FF7Scarlet.KernelEditor
                 if (Enum.IsDefined(rate))
                 {
                     materiaSlotSelectorArmor.GrowthRate = rate;
+                    if (SelectedArmor != null)
+                    {
+                        SelectedArmor.GrowthRate = rate;
+                    }
                 }
             }
         }
+
+        private void textBoxBattleText_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = listBoxBattleText.SelectedIndex;
+                if (i >= 0 && i < listBoxBattleText.Items.Count)
+                {
+                    kernel.BattleText.Strings[i] = textBoxBattleText.Text;
+                    listBoxBattleText.Items[i] = textBoxBattleText.Text;
+                    SetUnsaved(true);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Loading and Saving
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
             if (DataManager.Kernel != null)
             {
-                if (attackNeedsSync && SelectedAttack != null) //sync unsaved attack data
-                {
-                    SyncAttackData(SelectedAttack);
-                }
+                SyncAllUnsaved();
                 try
                 {
                     bool result = false, saveSceneBin = false;
@@ -1759,15 +2432,16 @@ namespace FF7Scarlet.KernelEditor
 
         private void buttonExport_Click(object sender, EventArgs e)
         {
-            if (attackNeedsSync && SelectedAttack != null) //sync unsaved attack data
-            {
-                SyncAttackData(SelectedAttack);
-            }
+            SyncAllUnsaved();
             using (var exportDialog = new KernelChunkExportForm(kernel))
             {
                 exportDialog.ShowDialog();
             }
         }
+
+        #endregion
+
+        #region Tool Strip
 
         private void attackCopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1788,16 +2462,7 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private void KernelForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (unsavedChanges)
-            {
-                var result = MessageBox.Show("Unsaved changes will be lost. Are you sure?", "Unsaved changes",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-                e.Cancel = result == DialogResult.No;
-            }
-        }
+        #endregion
 
         #endregion
     }

@@ -83,15 +83,6 @@
             buttonAttackSyncAll = new Button();
             checkBoxAttackSyncWithSceneBin = new CheckBox();
             listBoxAttacks = new ListBox();
-            tabPageBattleData = new TabPage();
-            tabControlBattleData = new TabControl();
-            tabPageBattleText = new TabPage();
-            listBoxBattleText = new ListBox();
-            textBoxBattleText = new TextBox();
-            labelBattleText = new Label();
-            tabPageBattleRNGTable = new TabPage();
-            rngTableControl = new Controls.RNGTableControl();
-            tabPageMagicOrder = new TabPage();
             tabPageCharacters = new TabPage();
             tabControlCharacters = new TabControl();
             tabPageInitCharacterStats = new TabPage();
@@ -177,7 +168,7 @@
             labelItemAttackEffectID = new Label();
             comboBoxItemCamMovementID = new ComboBox();
             tabPageItems2 = new TabPage();
-            comboBoxStatusChange = new ComboBox();
+            comboBoxItemStatusChange = new ComboBox();
             labelItemStatusChange = new Label();
             statusesControlItem = new Controls.StatusesControl();
             elementsControlItem = new Controls.ElementsControl();
@@ -283,6 +274,15 @@
             textBoxKeyItemName = new TextBox();
             labelKeyItemName = new Label();
             listBoxKeyItems = new ListBox();
+            tabPageMisc = new TabPage();
+            tabControlBattleData = new TabControl();
+            tabPageBattleText = new TabPage();
+            listBoxBattleText = new ListBox();
+            textBoxBattleText = new TextBox();
+            labelBattleText = new Label();
+            tabPageBattleRNGTable = new TabPage();
+            rngTableControl = new Controls.RNGTableControl();
+            tabPageMagicOrder = new TabPage();
             buttonSave = new Button();
             buttonImport = new Button();
             buttonExport = new Button();
@@ -309,10 +309,6 @@
             ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).BeginInit();
             tabPageAttacks3.SuspendLayout();
             groupBoxAttackSpecialActions.SuspendLayout();
-            tabPageBattleData.SuspendLayout();
-            tabControlBattleData.SuspendLayout();
-            tabPageBattleText.SuspendLayout();
-            tabPageBattleRNGTable.SuspendLayout();
             tabPageCharacters.SuspendLayout();
             tabControlCharacters.SuspendLayout();
             tabPageInitCharacterStats.SuspendLayout();
@@ -369,6 +365,10 @@
             tabPageAccessory2.SuspendLayout();
             tabPageMateriaData.SuspendLayout();
             tabPageKeyItemText.SuspendLayout();
+            tabPageMisc.SuspendLayout();
+            tabControlBattleData.SuspendLayout();
+            tabPageBattleText.SuspendLayout();
+            tabPageBattleRNGTable.SuspendLayout();
             panelButtons.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -377,7 +377,6 @@
             // 
             tabControlMain.Controls.Add(tabPageCommandData);
             tabControlMain.Controls.Add(tabPageAttackData);
-            tabControlMain.Controls.Add(tabPageBattleData);
             tabControlMain.Controls.Add(tabPageCharacters);
             tabControlMain.Controls.Add(tabPageInitInventory);
             tabControlMain.Controls.Add(tabPageItemData);
@@ -386,6 +385,7 @@
             tabControlMain.Controls.Add(tabPageAccessoryData);
             tabControlMain.Controls.Add(tabPageMateriaData);
             tabControlMain.Controls.Add(tabPageKeyItemText);
+            tabControlMain.Controls.Add(tabPageMisc);
             tabControlMain.Dock = DockStyle.Fill;
             tabControlMain.Location = new Point(0, 25);
             tabControlMain.Margin = new Padding(4, 3, 4, 3);
@@ -413,7 +413,7 @@
             tabPageCommandData.Margin = new Padding(4, 3, 4, 3);
             tabPageCommandData.Name = "tabPageCommandData";
             tabPageCommandData.Padding = new Padding(4, 3, 4, 3);
-            tabPageCommandData.Size = new Size(776, 462);
+            tabPageCommandData.Size = new Size(776, 502);
             tabPageCommandData.TabIndex = 0;
             tabPageCommandData.Text = "Command";
             tabPageCommandData.UseVisualStyleBackColor = true;
@@ -427,6 +427,7 @@
             comboBoxCommandInitialCursorAction.Name = "comboBoxCommandInitialCursorAction";
             comboBoxCommandInitialCursorAction.Size = new Size(459, 23);
             comboBoxCommandInitialCursorAction.TabIndex = 35;
+            comboBoxCommandInitialCursorAction.SelectedIndexChanged += CommandDataChanged;
             // 
             // labelCommandInitialCursorAction
             // 
@@ -445,6 +446,7 @@
             targetDataControlCommand.Name = "targetDataControlCommand";
             targetDataControlCommand.Size = new Size(330, 125);
             targetDataControlCommand.TabIndex = 33;
+            targetDataControlCommand.FlagsChanged += CommandDataChanged;
             // 
             // labelCommandCameraMovementIDMulti
             // 
@@ -459,9 +461,11 @@
             // 
             comboBoxCommandCamMovementIDMulti.FormattingEnabled = true;
             comboBoxCommandCamMovementIDMulti.Location = new Point(423, 119);
+            comboBoxCommandCamMovementIDMulti.MaxLength = 4;
             comboBoxCommandCamMovementIDMulti.Name = "comboBoxCommandCamMovementIDMulti";
             comboBoxCommandCamMovementIDMulti.Size = new Size(227, 23);
             comboBoxCommandCamMovementIDMulti.TabIndex = 32;
+            comboBoxCommandCamMovementIDMulti.TextUpdate += comboBoxCamMovementIDMulti_TextChanged;
             // 
             // labelCommandCamMovementIDSingle
             // 
@@ -476,9 +480,11 @@
             // 
             comboBoxCommandCameraMovementIDSingle.FormattingEnabled = true;
             comboBoxCommandCameraMovementIDSingle.Location = new Point(191, 119);
+            comboBoxCommandCameraMovementIDSingle.MaxLength = 4;
             comboBoxCommandCameraMovementIDSingle.Name = "comboBoxCommandCameraMovementIDSingle";
             comboBoxCommandCameraMovementIDSingle.Size = new Size(226, 23);
             comboBoxCommandCameraMovementIDSingle.TabIndex = 30;
+            comboBoxCommandCameraMovementIDSingle.TextUpdate += comboBoxCamMovementIDSingle_TextChanged;
             // 
             // textBoxCommandDescription
             // 
@@ -539,7 +545,7 @@
             tabPageAttackData.Margin = new Padding(4, 3, 4, 3);
             tabPageAttackData.Name = "tabPageAttackData";
             tabPageAttackData.Padding = new Padding(4, 3, 4, 3);
-            tabPageAttackData.Size = new Size(776, 462);
+            tabPageAttackData.Size = new Size(776, 502);
             tabPageAttackData.TabIndex = 1;
             tabPageAttackData.Text = "Attacks";
             tabPageAttackData.UseVisualStyleBackColor = true;
@@ -601,6 +607,7 @@
             // 
             comboBoxAttackHurtActionIndex.FormattingEnabled = true;
             comboBoxAttackHurtActionIndex.Location = new Point(382, 245);
+            comboBoxAttackHurtActionIndex.MaxLength = 2;
             comboBoxAttackHurtActionIndex.Name = "comboBoxAttackHurtActionIndex";
             comboBoxAttackHurtActionIndex.Size = new Size(180, 23);
             comboBoxAttackHurtActionIndex.TabIndex = 41;
@@ -629,10 +636,11 @@
             // 
             comboBoxAttackAttackEffectID.FormattingEnabled = true;
             comboBoxAttackAttackEffectID.Location = new Point(216, 109);
+            comboBoxAttackAttackEffectID.MaxLength = 2;
             comboBoxAttackAttackEffectID.Name = "comboBoxAttackAttackEffectID";
             comboBoxAttackAttackEffectID.Size = new Size(100, 23);
             comboBoxAttackAttackEffectID.TabIndex = 39;
-            comboBoxAttackAttackEffectID.TextChanged += comboBoxAttackAttackEffectID_TextChanged;
+            comboBoxAttackAttackEffectID.TextChanged += comboBoxAttackEffectID_TextChanged;
             // 
             // labelAttackImpactEffectID
             // 
@@ -647,6 +655,7 @@
             // 
             comboBoxAttackImpactEffectID.FormattingEnabled = true;
             comboBoxAttackImpactEffectID.Location = new Point(322, 109);
+            comboBoxAttackImpactEffectID.MaxLength = 2;
             comboBoxAttackImpactEffectID.Name = "comboBoxAttackImpactEffectID";
             comboBoxAttackImpactEffectID.Size = new Size(100, 23);
             comboBoxAttackImpactEffectID.TabIndex = 37;
@@ -700,10 +709,11 @@
             // 
             comboBoxAttackCamMovementIDMulti.FormattingEnabled = true;
             comboBoxAttackCamMovementIDMulti.Location = new Point(382, 201);
+            comboBoxAttackCamMovementIDMulti.MaxLength = 4;
             comboBoxAttackCamMovementIDMulti.Name = "comboBoxAttackCamMovementIDMulti";
             comboBoxAttackCamMovementIDMulti.Size = new Size(180, 23);
             comboBoxAttackCamMovementIDMulti.TabIndex = 36;
-            comboBoxAttackCamMovementIDMulti.TextChanged += comboBoxAttackCamMovementIDMulti_TextChanged;
+            comboBoxAttackCamMovementIDMulti.TextChanged += comboBoxCamMovementIDMulti_TextChanged;
             // 
             // textBoxAttackName
             // 
@@ -738,10 +748,11 @@
             // 
             comboBoxAttackCamMovementIDSingle.FormattingEnabled = true;
             comboBoxAttackCamMovementIDSingle.Location = new Point(382, 157);
+            comboBoxAttackCamMovementIDSingle.MaxLength = 4;
             comboBoxAttackCamMovementIDSingle.Name = "comboBoxAttackCamMovementIDSingle";
             comboBoxAttackCamMovementIDSingle.Size = new Size(180, 23);
             comboBoxAttackCamMovementIDSingle.TabIndex = 34;
-            comboBoxAttackCamMovementIDSingle.TextChanged += comboBoxAttackCamMovementIDSingle_TextChanged;
+            comboBoxAttackCamMovementIDSingle.TextChanged += comboBoxCamMovementIDSingle_TextChanged;
             // 
             // labelSummonText
             // 
@@ -864,7 +875,7 @@
             comboBoxAttackStatusChange.Name = "comboBoxAttackStatusChange";
             comboBoxAttackStatusChange.Size = new Size(137, 23);
             comboBoxAttackStatusChange.TabIndex = 3;
-            comboBoxAttackStatusChange.SelectedIndexChanged += comboBoxAttackStatusChange_SelectedIndexChanged;
+            comboBoxAttackStatusChange.SelectedIndexChanged += comboBoxStatusChange_SelectedIndexChanged;
             // 
             // labelAttackConditionSubMenu
             // 
@@ -920,12 +931,14 @@
             groupBoxAttackSpecialActions.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxAttackSpecialActions.Controls.Add(buttonAttackSyncAll);
             groupBoxAttackSpecialActions.Controls.Add(checkBoxAttackSyncWithSceneBin);
+            groupBoxAttackSpecialActions.Enabled = false;
             groupBoxAttackSpecialActions.Location = new Point(6, 137);
             groupBoxAttackSpecialActions.Name = "groupBoxAttackSpecialActions";
             groupBoxAttackSpecialActions.Size = new Size(330, 50);
             groupBoxAttackSpecialActions.TabIndex = 45;
             groupBoxAttackSpecialActions.TabStop = false;
             groupBoxAttackSpecialActions.Text = "Special actions";
+            groupBoxAttackSpecialActions.Visible = false;
             // 
             // buttonAttackSyncAll
             // 
@@ -960,102 +973,6 @@
             listBoxAttacks.Size = new Size(174, 439);
             listBoxAttacks.TabIndex = 0;
             listBoxAttacks.SelectedIndexChanged += listBoxAttacks_SelectedIndexChanged;
-            // 
-            // tabPageBattleData
-            // 
-            tabPageBattleData.Controls.Add(tabControlBattleData);
-            tabPageBattleData.Location = new Point(4, 24);
-            tabPageBattleData.Name = "tabPageBattleData";
-            tabPageBattleData.Size = new Size(776, 462);
-            tabPageBattleData.TabIndex = 10;
-            tabPageBattleData.Text = "Battle Data";
-            tabPageBattleData.UseVisualStyleBackColor = true;
-            // 
-            // tabControlBattleData
-            // 
-            tabControlBattleData.Controls.Add(tabPageBattleText);
-            tabControlBattleData.Controls.Add(tabPageBattleRNGTable);
-            tabControlBattleData.Controls.Add(tabPageMagicOrder);
-            tabControlBattleData.Dock = DockStyle.Fill;
-            tabControlBattleData.Location = new Point(0, 0);
-            tabControlBattleData.Name = "tabControlBattleData";
-            tabControlBattleData.SelectedIndex = 0;
-            tabControlBattleData.Size = new Size(776, 462);
-            tabControlBattleData.TabIndex = 11;
-            // 
-            // tabPageBattleText
-            // 
-            tabPageBattleText.Controls.Add(listBoxBattleText);
-            tabPageBattleText.Controls.Add(textBoxBattleText);
-            tabPageBattleText.Controls.Add(labelBattleText);
-            tabPageBattleText.Location = new Point(4, 24);
-            tabPageBattleText.Name = "tabPageBattleText";
-            tabPageBattleText.Padding = new Padding(3);
-            tabPageBattleText.Size = new Size(768, 434);
-            tabPageBattleText.TabIndex = 0;
-            tabPageBattleText.Text = "Battle Text";
-            tabPageBattleText.UseVisualStyleBackColor = true;
-            // 
-            // listBoxBattleText
-            // 
-            listBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            listBoxBattleText.FormattingEnabled = true;
-            listBoxBattleText.ItemHeight = 15;
-            listBoxBattleText.Location = new Point(7, 6);
-            listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
-            listBoxBattleText.Name = "listBoxBattleText";
-            listBoxBattleText.Size = new Size(174, 379);
-            listBoxBattleText.TabIndex = 2;
-            listBoxBattleText.SelectedIndexChanged += listBoxBattleText_SelectedIndexChanged;
-            // 
-            // textBoxBattleText
-            // 
-            textBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxBattleText.Enabled = false;
-            textBoxBattleText.Location = new Point(189, 24);
-            textBoxBattleText.Margin = new Padding(4, 3, 4, 3);
-            textBoxBattleText.Name = "textBoxBattleText";
-            textBoxBattleText.Size = new Size(572, 23);
-            textBoxBattleText.TabIndex = 10;
-            // 
-            // labelBattleText
-            // 
-            labelBattleText.AutoSize = true;
-            labelBattleText.Enabled = false;
-            labelBattleText.Location = new Point(189, 6);
-            labelBattleText.Margin = new Padding(4, 0, 4, 0);
-            labelBattleText.Name = "labelBattleText";
-            labelBattleText.Size = new Size(31, 15);
-            labelBattleText.TabIndex = 9;
-            labelBattleText.Text = "Text:";
-            // 
-            // tabPageBattleRNGTable
-            // 
-            tabPageBattleRNGTable.Controls.Add(rngTableControl);
-            tabPageBattleRNGTable.Location = new Point(4, 24);
-            tabPageBattleRNGTable.Name = "tabPageBattleRNGTable";
-            tabPageBattleRNGTable.Padding = new Padding(3);
-            tabPageBattleRNGTable.Size = new Size(768, 434);
-            tabPageBattleRNGTable.TabIndex = 1;
-            tabPageBattleRNGTable.Text = "RNG Table";
-            tabPageBattleRNGTable.UseVisualStyleBackColor = true;
-            // 
-            // rngTableControl
-            // 
-            rngTableControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            rngTableControl.Location = new Point(6, 6);
-            rngTableControl.Name = "rngTableControl";
-            rngTableControl.Size = new Size(757, 340);
-            rngTableControl.TabIndex = 0;
-            // 
-            // tabPageMagicOrder
-            // 
-            tabPageMagicOrder.Location = new Point(4, 24);
-            tabPageMagicOrder.Name = "tabPageMagicOrder";
-            tabPageMagicOrder.Size = new Size(768, 434);
-            tabPageMagicOrder.TabIndex = 2;
-            tabPageMagicOrder.Text = "Magic Order";
-            tabPageMagicOrder.UseVisualStyleBackColor = true;
             // 
             // tabPageCharacters
             // 
@@ -1109,7 +1026,7 @@
             tabPageInitCharacterStats.Location = new Point(4, 24);
             tabPageInitCharacterStats.Name = "tabPageInitCharacterStats";
             tabPageInitCharacterStats.Padding = new Padding(3);
-            tabPageInitCharacterStats.Size = new Size(768, 434);
+            tabPageInitCharacterStats.Size = new Size(768, 474);
             tabPageInitCharacterStats.TabIndex = 0;
             tabPageInitCharacterStats.Text = "Initial Stats";
             tabPageInitCharacterStats.UseVisualStyleBackColor = true;
@@ -1137,6 +1054,7 @@
             numericCharacterMaxMP.Name = "numericCharacterMaxMP";
             numericCharacterMaxMP.Size = new Size(115, 23);
             numericCharacterMaxMP.TabIndex = 5;
+            numericCharacterMaxMP.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterMaxMP
             // 
@@ -1154,6 +1072,7 @@
             numericCharacterBaseMP.Name = "numericCharacterBaseMP";
             numericCharacterBaseMP.Size = new Size(115, 23);
             numericCharacterBaseMP.TabIndex = 3;
+            numericCharacterBaseMP.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterBaseMP
             // 
@@ -1171,6 +1090,7 @@
             numericCharacterCurrMP.Name = "numericCharacterCurrMP";
             numericCharacterCurrMP.Size = new Size(115, 23);
             numericCharacterCurrMP.TabIndex = 1;
+            numericCharacterCurrMP.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterCurrMP
             // 
@@ -1204,6 +1124,7 @@
             numericCharacterMaxHP.Name = "numericCharacterMaxHP";
             numericCharacterMaxHP.Size = new Size(115, 23);
             numericCharacterMaxHP.TabIndex = 5;
+            numericCharacterMaxHP.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterMaxHP
             // 
@@ -1221,6 +1142,7 @@
             numericCharacterBaseHP.Name = "numericCharacterBaseHP";
             numericCharacterBaseHP.Size = new Size(115, 23);
             numericCharacterBaseHP.TabIndex = 3;
+            numericCharacterBaseHP.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterBaseHP
             // 
@@ -1238,6 +1160,7 @@
             numericCharacterCurrHP.Name = "numericCharacterCurrHP";
             numericCharacterCurrHP.Size = new Size(115, 23);
             numericCharacterCurrHP.TabIndex = 1;
+            numericCharacterCurrHP.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterCurrHP
             // 
@@ -1255,6 +1178,7 @@
             numericCharacterEXPtoNext.Name = "numericCharacterEXPtoNext";
             numericCharacterEXPtoNext.Size = new Size(120, 23);
             numericCharacterEXPtoNext.TabIndex = 28;
+            numericCharacterEXPtoNext.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterEXPtoNext
             // 
@@ -1274,6 +1198,7 @@
             numericCharacterKillCount.Name = "numericCharacterKillCount";
             numericCharacterKillCount.Size = new Size(128, 23);
             numericCharacterKillCount.TabIndex = 26;
+            numericCharacterKillCount.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterKillCount
             // 
@@ -1294,6 +1219,7 @@
             comboBoxCharacterFlags.Name = "comboBoxCharacterFlags";
             comboBoxCharacterFlags.Size = new Size(157, 23);
             comboBoxCharacterFlags.TabIndex = 24;
+            comboBoxCharacterFlags.SelectedIndexChanged += InitCharacterDataChanged;
             // 
             // labelCharacterFlags
             // 
@@ -1313,6 +1239,7 @@
             characterLimitControl.Name = "characterLimitControl";
             characterLimitControl.Size = new Size(373, 130);
             characterLimitControl.TabIndex = 22;
+            characterLimitControl.DataChanged += InitCharacterDataChanged;
             // 
             // numericCharacterCurrentEXP
             // 
@@ -1321,6 +1248,7 @@
             numericCharacterCurrentEXP.Name = "numericCharacterCurrentEXP";
             numericCharacterCurrentEXP.Size = new Size(120, 23);
             numericCharacterCurrentEXP.TabIndex = 21;
+            numericCharacterCurrentEXP.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterCurrentEXP
             // 
@@ -1377,6 +1305,7 @@
             comboBoxCharacterArmor.Name = "comboBoxCharacterArmor";
             comboBoxCharacterArmor.Size = new Size(211, 23);
             comboBoxCharacterArmor.TabIndex = 8;
+            comboBoxCharacterArmor.SelectedIndexChanged += comboBoxCharacterArmor_SelectedIndexChanged;
             // 
             // groupBoxCharacterWeapon
             // 
@@ -1425,6 +1354,7 @@
             comboBoxCharacterWeapon.Name = "comboBoxCharacterWeapon";
             comboBoxCharacterWeapon.Size = new Size(211, 23);
             comboBoxCharacterWeapon.TabIndex = 6;
+            comboBoxCharacterWeapon.SelectedIndexChanged += comboBoxCharacterWeapon_SelectedIndexChanged;
             // 
             // characterStatsControl
             // 
@@ -1432,6 +1362,7 @@
             characterStatsControl.Name = "characterStatsControl";
             characterStatsControl.Size = new Size(146, 295);
             characterStatsControl.TabIndex = 14;
+            characterStatsControl.CharacterStatsChanged += InitCharacterDataChanged;
             // 
             // checkBoxCharacterBackRow
             // 
@@ -1443,6 +1374,7 @@
             checkBoxCharacterBackRow.TabIndex = 13;
             checkBoxCharacterBackRow.Text = "Back row";
             checkBoxCharacterBackRow.UseVisualStyleBackColor = true;
+            checkBoxCharacterBackRow.CheckedChanged += InitCharacterDataChanged;
             // 
             // numericCharacterLevel
             // 
@@ -1453,6 +1385,7 @@
             numericCharacterLevel.Size = new Size(75, 23);
             numericCharacterLevel.TabIndex = 12;
             numericCharacterLevel.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numericCharacterLevel.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterLevel
             // 
@@ -1473,6 +1406,7 @@
             comboBoxCharacterAccessory.Name = "comboBoxCharacterAccessory";
             comboBoxCharacterAccessory.Size = new Size(211, 23);
             comboBoxCharacterAccessory.TabIndex = 10;
+            comboBoxCharacterAccessory.SelectedIndexChanged += InitCharacterDataChanged;
             // 
             // labelCharacterAccessory
             // 
@@ -1491,6 +1425,7 @@
             numericCharacterID.Name = "numericCharacterID";
             numericCharacterID.Size = new Size(75, 23);
             numericCharacterID.TabIndex = 4;
+            numericCharacterID.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterID
             // 
@@ -1508,6 +1443,7 @@
             textBoxCharacterName.Name = "textBoxCharacterName";
             textBoxCharacterName.Size = new Size(271, 23);
             textBoxCharacterName.TabIndex = 2;
+            textBoxCharacterName.TextChanged += InitCharacterDataChanged;
             // 
             // labelCharacterName
             // 
@@ -1534,7 +1470,7 @@
             tabPageCharacterGrowth.Location = new Point(4, 24);
             tabPageCharacterGrowth.Name = "tabPageCharacterGrowth";
             tabPageCharacterGrowth.Padding = new Padding(3);
-            tabPageCharacterGrowth.Size = new Size(768, 434);
+            tabPageCharacterGrowth.Size = new Size(768, 474);
             tabPageCharacterGrowth.TabIndex = 0;
             tabPageCharacterGrowth.Text = "Growth Curves";
             tabPageCharacterGrowth.UseVisualStyleBackColor = true;
@@ -1610,8 +1546,9 @@
             // listBoxCharacterScripts
             // 
             listBoxCharacterScripts.Dock = DockStyle.Fill;
-            listBoxCharacterScripts.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            listBoxCharacterScripts.Font = new Font("Segoe UI", 8F);
             listBoxCharacterScripts.FormattingEnabled = true;
+            listBoxCharacterScripts.ItemHeight = 13;
             listBoxCharacterScripts.Items.AddRange(new object[] { "Pre-Battle", "Main", "General Counter", "Death Counter", "Physical Counter", "Magic Counter", "Ally Death", "Post-Attack", "Custom Event 1", "Custom Event 2", "Custom Event 3", "Custom Event 4", "Custom Event 5", "Custom Event 6", "Custom Event 7", "Post-Battle" });
             listBoxCharacterScripts.Location = new Point(3, 19);
             listBoxCharacterScripts.Name = "listBoxCharacterScripts";
@@ -1627,7 +1564,7 @@
             tabPageInitInventory.Location = new Point(4, 24);
             tabPageInitInventory.Name = "tabPageInitInventory";
             tabPageInitInventory.Padding = new Padding(3);
-            tabPageInitInventory.Size = new Size(776, 462);
+            tabPageInitInventory.Size = new Size(776, 502);
             tabPageInitInventory.TabIndex = 1;
             tabPageInitInventory.Text = "Inventory";
             tabPageInitInventory.UseVisualStyleBackColor = true;
@@ -1826,7 +1763,7 @@
             tabPageItemData.Location = new Point(4, 24);
             tabPageItemData.Margin = new Padding(4, 3, 4, 3);
             tabPageItemData.Name = "tabPageItemData";
-            tabPageItemData.Size = new Size(776, 462);
+            tabPageItemData.Size = new Size(776, 502);
             tabPageItemData.TabIndex = 9;
             tabPageItemData.Text = "Items";
             tabPageItemData.UseVisualStyleBackColor = true;
@@ -1882,6 +1819,7 @@
             itemRestrictionsItem.ShowThrowable = false;
             itemRestrictionsItem.Size = new Size(211, 125);
             itemRestrictionsItem.TabIndex = 31;
+            itemRestrictionsItem.FlagsChanged += ItemDataChanged;
             // 
             // damageCalculationControlItem
             // 
@@ -1896,6 +1834,7 @@
             damageCalculationControlItem.Name = "damageCalculationControlItem";
             damageCalculationControlItem.Size = new Size(553, 147);
             damageCalculationControlItem.TabIndex = 29;
+            damageCalculationControlItem.DataChanged += ItemDataChanged;
             // 
             // textBoxItemName
             // 
@@ -1913,6 +1852,7 @@
             targetDataControlItem.Name = "targetDataControlItem";
             targetDataControlItem.Size = new Size(339, 125);
             targetDataControlItem.TabIndex = 30;
+            targetDataControlItem.FlagsChanged += ItemDataChanged;
             // 
             // labelItemDescription
             // 
@@ -1967,10 +1907,11 @@
             comboBoxItemCamMovementID.Name = "comboBoxItemCamMovementID";
             comboBoxItemCamMovementID.Size = new Size(150, 23);
             comboBoxItemCamMovementID.TabIndex = 26;
+            comboBoxItemCamMovementID.TextUpdate += comboBoxCamMovementIDSingle_TextChanged;
             // 
             // tabPageItems2
             // 
-            tabPageItems2.Controls.Add(comboBoxStatusChange);
+            tabPageItems2.Controls.Add(comboBoxItemStatusChange);
             tabPageItems2.Controls.Add(labelItemStatusChange);
             tabPageItems2.Controls.Add(statusesControlItem);
             tabPageItems2.Controls.Add(elementsControlItem);
@@ -1982,14 +1923,15 @@
             tabPageItems2.Text = "Page 2";
             tabPageItems2.UseVisualStyleBackColor = true;
             // 
-            // comboBoxStatusChange
+            // comboBoxItemStatusChange
             // 
-            comboBoxStatusChange.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxStatusChange.FormattingEnabled = true;
-            comboBoxStatusChange.Location = new Point(6, 363);
-            comboBoxStatusChange.Name = "comboBoxStatusChange";
-            comboBoxStatusChange.Size = new Size(185, 23);
-            comboBoxStatusChange.TabIndex = 33;
+            comboBoxItemStatusChange.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxItemStatusChange.FormattingEnabled = true;
+            comboBoxItemStatusChange.Location = new Point(6, 363);
+            comboBoxItemStatusChange.Name = "comboBoxItemStatusChange";
+            comboBoxItemStatusChange.Size = new Size(185, 23);
+            comboBoxItemStatusChange.TabIndex = 33;
+            comboBoxItemStatusChange.SelectedIndexChanged += comboBoxStatusChange_SelectedIndexChanged;
             // 
             // labelItemStatusChange
             // 
@@ -2010,6 +1952,7 @@
             statusesControlItem.Name = "statusesControlItem";
             statusesControlItem.Size = new Size(558, 200);
             statusesControlItem.TabIndex = 31;
+            statusesControlItem.StatusesChanged += ItemDataChanged;
             // 
             // elementsControlItem
             // 
@@ -2019,6 +1962,7 @@
             elementsControlItem.Name = "elementsControlItem";
             elementsControlItem.Size = new Size(558, 130);
             elementsControlItem.TabIndex = 30;
+            elementsControlItem.ElementsChanged += ItemDataChanged;
             // 
             // tabPageItems3
             // 
@@ -2037,6 +1981,7 @@
             specialAttackFlagsControlItem.Name = "specialAttackFlagsControlItem";
             specialAttackFlagsControlItem.Size = new Size(558, 100);
             specialAttackFlagsControlItem.TabIndex = 44;
+            specialAttackFlagsControlItem.FlagsChanged += ItemDataChanged;
             // 
             // listBoxItems
             // 
@@ -2057,7 +2002,7 @@
             tabPageWeaponData.Location = new Point(4, 24);
             tabPageWeaponData.Margin = new Padding(4, 3, 4, 3);
             tabPageWeaponData.Name = "tabPageWeaponData";
-            tabPageWeaponData.Size = new Size(776, 462);
+            tabPageWeaponData.Size = new Size(776, 502);
             tabPageWeaponData.TabIndex = 4;
             tabPageWeaponData.Text = "Weapons";
             tabPageWeaponData.UseVisualStyleBackColor = true;
@@ -2108,6 +2053,7 @@
             numericWeaponCritChance.Name = "numericWeaponCritChance";
             numericWeaponCritChance.Size = new Size(100, 23);
             numericWeaponCritChance.TabIndex = 36;
+            numericWeaponCritChance.ValueChanged += WeaponDataChanged;
             // 
             // numericWeaponHitChance
             // 
@@ -2116,6 +2062,7 @@
             numericWeaponHitChance.Name = "numericWeaponHitChance";
             numericWeaponHitChance.Size = new Size(100, 23);
             numericWeaponHitChance.TabIndex = 35;
+            numericWeaponHitChance.ValueChanged += WeaponDataChanged;
             // 
             // elementsControlWeapon
             // 
@@ -2125,6 +2072,7 @@
             elementsControlWeapon.Name = "elementsControlWeapon";
             elementsControlWeapon.Size = new Size(370, 130);
             elementsControlWeapon.TabIndex = 29;
+            elementsControlWeapon.ElementsChanged += WeaponDataChanged;
             // 
             // comboBoxWeaponStatus
             // 
@@ -2135,6 +2083,7 @@
             comboBoxWeaponStatus.Name = "comboBoxWeaponStatus";
             comboBoxWeaponStatus.Size = new Size(177, 23);
             comboBoxWeaponStatus.TabIndex = 28;
+            comboBoxWeaponStatus.SelectedIndexChanged += WeaponDataChanged;
             // 
             // statIncreaseControlWeapon
             // 
@@ -2145,6 +2094,7 @@
             statIncreaseControlWeapon.Name = "statIncreaseControlWeapon";
             statIncreaseControlWeapon.Size = new Size(327, 142);
             statIncreaseControlWeapon.TabIndex = 34;
+            statIncreaseControlWeapon.DataChanged += WeaponDataChanged;
             // 
             // numericWeaponAnimationIndex
             // 
@@ -2153,6 +2103,7 @@
             numericWeaponAnimationIndex.Name = "numericWeaponAnimationIndex";
             numericWeaponAnimationIndex.Size = new Size(100, 23);
             numericWeaponAnimationIndex.TabIndex = 33;
+            numericWeaponAnimationIndex.ValueChanged += WeaponDataChanged;
             // 
             // labelWeaponAnimationIndex
             // 
@@ -2180,6 +2131,7 @@
             numericWeaponModelIndex.Name = "numericWeaponModelIndex";
             numericWeaponModelIndex.Size = new Size(100, 23);
             numericWeaponModelIndex.TabIndex = 31;
+            numericWeaponModelIndex.ValueChanged += WeaponDataChanged;
             // 
             // labelWeaponModelIndex
             // 
@@ -2214,6 +2166,7 @@
             materiaSlotSelectorWeapon.Size = new Size(211, 35);
             materiaSlotSelectorWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorWeapon.TabIndex = 3;
+            materiaSlotSelectorWeapon.DataChanged += WeaponDataChanged;
             materiaSlotSelectorWeapon.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
             // 
             // labelWeaponMateriaGrowth
@@ -2325,6 +2278,7 @@
             targetDataControlWeapon.Name = "targetDataControlWeapon";
             targetDataControlWeapon.Size = new Size(328, 138);
             targetDataControlWeapon.TabIndex = 29;
+            targetDataControlWeapon.FlagsChanged += WeaponDataChanged;
             // 
             // damageCalculationControlWeapon
             // 
@@ -2339,6 +2293,7 @@
             damageCalculationControlWeapon.Name = "damageCalculationControlWeapon";
             damageCalculationControlWeapon.Size = new Size(558, 147);
             damageCalculationControlWeapon.TabIndex = 26;
+            damageCalculationControlWeapon.DataChanged += WeaponDataChanged;
             // 
             // equipableListWeapon
             // 
@@ -2348,6 +2303,7 @@
             equipableListWeapon.Name = "equipableListWeapon";
             equipableListWeapon.Size = new Size(328, 125);
             equipableListWeapon.TabIndex = 20;
+            equipableListWeapon.FlagsChanged += WeaponDataChanged;
             // 
             // itemRestrictionsWeapon
             // 
@@ -2357,6 +2313,7 @@
             itemRestrictionsWeapon.ShowThrowable = false;
             itemRestrictionsWeapon.Size = new Size(224, 125);
             itemRestrictionsWeapon.TabIndex = 25;
+            itemRestrictionsWeapon.FlagsChanged += WeaponDataChanged;
             // 
             // listBoxWeapons
             // 
@@ -2377,7 +2334,7 @@
             tabPageArmorData.Location = new Point(4, 24);
             tabPageArmorData.Margin = new Padding(4, 3, 4, 3);
             tabPageArmorData.Name = "tabPageArmorData";
-            tabPageArmorData.Size = new Size(776, 462);
+            tabPageArmorData.Size = new Size(776, 502);
             tabPageArmorData.TabIndex = 5;
             tabPageArmorData.Text = "Armor";
             tabPageArmorData.UseVisualStyleBackColor = true;
@@ -2439,6 +2396,7 @@
             numericArmorMagicDefensePercent.Name = "numericArmorMagicDefensePercent";
             numericArmorMagicDefensePercent.Size = new Size(100, 23);
             numericArmorMagicDefensePercent.TabIndex = 41;
+            numericArmorMagicDefensePercent.ValueChanged += ArmorDataChanged;
             // 
             // labelArmorMagicDefensePercent
             // 
@@ -2456,6 +2414,7 @@
             numericArmorMagicDefense.Name = "numericArmorMagicDefense";
             numericArmorMagicDefense.Size = new Size(100, 23);
             numericArmorMagicDefense.TabIndex = 39;
+            numericArmorMagicDefense.ValueChanged += ArmorDataChanged;
             // 
             // comboBoxArmorElementModifier
             // 
@@ -2466,6 +2425,7 @@
             comboBoxArmorElementModifier.Name = "comboBoxArmorElementModifier";
             comboBoxArmorElementModifier.Size = new Size(181, 23);
             comboBoxArmorElementModifier.TabIndex = 35;
+            comboBoxArmorElementModifier.SelectedIndexChanged += ArmorDataChanged;
             // 
             // labelArmorMagicDefense
             // 
@@ -2485,6 +2445,7 @@
             comboBoxArmorStatus.Name = "comboBoxArmorStatus";
             comboBoxArmorStatus.Size = new Size(181, 23);
             comboBoxArmorStatus.TabIndex = 30;
+            comboBoxArmorStatus.SelectedIndexChanged += ArmorDataChanged;
             // 
             // numericArmorDefensePercent
             // 
@@ -2493,6 +2454,7 @@
             numericArmorDefensePercent.Name = "numericArmorDefensePercent";
             numericArmorDefensePercent.Size = new Size(100, 23);
             numericArmorDefensePercent.TabIndex = 37;
+            numericArmorDefensePercent.ValueChanged += ArmorDataChanged;
             // 
             // elementsControlArmor
             // 
@@ -2502,6 +2464,7 @@
             elementsControlArmor.Name = "elementsControlArmor";
             elementsControlArmor.Size = new Size(370, 130);
             elementsControlArmor.TabIndex = 33;
+            elementsControlArmor.ElementsChanged += ArmorDataChanged;
             // 
             // labelArmorStatus
             // 
@@ -2529,6 +2492,7 @@
             numericArmorDefense.Name = "numericArmorDefense";
             numericArmorDefense.Size = new Size(100, 23);
             numericArmorDefense.TabIndex = 35;
+            numericArmorDefense.ValueChanged += ArmorDataChanged;
             // 
             // labelArmorDefense
             // 
@@ -2548,6 +2512,7 @@
             statIncreaseControlArmor.Name = "statIncreaseControlArmor";
             statIncreaseControlArmor.Size = new Size(327, 142);
             statIncreaseControlArmor.TabIndex = 33;
+            statIncreaseControlArmor.DataChanged += ArmorDataChanged;
             // 
             // labelArmorName
             // 
@@ -2602,6 +2567,8 @@
             materiaSlotSelectorArmor.Size = new Size(211, 35);
             materiaSlotSelectorArmor.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorArmor.TabIndex = 4;
+            materiaSlotSelectorArmor.DataChanged += ArmorDataChanged;
+            materiaSlotSelectorArmor.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
             // 
             // labelArmorMateriaGrowth
             // 
@@ -2653,6 +2620,7 @@
             itemRestrictionsArmor.ShowThrowable = false;
             itemRestrictionsArmor.Size = new Size(224, 125);
             itemRestrictionsArmor.TabIndex = 32;
+            itemRestrictionsArmor.FlagsChanged += ArmorDataChanged;
             // 
             // equipableListArmor
             // 
@@ -2662,6 +2630,7 @@
             equipableListArmor.Name = "equipableListArmor";
             equipableListArmor.Size = new Size(327, 125);
             equipableListArmor.TabIndex = 31;
+            equipableListArmor.FlagsChanged += ArmorDataChanged;
             // 
             // listBoxArmor
             // 
@@ -2682,7 +2651,7 @@
             tabPageAccessoryData.Location = new Point(4, 24);
             tabPageAccessoryData.Margin = new Padding(4, 3, 4, 3);
             tabPageAccessoryData.Name = "tabPageAccessoryData";
-            tabPageAccessoryData.Size = new Size(776, 462);
+            tabPageAccessoryData.Size = new Size(776, 502);
             tabPageAccessoryData.TabIndex = 6;
             tabPageAccessoryData.Text = "Accessories";
             tabPageAccessoryData.UseVisualStyleBackColor = true;
@@ -2736,6 +2705,7 @@
             comboBoxAccessoryElementModifier.Name = "comboBoxAccessoryElementModifier";
             comboBoxAccessoryElementModifier.Size = new Size(180, 23);
             comboBoxAccessoryElementModifier.TabIndex = 37;
+            comboBoxAccessoryElementModifier.SelectedIndexChanged += AccessoryDataChanged;
             // 
             // statusesControlAccessory
             // 
@@ -2747,6 +2717,7 @@
             statusesControlAccessory.Name = "statusesControlAccessory";
             statusesControlAccessory.Size = new Size(556, 200);
             statusesControlAccessory.TabIndex = 23;
+            statusesControlAccessory.StatusesChanged += AccessoryDataChanged;
             // 
             // elementsControlAccessory
             // 
@@ -2756,6 +2727,7 @@
             elementsControlAccessory.Name = "elementsControlAccessory";
             elementsControlAccessory.Size = new Size(370, 131);
             elementsControlAccessory.TabIndex = 26;
+            elementsControlAccessory.ElementsChanged += AccessoryDataChanged;
             // 
             // statIncreaseControlAccessory
             // 
@@ -2765,6 +2737,7 @@
             statIncreaseControlAccessory.Name = "statIncreaseControlAccessory";
             statIncreaseControlAccessory.Size = new Size(179, 84);
             statIncreaseControlAccessory.TabIndex = 26;
+            statIncreaseControlAccessory.DataChanged += AccessoryDataChanged;
             // 
             // labelAccessoryName
             // 
@@ -2829,6 +2802,7 @@
             comboBoxAccessorySpecialEffects.Name = "comboBoxAccessorySpecialEffects";
             comboBoxAccessorySpecialEffects.Size = new Size(311, 23);
             comboBoxAccessorySpecialEffects.TabIndex = 27;
+            comboBoxAccessorySpecialEffects.SelectedIndexChanged += AccessoryDataChanged;
             // 
             // labelAccessorySpecialEffects
             // 
@@ -2847,6 +2821,7 @@
             equipableListAccessory.Name = "equipableListAccessory";
             equipableListAccessory.Size = new Size(311, 125);
             equipableListAccessory.TabIndex = 24;
+            equipableListAccessory.FlagsChanged += AccessoryDataChanged;
             // 
             // itemRestrictionsAccessory
             // 
@@ -2856,6 +2831,7 @@
             itemRestrictionsAccessory.ShowThrowable = false;
             itemRestrictionsAccessory.Size = new Size(240, 125);
             itemRestrictionsAccessory.TabIndex = 25;
+            itemRestrictionsAccessory.FlagsChanged += AccessoryDataChanged;
             // 
             // listBoxAccessories
             // 
@@ -2889,7 +2865,7 @@
             tabPageMateriaData.Location = new Point(4, 24);
             tabPageMateriaData.Margin = new Padding(4, 3, 4, 3);
             tabPageMateriaData.Name = "tabPageMateriaData";
-            tabPageMateriaData.Size = new Size(776, 462);
+            tabPageMateriaData.Size = new Size(776, 502);
             tabPageMateriaData.TabIndex = 7;
             tabPageMateriaData.Text = "Materia";
             tabPageMateriaData.UseVisualStyleBackColor = true;
@@ -2901,6 +2877,7 @@
             comboBoxMateriaEquipAttributes.Name = "comboBoxMateriaEquipAttributes";
             comboBoxMateriaEquipAttributes.Size = new Size(306, 23);
             comboBoxMateriaEquipAttributes.TabIndex = 22;
+            comboBoxMateriaEquipAttributes.SelectedIndexChanged += MateriaDataChanged;
             // 
             // labelMateriaEquipAttributes
             // 
@@ -2921,6 +2898,7 @@
             statusesControlMateria.Name = "statusesControlMateria";
             statusesControlMateria.Size = new Size(380, 200);
             statusesControlMateria.TabIndex = 20;
+            statusesControlMateria.StatusesChanged += MateriaDataChanged;
             // 
             // comboBoxMateriaSubtype
             // 
@@ -2931,6 +2909,7 @@
             comboBoxMateriaSubtype.Name = "comboBoxMateriaSubtype";
             comboBoxMateriaSubtype.Size = new Size(261, 23);
             comboBoxMateriaSubtype.TabIndex = 19;
+            comboBoxMateriaSubtype.SelectedIndexChanged += MateriaDataChanged;
             // 
             // labelMateriaSubtype
             // 
@@ -2953,6 +2932,7 @@
             materiaLevelControl.Name = "materiaLevelControl";
             materiaLevelControl.Size = new Size(187, 252);
             materiaLevelControl.TabIndex = 17;
+            materiaLevelControl.DataChanged += MateriaDataChanged;
             // 
             // comboBoxMateriaElement
             // 
@@ -2962,6 +2942,7 @@
             comboBoxMateriaElement.Name = "comboBoxMateriaElement";
             comboBoxMateriaElement.Size = new Size(150, 23);
             comboBoxMateriaElement.TabIndex = 16;
+            comboBoxMateriaElement.SelectedIndexChanged += MateriaDataChanged;
             // 
             // labelMateriaElement
             // 
@@ -2980,6 +2961,7 @@
             comboBoxMateriaType.Name = "comboBoxMateriaType";
             comboBoxMateriaType.Size = new Size(150, 23);
             comboBoxMateriaType.TabIndex = 14;
+            comboBoxMateriaType.SelectedIndexChanged += MateriaDataChanged;
             // 
             // labelMateriaType
             // 
@@ -3051,7 +3033,7 @@
             tabPageKeyItemText.Location = new Point(4, 24);
             tabPageKeyItemText.Margin = new Padding(4, 3, 4, 3);
             tabPageKeyItemText.Name = "tabPageKeyItemText";
-            tabPageKeyItemText.Size = new Size(776, 462);
+            tabPageKeyItemText.Size = new Size(776, 502);
             tabPageKeyItemText.TabIndex = 8;
             tabPageKeyItemText.Text = "Key Items";
             tabPageKeyItemText.UseVisualStyleBackColor = true;
@@ -3106,6 +3088,103 @@
             listBoxKeyItems.Size = new Size(174, 469);
             listBoxKeyItems.TabIndex = 1;
             listBoxKeyItems.SelectedIndexChanged += listBoxKeyItems_SelectedIndexChanged;
+            // 
+            // tabPageMisc
+            // 
+            tabPageMisc.Controls.Add(tabControlBattleData);
+            tabPageMisc.Location = new Point(4, 24);
+            tabPageMisc.Name = "tabPageMisc";
+            tabPageMisc.Size = new Size(776, 502);
+            tabPageMisc.TabIndex = 10;
+            tabPageMisc.Text = "Misc";
+            tabPageMisc.UseVisualStyleBackColor = true;
+            // 
+            // tabControlBattleData
+            // 
+            tabControlBattleData.Controls.Add(tabPageBattleText);
+            tabControlBattleData.Controls.Add(tabPageBattleRNGTable);
+            tabControlBattleData.Controls.Add(tabPageMagicOrder);
+            tabControlBattleData.Dock = DockStyle.Fill;
+            tabControlBattleData.Location = new Point(0, 0);
+            tabControlBattleData.Name = "tabControlBattleData";
+            tabControlBattleData.SelectedIndex = 0;
+            tabControlBattleData.Size = new Size(776, 502);
+            tabControlBattleData.TabIndex = 11;
+            // 
+            // tabPageBattleText
+            // 
+            tabPageBattleText.Controls.Add(listBoxBattleText);
+            tabPageBattleText.Controls.Add(textBoxBattleText);
+            tabPageBattleText.Controls.Add(labelBattleText);
+            tabPageBattleText.Location = new Point(4, 24);
+            tabPageBattleText.Name = "tabPageBattleText";
+            tabPageBattleText.Padding = new Padding(3);
+            tabPageBattleText.Size = new Size(768, 474);
+            tabPageBattleText.TabIndex = 0;
+            tabPageBattleText.Text = "Battle Text";
+            tabPageBattleText.UseVisualStyleBackColor = true;
+            // 
+            // listBoxBattleText
+            // 
+            listBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxBattleText.FormattingEnabled = true;
+            listBoxBattleText.ItemHeight = 15;
+            listBoxBattleText.Location = new Point(7, 6);
+            listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
+            listBoxBattleText.Name = "listBoxBattleText";
+            listBoxBattleText.Size = new Size(174, 409);
+            listBoxBattleText.TabIndex = 2;
+            listBoxBattleText.SelectedIndexChanged += listBoxBattleText_SelectedIndexChanged;
+            // 
+            // textBoxBattleText
+            // 
+            textBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxBattleText.Enabled = false;
+            textBoxBattleText.Location = new Point(189, 24);
+            textBoxBattleText.Margin = new Padding(4, 3, 4, 3);
+            textBoxBattleText.Name = "textBoxBattleText";
+            textBoxBattleText.Size = new Size(572, 23);
+            textBoxBattleText.TabIndex = 10;
+            textBoxBattleText.TextChanged += textBoxBattleText_TextChanged;
+            // 
+            // labelBattleText
+            // 
+            labelBattleText.AutoSize = true;
+            labelBattleText.Enabled = false;
+            labelBattleText.Location = new Point(189, 6);
+            labelBattleText.Margin = new Padding(4, 0, 4, 0);
+            labelBattleText.Name = "labelBattleText";
+            labelBattleText.Size = new Size(31, 15);
+            labelBattleText.TabIndex = 9;
+            labelBattleText.Text = "Text:";
+            // 
+            // tabPageBattleRNGTable
+            // 
+            tabPageBattleRNGTable.Controls.Add(rngTableControl);
+            tabPageBattleRNGTable.Location = new Point(4, 24);
+            tabPageBattleRNGTable.Name = "tabPageBattleRNGTable";
+            tabPageBattleRNGTable.Padding = new Padding(3);
+            tabPageBattleRNGTable.Size = new Size(768, 474);
+            tabPageBattleRNGTable.TabIndex = 1;
+            tabPageBattleRNGTable.Text = "RNG Table";
+            tabPageBattleRNGTable.UseVisualStyleBackColor = true;
+            // 
+            // rngTableControl
+            // 
+            rngTableControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            rngTableControl.Location = new Point(6, 6);
+            rngTableControl.Name = "rngTableControl";
+            rngTableControl.Size = new Size(757, 340);
+            rngTableControl.TabIndex = 0;
+            // 
+            // tabPageMagicOrder
+            // 
+            tabPageMagicOrder.Location = new Point(4, 24);
+            tabPageMagicOrder.Name = "tabPageMagicOrder";
+            tabPageMagicOrder.Size = new Size(768, 474);
+            tabPageMagicOrder.TabIndex = 2;
+            tabPageMagicOrder.Text = "Magic Order";
+            tabPageMagicOrder.UseVisualStyleBackColor = true;
             // 
             // buttonSave
             // 
@@ -3272,11 +3351,6 @@
             tabPageAttacks3.ResumeLayout(false);
             groupBoxAttackSpecialActions.ResumeLayout(false);
             groupBoxAttackSpecialActions.PerformLayout();
-            tabPageBattleData.ResumeLayout(false);
-            tabControlBattleData.ResumeLayout(false);
-            tabPageBattleText.ResumeLayout(false);
-            tabPageBattleText.PerformLayout();
-            tabPageBattleRNGTable.ResumeLayout(false);
             tabPageCharacters.ResumeLayout(false);
             tabControlCharacters.ResumeLayout(false);
             tabPageInitCharacterStats.ResumeLayout(false);
@@ -3349,6 +3423,11 @@
             tabPageMateriaData.PerformLayout();
             tabPageKeyItemText.ResumeLayout(false);
             tabPageKeyItemText.PerformLayout();
+            tabPageMisc.ResumeLayout(false);
+            tabControlBattleData.ResumeLayout(false);
+            tabPageBattleText.ResumeLayout(false);
+            tabPageBattleText.PerformLayout();
+            tabPageBattleRNGTable.ResumeLayout(false);
             panelButtons.ResumeLayout(false);
             toolStripMain.ResumeLayout(false);
             toolStripMain.PerformLayout();
@@ -3470,7 +3549,7 @@
         private Controls.StatIncreaseControl statIncreaseControlWeapon;
         private Controls.StatIncreaseControl statIncreaseControlArmor;
         private Controls.StatIncreaseControl statIncreaseControlAccessory;
-        private ComboBox comboBoxStatusChange;
+        private ComboBox comboBoxItemStatusChange;
         private Label labelItemStatusChange;
         private Label labelArmorElementModifier;
         private ComboBox comboBoxArmorElementModifier;
@@ -3599,7 +3678,7 @@
         private TabControl tabControlCharacters;
         private TabPage tabPageCharacterGrowth;
         private TabPage tabPageCharacterAI;
-        private TabPage tabPageBattleData;
+        private TabPage tabPageMisc;
         private ListBox listBoxBattleText;
         private TextBox textBoxBattleText;
         private ListBox listBoxCharacterGrowth;

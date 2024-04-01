@@ -28,92 +28,95 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBoxWeaponRestrictions = new System.Windows.Forms.GroupBox();
-            this.checkBoxWeaponIsThrowable = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponIsSellable = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponUsableInMenu = new System.Windows.Forms.CheckBox();
-            this.checkBoxWeaponUsableInBattle = new System.Windows.Forms.CheckBox();
-            this.groupBoxWeaponRestrictions.SuspendLayout();
-            this.SuspendLayout();
+            groupBoxWeaponRestrictions = new GroupBox();
+            checkBoxIsThrowable = new CheckBox();
+            checkBoxIsSellable = new CheckBox();
+            checkBoxUsableInMenu = new CheckBox();
+            checkBoxUsableInBattle = new CheckBox();
+            groupBoxWeaponRestrictions.SuspendLayout();
+            SuspendLayout();
             // 
             // groupBoxWeaponRestrictions
             // 
-            this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponIsThrowable);
-            this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponIsSellable);
-            this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponUsableInMenu);
-            this.groupBoxWeaponRestrictions.Controls.Add(this.checkBoxWeaponUsableInBattle);
-            this.groupBoxWeaponRestrictions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxWeaponRestrictions.Location = new System.Drawing.Point(0, 0);
-            this.groupBoxWeaponRestrictions.Name = "groupBoxWeaponRestrictions";
-            this.groupBoxWeaponRestrictions.Size = new System.Drawing.Size(240, 125);
-            this.groupBoxWeaponRestrictions.TabIndex = 20;
-            this.groupBoxWeaponRestrictions.TabStop = false;
-            this.groupBoxWeaponRestrictions.Text = "Item restrictions";
+            groupBoxWeaponRestrictions.Controls.Add(checkBoxIsThrowable);
+            groupBoxWeaponRestrictions.Controls.Add(checkBoxIsSellable);
+            groupBoxWeaponRestrictions.Controls.Add(checkBoxUsableInMenu);
+            groupBoxWeaponRestrictions.Controls.Add(checkBoxUsableInBattle);
+            groupBoxWeaponRestrictions.Dock = DockStyle.Fill;
+            groupBoxWeaponRestrictions.Location = new Point(0, 0);
+            groupBoxWeaponRestrictions.Name = "groupBoxWeaponRestrictions";
+            groupBoxWeaponRestrictions.Size = new Size(240, 125);
+            groupBoxWeaponRestrictions.TabIndex = 20;
+            groupBoxWeaponRestrictions.TabStop = false;
+            groupBoxWeaponRestrictions.Text = "Item restrictions";
             // 
             // checkBoxWeaponIsThrowable
             // 
-            this.checkBoxWeaponIsThrowable.AutoSize = true;
-            this.checkBoxWeaponIsThrowable.Location = new System.Drawing.Point(7, 97);
-            this.checkBoxWeaponIsThrowable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxWeaponIsThrowable.Name = "checkBoxWeaponIsThrowable";
-            this.checkBoxWeaponIsThrowable.Size = new System.Drawing.Size(104, 19);
-            this.checkBoxWeaponIsThrowable.TabIndex = 19;
-            this.checkBoxWeaponIsThrowable.Text = "Can be thrown";
-            this.checkBoxWeaponIsThrowable.UseVisualStyleBackColor = true;
+            checkBoxIsThrowable.AutoSize = true;
+            checkBoxIsThrowable.Location = new Point(7, 97);
+            checkBoxIsThrowable.Margin = new Padding(4, 3, 4, 3);
+            checkBoxIsThrowable.Name = "checkBoxWeaponIsThrowable";
+            checkBoxIsThrowable.Size = new Size(104, 19);
+            checkBoxIsThrowable.TabIndex = 19;
+            checkBoxIsThrowable.Text = "Can be thrown";
+            checkBoxIsThrowable.UseVisualStyleBackColor = true;
+            checkBoxIsThrowable.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxWeaponIsSellable
             // 
-            this.checkBoxWeaponIsSellable.AutoSize = true;
-            this.checkBoxWeaponIsSellable.Location = new System.Drawing.Point(7, 22);
-            this.checkBoxWeaponIsSellable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxWeaponIsSellable.Name = "checkBoxWeaponIsSellable";
-            this.checkBoxWeaponIsSellable.Size = new System.Drawing.Size(88, 19);
-            this.checkBoxWeaponIsSellable.TabIndex = 16;
-            this.checkBoxWeaponIsSellable.Text = "Can be sold";
-            this.checkBoxWeaponIsSellable.UseVisualStyleBackColor = true;
+            checkBoxIsSellable.AutoSize = true;
+            checkBoxIsSellable.Location = new Point(7, 22);
+            checkBoxIsSellable.Margin = new Padding(4, 3, 4, 3);
+            checkBoxIsSellable.Name = "checkBoxWeaponIsSellable";
+            checkBoxIsSellable.Size = new Size(88, 19);
+            checkBoxIsSellable.TabIndex = 16;
+            checkBoxIsSellable.Text = "Can be sold";
+            checkBoxIsSellable.UseVisualStyleBackColor = true;
+            checkBoxIsSellable.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxWeaponUsableInMenu
             // 
-            this.checkBoxWeaponUsableInMenu.AutoSize = true;
-            this.checkBoxWeaponUsableInMenu.Location = new System.Drawing.Point(7, 72);
-            this.checkBoxWeaponUsableInMenu.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxWeaponUsableInMenu.Name = "checkBoxWeaponUsableInMenu";
-            this.checkBoxWeaponUsableInMenu.Size = new System.Drawing.Size(138, 19);
-            this.checkBoxWeaponUsableInMenu.TabIndex = 18;
-            this.checkBoxWeaponUsableInMenu.Text = "Can be used in menu";
-            this.checkBoxWeaponUsableInMenu.UseVisualStyleBackColor = true;
+            checkBoxUsableInMenu.AutoSize = true;
+            checkBoxUsableInMenu.Location = new Point(7, 72);
+            checkBoxUsableInMenu.Margin = new Padding(4, 3, 4, 3);
+            checkBoxUsableInMenu.Name = "checkBoxWeaponUsableInMenu";
+            checkBoxUsableInMenu.Size = new Size(138, 19);
+            checkBoxUsableInMenu.TabIndex = 18;
+            checkBoxUsableInMenu.Text = "Can be used in menu";
+            checkBoxUsableInMenu.UseVisualStyleBackColor = true;
+            checkBoxUsableInMenu.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxWeaponUsableInBattle
             // 
-            this.checkBoxWeaponUsableInBattle.AutoSize = true;
-            this.checkBoxWeaponUsableInBattle.Location = new System.Drawing.Point(7, 47);
-            this.checkBoxWeaponUsableInBattle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.checkBoxWeaponUsableInBattle.Name = "checkBoxWeaponUsableInBattle";
-            this.checkBoxWeaponUsableInBattle.Size = new System.Drawing.Size(137, 19);
-            this.checkBoxWeaponUsableInBattle.TabIndex = 17;
-            this.checkBoxWeaponUsableInBattle.Text = "Can be used in battle";
-            this.checkBoxWeaponUsableInBattle.UseVisualStyleBackColor = true;
+            checkBoxUsableInBattle.AutoSize = true;
+            checkBoxUsableInBattle.Location = new Point(7, 47);
+            checkBoxUsableInBattle.Margin = new Padding(4, 3, 4, 3);
+            checkBoxUsableInBattle.Name = "checkBoxWeaponUsableInBattle";
+            checkBoxUsableInBattle.Size = new Size(137, 19);
+            checkBoxUsableInBattle.TabIndex = 17;
+            checkBoxUsableInBattle.Text = "Can be used in battle";
+            checkBoxUsableInBattle.UseVisualStyleBackColor = true;
+            checkBoxUsableInBattle.CheckedChanged += checkBox_CheckedChanged;
             // 
             // ItemRestrictionsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBoxWeaponRestrictions);
-            this.DoubleBuffered = true;
-            this.Name = "ItemRestrictionsControl";
-            this.Size = new System.Drawing.Size(240, 125);
-            this.groupBoxWeaponRestrictions.ResumeLayout(false);
-            this.groupBoxWeaponRestrictions.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(groupBoxWeaponRestrictions);
+            DoubleBuffered = true;
+            Name = "ItemRestrictionsControl";
+            Size = new Size(240, 125);
+            groupBoxWeaponRestrictions.ResumeLayout(false);
+            groupBoxWeaponRestrictions.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
 
         private GroupBox groupBoxWeaponRestrictions;
-        private CheckBox checkBoxWeaponIsThrowable;
-        private CheckBox checkBoxWeaponIsSellable;
-        private CheckBox checkBoxWeaponUsableInMenu;
-        private CheckBox checkBoxWeaponUsableInBattle;
+        private CheckBox checkBoxIsThrowable;
+        private CheckBox checkBoxIsSellable;
+        private CheckBox checkBoxUsableInMenu;
+        private CheckBox checkBoxUsableInBattle;
     }
 }

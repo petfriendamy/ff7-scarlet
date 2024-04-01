@@ -4,6 +4,8 @@ namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class StatIncreaseControl : UserControl
     {
+        public event EventHandler? DataChanged;
+        private bool loading;
         private ComboBox[] comboBoxes;
         private NumericUpDown[] numerics;
         private const int MAX_STAT_COUNT = 4;
@@ -42,6 +44,7 @@ namespace FF7Scarlet.KernelEditor.Controls
             {
                 numericStat1, numericStat2, numericStat3, numericStat4
             };
+            loading = true;
             for (int i = 0; i < MAX_STAT_COUNT; ++i)
             {
                 comboBoxes[i].Items.Add("None");
@@ -50,11 +53,13 @@ namespace FF7Scarlet.KernelEditor.Controls
                     if (s != "None") { comboBoxes[i].Items.Add(s); }
                 }
             }
+            loading = false;
         }
 
         public void SetStatIncreases(StatIncrease[] stats)
         {
-            Count = stats.Length;
+            loading = true;
+            Count = Math.Min(stats.Length, MAX_STAT_COUNT);
             for (int i = 0; i < Count; ++i)
             {
                 numerics[i].Value = stats[i].Amount;
@@ -68,6 +73,39 @@ namespace FF7Scarlet.KernelEditor.Controls
                     comboBoxes[i].SelectedIndex = (int)stats[i].Stat + 1;
                     numerics[i].Enabled = true;
                 }
+            }
+            loading = false;
+        }
+
+        public StatIncrease[] GetStatIncreases()
+        {
+            var increases = new StatIncrease[Count];
+            CharacterStat stat;
+            for (int i = 0; i < Count; ++i)
+            {
+                if (comboBoxes[i].SelectedIndex == 0)
+                {
+                    stat = CharacterStat.None;
+                }
+                else
+                {
+                    stat = (CharacterStat)(comboBoxes[i].SelectedIndex - 1);
+                }
+                increases[i] = new StatIncrease(stat, (byte)numerics[i].Value);
+            }
+            return increases;
+        }
+
+        private void InvokeDataChanged(object? sender, EventArgs e)
+        {
+            DataChanged?.Invoke(sender, e);
+        }
+
+        private void control_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                InvokeDataChanged(sender, e);
             }
         }
     }

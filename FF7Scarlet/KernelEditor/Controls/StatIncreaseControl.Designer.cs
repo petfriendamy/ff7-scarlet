@@ -28,151 +28,138 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBoxMain = new System.Windows.Forms.GroupBox();
-            this.numericStat4 = new System.Windows.Forms.NumericUpDown();
-            this.comboBoxStat4 = new System.Windows.Forms.ComboBox();
-            this.numericStat3 = new System.Windows.Forms.NumericUpDown();
-            this.comboBoxStat3 = new System.Windows.Forms.ComboBox();
-            this.numericStat2 = new System.Windows.Forms.NumericUpDown();
-            this.comboBoxStat2 = new System.Windows.Forms.ComboBox();
-            this.numericStat1 = new System.Windows.Forms.NumericUpDown();
-            this.comboBoxStat1 = new System.Windows.Forms.ComboBox();
-            this.groupBoxMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericStat4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericStat3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericStat2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericStat1)).BeginInit();
-            this.SuspendLayout();
+            groupBoxMain = new GroupBox();
+            numericStat4 = new NumericUpDown();
+            comboBoxStat4 = new ComboBox();
+            numericStat3 = new NumericUpDown();
+            comboBoxStat3 = new ComboBox();
+            numericStat2 = new NumericUpDown();
+            comboBoxStat2 = new ComboBox();
+            numericStat1 = new NumericUpDown();
+            comboBoxStat1 = new ComboBox();
+            groupBoxMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericStat4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericStat3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericStat2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericStat1).BeginInit();
+            SuspendLayout();
             // 
             // groupBoxMain
             // 
-            this.groupBoxMain.Controls.Add(this.numericStat4);
-            this.groupBoxMain.Controls.Add(this.comboBoxStat4);
-            this.groupBoxMain.Controls.Add(this.numericStat3);
-            this.groupBoxMain.Controls.Add(this.comboBoxStat3);
-            this.groupBoxMain.Controls.Add(this.numericStat2);
-            this.groupBoxMain.Controls.Add(this.comboBoxStat2);
-            this.groupBoxMain.Controls.Add(this.numericStat1);
-            this.groupBoxMain.Controls.Add(this.comboBoxStat1);
-            this.groupBoxMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxMain.Location = new System.Drawing.Point(0, 0);
-            this.groupBoxMain.Name = "groupBoxMain";
-            this.groupBoxMain.Size = new System.Drawing.Size(250, 142);
-            this.groupBoxMain.TabIndex = 35;
-            this.groupBoxMain.TabStop = false;
-            this.groupBoxMain.Text = "Stat increases";
+            groupBoxMain.Controls.Add(numericStat4);
+            groupBoxMain.Controls.Add(comboBoxStat4);
+            groupBoxMain.Controls.Add(numericStat3);
+            groupBoxMain.Controls.Add(comboBoxStat3);
+            groupBoxMain.Controls.Add(numericStat2);
+            groupBoxMain.Controls.Add(comboBoxStat2);
+            groupBoxMain.Controls.Add(numericStat1);
+            groupBoxMain.Controls.Add(comboBoxStat1);
+            groupBoxMain.Dock = DockStyle.Fill;
+            groupBoxMain.Location = new Point(0, 0);
+            groupBoxMain.Name = "groupBoxMain";
+            groupBoxMain.Size = new Size(250, 142);
+            groupBoxMain.TabIndex = 35;
+            groupBoxMain.TabStop = false;
+            groupBoxMain.Text = "Stat increases";
             // 
             // numericStat4
             // 
-            this.numericStat4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericStat4.Location = new System.Drawing.Point(194, 109);
-            this.numericStat4.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericStat4.Name = "numericStat4";
-            this.numericStat4.Size = new System.Drawing.Size(50, 23);
-            this.numericStat4.TabIndex = 7;
+            numericStat4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            numericStat4.Location = new Point(194, 109);
+            numericStat4.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericStat4.Name = "numericStat4";
+            numericStat4.Size = new Size(50, 23);
+            numericStat4.TabIndex = 7;
+            numericStat4.ValueChanged += control_ValueChanged;
             // 
             // comboBoxStat4
             // 
-            this.comboBoxStat4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxStat4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStat4.FormattingEnabled = true;
-            this.comboBoxStat4.Location = new System.Drawing.Point(6, 109);
-            this.comboBoxStat4.Name = "comboBoxStat4";
-            this.comboBoxStat4.Size = new System.Drawing.Size(182, 23);
-            this.comboBoxStat4.TabIndex = 6;
+            comboBoxStat4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxStat4.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxStat4.FormattingEnabled = true;
+            comboBoxStat4.Location = new Point(6, 109);
+            comboBoxStat4.Name = "comboBoxStat4";
+            comboBoxStat4.Size = new Size(182, 23);
+            comboBoxStat4.TabIndex = 6;
+            comboBoxStat4.SelectedIndexChanged += control_ValueChanged;
             // 
             // numericStat3
             // 
-            this.numericStat3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericStat3.Location = new System.Drawing.Point(194, 80);
-            this.numericStat3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericStat3.Name = "numericStat3";
-            this.numericStat3.Size = new System.Drawing.Size(50, 23);
-            this.numericStat3.TabIndex = 5;
+            numericStat3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            numericStat3.Location = new Point(194, 80);
+            numericStat3.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericStat3.Name = "numericStat3";
+            numericStat3.Size = new Size(50, 23);
+            numericStat3.TabIndex = 5;
+            numericStat3.ValueChanged += control_ValueChanged;
             // 
             // comboBoxStat3
             // 
-            this.comboBoxStat3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxStat3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStat3.FormattingEnabled = true;
-            this.comboBoxStat3.Location = new System.Drawing.Point(6, 80);
-            this.comboBoxStat3.Name = "comboBoxStat3";
-            this.comboBoxStat3.Size = new System.Drawing.Size(182, 23);
-            this.comboBoxStat3.TabIndex = 4;
+            comboBoxStat3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxStat3.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxStat3.FormattingEnabled = true;
+            comboBoxStat3.Location = new Point(6, 80);
+            comboBoxStat3.Name = "comboBoxStat3";
+            comboBoxStat3.Size = new Size(182, 23);
+            comboBoxStat3.TabIndex = 4;
+            comboBoxStat3.SelectedIndexChanged += control_ValueChanged;
             // 
             // numericStat2
             // 
-            this.numericStat2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericStat2.Location = new System.Drawing.Point(194, 51);
-            this.numericStat2.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericStat2.Name = "numericStat2";
-            this.numericStat2.Size = new System.Drawing.Size(50, 23);
-            this.numericStat2.TabIndex = 3;
+            numericStat2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            numericStat2.Location = new Point(194, 51);
+            numericStat2.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericStat2.Name = "numericStat2";
+            numericStat2.Size = new Size(50, 23);
+            numericStat2.TabIndex = 3;
+            numericStat2.ValueChanged += control_ValueChanged;
             // 
             // comboBoxStat2
             // 
-            this.comboBoxStat2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxStat2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStat2.FormattingEnabled = true;
-            this.comboBoxStat2.Location = new System.Drawing.Point(6, 51);
-            this.comboBoxStat2.Name = "comboBoxStat2";
-            this.comboBoxStat2.Size = new System.Drawing.Size(182, 23);
-            this.comboBoxStat2.TabIndex = 2;
+            comboBoxStat2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxStat2.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxStat2.FormattingEnabled = true;
+            comboBoxStat2.Location = new Point(6, 51);
+            comboBoxStat2.Name = "comboBoxStat2";
+            comboBoxStat2.Size = new Size(182, 23);
+            comboBoxStat2.TabIndex = 2;
+            comboBoxStat2.SelectedIndexChanged += control_ValueChanged;
             // 
             // numericStat1
             // 
-            this.numericStat1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericStat1.Location = new System.Drawing.Point(194, 22);
-            this.numericStat1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericStat1.Name = "numericStat1";
-            this.numericStat1.Size = new System.Drawing.Size(50, 23);
-            this.numericStat1.TabIndex = 1;
+            numericStat1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            numericStat1.Location = new Point(194, 22);
+            numericStat1.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericStat1.Name = "numericStat1";
+            numericStat1.Size = new Size(50, 23);
+            numericStat1.TabIndex = 1;
+            numericStat1.ValueChanged += control_ValueChanged;
             // 
             // comboBoxStat1
             // 
-            this.comboBoxStat1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxStat1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStat1.FormattingEnabled = true;
-            this.comboBoxStat1.Location = new System.Drawing.Point(6, 22);
-            this.comboBoxStat1.Name = "comboBoxStat1";
-            this.comboBoxStat1.Size = new System.Drawing.Size(182, 23);
-            this.comboBoxStat1.TabIndex = 0;
+            comboBoxStat1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxStat1.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxStat1.FormattingEnabled = true;
+            comboBoxStat1.Location = new Point(6, 22);
+            comboBoxStat1.Name = "comboBoxStat1";
+            comboBoxStat1.Size = new Size(182, 23);
+            comboBoxStat1.TabIndex = 0;
+            comboBoxStat1.SelectedIndexChanged += control_ValueChanged;
             // 
             // StatIncreaseControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBoxMain);
-            this.DoubleBuffered = true;
-            this.Name = "StatIncreaseControl";
-            this.Size = new System.Drawing.Size(250, 142);
-            this.groupBoxMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericStat4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericStat3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericStat2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericStat1)).EndInit();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(groupBoxMain);
+            DoubleBuffered = true;
+            Name = "StatIncreaseControl";
+            Size = new Size(250, 142);
+            groupBoxMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)numericStat4).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericStat3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericStat2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericStat1).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion

@@ -482,7 +482,7 @@ namespace FF7Scarlet.ExeEditor
                     characterLimitControl.LimitLevel = character.LimitLevel;
                     characterLimitControl.LearnedLimits = character.LearnedLimits;
                     characterLimitControl.LimitBar = character.CurrentLimitBar;
-                    characterStatsControl.SetStats(character);
+                    characterStatsControl.SetStatsFromCharacter(character);
 
                     //check if kernel is loaded
                     if (DataManager.Kernel != null)

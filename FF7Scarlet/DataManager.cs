@@ -5,6 +5,7 @@ using FF7Scarlet.SceneEditor;
 using FF7Scarlet.ExeEditor;
 using FF7Scarlet.Shared;
 using System.Configuration;
+using Shojy.FF7.Elena.Compression;
 
 namespace FF7Scarlet
 {
@@ -448,7 +449,7 @@ namespace FF7Scarlet
                 throw new FileNotFoundException("No kernel.bin file is loaded.");
             }
 
-            var data = new List<byte> { };
+            var data = new List<byte>();
             byte[] uncompressedSection, compressedSection;
             ushort compressedLength, uncompressedLength, appendFF;
             for (ushort i = 0; i < Kernel.SECTION_COUNT; ++i)
@@ -475,9 +476,22 @@ namespace FF7Scarlet
             }
             File.WriteAllBytes(KernelPath, data.ToArray());
 
-            if (updateKernel2 && BothKernelFilePathsExist)
+            if (updateKernel2 && BothKernelFilePathsExist) //create kernel2
             {
-                //stuff
+                data.Clear();
+                for (int i = Kernel.KERNEL1_END; i < Kernel.SECTION_COUNT; ++i)
+                {
+                    uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1));
+                    data.AddRange(BitConverter.GetBytes(uncompressedSection.Length));
+                    data.AddRange(uncompressedSection);
+                }
+
+                //compress the data to write it to the file
+                /*using (var fs = new FileStream(Kernel2Path, FileMode.Create))
+                using (var lzs = new LzssStream(fs, CompressionMode.Compress))
+                {
+                    lzs.Write(data.ToArray());
+                }*/
             }
 
             if (reload) //reload the kernel

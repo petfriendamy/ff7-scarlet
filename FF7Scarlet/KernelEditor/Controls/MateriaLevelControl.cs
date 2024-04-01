@@ -5,7 +5,8 @@
         private const int MAX_AP = HexParser.NULL_OFFSET_16_BIT * 100;
         private NumericUpDown[] APSelectors;
         private int[] prevValues = new int[4];
-        private bool editing = false;
+        private bool loading = false;
+        public event EventHandler? DataChanged;
 
         public int Lvl2APValue
         {
@@ -35,6 +36,7 @@
                 if (value < 1 || value > 5) { throw new ArgumentOutOfRangeException(); }
                 numericMateriaMaxLevel.Value = value;
                 UpdateForMaxLevel();
+                InvokeDataChanged(this, EventArgs.Empty);
             }
         }
 
@@ -49,33 +51,12 @@
 
         public void SetAPLevels(int lvl2, int lvl3, int lvl4, int lvl5)
         {
-            editing = true;
+            loading = true;
             Lvl5APValue = lvl5;
             Lvl4APValue = lvl4;
             Lvl3APValue = lvl3;
             Lvl2APValue = lvl2;
-            /*if (lvl2 >= MAX_AP) { MaxLevel = 1; }
-            else
-            {
-                Lvl2APValue = lvl2;
-                if (lvl3 >= MAX_AP) { MaxLevel = 2; }
-                else
-                {
-                    Lvl3APValue = lvl3;
-                    if (lvl4 >= MAX_AP) { MaxLevel = 3; }
-                    else
-                    {
-                        Lvl4APValue = lvl4;
-                        if (lvl5 >= MAX_AP) { MaxLevel = 4; }
-                        else
-                        {
-                            MaxLevel = 5;
-                            Lvl5APValue = lvl5;
-                        }
-                    }
-                }
-            }*/
-            editing = false;
+            loading = false;
             UpdateForMaxLevel();
         }
 
@@ -86,7 +67,7 @@
 
         private void SetAP(int i, int value)
         {
-            editing = true;
+            loading = true;
             int index = i - 2;
             try
             {
@@ -104,7 +85,8 @@
                     APSelectors[index].Value = value;
                     prevValues[index] = value;
                 }
-                editing = false;
+                loading = false;
+                InvokeDataChanged(this, EventArgs.Empty);
                 UpdateForMaxLevel();
             }
             catch (ArgumentOutOfRangeException)
@@ -112,13 +94,13 @@
                 MessageBox.Show("Value must be a multiple of 100.", "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 SetAP(i, prevValues[index]);
-                editing = false;
+                loading = false;
             }
         }
 
         private void UpdateForMaxLevel()
         {
-            if (!editing)
+            if (!loading)
             {
                 int max = 0;
                 if (MaxLevel > 2) { max = GetAP(MaxLevel - 1); }
@@ -157,6 +139,11 @@
         {
             int value = MaxLevel;
             MaxLevel = value;
+        }
+
+        private void InvokeDataChanged(object? sender, EventArgs e)
+        {
+            DataChanged?.Invoke(sender, e);
         }
     }
 }

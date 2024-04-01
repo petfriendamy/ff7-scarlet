@@ -28,165 +28,175 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBoxMain = new System.Windows.Forms.GroupBox();
-            this.checkBoxSephiroth = new System.Windows.Forms.CheckBox();
-            this.checkBoxYCloud = new System.Windows.Forms.CheckBox();
-            this.checkBoxCid = new System.Windows.Forms.CheckBox();
-            this.checkBoxVincent = new System.Windows.Forms.CheckBox();
-            this.checkBoxCaitSith = new System.Windows.Forms.CheckBox();
-            this.checkBoxYuffie = new System.Windows.Forms.CheckBox();
-            this.checkBoxRedXIII = new System.Windows.Forms.CheckBox();
-            this.checkBoxAerith = new System.Windows.Forms.CheckBox();
-            this.checkBoxTifa = new System.Windows.Forms.CheckBox();
-            this.checkBoxBarret = new System.Windows.Forms.CheckBox();
-            this.checkBoxCloud = new System.Windows.Forms.CheckBox();
-            this.groupBoxMain.SuspendLayout();
-            this.SuspendLayout();
+            groupBoxMain = new GroupBox();
+            checkBoxSephiroth = new CheckBox();
+            checkBoxYCloud = new CheckBox();
+            checkBoxCid = new CheckBox();
+            checkBoxVincent = new CheckBox();
+            checkBoxCaitSith = new CheckBox();
+            checkBoxYuffie = new CheckBox();
+            checkBoxRedXIII = new CheckBox();
+            checkBoxAerith = new CheckBox();
+            checkBoxTifa = new CheckBox();
+            checkBoxBarret = new CheckBox();
+            checkBoxCloud = new CheckBox();
+            groupBoxMain.SuspendLayout();
+            SuspendLayout();
             // 
             // groupBoxMain
             // 
-            this.groupBoxMain.Controls.Add(this.checkBoxSephiroth);
-            this.groupBoxMain.Controls.Add(this.checkBoxYCloud);
-            this.groupBoxMain.Controls.Add(this.checkBoxCid);
-            this.groupBoxMain.Controls.Add(this.checkBoxVincent);
-            this.groupBoxMain.Controls.Add(this.checkBoxCaitSith);
-            this.groupBoxMain.Controls.Add(this.checkBoxYuffie);
-            this.groupBoxMain.Controls.Add(this.checkBoxRedXIII);
-            this.groupBoxMain.Controls.Add(this.checkBoxAerith);
-            this.groupBoxMain.Controls.Add(this.checkBoxTifa);
-            this.groupBoxMain.Controls.Add(this.checkBoxBarret);
-            this.groupBoxMain.Controls.Add(this.checkBoxCloud);
-            this.groupBoxMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxMain.Location = new System.Drawing.Point(0, 0);
-            this.groupBoxMain.Name = "groupBoxMain";
-            this.groupBoxMain.Size = new System.Drawing.Size(280, 125);
-            this.groupBoxMain.TabIndex = 15;
-            this.groupBoxMain.TabStop = false;
-            this.groupBoxMain.Text = "Equipable by...";
+            groupBoxMain.Controls.Add(checkBoxSephiroth);
+            groupBoxMain.Controls.Add(checkBoxYCloud);
+            groupBoxMain.Controls.Add(checkBoxCid);
+            groupBoxMain.Controls.Add(checkBoxVincent);
+            groupBoxMain.Controls.Add(checkBoxCaitSith);
+            groupBoxMain.Controls.Add(checkBoxYuffie);
+            groupBoxMain.Controls.Add(checkBoxRedXIII);
+            groupBoxMain.Controls.Add(checkBoxAerith);
+            groupBoxMain.Controls.Add(checkBoxTifa);
+            groupBoxMain.Controls.Add(checkBoxBarret);
+            groupBoxMain.Controls.Add(checkBoxCloud);
+            groupBoxMain.Dock = DockStyle.Fill;
+            groupBoxMain.Location = new Point(0, 0);
+            groupBoxMain.Name = "groupBoxMain";
+            groupBoxMain.Size = new Size(280, 125);
+            groupBoxMain.TabIndex = 15;
+            groupBoxMain.TabStop = false;
+            groupBoxMain.Text = "Equipable by...";
             // 
             // checkBoxSephiroth
             // 
-            this.checkBoxSephiroth.AutoSize = true;
-            this.checkBoxSephiroth.Location = new System.Drawing.Point(188, 72);
-            this.checkBoxSephiroth.Name = "checkBoxSephiroth";
-            this.checkBoxSephiroth.Size = new System.Drawing.Size(77, 19);
-            this.checkBoxSephiroth.TabIndex = 10;
-            this.checkBoxSephiroth.Text = "Sephiroth";
-            this.checkBoxSephiroth.UseVisualStyleBackColor = true;
+            checkBoxSephiroth.AutoSize = true;
+            checkBoxSephiroth.Location = new Point(188, 72);
+            checkBoxSephiroth.Name = "checkBoxSephiroth";
+            checkBoxSephiroth.Size = new Size(77, 19);
+            checkBoxSephiroth.TabIndex = 10;
+            checkBoxSephiroth.Text = "Sephiroth";
+            checkBoxSephiroth.UseVisualStyleBackColor = true;
+            checkBoxSephiroth.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxYCloud
             // 
-            this.checkBoxYCloud.AutoSize = true;
-            this.checkBoxYCloud.Location = new System.Drawing.Point(188, 47);
-            this.checkBoxYCloud.Name = "checkBoxYCloud";
-            this.checkBoxYCloud.Size = new System.Drawing.Size(68, 19);
-            this.checkBoxYCloud.TabIndex = 9;
-            this.checkBoxYCloud.Text = "Y.Cloud";
-            this.checkBoxYCloud.UseVisualStyleBackColor = true;
+            checkBoxYCloud.AutoSize = true;
+            checkBoxYCloud.Location = new Point(188, 47);
+            checkBoxYCloud.Name = "checkBoxYCloud";
+            checkBoxYCloud.Size = new Size(68, 19);
+            checkBoxYCloud.TabIndex = 9;
+            checkBoxYCloud.Text = "Y.Cloud";
+            checkBoxYCloud.UseVisualStyleBackColor = true;
+            checkBoxYCloud.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxCid
             // 
-            this.checkBoxCid.AutoSize = true;
-            this.checkBoxCid.Location = new System.Drawing.Point(188, 22);
-            this.checkBoxCid.Name = "checkBoxCid";
-            this.checkBoxCid.Size = new System.Drawing.Size(44, 19);
-            this.checkBoxCid.TabIndex = 8;
-            this.checkBoxCid.Text = "Cid";
-            this.checkBoxCid.UseVisualStyleBackColor = true;
+            checkBoxCid.AutoSize = true;
+            checkBoxCid.Location = new Point(188, 22);
+            checkBoxCid.Name = "checkBoxCid";
+            checkBoxCid.Size = new Size(44, 19);
+            checkBoxCid.TabIndex = 8;
+            checkBoxCid.Text = "Cid";
+            checkBoxCid.UseVisualStyleBackColor = true;
+            checkBoxCid.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxVincent
             // 
-            this.checkBoxVincent.AutoSize = true;
-            this.checkBoxVincent.Location = new System.Drawing.Point(96, 97);
-            this.checkBoxVincent.Name = "checkBoxVincent";
-            this.checkBoxVincent.Size = new System.Drawing.Size(66, 19);
-            this.checkBoxVincent.TabIndex = 7;
-            this.checkBoxVincent.Text = "Vincent";
-            this.checkBoxVincent.UseVisualStyleBackColor = true;
+            checkBoxVincent.AutoSize = true;
+            checkBoxVincent.Location = new Point(96, 97);
+            checkBoxVincent.Name = "checkBoxVincent";
+            checkBoxVincent.Size = new Size(66, 19);
+            checkBoxVincent.TabIndex = 7;
+            checkBoxVincent.Text = "Vincent";
+            checkBoxVincent.UseVisualStyleBackColor = true;
+            checkBoxVincent.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxCaitSith
             // 
-            this.checkBoxCaitSith.AutoSize = true;
-            this.checkBoxCaitSith.Location = new System.Drawing.Point(96, 72);
-            this.checkBoxCaitSith.Name = "checkBoxCaitSith";
-            this.checkBoxCaitSith.Size = new System.Drawing.Size(70, 19);
-            this.checkBoxCaitSith.TabIndex = 6;
-            this.checkBoxCaitSith.Text = "Cait Sith";
-            this.checkBoxCaitSith.UseVisualStyleBackColor = true;
+            checkBoxCaitSith.AutoSize = true;
+            checkBoxCaitSith.Location = new Point(96, 72);
+            checkBoxCaitSith.Name = "checkBoxCaitSith";
+            checkBoxCaitSith.Size = new Size(70, 19);
+            checkBoxCaitSith.TabIndex = 6;
+            checkBoxCaitSith.Text = "Cait Sith";
+            checkBoxCaitSith.UseVisualStyleBackColor = true;
+            checkBoxCaitSith.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxYuffie
             // 
-            this.checkBoxYuffie.AutoSize = true;
-            this.checkBoxYuffie.Location = new System.Drawing.Point(96, 47);
-            this.checkBoxYuffie.Name = "checkBoxYuffie";
-            this.checkBoxYuffie.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxYuffie.TabIndex = 5;
-            this.checkBoxYuffie.Text = "Yuffie";
-            this.checkBoxYuffie.UseVisualStyleBackColor = true;
+            checkBoxYuffie.AutoSize = true;
+            checkBoxYuffie.Location = new Point(96, 47);
+            checkBoxYuffie.Name = "checkBoxYuffie";
+            checkBoxYuffie.Size = new Size(57, 19);
+            checkBoxYuffie.TabIndex = 5;
+            checkBoxYuffie.Text = "Yuffie";
+            checkBoxYuffie.UseVisualStyleBackColor = true;
+            checkBoxYuffie.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxRedXIII
             // 
-            this.checkBoxRedXIII.AutoSize = true;
-            this.checkBoxRedXIII.Location = new System.Drawing.Point(96, 22);
-            this.checkBoxRedXIII.Name = "checkBoxRedXIII";
-            this.checkBoxRedXIII.Size = new System.Drawing.Size(65, 19);
-            this.checkBoxRedXIII.TabIndex = 4;
-            this.checkBoxRedXIII.Text = "Red XIII";
-            this.checkBoxRedXIII.UseVisualStyleBackColor = true;
+            checkBoxRedXIII.AutoSize = true;
+            checkBoxRedXIII.Location = new Point(96, 22);
+            checkBoxRedXIII.Name = "checkBoxRedXIII";
+            checkBoxRedXIII.Size = new Size(65, 19);
+            checkBoxRedXIII.TabIndex = 4;
+            checkBoxRedXIII.Text = "Red XIII";
+            checkBoxRedXIII.UseVisualStyleBackColor = true;
+            checkBoxRedXIII.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxAerith
             // 
-            this.checkBoxAerith.AutoSize = true;
-            this.checkBoxAerith.Location = new System.Drawing.Point(6, 97);
-            this.checkBoxAerith.Name = "checkBoxAerith";
-            this.checkBoxAerith.Size = new System.Drawing.Size(58, 19);
-            this.checkBoxAerith.TabIndex = 3;
-            this.checkBoxAerith.Text = "Aerith";
-            this.checkBoxAerith.UseVisualStyleBackColor = true;
+            checkBoxAerith.AutoSize = true;
+            checkBoxAerith.Location = new Point(6, 97);
+            checkBoxAerith.Name = "checkBoxAerith";
+            checkBoxAerith.Size = new Size(58, 19);
+            checkBoxAerith.TabIndex = 3;
+            checkBoxAerith.Text = "Aerith";
+            checkBoxAerith.UseVisualStyleBackColor = true;
+            checkBoxAerith.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxTifa
             // 
-            this.checkBoxTifa.AutoSize = true;
-            this.checkBoxTifa.Location = new System.Drawing.Point(6, 72);
-            this.checkBoxTifa.Name = "checkBoxTifa";
-            this.checkBoxTifa.Size = new System.Drawing.Size(45, 19);
-            this.checkBoxTifa.TabIndex = 2;
-            this.checkBoxTifa.Text = "Tifa";
-            this.checkBoxTifa.UseVisualStyleBackColor = true;
+            checkBoxTifa.AutoSize = true;
+            checkBoxTifa.Location = new Point(6, 72);
+            checkBoxTifa.Name = "checkBoxTifa";
+            checkBoxTifa.Size = new Size(45, 19);
+            checkBoxTifa.TabIndex = 2;
+            checkBoxTifa.Text = "Tifa";
+            checkBoxTifa.UseVisualStyleBackColor = true;
+            checkBoxTifa.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxBarret
             // 
-            this.checkBoxBarret.AutoSize = true;
-            this.checkBoxBarret.Location = new System.Drawing.Point(6, 47);
-            this.checkBoxBarret.Name = "checkBoxBarret";
-            this.checkBoxBarret.Size = new System.Drawing.Size(57, 19);
-            this.checkBoxBarret.TabIndex = 1;
-            this.checkBoxBarret.Text = "Barret";
-            this.checkBoxBarret.UseVisualStyleBackColor = true;
+            checkBoxBarret.AutoSize = true;
+            checkBoxBarret.Location = new Point(6, 47);
+            checkBoxBarret.Name = "checkBoxBarret";
+            checkBoxBarret.Size = new Size(57, 19);
+            checkBoxBarret.TabIndex = 1;
+            checkBoxBarret.Text = "Barret";
+            checkBoxBarret.UseVisualStyleBackColor = true;
+            checkBoxBarret.CheckedChanged += checkBox_CheckedChanged;
             // 
             // checkBoxCloud
             // 
-            this.checkBoxCloud.AutoSize = true;
-            this.checkBoxCloud.Location = new System.Drawing.Point(6, 22);
-            this.checkBoxCloud.Name = "checkBoxCloud";
-            this.checkBoxCloud.Size = new System.Drawing.Size(58, 19);
-            this.checkBoxCloud.TabIndex = 0;
-            this.checkBoxCloud.Text = "Cloud";
-            this.checkBoxCloud.UseVisualStyleBackColor = true;
+            checkBoxCloud.AutoSize = true;
+            checkBoxCloud.Location = new Point(6, 22);
+            checkBoxCloud.Name = "checkBoxCloud";
+            checkBoxCloud.Size = new Size(58, 19);
+            checkBoxCloud.TabIndex = 0;
+            checkBoxCloud.Text = "Cloud";
+            checkBoxCloud.UseVisualStyleBackColor = true;
+            checkBoxCloud.CheckedChanged += checkBox_CheckedChanged;
             // 
             // EquipableListControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBoxMain);
-            this.DoubleBuffered = true;
-            this.MinimumSize = new System.Drawing.Size(280, 125);
-            this.Name = "EquipableListControl";
-            this.Size = new System.Drawing.Size(280, 125);
-            this.groupBoxMain.ResumeLayout(false);
-            this.groupBoxMain.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(groupBoxMain);
+            DoubleBuffered = true;
+            MinimumSize = new Size(280, 125);
+            Name = "EquipableListControl";
+            Size = new Size(280, 125);
+            groupBoxMain.ResumeLayout(false);
+            groupBoxMain.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
