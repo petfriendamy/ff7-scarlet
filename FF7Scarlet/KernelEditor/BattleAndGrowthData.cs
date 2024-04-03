@@ -71,7 +71,7 @@ namespace FF7Scarlet.KernelEditor
         public BattleAndGrowthData(Kernel parent, byte[] data)
         {
             Parent = parent;
-            rawData = data.ToArray();
+            rawData = data;
 
             int i;
             using (var ms = new MemoryStream(data))
@@ -185,7 +185,9 @@ namespace FF7Scarlet.KernelEditor
                 writer.Write(rngTable);
                 writer.Write(sceneLookupTable);
             }
-            return rawData;
+            var copy = new byte[rawData.Length];
+            Array.Copy(rawData, copy, rawData.Length);
+            return copy;
         }
 
         public void ParseAIScripts()

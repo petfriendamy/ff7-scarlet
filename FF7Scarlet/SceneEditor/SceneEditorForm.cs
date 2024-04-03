@@ -24,7 +24,7 @@ namespace FF7Scarlet.SceneEditor
         private List<ResistanceRate> resistList;
         private List<ResistRates> resistRateList;
         private List<InventoryItem> itemList = new();
-        private List<StatusChange> statusChanges = new();
+        private List<StatusChangeType> statusChangeTypes = new();
         private List<Enemy> validEnemies = new();
         private List<Attack> validAttacks = new();
         private List<LocationInfo> locationList = new();
@@ -151,12 +151,12 @@ namespace FF7Scarlet.SceneEditor
 
             comboBoxAttackStatusChange.BeginUpdate();
             comboBoxAttackStatusChange.Items.Add("None");
-            foreach (var s in Enum.GetValues<StatusChange>())
+            foreach (var s in Enum.GetValues<StatusChangeType>())
             {
-                if (s != StatusChange.None)
+                if (s != StatusChangeType.None)
                 {
                     comboBoxAttackStatusChange.Items.Add(s);
-                    statusChanges.Add(s);
+                    statusChangeTypes.Add(s);
                 }
             }
             comboBoxAttackStatusChange.EndUpdate();
@@ -702,15 +702,14 @@ namespace FF7Scarlet.SceneEditor
                 {
                     comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
                 }
-                numericAttackStatusChangeChance.Value = attack.StatusChangeChance;
-                if (attack.StatusChange == StatusChange.None)
+                numericAttackStatusChangeChance.Value = attack.StatusChange.Amount;
+                if (attack.StatusChange.Type == StatusChangeType.None)
                 {
                     comboBoxAttackStatusChange.SelectedIndex = 0;
                 }
                 else
                 {
-                    var s = Enum.GetValues<StatusChange>().ToList();
-                    comboBoxAttackStatusChange.SelectedIndex = s.IndexOf(attack.StatusChange) + 1;
+                    comboBoxAttackStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
                 }
 
                 //page 3
@@ -1738,11 +1737,11 @@ namespace FF7Scarlet.SceneEditor
             {
                 if (i == 0)
                 {
-                    SelectedAttack.StatusChange = StatusChange.None;
+                    SelectedAttack.StatusChange.Type = StatusChangeType.None;
                 }
                 else
                 {
-                    SelectedAttack.StatusChange = statusChanges[i - 1];
+                    SelectedAttack.StatusChange.Type = statusChangeTypes[i - 1];
                 }
                 SetUnsaved(true);
             }
@@ -1752,7 +1751,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (!loading && SelectedAttack != null)
             {
-                SelectedAttack.StatusChangeChance = (byte)numericAttackStatusChangeChance.Value;
+                SelectedAttack.StatusChange.Amount = (byte)numericAttackStatusChangeChance.Value;
                 SetUnsaved(true);
             }
         }

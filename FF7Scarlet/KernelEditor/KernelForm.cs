@@ -13,7 +13,6 @@ using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
 using Shojy.FF7.Elena.Items;
-using static System.Collections.Specialized.BitVector32;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -32,7 +31,7 @@ namespace FF7Scarlet.KernelEditor
         private readonly Kernel kernel;
         private const int SUMMON_OFFSET = 56;
         private List<ushort> syncedAttackIDs = new();
-        private List<StatusChange> statusChanges = new();
+        private List<StatusChangeType> statusChangeTypes = new();
         private int prevCommand, prevAttack, prevCharacter, prevItem,
             prevWeapon, prevArmor, prevAccessory, prevMateria;
         private bool
@@ -350,6 +349,12 @@ namespace FF7Scarlet.KernelEditor
                 listBoxBattleText.Items.Add(t);
             }
 
+            //set max values for various controls
+            textBoxAttackName.MaxLength = Scene.NAME_LENGTH - 1;
+            numericCharacterCurrentEXP.Maximum = uint.MaxValue;
+            numericCharacterEXPtoNext.Maximum = uint.MaxValue;
+            numericStartingGil.Maximum = uint.MaxValue;
+
             //initial cursor command
             comboBoxCommandInitialCursorAction.Items.Add("None");
             foreach (var c in InitialCursorActionInfo.ACTION_LIST)
@@ -358,6 +363,9 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //character data
+            comboBoxParty1.Items.Add("None");
+            comboBoxParty2.Items.Add("None");
+            comboBoxParty3.Items.Add("None");
             for (int i = 0; i < Character.CHARACTER_COUNT; ++i)
             {
                 var name = Enum.GetName((CharacterNames)i);
@@ -365,6 +373,9 @@ namespace FF7Scarlet.KernelEditor
                 {
                     var parsedName = StringParser.AddSpace(name);
                     listBoxCharacterAI.Items.Add(parsedName);
+                    comboBoxParty1.Items.Add(parsedName);
+                    comboBoxParty2.Items.Add(parsedName);
+                    comboBoxParty3.Items.Add(parsedName);
 
                     //playable characters
                     if (i < Character.PLAYABLE_CHARACTER_COUNT)
@@ -376,7 +387,7 @@ namespace FF7Scarlet.KernelEditor
                             var name2 = Enum.GetName((CharacterNames)(i + 3));
                             if (name2 != null)
                             {
-                                parsedName = StringParser.AddSpace(name2); //+= $"/{StringParser.AddSpace(name2)}";
+                                parsedName = StringParser.AddSpace(name2);
                             }
                         }
                         listBoxInitCharacters.Items.Add(parsedName);
@@ -389,12 +400,19 @@ namespace FF7Scarlet.KernelEditor
             {
                 comboBoxCharacterFlags.Items.Add(f);
             }
+            if (kernel.InitialData.Party1 == 0xFF) { comboBoxParty1.SelectedIndex = 0; }
+            else { comboBoxParty1.SelectedIndex = kernel.InitialData.Party1 + 1; }
+            if (kernel.InitialData.Party2 == 0xFF) { comboBoxParty2.SelectedIndex = 0; }
+            else { comboBoxParty2.SelectedIndex = kernel.InitialData.Party2 + 1; }
+            if (kernel.InitialData.Party3 == 0xFF) { comboBoxParty3.SelectedIndex = 0; }
+            else { comboBoxParty3.SelectedIndex = kernel.InitialData.Party3 + 1; }
 
             //battle data
             rngTableControl.SetValues(kernel.BattleAndGrowthData.RNGTable);
 
             //inventory
             PopulateInventoryListBoxes();
+            numericStartingGil.Value = kernel.InitialData.StartingGil;
 
             //element modifiers
             foreach (var cb in elementDamageModifiers.Values)
@@ -424,13 +442,13 @@ namespace FF7Scarlet.KernelEditor
             }
             comboBoxAttackStatusChange.Items.Add("None");
             comboBoxItemStatusChange.Items.Add("None");
-            foreach (var s in Enum.GetValues<StatusChange>())
+            foreach (var s in Enum.GetValues<StatusChangeType>())
             {
-                if (s != StatusChange.None)
+                if (s != StatusChangeType.None)
                 {
                     comboBoxAttackStatusChange.Items.Add(s);
                     comboBoxItemStatusChange.Items.Add(s);
-                    statusChanges.Add(s);
+                    statusChangeTypes.Add(s);
                 }
             }
 
@@ -461,11 +479,6 @@ namespace FF7Scarlet.KernelEditor
                     comboBoxAttackConditionSubMenu.Items.Add(c);
                 }
             }
-
-            //set max values for various controls
-            textBoxAttackName.MaxLength = Scene.NAME_LENGTH - 1;
-            numericCharacterCurrentEXP.Maximum = uint.MaxValue;
-            numericCharacterEXPtoNext.Maximum = uint.MaxValue;
 
             //show/hide controls that are invalid
             itemRestrictionsWeapon.ShowThrowable = true;
@@ -575,7 +588,16 @@ namespace FF7Scarlet.KernelEditor
 
         private void LoadItemLists()
         {
+            bool wasAlreadyLoading = loading;
             loading = true;
+            if (!wasAlreadyLoading)
+            {
+                comboBoxInitItem.SuspendLayout();
+                comboBoxCharacterWeapon.SuspendLayout();
+                comboBoxCharacterArmor.SuspendLayout();
+                comboBoxCharacterAccessory.SuspendLayout();
+                comboBoxInitMateria.SuspendLayout();
+            }
 
             //items
             comboBoxInitItem.Items.Clear();
@@ -620,14 +642,27 @@ namespace FF7Scarlet.KernelEditor
                 comboBoxInitMateriaStolen.Items.Add(mat.Name);
             }
 
-            loading = false;
+            if (!wasAlreadyLoading)
+            {
+                comboBoxInitItem.ResumeLayout();
+                comboBoxCharacterWeapon.ResumeLayout();
+                comboBoxCharacterArmor.ResumeLayout();
+                comboBoxCharacterAccessory.ResumeLayout();
+                comboBoxInitMateria.ResumeLayout();
+                loading = false;
+            }
         }
 
         private void PopulateInventoryListBoxes()
         {
-            listBoxInitInventory.SuspendLayout();
-            listBoxInitMateria.SuspendLayout();
-            listBoxInitMateriaStolen.SuspendLayout();
+            bool wasAlreadyLoading = loading;
+            loading = true;
+            if (!wasAlreadyLoading)
+            {
+                listBoxInitInventory.SuspendLayout();
+                listBoxInitMateria.SuspendLayout();
+                listBoxInitMateriaStolen.SuspendLayout();
+            }
 
             listBoxInitInventory.Items.Clear();
             foreach (var inv in kernel.InitialData.InventoryItems)
@@ -667,9 +702,13 @@ namespace FF7Scarlet.KernelEditor
                     listBoxInitMateriaStolen.Items.Add(m.Name);
                 }
             }
-            listBoxInitInventory.ResumeLayout();
-            listBoxInitMateria.ResumeLayout();
-            listBoxInitMateriaStolen.ResumeLayout();
+            if (!wasAlreadyLoading)
+            {
+                listBoxInitInventory.ResumeLayout();
+                listBoxInitMateria.ResumeLayout();
+                listBoxInitMateriaStolen.ResumeLayout();
+                loading = false;
+            }
         }
 
         //fills the current tab with data from the selected item
@@ -828,8 +867,8 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
                             }
-                            numericAttackStatusChangeChance.Value = attack.StatusChangeChance;
-                            if (attack.StatusChange == StatusChange.None)
+                            numericAttackStatusChangeChance.Value = attack.StatusChange.Amount;
+                            if (attack.StatusChange.Type == StatusChangeType.None)
                             {
                                 comboBoxAttackStatusChange.SelectedIndex = 0;
                                 numericAttackStatusChangeChance.Enabled = false;
@@ -837,8 +876,7 @@ namespace FF7Scarlet.KernelEditor
                             }
                             else
                             {
-                                var s = Enum.GetValues<StatusChange>().ToList();
-                                comboBoxAttackStatusChange.SelectedIndex = s.IndexOf(attack.StatusChange) + 1;
+                                comboBoxAttackStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
                                 numericAttackStatusChangeChance.Enabled = true;
                                 statusesControlAttack.Enabled = true;
                             }
@@ -1502,7 +1540,7 @@ namespace FF7Scarlet.KernelEditor
             if (itemNamesNeedSync) //sync item names
             {
                 var tab = tabControlMain.SelectedTab;
-                if (tab == tabPageInitInventory || tab == tabPageCharacters)
+                if (tab == tabPageInitData || tab == tabPageCharacters)
                 {
                     LoadItemLists();
                     PopulateInitCharacterDataTab(SelectedInitCharacterIndex);
@@ -1834,11 +1872,11 @@ namespace FF7Scarlet.KernelEditor
             if (statusChangeComboBoxes.ContainsKey(CurrentSection))
             {
                 int i = statusChangeComboBoxes[CurrentSection].SelectedIndex;
-                var status = StatusChange.None;
+                var status = StatusChangeType.None;
                 bool hasStatus = i > 0;
                 if (hasStatus)
                 {
-                    status = statusChanges[i - 1];
+                    status = statusChangeTypes[i - 1];
                 }
                 statusLists[CurrentSection].Enabled = hasStatus;
                 switch (CurrentSection)
@@ -1848,17 +1886,17 @@ namespace FF7Scarlet.KernelEditor
                         {
                             numericAttackStatusChangeChance.Enabled = hasStatus;
                             statusesControlAttack.Enabled = hasStatus;
-                            SelectedAttack.StatusChange = status;
+                            SelectedAttack.StatusChange.Type = status;
                         }
                         break;
                     case KernelSection.ItemData:
                         if (SelectedItem != null)
                         {
-                            //SelectedItem.StatusChange = status;
+                            //SelectedItem.StatusChange.Type = status;
                         }
                         break;
                 }
-                SetUnsaved(true);
+                if (!loading) { SetUnsaved(true); }
             }
         }
 
@@ -2017,7 +2055,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading && SelectedAttack != null)
             {
-                SelectedAttack.StatusChangeChance = (byte)numericAttackStatusChangeChance.Value;
+                SelectedAttack.StatusChange.Amount = (byte)numericAttackStatusChangeChance.Value;
                 SetUnsaved(true);
             }
         }
@@ -2218,9 +2256,69 @@ namespace FF7Scarlet.KernelEditor
             UpdateCharacterAIScripts(listBoxCharacterAI.SelectedIndex);
         }
 
+        private void comboBoxParty1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = comboBoxParty1.SelectedIndex;
+                if (i == 0)
+                {
+                    kernel.InitialData.Party1 = 0xFF;
+                }
+                else
+                {
+                    kernel.InitialData.Party1 = (byte)(i - 1);
+                }
+                SetUnsaved(true);
+            }
+        }
+
+        private void comboBoxParty2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = comboBoxParty2.SelectedIndex;
+                if (i == 0)
+                {
+                    kernel.InitialData.Party2 = 0xFF;
+                }
+                else
+                {
+                    kernel.InitialData.Party2 = (byte)(i - 1);
+                }
+                SetUnsaved(true);
+            }
+        }
+
+        private void comboBoxParty3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = comboBoxParty3.SelectedIndex;
+                if (i == 0)
+                {
+                    kernel.InitialData.Party3 = 0xFF;
+                }
+                else
+                {
+                    kernel.InitialData.Party3 = (byte)(i - 1);
+                }
+                SetUnsaved(true);
+            }
+        }
+
         #endregion
 
         #region Inventory Controls
+
+        private void numericStartingGil_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                kernel.InitialData.StartingGil = (uint)numericStartingGil.Value;
+                SetUnsaved(true);
+            }
+        }
 
         private void listBoxInitInventory_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -136,7 +136,13 @@
             listBoxCharacterAI = new ListBox();
             groupBoxCharacterScripts = new GroupBox();
             listBoxCharacterScripts = new ListBox();
-            tabPageInitInventory = new TabPage();
+            tabPageInitData = new TabPage();
+            numericStartingGil = new NumericUpDown();
+            labelStartingGil = new Label();
+            groupBoxStartingParty = new GroupBox();
+            comboBoxParty3 = new ComboBox();
+            comboBoxParty2 = new ComboBox();
+            comboBoxParty1 = new ComboBox();
             groupBoxInitMateriaStolen = new GroupBox();
             listBoxInitMateriaStolen = new ListBox();
             buttonInitMateriaStolenEdit = new Button();
@@ -275,7 +281,7 @@
             labelKeyItemName = new Label();
             listBoxKeyItems = new ListBox();
             tabPageMisc = new TabPage();
-            tabControlBattleData = new TabControl();
+            tabControlMisc = new TabControl();
             tabPageBattleText = new TabPage();
             listBoxBattleText = new ListBox();
             textBoxBattleText = new TextBox();
@@ -331,7 +337,9 @@
             tabPageCharacterAI.SuspendLayout();
             groupBoxCharacterAI.SuspendLayout();
             groupBoxCharacterScripts.SuspendLayout();
-            tabPageInitInventory.SuspendLayout();
+            tabPageInitData.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericStartingGil).BeginInit();
+            groupBoxStartingParty.SuspendLayout();
             groupBoxInitMateriaStolen.SuspendLayout();
             groupBoxInitMateria.SuspendLayout();
             groupBoxInitInventory.SuspendLayout();
@@ -366,7 +374,7 @@
             tabPageMateriaData.SuspendLayout();
             tabPageKeyItemText.SuspendLayout();
             tabPageMisc.SuspendLayout();
-            tabControlBattleData.SuspendLayout();
+            tabControlMisc.SuspendLayout();
             tabPageBattleText.SuspendLayout();
             tabPageBattleRNGTable.SuspendLayout();
             panelButtons.SuspendLayout();
@@ -378,7 +386,7 @@
             tabControlMain.Controls.Add(tabPageCommandData);
             tabControlMain.Controls.Add(tabPageAttackData);
             tabControlMain.Controls.Add(tabPageCharacters);
-            tabControlMain.Controls.Add(tabPageInitInventory);
+            tabControlMain.Controls.Add(tabPageInitData);
             tabControlMain.Controls.Add(tabPageItemData);
             tabControlMain.Controls.Add(tabPageWeaponData);
             tabControlMain.Controls.Add(tabPageArmorData);
@@ -533,7 +541,7 @@
             listBoxCommands.Location = new Point(9, 13);
             listBoxCommands.Margin = new Padding(4, 3, 4, 3);
             listBoxCommands.Name = "listBoxCommands";
-            listBoxCommands.Size = new Size(174, 394);
+            listBoxCommands.Size = new Size(174, 469);
             listBoxCommands.TabIndex = 3;
             listBoxCommands.SelectedIndexChanged += listBoxCommands_SelectedIndexChanged;
             // 
@@ -559,7 +567,7 @@
             tabControlAttacks.Location = new Point(191, 13);
             tabControlAttacks.Name = "tabControlAttacks";
             tabControlAttacks.SelectedIndex = 0;
-            tabControlAttacks.Size = new Size(577, 439);
+            tabControlAttacks.Size = new Size(577, 469);
             tabControlAttacks.TabIndex = 37;
             // 
             // tabPageAttacks1
@@ -589,7 +597,7 @@
             tabPageAttacks1.Location = new Point(4, 24);
             tabPageAttacks1.Name = "tabPageAttacks1";
             tabPageAttacks1.Padding = new Padding(3);
-            tabPageAttacks1.Size = new Size(569, 411);
+            tabPageAttacks1.Size = new Size(569, 441);
             tabPageAttacks1.TabIndex = 0;
             tabPageAttacks1.Text = "Page 1";
             tabPageAttacks1.UseVisualStyleBackColor = true;
@@ -970,7 +978,7 @@
             listBoxAttacks.Location = new Point(9, 13);
             listBoxAttacks.Margin = new Padding(4, 3, 4, 3);
             listBoxAttacks.Name = "listBoxAttacks";
-            listBoxAttacks.Size = new Size(174, 439);
+            listBoxAttacks.Size = new Size(174, 469);
             listBoxAttacks.TabIndex = 0;
             listBoxAttacks.SelectedIndexChanged += listBoxAttacks_SelectedIndexChanged;
             // 
@@ -1556,18 +1564,80 @@
             listBoxCharacterScripts.TabIndex = 2;
             listBoxCharacterScripts.SelectedIndexChanged += listBoxCharacterScripts_SelectedIndexChanged;
             // 
-            // tabPageInitInventory
+            // tabPageInitData
             // 
-            tabPageInitInventory.Controls.Add(groupBoxInitMateriaStolen);
-            tabPageInitInventory.Controls.Add(groupBoxInitMateria);
-            tabPageInitInventory.Controls.Add(groupBoxInitInventory);
-            tabPageInitInventory.Location = new Point(4, 24);
-            tabPageInitInventory.Name = "tabPageInitInventory";
-            tabPageInitInventory.Padding = new Padding(3);
-            tabPageInitInventory.Size = new Size(776, 502);
-            tabPageInitInventory.TabIndex = 1;
-            tabPageInitInventory.Text = "Inventory";
-            tabPageInitInventory.UseVisualStyleBackColor = true;
+            tabPageInitData.Controls.Add(numericStartingGil);
+            tabPageInitData.Controls.Add(labelStartingGil);
+            tabPageInitData.Controls.Add(groupBoxStartingParty);
+            tabPageInitData.Controls.Add(groupBoxInitMateriaStolen);
+            tabPageInitData.Controls.Add(groupBoxInitMateria);
+            tabPageInitData.Controls.Add(groupBoxInitInventory);
+            tabPageInitData.Location = new Point(4, 24);
+            tabPageInitData.Name = "tabPageInitData";
+            tabPageInitData.Padding = new Padding(3);
+            tabPageInitData.Size = new Size(776, 502);
+            tabPageInitData.TabIndex = 1;
+            tabPageInitData.Text = "Initial Data";
+            tabPageInitData.UseVisualStyleBackColor = true;
+            // 
+            // numericStartingGil
+            // 
+            numericStartingGil.Location = new Point(520, 29);
+            numericStartingGil.Name = "numericStartingGil";
+            numericStartingGil.Size = new Size(120, 23);
+            numericStartingGil.TabIndex = 6;
+            numericStartingGil.ValueChanged += numericStartingGil_ValueChanged;
+            // 
+            // labelStartingGil
+            // 
+            labelStartingGil.AutoSize = true;
+            labelStartingGil.Location = new Point(520, 11);
+            labelStartingGil.Name = "labelStartingGil";
+            labelStartingGil.Size = new Size(67, 15);
+            labelStartingGil.TabIndex = 5;
+            labelStartingGil.Text = "Starting gil:";
+            // 
+            // groupBoxStartingParty
+            // 
+            groupBoxStartingParty.Controls.Add(comboBoxParty3);
+            groupBoxStartingParty.Controls.Add(comboBoxParty2);
+            groupBoxStartingParty.Controls.Add(comboBoxParty1);
+            groupBoxStartingParty.Location = new Point(6, 6);
+            groupBoxStartingParty.Name = "groupBoxStartingParty";
+            groupBoxStartingParty.Size = new Size(508, 62);
+            groupBoxStartingParty.TabIndex = 4;
+            groupBoxStartingParty.TabStop = false;
+            groupBoxStartingParty.Text = "Starting party";
+            // 
+            // comboBoxParty3
+            // 
+            comboBoxParty3.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxParty3.FormattingEnabled = true;
+            comboBoxParty3.Location = new Point(338, 22);
+            comboBoxParty3.Name = "comboBoxParty3";
+            comboBoxParty3.Size = new Size(160, 23);
+            comboBoxParty3.TabIndex = 2;
+            comboBoxParty3.SelectedIndexChanged += comboBoxParty3_SelectedIndexChanged;
+            // 
+            // comboBoxParty2
+            // 
+            comboBoxParty2.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxParty2.FormattingEnabled = true;
+            comboBoxParty2.Location = new Point(172, 22);
+            comboBoxParty2.Name = "comboBoxParty2";
+            comboBoxParty2.Size = new Size(160, 23);
+            comboBoxParty2.TabIndex = 1;
+            comboBoxParty2.SelectedIndexChanged += comboBoxParty2_SelectedIndexChanged;
+            // 
+            // comboBoxParty1
+            // 
+            comboBoxParty1.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxParty1.FormattingEnabled = true;
+            comboBoxParty1.Location = new Point(6, 22);
+            comboBoxParty1.Name = "comboBoxParty1";
+            comboBoxParty1.Size = new Size(160, 23);
+            comboBoxParty1.TabIndex = 0;
+            comboBoxParty1.SelectedIndexChanged += comboBoxParty1_SelectedIndexChanged;
             // 
             // groupBoxInitMateriaStolen
             // 
@@ -1576,9 +1646,9 @@
             groupBoxInitMateriaStolen.Controls.Add(buttonInitMateriaStolenEdit);
             groupBoxInitMateriaStolen.Controls.Add(comboBoxInitMateriaStolen);
             groupBoxInitMateriaStolen.Controls.Add(labelInitMateriaStolen);
-            groupBoxInitMateriaStolen.Location = new Point(519, 6);
+            groupBoxInitMateriaStolen.Location = new Point(519, 74);
             groupBoxInitMateriaStolen.Name = "groupBoxInitMateriaStolen";
-            groupBoxInitMateriaStolen.Size = new Size(251, 479);
+            groupBoxInitMateriaStolen.Size = new Size(251, 411);
             groupBoxInitMateriaStolen.TabIndex = 3;
             groupBoxInitMateriaStolen.TabStop = false;
             groupBoxInitMateriaStolen.Text = "Materia stolen by Yuffie";
@@ -1590,7 +1660,7 @@
             listBoxInitMateriaStolen.ItemHeight = 15;
             listBoxInitMateriaStolen.Location = new Point(6, 22);
             listBoxInitMateriaStolen.Name = "listBoxInitMateriaStolen";
-            listBoxInitMateriaStolen.Size = new Size(239, 349);
+            listBoxInitMateriaStolen.Size = new Size(239, 274);
             listBoxInitMateriaStolen.TabIndex = 7;
             listBoxInitMateriaStolen.SelectedIndexChanged += listBoxInitMateriaStolen_SelectedIndexChanged;
             // 
@@ -1598,7 +1668,7 @@
             // 
             buttonInitMateriaStolenEdit.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             buttonInitMateriaStolenEdit.Enabled = false;
-            buttonInitMateriaStolenEdit.Location = new Point(6, 450);
+            buttonInitMateriaStolenEdit.Location = new Point(6, 382);
             buttonInitMateriaStolenEdit.Name = "buttonInitMateriaStolenEdit";
             buttonInitMateriaStolenEdit.Size = new Size(239, 23);
             buttonInitMateriaStolenEdit.TabIndex = 6;
@@ -1612,7 +1682,7 @@
             comboBoxInitMateriaStolen.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxInitMateriaStolen.Enabled = false;
             comboBoxInitMateriaStolen.FormattingEnabled = true;
-            comboBoxInitMateriaStolen.Location = new Point(6, 406);
+            comboBoxInitMateriaStolen.Location = new Point(6, 338);
             comboBoxInitMateriaStolen.Name = "comboBoxInitMateriaStolen";
             comboBoxInitMateriaStolen.Size = new Size(239, 23);
             comboBoxInitMateriaStolen.TabIndex = 5;
@@ -1622,7 +1692,7 @@
             // 
             labelInitMateriaStolen.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelInitMateriaStolen.AutoSize = true;
-            labelInitMateriaStolen.Location = new Point(6, 388);
+            labelInitMateriaStolen.Location = new Point(6, 320);
             labelInitMateriaStolen.Name = "labelInitMateriaStolen";
             labelInitMateriaStolen.Size = new Size(50, 15);
             labelInitMateriaStolen.TabIndex = 4;
@@ -1635,9 +1705,9 @@
             groupBoxInitMateria.Controls.Add(comboBoxInitMateria);
             groupBoxInitMateria.Controls.Add(labelInitMateria);
             groupBoxInitMateria.Controls.Add(listBoxInitMateria);
-            groupBoxInitMateria.Location = new Point(263, 6);
+            groupBoxInitMateria.Location = new Point(263, 74);
             groupBoxInitMateria.Name = "groupBoxInitMateria";
-            groupBoxInitMateria.Size = new Size(251, 479);
+            groupBoxInitMateria.Size = new Size(251, 411);
             groupBoxInitMateria.TabIndex = 2;
             groupBoxInitMateria.TabStop = false;
             groupBoxInitMateria.Text = "Materia";
@@ -1646,7 +1716,7 @@
             // 
             buttonInitMateriaEdit.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             buttonInitMateriaEdit.Enabled = false;
-            buttonInitMateriaEdit.Location = new Point(6, 450);
+            buttonInitMateriaEdit.Location = new Point(6, 382);
             buttonInitMateriaEdit.Name = "buttonInitMateriaEdit";
             buttonInitMateriaEdit.Size = new Size(239, 23);
             buttonInitMateriaEdit.TabIndex = 3;
@@ -1660,7 +1730,7 @@
             comboBoxInitMateria.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxInitMateria.Enabled = false;
             comboBoxInitMateria.FormattingEnabled = true;
-            comboBoxInitMateria.Location = new Point(6, 406);
+            comboBoxInitMateria.Location = new Point(6, 338);
             comboBoxInitMateria.Name = "comboBoxInitMateria";
             comboBoxInitMateria.Size = new Size(239, 23);
             comboBoxInitMateria.TabIndex = 2;
@@ -1670,7 +1740,7 @@
             // 
             labelInitMateria.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelInitMateria.AutoSize = true;
-            labelInitMateria.Location = new Point(6, 388);
+            labelInitMateria.Location = new Point(6, 320);
             labelInitMateria.Name = "labelInitMateria";
             labelInitMateria.Size = new Size(50, 15);
             labelInitMateria.TabIndex = 1;
@@ -1683,7 +1753,7 @@
             listBoxInitMateria.ItemHeight = 15;
             listBoxInitMateria.Location = new Point(6, 22);
             listBoxInitMateria.Name = "listBoxInitMateria";
-            listBoxInitMateria.Size = new Size(239, 349);
+            listBoxInitMateria.Size = new Size(239, 274);
             listBoxInitMateria.TabIndex = 0;
             listBoxInitMateria.SelectedIndexChanged += listBoxInitMateria_SelectedIndexChanged;
             // 
@@ -1695,9 +1765,9 @@
             groupBoxInitInventory.Controls.Add(comboBoxInitItem);
             groupBoxInitInventory.Controls.Add(labelInitItem);
             groupBoxInitInventory.Controls.Add(listBoxInitInventory);
-            groupBoxInitInventory.Location = new Point(6, 6);
+            groupBoxInitInventory.Location = new Point(6, 74);
             groupBoxInitInventory.Name = "groupBoxInitInventory";
-            groupBoxInitInventory.Size = new Size(251, 479);
+            groupBoxInitInventory.Size = new Size(251, 411);
             groupBoxInitInventory.TabIndex = 1;
             groupBoxInitInventory.TabStop = false;
             groupBoxInitInventory.Text = "Inventory";
@@ -1706,7 +1776,7 @@
             // 
             numericInitItemAmount.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             numericInitItemAmount.Enabled = false;
-            numericInitItemAmount.Location = new Point(6, 450);
+            numericInitItemAmount.Location = new Point(6, 382);
             numericInitItemAmount.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             numericInitItemAmount.Name = "numericInitItemAmount";
             numericInitItemAmount.Size = new Size(239, 23);
@@ -1717,7 +1787,7 @@
             // 
             labelInitItemAmount.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelInitItemAmount.AutoSize = true;
-            labelInitItemAmount.Location = new Point(6, 432);
+            labelInitItemAmount.Location = new Point(6, 364);
             labelInitItemAmount.Name = "labelInitItemAmount";
             labelInitItemAmount.Size = new Size(54, 15);
             labelInitItemAmount.TabIndex = 3;
@@ -1729,7 +1799,7 @@
             comboBoxInitItem.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxInitItem.Enabled = false;
             comboBoxInitItem.FormattingEnabled = true;
-            comboBoxInitItem.Location = new Point(6, 406);
+            comboBoxInitItem.Location = new Point(6, 338);
             comboBoxInitItem.Name = "comboBoxInitItem";
             comboBoxInitItem.Size = new Size(239, 23);
             comboBoxInitItem.TabIndex = 2;
@@ -1739,7 +1809,7 @@
             // 
             labelInitItem.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelInitItem.AutoSize = true;
-            labelInitItem.Location = new Point(6, 388);
+            labelInitItem.Location = new Point(6, 320);
             labelInitItem.Name = "labelInitItem";
             labelInitItem.Size = new Size(34, 15);
             labelInitItem.TabIndex = 1;
@@ -1752,7 +1822,7 @@
             listBoxInitInventory.ItemHeight = 15;
             listBoxInitInventory.Location = new Point(6, 22);
             listBoxInitInventory.Name = "listBoxInitInventory";
-            listBoxInitInventory.Size = new Size(239, 349);
+            listBoxInitInventory.Size = new Size(239, 274);
             listBoxInitInventory.TabIndex = 0;
             listBoxInitInventory.SelectedIndexChanged += listBoxInitInventory_SelectedIndexChanged;
             // 
@@ -3091,7 +3161,7 @@
             // 
             // tabPageMisc
             // 
-            tabPageMisc.Controls.Add(tabControlBattleData);
+            tabPageMisc.Controls.Add(tabControlMisc);
             tabPageMisc.Location = new Point(4, 24);
             tabPageMisc.Name = "tabPageMisc";
             tabPageMisc.Size = new Size(776, 502);
@@ -3099,17 +3169,17 @@
             tabPageMisc.Text = "Misc";
             tabPageMisc.UseVisualStyleBackColor = true;
             // 
-            // tabControlBattleData
+            // tabControlMisc
             // 
-            tabControlBattleData.Controls.Add(tabPageBattleText);
-            tabControlBattleData.Controls.Add(tabPageBattleRNGTable);
-            tabControlBattleData.Controls.Add(tabPageMagicOrder);
-            tabControlBattleData.Dock = DockStyle.Fill;
-            tabControlBattleData.Location = new Point(0, 0);
-            tabControlBattleData.Name = "tabControlBattleData";
-            tabControlBattleData.SelectedIndex = 0;
-            tabControlBattleData.Size = new Size(776, 502);
-            tabControlBattleData.TabIndex = 11;
+            tabControlMisc.Controls.Add(tabPageBattleText);
+            tabControlMisc.Controls.Add(tabPageBattleRNGTable);
+            tabControlMisc.Controls.Add(tabPageMagicOrder);
+            tabControlMisc.Dock = DockStyle.Fill;
+            tabControlMisc.Location = new Point(0, 0);
+            tabControlMisc.Name = "tabControlMisc";
+            tabControlMisc.SelectedIndex = 0;
+            tabControlMisc.Size = new Size(776, 502);
+            tabControlMisc.TabIndex = 11;
             // 
             // tabPageBattleText
             // 
@@ -3132,7 +3202,7 @@
             listBoxBattleText.Location = new Point(7, 6);
             listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
             listBoxBattleText.Name = "listBoxBattleText";
-            listBoxBattleText.Size = new Size(174, 409);
+            listBoxBattleText.Size = new Size(174, 439);
             listBoxBattleText.TabIndex = 2;
             listBoxBattleText.SelectedIndexChanged += listBoxBattleText_SelectedIndexChanged;
             // 
@@ -3376,7 +3446,10 @@
             tabPageCharacterAI.ResumeLayout(false);
             groupBoxCharacterAI.ResumeLayout(false);
             groupBoxCharacterScripts.ResumeLayout(false);
-            tabPageInitInventory.ResumeLayout(false);
+            tabPageInitData.ResumeLayout(false);
+            tabPageInitData.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericStartingGil).EndInit();
+            groupBoxStartingParty.ResumeLayout(false);
             groupBoxInitMateriaStolen.ResumeLayout(false);
             groupBoxInitMateriaStolen.PerformLayout();
             groupBoxInitMateria.ResumeLayout(false);
@@ -3424,7 +3497,7 @@
             tabPageKeyItemText.ResumeLayout(false);
             tabPageKeyItemText.PerformLayout();
             tabPageMisc.ResumeLayout(false);
-            tabControlBattleData.ResumeLayout(false);
+            tabControlMisc.ResumeLayout(false);
             tabPageBattleText.ResumeLayout(false);
             tabPageBattleText.PerformLayout();
             tabPageBattleRNGTable.ResumeLayout(false);
@@ -3614,7 +3687,7 @@
         private TabPage tabPageItems3;
         private Shared.SpecialAttackFlagsControl specialAttackFlagsControlItem;
         private TabPage tabPageInitCharacterStats;
-        private TabPage tabPageInitInventory;
+        private TabPage tabPageInitData;
         private ListBox listBoxInitCharacters;
         private TextBox textBoxCharacterName;
         private Label labelCharacterName;
@@ -3688,7 +3761,7 @@
         private GroupBox groupBoxCharacterAI;
         private AIEditor.ScriptControl scriptControlCharacterAI;
         private Label labelBattleText;
-        private TabControl tabControlBattleData;
+        private TabControl tabControlMisc;
         private TabPage tabPageBattleText;
         private TabPage tabPageBattleRNGTable;
         private Controls.RNGTableControl rngTableControl;
@@ -3706,5 +3779,11 @@
         private ToolStripMenuItem attackCopyToolStripMenuItem;
         private ToolStripMenuItem attackPasteToolStripMenuItem;
         private ToolStripMenuItem attackDeleteToolStripMenuItem;
+        private GroupBox groupBoxStartingParty;
+        private ComboBox comboBoxParty3;
+        private ComboBox comboBoxParty2;
+        private ComboBox comboBoxParty1;
+        private Label labelStartingGil;
+        private NumericUpDown numericStartingGil;
     }
 }

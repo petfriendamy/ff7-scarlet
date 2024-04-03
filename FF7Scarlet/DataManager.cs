@@ -1,11 +1,11 @@
 ﻿using System.IO.Compression;
 using Shojy.FF7.Elena;
+using FF7Scarlet.Compression;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.ExeEditor;
 using FF7Scarlet.Shared;
 using System.Configuration;
-using Shojy.FF7.Elena.Compression;
 
 namespace FF7Scarlet
 {
@@ -440,6 +440,7 @@ namespace FF7Scarlet
         public static void CreateKernel(bool updateKernel2, Kernel? kernel = null)
         {
             bool reload = kernel != null;
+            ushort i;
             if (!reload) //load default kernel
             {
                 kernel = Kernel;
@@ -452,7 +453,7 @@ namespace FF7Scarlet
             var data = new List<byte>();
             byte[] uncompressedSection, compressedSection;
             ushort compressedLength, uncompressedLength, appendFF;
-            for (ushort i = 0; i < Kernel.SECTION_COUNT; ++i)
+            for (i = 0; i < Kernel.SECTION_COUNT; ++i)
             {
                 uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1));
                 uncompressedLength = (ushort)uncompressedSection.Length;
@@ -479,19 +480,26 @@ namespace FF7Scarlet
             if (updateKernel2 && BothKernelFilePathsExist) //create kernel2
             {
                 data.Clear();
-                for (int i = Kernel.KERNEL1_END; i < Kernel.SECTION_COUNT; ++i)
+                for (i = Kernel.KERNEL1_END; i < Kernel.SECTION_COUNT; ++i)
                 {
-                    uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1));
+                    uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1), true);
                     data.AddRange(BitConverter.GetBytes(uncompressedSection.Length));
                     data.AddRange(uncompressedSection);
                 }
 
-                //compress the data to write it to the file
-                /*using (var fs = new FileStream(Kernel2Path, FileMode.Create))
-                using (var lzs = new LzssStream(fs, CompressionMode.Compress))
+                //compress the data
+                using (var ms = new MemoryStream(data.ToArray()))
+                using (var compress = new MemoryStream())
                 {
-                    lzs.Write(data.ToArray());
-                }*/
+                    Lzs.Encode(ms, compress);
+                    compressedSection = compress.ToArray();
+                }
+
+                //write it to the file
+                data.Clear();
+                data.AddRange(BitConverter.GetBytes(compressedSection.Length));
+                data.AddRange(compressedSection);
+                File.WriteAllBytes(Kernel2Path, data.ToArray());
             }
 
             if (reload) //reload the kernel

@@ -15,9 +15,9 @@ namespace FF7Scarlet.ExeEditor
 
         private const string WINDOW_TITLE = "Scarlet - EXE Editor";
         private ExeData editor;
-        //private ReadOnlyCollection<Weapon> csWeaponList, vWeaponList;
         private ReadOnlyCollection<Accessory> arrangedAccessoryList;
         private ReadOnlyCollection<Materia> arrangedMateriaList;
+        private List<StatusChangeType> statusChangeTypes = new();
         private TextBox[] nameTextBoxes;
         private ComboBox[] ShopItemList;
         private bool loading = true, unsavedChanges = false;
@@ -86,12 +86,12 @@ namespace FF7Scarlet.ExeEditor
 
             //limit status change
             comboBoxLimitStatusChange.Items.Add("None");
-            foreach (var s in Enum.GetValues<StatusChange>())
+            foreach (var s in Enum.GetValues<StatusChangeType>())
             {
-                if (s != StatusChange.None)
+                if (s != StatusChangeType.None)
                 {
                     comboBoxLimitStatusChange.Items.Add(s);
-                    //statusChanges.Add(s);
+                    statusChangeTypes.Add(s);
                 }
             }
 
@@ -787,15 +787,14 @@ namespace FF7Scarlet.ExeEditor
                 {
                     comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
                 }
-                numericLimitStatusChangeChance.Value = attack.StatusChangeChance;
-                if (attack.StatusChange == StatusChange.None)
+                numericLimitStatusChangeChance.Value = attack.StatusChange.Amount;
+                if (attack.StatusChange.Type == StatusChangeType.None)
                 {
                     comboBoxLimitStatusChange.SelectedIndex = 0;
                 }
                 else
                 {
-                    var s = Enum.GetValues<StatusChange>().ToList();
-                    comboBoxLimitStatusChange.SelectedIndex = s.IndexOf(attack.StatusChange) + 1;
+                    comboBoxLimitStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
                 }
 
                 //page 3

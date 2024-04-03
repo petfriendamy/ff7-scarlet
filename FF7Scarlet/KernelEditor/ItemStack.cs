@@ -41,5 +41,30 @@ namespace FF7Scarlet.KernelEditor
             converter.CopyTo(amountBytes, 0);
             Amount = amountBytes[0];
         }
+
+        public ushort GetValue()
+        {
+            var indexBytes = BitConverter.GetBytes(Item.GetCombinedIndex());
+            var amountBytes = new byte[1] { (byte)Amount };
+            var indexBits = new BitArray(indexBytes);
+            var amountBits = new BitArray(amountBytes);
+
+            var combinedBits = new bool[16];
+            int i;
+            for (i = 0; i < 9; ++i)
+            {
+                combinedBits[i] = indexBits[i];
+            }
+            for (i = 0; i < 7; ++i)
+            {
+                combinedBits[i + 9] = amountBits[i];
+            }
+
+            var converter = new BitArray(combinedBits);
+            var combinedBytes = new byte[2];
+            converter.CopyTo(combinedBytes, 0);
+
+            return BitConverter.ToUInt16(combinedBytes);
+        }
     }
 }

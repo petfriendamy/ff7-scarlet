@@ -13,13 +13,15 @@ namespace FF7Scarlet.KernelEditor
 
     public class Kernel : KernelReader, IAttackContainer
     {
-        public const int SECTION_COUNT = 27, KERNEL1_END = 9, ATTACK_COUNT = 128;
+        public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17,
+            ATTACK_COUNT = 128;
         private Dictionary<KernelSection, byte[]> kernel1TextSections =
             new Dictionary<KernelSection, byte[]> { };
         public readonly MenuCommand[] Commands;
         public readonly Attack[] Attacks;
         public InitialData InitialData { get; }
         public BattleAndGrowthData BattleAndGrowthData { get; }
+        private bool loaded = false;
 
         public Kernel(string file) : base(file, KernelType.KernelBin)
         {
@@ -60,6 +62,8 @@ namespace FF7Scarlet.KernelEditor
 
             //get initial data
             InitialData = new InitialData(GetSectionRawData(KernelSection.InitData));
+
+            loaded = true;
         }
 
         public byte[] GetLookupTable()
@@ -70,7 +74,6 @@ namespace FF7Scarlet.KernelEditor
         public void UpdateLookupTable(byte[] table)
         {
             BattleAndGrowthData.UpdateLookupTable(table);
-            //Array.Copy(table, 0, KernelData[KernelSection.BattleAndGrowthData], 0xF1C, 64);
         }
 
         public int GetCount(KernelSection section)
@@ -226,7 +229,7 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.KeyItemDescriptions:
                     return KeyItemNames.Strings;
             }
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         public void UpdateName(KernelSection section, string name, int pos)
@@ -295,7 +298,7 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.KeyItemDescriptions:
                     return KeyItemDescriptions.Strings;
             }
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         public string GetInventoryItemName(InventoryItem item)
@@ -398,7 +401,7 @@ namespace FF7Scarlet.KernelEditor
                         new StatIncrease(accessory.BoostedStat2, accessory.BoostedStat2Bonus)
                     };
                 default:
-                    return new StatIncrease[0];
+                    return Array.Empty<StatIncrease>();
             }
         }
 
@@ -489,7 +492,7 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.ArmorData:
                     return ArmorData.Armors[pos].MateriaSlots;
                 default:
-                    return new MateriaSlot[0];
+                    return Array.Empty<MateriaSlot>();
             }
         }
 
@@ -583,21 +586,245 @@ namespace FF7Scarlet.KernelEditor
 
         public byte[] GetSectionRawData(KernelSection section, bool isKernel2 = false)
         {
-            //we do not want to write kernel2 data to kernel.bin
-            if ((int)section > KERNEL1_END && !isKernel2)
-            {
-                return kernel1TextSections[section];
-            }
-
             //update data before writing it
-            if (section == KernelSection.BattleAndGrowthData)
+            if ((int)section > KERNEL1_END) //text sections
             {
-                if (BattleAndGrowthData != null)
+                if (!isKernel2) //we do not want to write kernel2 data to kernel.bin
                 {
-                    Array.Copy(BattleAndGrowthData.GetRawData(), KernelData[section], KernelData[section].Length);
+                    return kernel1TextSections[section];
+                }
+                else if (loaded)
+                {
+                    //get strings associated with this section
+                    var bytes = new List<byte>();
+                    string[] strings;
+                    int i;
+                    if ((int)section > DESCRIPTIONS_END) //names
+                    {
+                        strings = GetAssociatedNames(section);
+                    }
+                    else //descriptions
+                    {
+                        strings = GetAssociatedDescriptions(section);
+                    }
+
+                    //converts strings to FFText and generates headers
+                    var text = new FFText[strings.Length];
+                    var offset = (ushort)(strings.Length * 2);
+                    ushort length;
+                    bool isBlank = false;
+                    for (i = 0; i < strings.Length; ++i)
+                    {
+                        text[i] = new FFText(strings[i]);
+                        length = (ushort)text[i].Length;
+                        if (length == 0) //empty strings are offset by 1
+                        {
+                            if (!isBlank)
+                            {
+                                offset--;
+                                isBlank = true;
+                            }
+                        }
+                        else
+                        {
+                            if (isBlank)
+                            {
+                                offset++;
+                                isBlank = false;
+                            }
+                            length++;
+                        }
+                        bytes.AddRange(BitConverter.GetBytes(offset));
+                        offset += length;
+                    }
+
+                    //write the strings
+                    for (i = 0; i < strings.Length; ++i)
+                    {
+                        if (text[i].Length > 0)
+                        {
+                            bytes.AddRange(text[i].GetBytes());
+                            bytes.Add(0xFF);
+                        }
+                    }
+
+                    //copy the newly converted strings to the KernelData array
+                    KernelData[section] = bytes.ToArray();
                 }
             }
-            return KernelData[section];
+            else if (loaded) //data sections
+            {
+                using (var ms = new MemoryStream(KernelData[section]))
+                using (var writer = new BinaryWriter(ms))
+                {
+                    switch (section)
+                    {
+                        case KernelSection.CommandData:
+                            foreach (var c in Commands)
+                            {
+                                if (c == null)
+                                {
+                                    writer.Write(HexParser.GetNullBlock(MenuCommand.DATA_LENGTH));
+                                }
+                                else { writer.Write(c.GetBytes()); }
+                            }
+                            break;
+
+                        case KernelSection.AttackData:
+                            foreach (var a in Attacks)
+                            {
+                                if (a == null)
+                                {
+                                    writer.Write(HexParser.GetNullBlock(Attack.BLOCK_SIZE));
+                                }
+                                else { writer.Write(a.GetRawData()); }
+                            }
+                            break;
+
+                        case KernelSection.BattleAndGrowthData:
+                            writer.Write(BattleAndGrowthData.GetRawData());
+                            break;
+
+                        case KernelSection.InitData:
+                            writer.Write(InitialData.GetRawData());
+                            break;
+
+                        case KernelSection.ItemData:
+                            foreach (var item in ItemData.Items)
+                            {
+                                if (item == null)
+                                {
+                                    writer.Write(HexParser.GetNullBlock(28));
+                                }
+                                else
+                                {
+                                    writer.Write(HexParser.GetNullBlock(8)); //padding
+                                    writer.Write(item.CameraMovementId);
+                                    writer.Write((ushort)~item.Restrictions);
+                                    writer.Write((byte)item.TargetData);
+                                    writer.Write(item.AttackEffectId);
+                                    writer.Write(item.DamageCalculationId);
+                                    writer.Write(item.AttackPower);
+                                    writer.Seek(4, SeekOrigin.Current); //missing data
+                                    writer.Write((uint)item.Status);
+                                    writer.Write((ushort)item.Element);
+                                    writer.Write((ushort)~item.Special);
+                                }
+                            }
+                            break;
+
+                        case KernelSection.WeaponData:
+                            foreach (var w in WeaponData.Weapons)
+                            {
+                                if (w == null)
+                                {
+                                    writer.Write(HexParser.GetNullBlock(44));
+                                }
+                                else
+                                {
+                                    writer.Write((byte)w.Targets);
+                                    writer.Seek(1, SeekOrigin.Current); //attack effect ID
+                                    writer.Write(w.DamageCalculationId);
+                                    writer.Seek(1, SeekOrigin.Current); //unused
+                                    writer.Write(w.AttackStrength);
+                                    writer.Write((byte)w.Status);
+                                    writer.Write((byte)w.GrowthRate);
+                                    writer.Write(w.CriticalRate);
+                                    writer.Write(w.AccuracyRate);
+                                    writer.Write(w.WeaponModelId);
+                                    writer.Seek(4, SeekOrigin.Current); //missing data
+                                    writer.Write((ushort)w.EquipableBy);
+                                    writer.Write((ushort)w.AttackElements);
+                                    writer.Seek(2, SeekOrigin.Current); //padding
+                                    writer.Write((byte)w.BoostedStat1);
+                                    writer.Write((byte)w.BoostedStat2);
+                                    writer.Write((byte)w.BoostedStat3);
+                                    writer.Write((byte)w.BoostedStat4);
+                                    writer.Write(w.BoostedStat1Bonus);
+                                    writer.Write(w.BoostedStat2Bonus);
+                                    writer.Write(w.BoostedStat3Bonus);
+                                    writer.Write(w.BoostedStat4Bonus);
+                                    for (int i = 0; i < 8; ++i)
+                                    {
+                                        writer.Write((byte)w.MateriaSlots[i]);
+                                    }
+                                    writer.Seek(6, SeekOrigin.Current); //more missing data
+                                    writer.Write((ushort)~w.Restrictions);
+                                }
+                            }
+                            break;
+
+                        case KernelSection.ArmorData:
+                            foreach (var a in ArmorData.Armors)
+                            {
+                                writer.Seek(1, SeekOrigin.Current); //unknown
+                                writer.Write((byte)a.ElementDamageModifier);
+                                writer.Write(a.Defense);
+                                writer.Write(a.MagicDefense);
+                                writer.Write(a.Evade);
+                                writer.Write(a.MagicEvade);
+                                writer.Write((byte)a.Status);
+                                writer.Seek(2, SeekOrigin.Current); //unknown
+                                for (int i = 0; i < 8; ++i)
+                                {
+                                    writer.Write((byte)a.MateriaSlots[i]);
+                                }
+                                writer.Write((byte)a.GrowthRate);
+                                writer.Write((ushort)a.EquipableBy);
+                                writer.Write((ushort)a.ElementalDefense);
+                                writer.Seek(2, SeekOrigin.Current); //unknown
+                                writer.Write((byte)a.BoostedStat1);
+                                writer.Write((byte)a.BoostedStat2);
+                                writer.Write((byte)a.BoostedStat3);
+                                writer.Write((byte)a.BoostedStat4);
+                                writer.Write(a.BoostedStat1Bonus);
+                                writer.Write(a.BoostedStat2Bonus);
+                                writer.Write(a.BoostedStat3Bonus);
+                                writer.Write(a.BoostedStat4Bonus);
+                                writer.Write((ushort)~a.Restrictions);
+                                writer.Seek(2, SeekOrigin.Current); //unknown
+                            }
+                            break;
+
+                        case KernelSection.AccessoryData:
+                            foreach (var a in AccessoryData.Accessories)
+                            {
+                                writer.Write((byte)a.BoostedStat1);
+                                writer.Write((byte)a.BoostedStat2);
+                                writer.Write(a.BoostedStat1Bonus);
+                                writer.Write(a.BoostedStat2Bonus);
+                                writer.Write((byte)a.ElementalDamageModifier);
+                                writer.Write((byte)a.SpecialEffect);
+                                writer.Write((ushort)a.ElementalDefense);
+                                writer.Write((uint)a.StatusDefense);
+                                writer.Write((ushort)a.EquipableBy);
+                                writer.Write((ushort)~a.Restrictions);
+                            }
+                            break;
+
+                        case KernelSection.MateriaData:
+                            foreach (var m in MateriaData.Materias)
+                            {
+                                writer.Write((ushort)(m.Level2AP / 100));
+                                writer.Write((ushort)(m.Level3AP / 100));
+                                writer.Write((ushort)(m.Level4AP / 100));
+                                writer.Write((ushort)(m.Level5AP / 100));
+                                writer.Write(m.EquipEffect);
+                                var status = BitConverter.GetBytes((uint)m.Status);
+                                writer.Write(status[0]);
+                                writer.Write(status[1]);
+                                writer.Write(status[2]);
+                                writer.Write((byte)m.Element);
+                                writer.Write((byte)m.MateriaType);
+                                writer.Seek(6, SeekOrigin.Current); //attributes
+                            }
+                            break;
+                    }
+                }
+            }
+            var copy = new byte[KernelData[section].Length];
+            Array.Copy(KernelData[section], copy, copy.Length);
+            return copy;
         }
     }
 }

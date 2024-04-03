@@ -27,7 +27,7 @@ namespace FF7Scarlet
             int i, j;
             if (str == null) //string is null
             {
-                if (length == -1) { data = new byte[0]; }
+                if (length == -1) { data = Array.Empty<byte>(); }
                 else
                 {
                     data = new byte[length];
@@ -39,9 +39,11 @@ namespace FF7Scarlet
             }
             else //get string
             {
+                bool fixedLength = true;
                 if (length == -1)
                 {
                     length = str.Length;
+                    fixedLength = false;
                 }
 
                 var text = new List<byte> { };
@@ -85,6 +87,7 @@ namespace FF7Scarlet
                     }
                     else
                     {
+                        if (!fixedLength) { break; }
                         text.Add(0xFF);
                     }
                 }
@@ -171,7 +174,7 @@ namespace FF7Scarlet
                     return threeByteInt;
                 case ParameterTypes.Debug:
                     var temp = ToString();
-                    if (temp == null) { return new byte[0]; }
+                    if (temp == null) { return Array.Empty<byte>(); }
                     return Encoding.ASCII.GetBytes(temp);
                 default:
                     return data;

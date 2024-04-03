@@ -25,8 +25,7 @@ namespace FF7Scarlet.Shared
         public byte DamageCalculationID { get; set; } = 0xFF;
         public byte AttackStrength { get; set; }
         public AttackConditions AttackConditions { get; set; }
-        public StatusChange StatusChange { get; set; } = StatusChange.None;
-        public byte StatusChangeChance { get; set; }
+        public StatusChange StatusChange { get; set; } = new StatusChange(0xFF);
         public byte AdditionalEffects { get; set; }
         public byte AdditionalEffectsModifier { get; set; }
         public Statuses StatusEffects { get; set; }
@@ -65,31 +64,6 @@ namespace FF7Scarlet.Shared
             else { return str; }
         }
 
-        private void SetStatusChange(byte value)
-        {
-            var flags = (StatusChange)value;
-            if (flags == StatusChange.None)
-            {
-                StatusChange = StatusChange.None;
-                StatusChangeChance = 0;
-            }
-            else if (flags.HasFlag(StatusChange.Cure))
-            {
-                StatusChange = StatusChange.Cure;
-                StatusChangeChance = (byte)(value - StatusChange.Cure);
-            }
-            else if (flags.HasFlag(StatusChange.Swap))
-            {
-                StatusChange = StatusChange.Swap;
-                StatusChangeChance = (byte)(value - StatusChange.Swap);
-            }
-            else
-            {
-                StatusChange = StatusChange.Inflict;
-                StatusChangeChance = value;
-            }
-        }
-
         private void ParseData(byte[] data)
         {
             using (var ms = new MemoryStream(data))
@@ -108,7 +82,7 @@ namespace FF7Scarlet.Shared
                 DamageCalculationID = reader.ReadByte();
                 AttackStrength = reader.ReadByte();
                 AttackConditions = (AttackConditions)reader.ReadByte();
-                SetStatusChange(reader.ReadByte());
+                StatusChange = new StatusChange(reader.ReadByte());
                 AdditionalEffects = reader.ReadByte();
                 AdditionalEffectsModifier = reader.ReadByte();
                 StatusEffects = (Statuses)reader.ReadUInt32();
@@ -136,17 +110,10 @@ namespace FF7Scarlet.Shared
                 writer.Write(DamageCalculationID);
                 writer.Write(AttackStrength);
                 writer.Write((byte)AttackConditions);
-                if (StatusChange == StatusChange.None)
-                {
-                    writer.Write((byte)0xFF);
-                }
-                else
-                {
-                    writer.Write((byte)(StatusChange + StatusChangeChance));
-                }
+                writer.Write(StatusChange.GetValue());
                 writer.Write(AdditionalEffects);
                 writer.Write(AdditionalEffectsModifier);
-                if (StatusChange == StatusChange.None)
+                if (StatusChange.Type == StatusChangeType.None)
                 {
                     writer.Write(HexParser.NULL_OFFSET_32_BIT);
                 }
