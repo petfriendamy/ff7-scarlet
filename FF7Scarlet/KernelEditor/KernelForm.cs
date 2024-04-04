@@ -29,7 +29,7 @@ namespace FF7Scarlet.KernelEditor
             "Custom Event 6", "Custom Event 7", "Post-Battle"
         };
         private readonly Kernel kernel;
-        private const int SUMMON_OFFSET = 56;
+        
         private List<ushort> syncedAttackIDs = new();
         private List<StatusChangeType> statusChangeTypes = new();
         private int prevCommand, prevAttack, prevCharacter, prevItem,
@@ -843,7 +843,7 @@ namespace FF7Scarlet.KernelEditor
                         case KernelSection.AttackData:
                             attackPasteToolStripMenuItem.Enabled = DataManager.CopiedAttack != null;
                             var attack = kernel.Attacks[i];
-                            j = i - SUMMON_OFFSET;
+                            j = i - Kernel.SUMMON_OFFSET;
                             if (j >= 0 && j < kernel.SummonAttackNames.Strings.Length)
                             {
                                 textBoxSummonText.Enabled = true;
@@ -854,6 +854,7 @@ namespace FF7Scarlet.KernelEditor
                                 textBoxSummonText.Enabled = false;
                                 textBoxSummonText.Clear();
                             }
+                            checkBoxAttackIsLimit.Checked = attack.IsLimit;
                             numericAttackAttackPercent.Value = attack.AccuracyRate;
                             numericAttackMPCost.Value = attack.MPCost;
                             comboBoxAttackAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
@@ -2007,10 +2008,19 @@ namespace FF7Scarlet.KernelEditor
 
         private void textBoxSummonText_TextChanged(object sender, EventArgs e)
         {
-            int i = SelectedAttackIndex - SUMMON_OFFSET;
+            int i = SelectedAttackIndex - Kernel.SUMMON_OFFSET;
             if (!loading && i >= 0 && i < kernel.SummonAttackNames.Strings.Length)
             {
                 kernel.SummonAttackNames.Strings[i] = textBoxSummonText.Text;
+                SetUnsaved(true);
+            }
+        }
+
+        private void checkBoxAttackIsLimit_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedAttack != null)
+            {
+                SelectedAttack.IsLimit = checkBoxAttackIsLimit.Checked;
                 SetUnsaved(true);
             }
         }

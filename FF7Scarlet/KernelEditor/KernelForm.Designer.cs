@@ -46,6 +46,7 @@
             tabPageAttackData = new TabPage();
             tabControlAttacks = new TabControl();
             tabPageAttacks1 = new TabPage();
+            checkBoxAttackIsLimit = new CheckBox();
             labelAttackHurtActionIndex = new Label();
             comboBoxAttackHurtActionIndex = new ComboBox();
             labelAttackAttackEffectID = new Label();
@@ -572,6 +573,7 @@
             // 
             // tabPageAttacks1
             // 
+            tabPageAttacks1.Controls.Add(checkBoxAttackIsLimit);
             tabPageAttacks1.Controls.Add(labelAttackHurtActionIndex);
             tabPageAttacks1.Controls.Add(comboBoxAttackHurtActionIndex);
             tabPageAttacks1.Controls.Add(labelAttackAttackEffectID);
@@ -601,6 +603,18 @@
             tabPageAttacks1.TabIndex = 0;
             tabPageAttacks1.Text = "Page 1";
             tabPageAttacks1.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxAttackIsLimit
+            // 
+            checkBoxAttackIsLimit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            checkBoxAttackIsLimit.AutoSize = true;
+            checkBoxAttackIsLimit.Location = new Point(501, 67);
+            checkBoxAttackIsLimit.Name = "checkBoxAttackIsLimit";
+            checkBoxAttackIsLimit.Size = new Size(61, 19);
+            checkBoxAttackIsLimit.TabIndex = 43;
+            checkBoxAttackIsLimit.Text = "Is limit";
+            checkBoxAttackIsLimit.UseVisualStyleBackColor = true;
+            checkBoxAttackIsLimit.CheckedChanged += checkBoxAttackIsLimit_CheckedChanged;
             // 
             // labelAttackHurtActionIndex
             // 
@@ -675,7 +689,7 @@
             textBoxAttackDescription.Location = new Point(4, 65);
             textBoxAttackDescription.Margin = new Padding(4, 3, 4, 3);
             textBoxAttackDescription.Name = "textBoxAttackDescription";
-            textBoxAttackDescription.Size = new Size(558, 23);
+            textBoxAttackDescription.Size = new Size(490, 23);
             textBoxAttackDescription.TabIndex = 4;
             textBoxAttackDescription.TextChanged += textBoxAttackDescription_TextChanged;
             // 
@@ -833,7 +847,7 @@
             tabPageAttacks2.Location = new Point(4, 24);
             tabPageAttacks2.Name = "tabPageAttacks2";
             tabPageAttacks2.Padding = new Padding(3);
-            tabPageAttacks2.Size = new Size(569, 411);
+            tabPageAttacks2.Size = new Size(569, 441);
             tabPageAttacks2.TabIndex = 1;
             tabPageAttacks2.Text = "Page 2";
             tabPageAttacks2.UseVisualStyleBackColor = true;
@@ -921,7 +935,7 @@
             tabPageAttacks3.Controls.Add(groupBoxAttackSpecialActions);
             tabPageAttacks3.Location = new Point(4, 24);
             tabPageAttacks3.Name = "tabPageAttacks3";
-            tabPageAttacks3.Size = new Size(569, 411);
+            tabPageAttacks3.Size = new Size(569, 441);
             tabPageAttacks3.TabIndex = 2;
             tabPageAttacks3.Text = "Page 3";
             tabPageAttacks3.UseVisualStyleBackColor = true;
@@ -3785,5 +3799,6 @@
         private ComboBox comboBoxParty1;
         private Label labelStartingGil;
         private NumericUpDown numericStartingGil;
+        private CheckBox checkBoxAttackIsLimit;
     }
 }

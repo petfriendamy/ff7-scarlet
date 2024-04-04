@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Text;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
@@ -7,8 +8,25 @@ namespace FF7Scarlet
 {
     public class FFText : IComparable
     {
-        private const string TEXT_MAP = "ÄÁÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü⌘°¢£ÙÛ¶ß®©™´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»…?ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄¤‹›ﬁﬂ■▪‚„‰ÂÊËÁÈíîïìÓÔ ÒÙÛ";
-        private const byte MAP_OFFSET = 0x60, CHAR_OFFSET = 0x20;
+        private ReadOnlyCollection<char> TEXT_MAP = new char[] {
+            ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
+            '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_',
+            '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '?', '}', '~', '?',
+            'Ä', 'Á', 'Ç', 'É', 'Ñ', 'Ö', 'Ü', 'á', 'à', 'â', 'ä', 'ã', 'å', 'ç', 'é', 'è',
+            'ê', 'ë', 'í', 'ì', 'î', 'ï', 'ñ', 'ó', 'ò', 'ô', 'ö', 'õ', 'ú', 'ù', 'û', 'ü',
+            '⌘', '°', '¢', '£', 'Ù', 'Û', '¶', 'ß', '®', '©', '™', '´', '¨', '≠', 'Æ', 'Ø',
+            '∞', '±', '≤', '≥', '¥', 'µ', '∂', 'Σ', 'Π', 'π', '⌡', 'ª', 'º', 'Ω', 'æ', 'ø',
+            '¿', '¡', '¬', '√', 'ƒ', '≈', '∆', '«', '»', '…', '?', 'À', 'Ã', 'Õ', 'Œ', 'œ',
+            '–', '—', '“', '”', '‘', '’', '÷', '◊', 'ÿ', 'Ÿ', '⁄', '¤', '‹', '›', 'ﬁ', 'ﬂ',
+            '■', '▪', '‚', '„', '‰', 'Â', 'Ê', 'Ë', 'Á', 'È', 'í', 'î', 'ï', 'ì', 'Ó', 'Ô',
+            ' ', 'Ò', 'Ù', 'Û'
+        }.AsReadOnly();
+
+        //private const byte MAP_OFFSET = 0x60, CHAR_OFFSET = 0x20;
+
 
         private readonly byte[] data;
 
@@ -27,7 +45,7 @@ namespace FF7Scarlet
             int i, j;
             if (str == null) //string is null
             {
-                if (length == -1) { data = Array.Empty<byte>(); }
+                if (length == -1) { data = new byte[1] { 0xFF }; }
                 else
                 {
                     data = new byte[length];
@@ -39,11 +57,9 @@ namespace FF7Scarlet
             }
             else //get string
             {
-                bool fixedLength = true;
                 if (length == -1)
                 {
-                    length = str.Length;
-                    fixedLength = false;
+                    length = str.Length + 1;
                 }
 
                 var text = new List<byte> { };
@@ -54,7 +70,7 @@ namespace FF7Scarlet
                     {
                         byte b = (byte)str[i];
 
-                        if (b == (byte)'{') //check for names
+                        if (b == (byte)'{') //variable
                         {
                             string temp = str.Substring(i);
                             for (j = 0; j < nameList.Length; ++j)
@@ -70,24 +86,29 @@ namespace FF7Scarlet
                             }
 
                             //no matching name found, so assume regular character
-                            text.Add((byte)'{' - CHAR_OFFSET);
+                            text.Add((byte)TEXT_MAP.IndexOf('{'));
+                            //text.Add((byte)'{' - CHAR_OFFSET);
                         }
-                        else if (b < MAP_OFFSET + CHAR_OFFSET)
+                        /*else if (b < MAP_OFFSET + CHAR_OFFSET) //letters
                         {
+                            if (b - CHAR_OFFSET == 0x06)
+                            {
+                                var temp = 1;
+                                var temp2 = 1;
+                            }
                             text.Add((byte)(b - CHAR_OFFSET));
-                        }
-                        else
+                        }*/
+                        else //search text map
                         {
                             int pos = TEXT_MAP.IndexOf(str[i]);
                             if (pos >= 0)
                             {
-                                text.Add((byte)(pos + MAP_OFFSET));
+                                text.Add((byte)(pos)); // + MAP_OFFSET));
                             }
                         }
                     }
                     else
                     {
-                        if (!fixedLength) { break; }
                         text.Add(0xFF);
                     }
                 }
@@ -117,11 +138,11 @@ namespace FF7Scarlet
                     {
                         break;
                     }
-                    else if (data[i] < MAP_OFFSET) //letters
+                    else if (data[i] == 0xF8) //function, ignore this
                     {
-                        text.Add((char)(data[i] + CHAR_OFFSET));
+                        i++;
                     }
-                    else if (data[i] == 0xEA) //character names
+                    else if (data[i] == 0xEA) //names
                     {
                         int charID = data[i + 2];
                         i += 2;
@@ -129,9 +150,29 @@ namespace FF7Scarlet
                         if (name == null) { text.AddRange("{UNKNOWN}"); }
                         else { text.AddRange("{" + name.ToUpper() + "}"); }
                     }
-                    else if ((data[i] - MAP_OFFSET + 1) < TEXT_MAP.Length)
+                    else if (data[i] == 0xEB) //item
                     {
-                        text.Add(TEXT_MAP[data[i] - MAP_OFFSET + 1]);
+                        text.AddRange("{ITEM}");
+                        i++;
+                    }
+                    else if (data[i] == 0xEC) //number
+                    {
+                        text.AddRange("{NUMBER}");
+                        i++;
+                    }
+                    else if (data[i] == 0xED) //target
+                    {
+                        text.AddRange("{TARGET}");
+                        i++;
+                    }
+                    else if (data[i] == 0xEF) //attack
+                    {
+                        text.AddRange("{ATTACK}");
+                        i++;
+                    }
+                    else if (data[i] < TEXT_MAP.Count) //regular text
+                    {
+                        text.Add(TEXT_MAP[data[i]]);
                     }
                     else
                     {

@@ -1,4 +1,5 @@
 ﻿using FF7Scarlet.Shared;
+using Microsoft.VisualBasic;
 using Shojy.FF7.Elena;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
@@ -6,6 +7,9 @@ using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Materias;
 using Shojy.FF7.Elena.Sections;
+using System;
+using System.Collections;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -14,17 +18,19 @@ namespace FF7Scarlet.KernelEditor
     public class Kernel : KernelReader, IAttackContainer
     {
         public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17,
-            ATTACK_COUNT = 128;
+            ATTACK_COUNT = 128, SUMMON_OFFSET = 56;
         private Dictionary<KernelSection, byte[]> kernel1TextSections =
             new Dictionary<KernelSection, byte[]> { };
-        public readonly MenuCommand[] Commands;
-        public readonly Attack[] Attacks;
+        public MenuCommand[] Commands { get; }
+        public Attack[] Attacks { get; }
         public InitialData InitialData { get; }
         public BattleAndGrowthData BattleAndGrowthData { get; }
+        public FFText[] BattleTextFF { get; }
         private bool loaded = false;
 
         public Kernel(string file) : base(file, KernelType.KernelBin)
         {
+            //copy raw data for text sections
             for (int i = KERNEL1_END; i < SECTION_COUNT; i++)
             {
                 var s = (KernelSection)(i + 1);
@@ -57,12 +63,115 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
 
+            //mark limits as limits (this adds a special function to attack names/descriptions)
+            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.MagicNames, true)))
+            using (var reader = new BinaryReader(ms))
+            {
+                //get headers
+                var headers = new ushort[ATTACK_COUNT];
+                for (int i = 0; i < ATTACK_COUNT; ++i)
+                {
+                    headers[i] = reader.ReadUInt16();
+                }
+
+                //check the first two characters of each name
+                for (int i = 0; i < ATTACK_COUNT; ++i)
+                {
+                    ms.Seek(headers[i], SeekOrigin.Begin);
+                    var temp = reader.ReadBytes(2);
+                    if (temp[0] == 0xF8 && temp[1] == 0x02)
+                    {
+                        Attacks[i].IsLimit = true;
+                    } 
+                }
+            }
+
             //get battle and growth data
             BattleAndGrowthData = new BattleAndGrowthData(this, GetSectionRawData(KernelSection.BattleAndGrowthData));
 
             //get initial data
             InitialData = new InitialData(GetSectionRawData(KernelSection.InitData));
 
+            //get battle text as FFText
+            BattleTextFF = new FFText[BattleText.Strings.Length];
+            ReloadBattleText();
+
+            loaded = true;
+        }
+
+        public void ReloadBattleText()
+        {
+            loaded = false;
+            var data = GetSectionRawData(KernelSection.BattleText, true);
+
+            using (var ms = new MemoryStream(data))
+            using (var reader = new BinaryReader(ms))
+            {
+                int length = BattleTextFF.Length;
+
+                //get headers
+                var headers = new ushort[length];
+                for (int i = 0; i < length; ++i)
+                {
+                    headers[i] = reader.ReadUInt16();
+                }
+
+                //read each line
+                var bytes = new List<byte>();
+                byte b;
+                int l;
+                for (int i = 0; i < length; ++i)
+                {
+                    if (i == length - 1)
+                    {
+                        l = data.Length - headers[i];
+                    }
+                    else
+                    {
+                        l = headers[i + 1] - headers[i];
+                    }
+                    for (int j = 0; j < l; ++j)
+                    {
+                        b = reader.ReadByte();
+                        // This is an encoding technique designed to make the raw data smaller. It is based
+                        // on the LZS compression method, but optimized for smaller files with fewer large
+                        // similar blocks. A byte following this value will tell the game's memory the location
+                        // of, and how much, text to read.
+                        // More info at: http://wiki.ffrtt.ru/index.php/FF7/FF_Text
+                        if (b == 0xF9)
+                        {
+                            long currPos = ms.Position;
+                            var args = reader.ReadByte();
+                            // The args byte is split into length, and offset. The first two bits are
+                            // the length of data, and the remaining 6 are how far back to get it from.
+                            // Length needs further calculation (L * 2 + 4) to provide the correct value.
+                            var lookupLength = ((args & 0b11000000) >> 6) * 2 + 4;
+                            var lookupOffset = -(args & 0b00111111);
+
+                            ms.Seek(lookupOffset - 3, SeekOrigin.Current);
+                            for (int n = 0; n < lookupLength; ++n)
+                            {
+                                b = reader.ReadByte();
+                                if (b != 0xFF)
+                                {
+                                    bytes.Add(b);
+                                }
+                            }
+                            ms.Seek(currPos + 1, SeekOrigin.Begin);
+                            j++;
+                        }
+                        else
+                        {
+                            bytes.Add(b);
+                        }
+                    }
+                    BattleTextFF[i] = new FFText(bytes.ToArray());
+                    var str = BattleTextFF[i].ToString();
+                    if (str == null) { BattleText.Strings[i] = string.Empty; }
+                    else { BattleText.Strings[i] = str; }
+                    bytes.Clear();
+                }
+            }
             loaded = true;
         }
 
@@ -197,7 +306,7 @@ namespace FF7Scarlet.KernelEditor
             return section;
         }
 
-        public string[] GetAssociatedNames(KernelSection section)
+        public string[] GetAssociatedNames(KernelSection section, bool fullList = false)
         {
             var ds = GetDataSection(section);
             switch (ds)
@@ -206,9 +315,13 @@ namespace FF7Scarlet.KernelEditor
                     return CommandNames.Strings;
 
                 case KernelSection.AttackData:
-                    var temp = new string[ATTACK_COUNT];
-                    Array.Copy(MagicNames.Strings, temp, ATTACK_COUNT);
-                    return temp;
+                    if (fullList) { return MagicNames.Strings; }
+                    else
+                    {
+                        var temp = new string[ATTACK_COUNT];
+                        Array.Copy(MagicNames.Strings, temp, ATTACK_COUNT);
+                        return temp;
+                    }
 
                 case KernelSection.ItemData:
                     return ItemNames.Strings;
@@ -595,57 +708,72 @@ namespace FF7Scarlet.KernelEditor
                 }
                 else if (loaded)
                 {
-                    //get strings associated with this section
                     var bytes = new List<byte>();
-                    string[] strings;
+                    FFText[] text;
+                    bool isAttacks = GetDataSection(section) == KernelSection.AttackData;
                     int i;
-                    if ((int)section > DESCRIPTIONS_END) //names
+
+                    if (section == KernelSection.BattleText) //write the BattleTextFFs
                     {
-                        strings = GetAssociatedNames(section);
+                        text = BattleTextFF;
                     }
-                    else //descriptions
+                    else
                     {
-                        strings = GetAssociatedDescriptions(section);
+                        //get strings associated with this section
+                        string[] strings;
+
+                        if (section == KernelSection.SummonAttackNames)
+                        {
+                            strings = SummonAttackNames.Strings;
+                        }
+                        else if ((int)section > DESCRIPTIONS_END) //names
+                        {
+                            strings = GetAssociatedNames(section, true);
+                        }
+                        else //descriptions
+                        {
+                            strings = GetAssociatedDescriptions(section);
+                        }
+
+                        //converts strings to FFText
+                        text = new FFText[strings.Length];
+                        for (i = 0; i < strings.Length; ++i)
+                        {
+                            text[i] = new FFText(strings[i]);
+                        }
+                        
                     }
 
-                    //converts strings to FFText and generates headers
-                    var text = new FFText[strings.Length];
-                    var offset = (ushort)(strings.Length * 2);
+                    //generate headers
+                    var offset = (ushort)(text.Length * 2);
                     ushort length;
-                    bool isBlank = false;
-                    for (i = 0; i < strings.Length; ++i)
+                    for (i = 0; i < text.Length; ++i)
                     {
-                        text[i] = new FFText(strings[i]);
                         length = (ushort)text[i].Length;
-                        if (length == 0) //empty strings are offset by 1
+                        if (isAttacks && length > 1) //add offset for limit
                         {
-                            if (!isBlank)
+                            if ((i < ATTACK_COUNT && Attacks[i].IsLimit) || i >= ATTACK_COUNT)
                             {
-                                offset--;
-                                isBlank = true;
+                                length += 2;
                             }
                         }
-                        else
-                        {
-                            if (isBlank)
-                            {
-                                offset++;
-                                isBlank = false;
-                            }
-                            length++;
-                        }
+
                         bytes.AddRange(BitConverter.GetBytes(offset));
                         offset += length;
                     }
 
                     //write the strings
-                    for (i = 0; i < strings.Length; ++i)
+                    for (i = 0; i < text.Length; ++i)
                     {
-                        if (text[i].Length > 0)
+                        if (isAttacks && text[i].Length > 1) //add limit function
                         {
-                            bytes.AddRange(text[i].GetBytes());
-                            bytes.Add(0xFF);
+                            if ((i < ATTACK_COUNT && Attacks[i].IsLimit) || i >= ATTACK_COUNT)
+                            {
+                                bytes.Add(0xF8);
+                                bytes.Add(0x02);
+                            }
                         }
+                        bytes.AddRange(text[i].GetBytes());
                     }
 
                     //copy the newly converted strings to the KernelData array

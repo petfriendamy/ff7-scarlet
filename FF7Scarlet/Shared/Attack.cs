@@ -32,6 +32,8 @@ namespace FF7Scarlet.Shared
         public Elements Elements { get; set; }
         public SpecialEffects SpecialAttackFlags { get; set; }
 
+        public bool IsLimit { get; set; } = false;
+
         public Attack(ushort id)
         {
             ID = id;

@@ -225,6 +225,7 @@ namespace FF7Scarlet
                             if (Kernel != null)
                             {
                                 Kernel.MergeKernel2Data(path);
+                                Kernel.ReloadBattleText();
                                 Kernel2Path = path;
                             }
                             return true;
@@ -318,6 +319,7 @@ namespace FF7Scarlet
                 if (BothKernelFilePathsExist)
                 {
                     k.MergeKernel2Data(Kernel2Path);
+                    k.ReloadBattleText();
                 }
                 for (int i = 0; i < Kernel.ATTACK_COUNT; ++i)
                 {
