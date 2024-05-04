@@ -139,13 +139,13 @@ namespace FF7Scarlet.SceneEditor
             }
             foreach (var s in Enum.GetValues<EquipmentStatus>())
             {
-                comboBoxEnemyResistElement.Items.Add($"{StringParser.AddSpace(s.ToString())} (status)");
+                comboBoxEnemyResistElement.Items.Add($"{StringParser.AddSpaces(s.ToString())} (status)");
                 resistList.Add(new StatusResistanceRate(s, 0));
             }
             resistRateList = Enum.GetValues<ResistRates>().ToList();
             foreach (var r in resistRateList)
             {
-                comboBoxEnemyResistRate.Items.Add(StringParser.AddSpace(r.ToString()));
+                comboBoxEnemyResistRate.Items.Add(StringParser.AddSpaces(r.ToString()));
             }
             comboBoxEnemyResistElement.EndUpdate();
 
@@ -188,7 +188,7 @@ namespace FF7Scarlet.SceneEditor
                     var category = Enum.GetName(l.Category);
                     if (category != null)
                     {
-                        comboBoxFormationLocation.Items.Add($"{StringParser.AddSpace(category)} -- {l.Name}");
+                        comboBoxFormationLocation.Items.Add($"{StringParser.AddSpaces(category)} -- {l.Name}");
                     }
                 }
             }

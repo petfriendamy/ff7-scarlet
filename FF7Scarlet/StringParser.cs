@@ -8,18 +8,26 @@ namespace FF7Scarlet
 {
     public static class StringParser
     {
-        public static string AddSpace(string str)
+        public static string AddSpaces(string str, bool makeLower = false)
         {
-            string final = str;
-            for (int i = 1; i < str.Length; ++i)
+            char curr;
+            for (int i = 1; i < str.Length - 1; ++i)
             {
-                if (char.IsUpper(str[i]))
+                curr = str[i];
+                if (char.IsUpper(curr))
                 {
-                    final = str.Substring(0, i) + ' ' + str.Substring(i);
-                    break;
+                    if (!(char.IsUpper(str[i - 1]) && char.IsUpper(str[i + 1]))) //ignore full caps words
+                    {
+                        if (makeLower && !char.IsUpper(str[i + 1]))
+                        {
+                            curr = char.ToLower(curr);
+                        }
+                        str = str.Substring(0, i) + ' ' + curr + str.Substring(i + 1);
+                        i++;
+                    }
                 }
             }
-            return final;
+            return str;
         }
     }
 }

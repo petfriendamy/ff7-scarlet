@@ -18,13 +18,14 @@ namespace FF7Scarlet.KernelEditor
     public class Kernel : KernelReader, IAttackContainer
     {
         public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17,
-            ATTACK_COUNT = 128, SUMMON_OFFSET = 56;
+            ATTACK_COUNT = 128, SUMMON_OFFSET = 0x38, ESKILL_OFFSET = 0x48;
         private Dictionary<KernelSection, byte[]> kernel1TextSections =
             new Dictionary<KernelSection, byte[]> { };
         public MenuCommand[] Commands { get; }
         public Attack[] Attacks { get; }
         public InitialData InitialData { get; }
         public BattleAndGrowthData BattleAndGrowthData { get; }
+        public MateriaExt[] MateriaExt { get; }
         public FFText[] BattleTextFF { get; }
         private bool loaded = false;
 
@@ -91,6 +92,20 @@ namespace FF7Scarlet.KernelEditor
 
             //get initial data
             InitialData = new InitialData(GetSectionRawData(KernelSection.InitData));
+
+            //re-get materia data
+            MateriaExt = new MateriaExt[MateriaData.Materias.Length];
+            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.MateriaData)))
+            using (var reader = new BinaryReader(ms))
+            {
+                for (int i = 0; i < MateriaExt.Length; ++i)
+                {
+                    MateriaExt[i] = new MateriaExt(reader.ReadBytes(20));
+                    MateriaExt[i].Index = MateriaData.Materias[i].Index;
+                    MateriaExt[i].Name = MateriaData.Materias[i].Name;
+                    MateriaExt[i].Description = MateriaData.Materias[i].Description;
+                }
+            }
 
             //get battle text as FFText
             BattleTextFF = new FFText[BattleText.Strings.Length];
@@ -255,9 +270,9 @@ namespace FF7Scarlet.KernelEditor
             return null;
         }
 
-        public Materia? GetMateriaByID(byte id)
+        public MateriaExt? GetMateriaByID(byte id)
         {
-            foreach (var mat in MateriaData.Materias)
+            foreach (var mat in MateriaExt)
             {
                 if (mat.Index == id) { return mat; }
             }
@@ -375,7 +390,7 @@ namespace FF7Scarlet.KernelEditor
                         break;
 
                     case KernelSection.MateriaData:
-                        MateriaData.Materias[pos].Name = name;
+                        MateriaExt[pos].Name = name;
                         break;
                 }
             }
@@ -665,7 +680,7 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.AccessoryData:
                     return AccessoryData.Accessories[pos].StatusDefense;
                 case KernelSection.MateriaData:
-                    return MateriaData.Materias[pos].Status;
+                    return MateriaExt[pos].Status;
                 default:
                     return 0;
             }
@@ -931,7 +946,7 @@ namespace FF7Scarlet.KernelEditor
                             break;
 
                         case KernelSection.MateriaData:
-                            foreach (var m in MateriaData.Materias)
+                            foreach (var m in MateriaExt)
                             {
                                 writer.Write((ushort)(m.Level2AP / 100));
                                 writer.Write((ushort)(m.Level3AP / 100));
@@ -943,8 +958,11 @@ namespace FF7Scarlet.KernelEditor
                                 writer.Write(status[1]);
                                 writer.Write(status[2]);
                                 writer.Write((byte)m.Element);
-                                writer.Write((byte)m.MateriaType);
-                                writer.Seek(6, SeekOrigin.Current); //attributes
+                                writer.Write(m.MateriaTypeByte);
+                                foreach (var a in m.Attributes)
+                                {
+                                    writer.Write(a);
+                                }
                             }
                             break;
                     }

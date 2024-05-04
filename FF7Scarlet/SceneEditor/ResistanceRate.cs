@@ -72,7 +72,7 @@ namespace FF7Scarlet.SceneEditor
 
         public override string GetText()
         {
-            return base.GetText() + ' ' + StringParser.AddSpace(Status.ToString()) + " (status attack)";
+            return base.GetText() + ' ' + StringParser.AddSpaces(Status.ToString()) + " (status attack)";
         }
     }
 }

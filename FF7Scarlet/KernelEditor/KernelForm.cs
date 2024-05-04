@@ -29,9 +29,10 @@ namespace FF7Scarlet.KernelEditor
             "Custom Event 6", "Custom Event 7", "Post-Battle"
         };
         private readonly Kernel kernel;
-        
+
         private List<ushort> syncedAttackIDs = new();
         private List<StatusChangeType> statusChangeTypes = new();
+        private List<IndependentMateriaTypes> independentMateriaTypes = new();
         private int prevCommand, prevAttack, prevCharacter, prevItem,
             prevWeapon, prevArmor, prevAccessory, prevMateria;
         private bool
@@ -205,14 +206,14 @@ namespace FF7Scarlet.KernelEditor
             get { return listBoxAccessories.SelectedIndex; }
         }
 
-        private Materia? SelectedMateria
+        private MateriaExt? SelectedMateria
         {
             get
             {
                 if (SelectedMateriaIndex >= 0
                     && SelectedMateriaIndex < kernel.MateriaData.Materias.Length)
                 {
-                    return kernel.MateriaData.Materias[SelectedMateriaIndex];
+                    return kernel.MateriaExt[SelectedMateriaIndex];
                 }
                 return null;
             }
@@ -371,7 +372,7 @@ namespace FF7Scarlet.KernelEditor
                 var name = Enum.GetName((CharacterNames)i);
                 if (name != null)
                 {
-                    var parsedName = StringParser.AddSpace(name);
+                    var parsedName = StringParser.AddSpaces(name);
                     listBoxCharacterAI.Items.Add(parsedName);
                     comboBoxParty1.Items.Add(parsedName);
                     comboBoxParty2.Items.Add(parsedName);
@@ -387,7 +388,7 @@ namespace FF7Scarlet.KernelEditor
                             var name2 = Enum.GetName((CharacterNames)(i + 3));
                             if (name2 != null)
                             {
-                                parsedName = StringParser.AddSpace(name2);
+                                parsedName = StringParser.AddSpaces(name2);
                             }
                         }
                         listBoxInitCharacters.Items.Add(parsedName);
@@ -436,7 +437,7 @@ namespace FF7Scarlet.KernelEditor
                     }
                     else if (s != EquipmentStatus.None)
                     {
-                        cb.Items.Add(StringParser.AddSpace(s.ToString()));
+                        cb.Items.Add(StringParser.AddSpaces(s.ToString()));
                     }
                 }
             }
@@ -460,6 +461,7 @@ namespace FF7Scarlet.KernelEditor
                     cb.Items.Add(g);
                 }
             }
+            comboBoxMateriaElement.Items.Add("None");
             foreach (var el in Enum.GetValues<MateriaElements>())
             {
                 if (el == MateriaElements.Bolt) { comboBoxMateriaElement.Items.Add("Lightning"); }
@@ -469,6 +471,11 @@ namespace FF7Scarlet.KernelEditor
             {
                 comboBoxMateriaType.Items.Add(mt);
             }
+            foreach (var e in MateriaExt.EQUIP_EFFECTS)
+            {
+                comboBoxMateriaEquipAttributes.Items.Add(e);
+            }
+            independentMateriaTypes = Enum.GetValues<IndependentMateriaTypes>().ToList();
 
             //condition sub-menu
             comboBoxAttackConditionSubMenu.Items.Add("None");
@@ -923,19 +930,27 @@ namespace FF7Scarlet.KernelEditor
 
                         //materia data
                         case KernelSection.MateriaData:
-                            var materia = kernel.MateriaData.Materias[i];
+                            var materia = kernel.MateriaExt[i];
                             if (Enum.IsDefined(materia.Element))
                             {
-                                comboBoxMateriaElement.SelectedIndex = (int)materia.Element;
+                                comboBoxMateriaElement.SelectedIndex = (int)materia.Element + 1;
                             }
                             else
                             {
-                                comboBoxMateriaElement.SelectedIndex = -1;
+                                comboBoxMateriaElement.SelectedIndex = 0;
                             }
                             comboBoxMateriaType.SelectedIndex = (int)materia.MateriaType;
+                            UpdateMateriaSubtype(materia);
                             materiaLevelControl.SetAPLevels(materia.Level2AP, materia.Level3AP, materia.Level4AP,
                                 materia.Level5AP);
-                            comboBoxMateriaEquipAttributes.Text = materia.EquipEffect.ToString("X2");
+                            if (materia.EquipEffect > 0x10)
+                            {
+                                comboBoxMateriaEquipAttributes.SelectedIndex = 0;
+                            }
+                            else
+                            {
+                                comboBoxMateriaEquipAttributes.SelectedIndex = materia.EquipEffect;
+                            }
                             break;
                     }
                 }
@@ -1151,6 +1166,12 @@ namespace FF7Scarlet.KernelEditor
             var chara = kernel.BattleAndGrowthData.CharacterAI[charID];
             scriptControlCharacterAI.AIContainer = chara;
             scriptControlCharacterAI.SelectedScriptIndex = scriptID;
+        }
+
+        private void UpdateMateriaSubtype(MateriaExt mat)
+        {
+            comboBoxMateriaSubtype.SelectedIndex = mat.GetSubtypeIndex();
+            buttonMateriaAttributes.Enabled = mat.HasEditableAttributes;
         }
 
         #endregion
@@ -1369,8 +1390,14 @@ namespace FF7Scarlet.KernelEditor
         private void SyncMateriaData(Materia materia)
         {
             var elem = Enum.GetValues<MateriaElements>();
-            materia.Element = elem[comboBoxMateriaElement.SelectedIndex];
-            //type, subtype, equip attribules
+            if (comboBoxMateriaElement.SelectedIndex == 0)
+            {
+                materia.Element = (MateriaElements)0xFF;
+            }
+            else
+            {
+                materia.Element = elem[comboBoxMateriaElement.SelectedIndex - 1];
+            }
             materia.Status = statusesControlMateria.GetStatuses();
             materia.Level2AP = materiaLevelControl.Lvl2APValue;
             materia.Level3AP = materiaLevelControl.Lvl3APValue;
@@ -2414,6 +2441,140 @@ namespace FF7Scarlet.KernelEditor
                     {
                         kernel.InitialData.StolenMateria[slot] = mat;
                     }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Materia Controls
+
+        private void comboBoxMateriaType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SelectedMateria != null)
+            {
+                //update materia type
+                var newType = (MateriaType)comboBoxMateriaType.SelectedIndex;
+                if (!loading)
+                {
+                    SelectedMateria.SetMateriaType(newType);
+                }
+
+                //update subtypes list
+                comboBoxMateriaSubtype.Items.Clear();
+                comboBoxMateriaSubtype.Enabled = true;
+
+                //var types = Enum.GetValues<MateriaType>();
+                switch (newType)
+                {
+                    case MateriaType.Independent:
+                        foreach (var t in independentMateriaTypes)
+                        {
+                            if (t == IndependentMateriaTypes.HPtoMP)
+                            {
+                                comboBoxMateriaSubtype.Items.Add("HP<->MP");
+                            }
+                            else
+                            {
+                                var temp = Enum.GetName(t);
+                                if (temp == null)
+                                {
+                                    comboBoxMateriaSubtype.Items.Add("");
+                                }
+                                else
+                                {
+                                    comboBoxMateriaSubtype.Items.Add(StringParser.AddSpaces(temp));
+                                }
+                            }
+                        }
+                        break;
+
+                    case MateriaType.Support:
+                        comboBoxMateriaSubtype.Items.Add("None");
+                        comboBoxMateriaSubtype.SelectedIndex = 0;
+                        comboBoxMateriaSubtype.Enabled = false;
+                        break;
+
+                    case MateriaType.Command:
+                        foreach (var t in MateriaExt.COMMAND_TYPES.Values)
+                        {
+                            comboBoxMateriaSubtype.Items.Add(t);
+                        }
+                        break;
+
+                    default:
+                        comboBoxMateriaSubtype.Items.Add("Normal");
+                        comboBoxMateriaSubtype.Items.Add("Master");
+                        break;
+                }
+                if (!loading)
+                {
+                    UpdateMateriaSubtype(SelectedMateria);
+                    SetUnsaved(true);
+                }
+            }
+        }
+
+        private void comboBoxMateriaSubtype_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedMateria != null)
+            {
+                int i = comboBoxMateriaSubtype.SelectedIndex;
+                switch (SelectedMateria.MateriaType)
+                {
+                    case MateriaType.Independent:
+                        SelectedMateria.SetMateriaSubtype(independentMateriaTypes[i]);
+                        break;
+
+                    case MateriaType.Support:
+                        break;
+
+                    case MateriaType.Command:
+                        var temp = MateriaExt.COMMAND_TYPES.ToList();
+                        SelectedMateria.SetMateriaSubtype(temp[i].Key);
+                        break;
+
+                    default:
+                        SelectedMateria.SetMaster(i == 1);
+                        break;
+                }
+            }
+        }
+
+        private void buttonMateriaAttributes_Click(object sender, EventArgs e)
+        {
+            if (SelectedMateria != null && SelectedMateria.HasEditableAttributes)
+            {
+                var result = DialogResult.None;
+                bool changed = false;
+                if (SelectedMateria.MateriaType == MateriaType.Magic ||
+                    SelectedMateria.MateriaType == MateriaType.Summon)
+                {
+                    using (var aForm = new MateriaSpellsForm(SelectedMateria, kernel.MagicNames.Strings))
+                    {
+                        result = aForm.ShowDialog();
+                        changed = aForm.UnsavedChanges;
+                    }
+                }
+                else if (SelectedMateria.MateriaType == MateriaType.Command)
+                {
+                    using (var aForm = new MateriaSpellsForm(SelectedMateria, kernel.CommandNames.Strings))
+                    {
+                        result = aForm.ShowDialog();
+                        changed = aForm.UnsavedChanges;
+                    }
+                }
+                else
+                {
+                    using (var aForm = new MateriaEffectScaleForm(SelectedMateria))
+                    {
+                        result = aForm.ShowDialog();
+                        changed = aForm.UnsavedChanges;
+                    }
+                }
+                if (result == DialogResult.OK)
+                {
+                    if (changed) { SetUnsaved(true); }
                 }
             }
         }

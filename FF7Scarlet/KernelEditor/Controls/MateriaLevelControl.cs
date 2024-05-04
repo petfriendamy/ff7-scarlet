@@ -2,7 +2,7 @@
 {
     public partial class MateriaLevelControl : UserControl
     {
-        private const int MAX_AP = HexParser.NULL_OFFSET_16_BIT * 100;
+        
         private NumericUpDown[] APSelectors;
         private int[] prevValues = new int[4];
         private bool loading = false;
@@ -71,14 +71,14 @@
             int index = i - 2;
             try
             {
-                if (value >= MAX_AP) { MaxLevel = i - 1; }
+                if (value >= MateriaExt.MAX_AP) { MaxLevel = i - 1; }
                 else
                 {
                     if (value % 100 != 0)
                     {
                         throw new ArgumentOutOfRangeException();
                     }
-                    if (prevValues[index] == MAX_AP)
+                    if (prevValues[index] == MateriaExt.MAX_AP)
                     {
                         MaxLevel = i;
                     }
@@ -108,8 +108,14 @@
                 {
                     bool isEnabled = i < MaxLevel;
                     int index = i - 1;
-                    if (!isEnabled) { APSelectors[index].Value = MAX_AP; }
-                    else if (APSelectors[index].Value == MAX_AP) { APSelectors[index].Value = max; }
+                    if (!isEnabled)
+                    {
+                        APSelectors[index].Value = MateriaExt.MAX_AP;
+                    }
+                    else if (APSelectors[index].Value == MateriaExt.MAX_AP)
+                    {
+                        APSelectors[index].Value = max;
+                    }
                     APSelectors[index].Enabled = isEnabled;
                 }
             }

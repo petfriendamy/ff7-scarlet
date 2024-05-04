@@ -49,7 +49,7 @@ namespace FF7Scarlet.Shared
                     var name = Enum.GetName(ESkills[i]);
                     if (name != null)
                     {
-                        cb.Text = StringParser.AddSpace(name);
+                        cb.Text = StringParser.AddSpaces(name);
                     }
                 }
 

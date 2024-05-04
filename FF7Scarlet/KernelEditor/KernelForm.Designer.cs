@@ -260,6 +260,7 @@
             itemRestrictionsAccessory = new Controls.ItemRestrictionsControl();
             listBoxAccessories = new ListBox();
             tabPageMateriaData = new TabPage();
+            buttonMateriaAttributes = new Button();
             comboBoxMateriaEquipAttributes = new ComboBox();
             labelMateriaEquipAttributes = new Label();
             statusesControlMateria = new Controls.StatusesControl();
@@ -2931,6 +2932,7 @@
             // 
             // tabPageMateriaData
             // 
+            tabPageMateriaData.Controls.Add(buttonMateriaAttributes);
             tabPageMateriaData.Controls.Add(comboBoxMateriaEquipAttributes);
             tabPageMateriaData.Controls.Add(labelMateriaEquipAttributes);
             tabPageMateriaData.Controls.Add(statusesControlMateria);
@@ -2954,23 +2956,36 @@
             tabPageMateriaData.Text = "Materia";
             tabPageMateriaData.UseVisualStyleBackColor = true;
             // 
+            // buttonMateriaAttributes
+            // 
+            buttonMateriaAttributes.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            buttonMateriaAttributes.Location = new Point(577, 163);
+            buttonMateriaAttributes.Name = "buttonMateriaAttributes";
+            buttonMateriaAttributes.Size = new Size(187, 23);
+            buttonMateriaAttributes.TabIndex = 23;
+            buttonMateriaAttributes.Text = "Change attributes...";
+            buttonMateriaAttributes.UseVisualStyleBackColor = true;
+            buttonMateriaAttributes.Click += buttonMateriaAttributes_Click;
+            // 
             // comboBoxMateriaEquipAttributes
             // 
+            comboBoxMateriaEquipAttributes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxMateriaEquipAttributes.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxMateriaEquipAttributes.FormattingEnabled = true;
-            comboBoxMateriaEquipAttributes.Location = new Point(191, 163);
+            comboBoxMateriaEquipAttributes.Location = new Point(349, 119);
             comboBoxMateriaEquipAttributes.Name = "comboBoxMateriaEquipAttributes";
-            comboBoxMateriaEquipAttributes.Size = new Size(306, 23);
+            comboBoxMateriaEquipAttributes.Size = new Size(415, 23);
             comboBoxMateriaEquipAttributes.TabIndex = 22;
             comboBoxMateriaEquipAttributes.SelectedIndexChanged += MateriaDataChanged;
             // 
             // labelMateriaEquipAttributes
             // 
             labelMateriaEquipAttributes.AutoSize = true;
-            labelMateriaEquipAttributes.Location = new Point(191, 145);
+            labelMateriaEquipAttributes.Location = new Point(349, 101);
             labelMateriaEquipAttributes.Name = "labelMateriaEquipAttributes";
-            labelMateriaEquipAttributes.Size = new Size(93, 15);
+            labelMateriaEquipAttributes.Size = new Size(77, 15);
             labelMateriaEquipAttributes.TabIndex = 21;
-            labelMateriaEquipAttributes.Text = "Equip attributes:";
+            labelMateriaEquipAttributes.Text = "Stat bonuses:";
             // 
             // statusesControlMateria
             // 
@@ -2989,16 +3004,16 @@
             comboBoxMateriaSubtype.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxMateriaSubtype.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxMateriaSubtype.FormattingEnabled = true;
-            comboBoxMateriaSubtype.Location = new Point(503, 119);
+            comboBoxMateriaSubtype.Location = new Point(349, 163);
             comboBoxMateriaSubtype.Name = "comboBoxMateriaSubtype";
-            comboBoxMateriaSubtype.Size = new Size(261, 23);
+            comboBoxMateriaSubtype.Size = new Size(221, 23);
             comboBoxMateriaSubtype.TabIndex = 19;
-            comboBoxMateriaSubtype.SelectedIndexChanged += MateriaDataChanged;
+            comboBoxMateriaSubtype.SelectedIndexChanged += comboBoxMateriaSubtype_SelectedIndexChanged;
             // 
             // labelMateriaSubtype
             // 
             labelMateriaSubtype.AutoSize = true;
-            labelMateriaSubtype.Location = new Point(503, 101);
+            labelMateriaSubtype.Location = new Point(349, 145);
             labelMateriaSubtype.Name = "labelMateriaSubtype";
             labelMateriaSubtype.Size = new Size(53, 15);
             labelMateriaSubtype.TabIndex = 18;
@@ -3007,7 +3022,7 @@
             // materiaLevelControl
             // 
             materiaLevelControl.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            materiaLevelControl.Location = new Point(576, 148);
+            materiaLevelControl.Location = new Point(577, 200);
             materiaLevelControl.Lvl2APValue = 0;
             materiaLevelControl.Lvl3APValue = 0;
             materiaLevelControl.Lvl4APValue = 0;
@@ -3024,7 +3039,7 @@
             comboBoxMateriaElement.FormattingEnabled = true;
             comboBoxMateriaElement.Location = new Point(191, 119);
             comboBoxMateriaElement.Name = "comboBoxMateriaElement";
-            comboBoxMateriaElement.Size = new Size(150, 23);
+            comboBoxMateriaElement.Size = new Size(152, 23);
             comboBoxMateriaElement.TabIndex = 16;
             comboBoxMateriaElement.SelectedIndexChanged += MateriaDataChanged;
             // 
@@ -3041,16 +3056,16 @@
             // 
             comboBoxMateriaType.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxMateriaType.FormattingEnabled = true;
-            comboBoxMateriaType.Location = new Point(347, 119);
+            comboBoxMateriaType.Location = new Point(191, 163);
             comboBoxMateriaType.Name = "comboBoxMateriaType";
-            comboBoxMateriaType.Size = new Size(150, 23);
+            comboBoxMateriaType.Size = new Size(152, 23);
             comboBoxMateriaType.TabIndex = 14;
-            comboBoxMateriaType.SelectedIndexChanged += MateriaDataChanged;
+            comboBoxMateriaType.SelectedIndexChanged += comboBoxMateriaType_SelectedIndexChanged;
             // 
             // labelMateriaType
             // 
             labelMateriaType.AutoSize = true;
-            labelMateriaType.Location = new Point(347, 101);
+            labelMateriaType.Location = new Point(191, 145);
             labelMateriaType.Name = "labelMateriaType";
             labelMateriaType.Size = new Size(76, 15);
             labelMateriaType.TabIndex = 13;
@@ -3800,5 +3815,6 @@
         private Label labelStartingGil;
         private NumericUpDown numericStartingGil;
         private CheckBox checkBoxAttackIsLimit;
+        private Button buttonMateriaAttributes;
     }
 }
