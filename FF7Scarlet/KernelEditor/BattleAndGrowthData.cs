@@ -7,15 +7,16 @@ namespace FF7Scarlet.KernelEditor
 {
     public class BattleAndGrowthData
     {
-        public const int AI_BLOCK_SIZE = 2024, AI_BLOCK_COUNT = 12;
+        public const int AI_BLOCK_SIZE = 2024, AI_BLOCK_COUNT = 12,
+            RNG_TABLE_SIZE = 256, LOOKUP_TABLE_SIZE = 64;
         private readonly CharacterGrowth[] characterGrowth = new CharacterGrowth[Character.PLAYABLE_CHARACTER_COUNT];
         private readonly byte[]
             randomBonusToPrimaryStats = new byte[12],
             randomBonusToHP = new byte[12],
             randomBonusToMP = new byte[12],
             rawAIdata = new byte[AI_BLOCK_SIZE],
-            rngTable = new byte[256],
-            sceneLookupTable = new byte[64];
+            rngTable = new byte[RNG_TABLE_SIZE],
+            sceneLookupTable = new byte[LOOKUP_TABLE_SIZE];
         private readonly StatCurve[]
             primaryStatCurves = new StatCurve[37],
             hpStatCurves = new StatCurve[9],
@@ -23,7 +24,7 @@ namespace FF7Scarlet.KernelEditor
             expStatCurves = new StatCurve[9];
         private ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
         private readonly CharacterAI[] characterAI = new CharacterAI[AI_BLOCK_COUNT];
-        private byte[] rawData;
+        private byte[] rawData = [];
 
         public Kernel Parent { get; }
         public CharacterGrowth[] CharGrowth
@@ -71,8 +72,12 @@ namespace FF7Scarlet.KernelEditor
         public BattleAndGrowthData(Kernel parent, byte[] data)
         {
             Parent = parent;
-            rawData = data;
+            ParseData(data, false);
+        }
 
+        public void ParseData(byte[] data, bool ignoreLookupTable)
+        {
+            rawData = data;
             int i;
             using (var ms = new MemoryStream(data))
             using (var reader = new BinaryReader(ms))
@@ -113,9 +118,25 @@ namespace FF7Scarlet.KernelEditor
                 {
                     characterAIoffsets[i] = reader.ReadUInt16();
                 }
-                rawAIdata = reader.ReadBytes(AI_BLOCK_SIZE);
-                rngTable = reader.ReadBytes(256);
-                sceneLookupTable = reader.ReadBytes(64);
+                for (i = 0; i < AI_BLOCK_SIZE; ++i)
+                {
+                    rawAIdata[i] = reader.ReadByte();
+                }
+                for (i = 0; i < RNG_TABLE_SIZE; ++i)
+                {
+                    RNGTable[i] = reader.ReadByte();
+                }
+                if (ignoreLookupTable) //don't load the lookup table
+                {
+                    ms.Seek(LOOKUP_TABLE_SIZE, SeekOrigin.Current);
+                }
+                else
+                {
+                    for (i = 0; i < LOOKUP_TABLE_SIZE; ++i)
+                    {
+                        sceneLookupTable[i] = reader.ReadByte();
+                    }
+                }
                 //spell order
             }
         }

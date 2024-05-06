@@ -137,6 +137,7 @@ namespace FF7Scarlet.ExeEditor
 
                 //set materia slot selectors to equips
                 materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Materia;
+                materiaSlotSelectorCharacterArmor.SlotSelectorType = SlotSelectorType.Materia;
 
                 //items
                 foreach (var item in DataManager.Kernel.ItemData.Items)

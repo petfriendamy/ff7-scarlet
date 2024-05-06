@@ -15,7 +15,7 @@ namespace FF7Scarlet.Shared.Controls
 
         private SlotSelectorType slotSelectorType;
         private readonly MateriaSlot[] slots = new MateriaSlot[SLOT_COUNT];
-        private readonly Materia?[] equippedMateria = new Materia?[SLOT_COUNT];
+        private readonly MateriaExt?[] equippedMateria = new MateriaExt?[SLOT_COUNT];
         private GrowthRate growthRate;
         private PictureBox[] pictureBoxes;
         private ContextMenuStrip[] menuStrips = new ContextMenuStrip[SLOT_COUNT];
@@ -125,7 +125,7 @@ namespace FF7Scarlet.Shared.Controls
             multiLinkEnabled = DataManager.MultiLinkedSlotsEnabled;
         }
 
-        private Image GetMatchingImage(MateriaSlot slot, Materia? equipped)
+        private Image GetMatchingImage(MateriaSlot slot, MateriaExt? equipped)
         {
             if (equipped != null) //materia is equipped
             {
@@ -379,7 +379,16 @@ namespace FF7Scarlet.Shared.Controls
             return false;
         }
 
-        public void SetMateria(int slot, Materia? materia)
+        public void SetMateria(InventoryMateria[] materia, Kernel kernel)
+        {
+            for (int i = 0; i < 8; ++i)
+            {
+                SetMateria(i, materia[i], kernel);
+                SelectedSlot = -1;
+            }
+        }
+
+        public void SetMateria(int slot, MateriaExt? materia)
         {
             equippedMateria[slot] = materia;
             pictureBoxes[slot].Image = GetMatchingImage(slots[slot], materia);

@@ -288,6 +288,12 @@
             listBoxBattleText = new ListBox();
             textBoxBattleText = new TextBox();
             labelBattleText = new Label();
+            tabPageLimitBreaks = new TabPage();
+            textBoxLimitDescription = new TextBox();
+            labelLimitDescription = new Label();
+            textBoxLimitName = new TextBox();
+            labelLimitName = new Label();
+            listBoxLimitBreaks = new ListBox();
             tabPageBattleRNGTable = new TabPage();
             rngTableControl = new Controls.RNGTableControl();
             tabPageMagicOrder = new TabPage();
@@ -378,6 +384,7 @@
             tabPageMisc.SuspendLayout();
             tabControlMisc.SuspendLayout();
             tabPageBattleText.SuspendLayout();
+            tabPageLimitBreaks.SuspendLayout();
             tabPageBattleRNGTable.SuspendLayout();
             panelButtons.SuspendLayout();
             toolStripMain.SuspendLayout();
@@ -3200,6 +3207,7 @@
             // 
             // tabControlMisc
             // 
+            tabControlMisc.Controls.Add(tabPageLimitBreaks);
             tabControlMisc.Controls.Add(tabPageBattleText);
             tabControlMisc.Controls.Add(tabPageBattleRNGTable);
             tabControlMisc.Controls.Add(tabPageMagicOrder);
@@ -3231,7 +3239,7 @@
             listBoxBattleText.Location = new Point(7, 6);
             listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
             listBoxBattleText.Name = "listBoxBattleText";
-            listBoxBattleText.Size = new Size(174, 439);
+            listBoxBattleText.Size = new Size(174, 454);
             listBoxBattleText.TabIndex = 2;
             listBoxBattleText.SelectedIndexChanged += listBoxBattleText_SelectedIndexChanged;
             // 
@@ -3256,6 +3264,75 @@
             labelBattleText.Size = new Size(31, 15);
             labelBattleText.TabIndex = 9;
             labelBattleText.Text = "Text:";
+            // 
+            // tabPageLimitBreaks
+            // 
+            tabPageLimitBreaks.Controls.Add(textBoxLimitDescription);
+            tabPageLimitBreaks.Controls.Add(labelLimitDescription);
+            tabPageLimitBreaks.Controls.Add(textBoxLimitName);
+            tabPageLimitBreaks.Controls.Add(labelLimitName);
+            tabPageLimitBreaks.Controls.Add(listBoxLimitBreaks);
+            tabPageLimitBreaks.Location = new Point(4, 24);
+            tabPageLimitBreaks.Name = "tabPageLimitBreaks";
+            tabPageLimitBreaks.Size = new Size(768, 474);
+            tabPageLimitBreaks.TabIndex = 3;
+            tabPageLimitBreaks.Text = "Limit Breaks";
+            tabPageLimitBreaks.UseVisualStyleBackColor = true;
+            // 
+            // textBoxLimitDescription
+            // 
+            textBoxLimitDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxLimitDescription.Enabled = false;
+            textBoxLimitDescription.Location = new Point(189, 68);
+            textBoxLimitDescription.Margin = new Padding(4, 3, 4, 3);
+            textBoxLimitDescription.Name = "textBoxLimitDescription";
+            textBoxLimitDescription.Size = new Size(572, 23);
+            textBoxLimitDescription.TabIndex = 13;
+            textBoxLimitDescription.TextChanged += textBoxLimitDescription_TextChanged;
+            // 
+            // labelLimitDescription
+            // 
+            labelLimitDescription.AutoSize = true;
+            labelLimitDescription.Enabled = false;
+            labelLimitDescription.Location = new Point(189, 50);
+            labelLimitDescription.Margin = new Padding(4, 0, 4, 0);
+            labelLimitDescription.Name = "labelLimitDescription";
+            labelLimitDescription.Size = new Size(70, 15);
+            labelLimitDescription.TabIndex = 12;
+            labelLimitDescription.Text = "Description:";
+            // 
+            // textBoxLimitName
+            // 
+            textBoxLimitName.Enabled = false;
+            textBoxLimitName.Location = new Point(189, 24);
+            textBoxLimitName.Margin = new Padding(4, 3, 4, 3);
+            textBoxLimitName.Name = "textBoxLimitName";
+            textBoxLimitName.Size = new Size(226, 23);
+            textBoxLimitName.TabIndex = 11;
+            textBoxLimitName.TextChanged += textBoxLimitName_TextChanged;
+            // 
+            // labelLimitName
+            // 
+            labelLimitName.AutoSize = true;
+            labelLimitName.Enabled = false;
+            labelLimitName.Location = new Point(189, 6);
+            labelLimitName.Margin = new Padding(4, 0, 4, 0);
+            labelLimitName.Name = "labelLimitName";
+            labelLimitName.Size = new Size(42, 15);
+            labelLimitName.TabIndex = 10;
+            labelLimitName.Text = "Name:";
+            // 
+            // listBoxLimitBreaks
+            // 
+            listBoxLimitBreaks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxLimitBreaks.FormattingEnabled = true;
+            listBoxLimitBreaks.ItemHeight = 15;
+            listBoxLimitBreaks.Location = new Point(7, 6);
+            listBoxLimitBreaks.Margin = new Padding(4, 3, 4, 3);
+            listBoxLimitBreaks.Name = "listBoxLimitBreaks";
+            listBoxLimitBreaks.Size = new Size(174, 454);
+            listBoxLimitBreaks.TabIndex = 9;
+            listBoxLimitBreaks.SelectedIndexChanged += listBoxLimitBreaks_SelectedIndexChanged;
             // 
             // tabPageBattleRNGTable
             // 
@@ -3529,6 +3606,8 @@
             tabControlMisc.ResumeLayout(false);
             tabPageBattleText.ResumeLayout(false);
             tabPageBattleText.PerformLayout();
+            tabPageLimitBreaks.ResumeLayout(false);
+            tabPageLimitBreaks.PerformLayout();
             tabPageBattleRNGTable.ResumeLayout(false);
             panelButtons.ResumeLayout(false);
             toolStripMain.ResumeLayout(false);
@@ -3816,5 +3895,11 @@
         private NumericUpDown numericStartingGil;
         private CheckBox checkBoxAttackIsLimit;
         private Button buttonMateriaAttributes;
+        private TabPage tabPageLimitBreaks;
+        private TextBox textBoxLimitDescription;
+        private Label labelLimitDescription;
+        private TextBox textBoxLimitName;
+        private Label labelLimitName;
+        private ListBox listBoxLimitBreaks;
     }
 }

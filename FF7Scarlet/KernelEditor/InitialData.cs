@@ -15,7 +15,7 @@ namespace FF7Scarlet.KernelEditor
         private readonly ItemStack[] inventoryItems = new ItemStack[INVENTORY_SIZE];
         private readonly InventoryMateria[] inventoryMateria = new InventoryMateria[MATERIA_INVENTORY_SIZE];
         private readonly InventoryMateria[] stolenMateria = new InventoryMateria[STOLEN_MATERIA_COUNT];
-        private byte[] rawData;
+        private byte[] rawData = [];
 
         public Character[] Characters
         {
@@ -39,6 +39,11 @@ namespace FF7Scarlet.KernelEditor
         public uint StartingGil { get; set; }
 
         public InitialData(byte[] data)
+        {
+            ParseData(data);
+        }
+
+        public void ParseData(byte[] data)
         {
             rawData = data;
             int i;

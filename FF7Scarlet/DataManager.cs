@@ -1,11 +1,11 @@
 ﻿using System.IO.Compression;
+using System.Configuration;
 using Shojy.FF7.Elena;
 using FF7Scarlet.Compression;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.ExeEditor;
 using FF7Scarlet.Shared;
-using System.Configuration;
 
 namespace FF7Scarlet
 {
@@ -454,16 +454,15 @@ namespace FF7Scarlet
 
             var data = new List<byte>();
             byte[] uncompressedSection, compressedSection;
-            ushort compressedLength, uncompressedLength, appendFF;
+            ushort compressedLength, uncompressedLength;
             for (i = 0; i < Kernel.SECTION_COUNT; ++i)
             {
                 uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1));
                 uncompressedLength = (ushort)uncompressedSection.Length;
                 compressedSection = GetCompressedData(uncompressedSection);
                 compressedLength = (ushort)compressedSection.Length;
-                appendFF = (ushort)(compressedLength % 4);
 
-                data.AddRange(BitConverter.GetBytes((ushort)(compressedLength + appendFF)));
+                data.AddRange(BitConverter.GetBytes(compressedLength));
                 data.AddRange(BitConverter.GetBytes(uncompressedLength));
                 if (i >= Kernel.KERNEL1_END)
                 {
@@ -471,11 +470,6 @@ namespace FF7Scarlet
                 }
                 else { data.AddRange(BitConverter.GetBytes(i)); }
                 data.AddRange(compressedSection);
-                while (appendFF > 0)
-                {
-                    data.Add(0xFF);
-                    appendFF--;
-                }
             }
             File.WriteAllBytes(KernelPath, data.ToArray());
 

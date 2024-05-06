@@ -1,15 +1,11 @@
 ﻿using FF7Scarlet.Shared;
-using Microsoft.VisualBasic;
 using Shojy.FF7.Elena;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Items;
-using Shojy.FF7.Elena.Materias;
 using Shojy.FF7.Elena.Sections;
-using System;
-using System.Collections;
-using static System.Net.Mime.MediaTypeNames;
+using System.Xml.Linq;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -17,10 +13,8 @@ namespace FF7Scarlet.KernelEditor
 
     public class Kernel : KernelReader, IAttackContainer
     {
-        public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17,
+        public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17, NAMES_END = 25,
             ATTACK_COUNT = 128, SUMMON_OFFSET = 0x38, ESKILL_OFFSET = 0x48;
-        private Dictionary<KernelSection, byte[]> kernel1TextSections =
-            new Dictionary<KernelSection, byte[]> { };
         public MenuCommand[] Commands { get; }
         public Attack[] Attacks { get; }
         public InitialData InitialData { get; }
@@ -31,38 +25,13 @@ namespace FF7Scarlet.KernelEditor
 
         public Kernel(string file) : base(file, KernelType.KernelBin)
         {
-            //copy raw data for text sections
-            for (int i = KERNEL1_END; i < SECTION_COUNT; i++)
-            {
-                var s = (KernelSection)(i + 1);
-                int length = KernelData[s].Length;
-                kernel1TextSections[s] = new byte[length];
-                Array.Copy(KernelData[s], kernel1TextSections[s], length);
-            }
-
             //get menu commands
             Commands = new MenuCommand[GetCount(KernelSection.CommandData)];
-            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.CommandData)))
-            using (var reader = new BinaryReader(ms))
-            {
-                for (int i = 0; i < Commands.Length; ++i)
-                {
-                    Commands[i] = new MenuCommand(reader.ReadBytes(8));
-                }
-            }
+            ParseCommands(GetSectionRawData(KernelSection.CommandData));
 
             //get attack data
             Attacks = new Attack[ATTACK_COUNT];
-            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.AttackData)))
-            using (var reader = new BinaryReader(ms))
-            {
-                for (int i = 0; i < ATTACK_COUNT; ++i)
-                {
-                    Attacks[i] = new Attack((ushort)i, new FFText(MagicNames.Strings[i]),
-                        reader.ReadBytes(Attack.BLOCK_SIZE));
-                    Attacks[i].Description = new FFText(MagicDescriptions.Strings[i]);
-                }
-            }
+            ParseAttacks(GetSectionRawData(KernelSection.AttackData));
 
             //mark limits as limits (this adds a special function to attack names/descriptions)
             using (var ms = new MemoryStream(GetSectionRawData(KernelSection.MagicNames, true)))
@@ -95,17 +64,7 @@ namespace FF7Scarlet.KernelEditor
 
             //re-get materia data
             MateriaExt = new MateriaExt[MateriaData.Materias.Length];
-            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.MateriaData)))
-            using (var reader = new BinaryReader(ms))
-            {
-                for (int i = 0; i < MateriaExt.Length; ++i)
-                {
-                    MateriaExt[i] = new MateriaExt(reader.ReadBytes(20));
-                    MateriaExt[i].Index = MateriaData.Materias[i].Index;
-                    MateriaExt[i].Name = MateriaData.Materias[i].Name;
-                    MateriaExt[i].Description = MateriaData.Materias[i].Description;
-                }
-            }
+            ParseMateria(GetSectionRawData(KernelSection.MateriaData));
 
             //get battle text as FFText
             BattleTextFF = new FFText[BattleText.Strings.Length];
@@ -114,16 +73,55 @@ namespace FF7Scarlet.KernelEditor
             loaded = true;
         }
 
-        public void ReloadBattleText()
+        private void ParseCommands(byte[] data)
         {
-            loaded = false;
-            var data = GetSectionRawData(KernelSection.BattleText, true);
+            using (var ms = new MemoryStream(data))
+            using (var reader = new BinaryReader(ms))
+            {
+                for (int i = 0; i < Commands.Length; ++i)
+                {
+                    Commands[i] = new MenuCommand(reader.ReadBytes(8));
+                }
+            }
+        }
+
+        private void ParseAttacks(byte[] data)
+        {
+            using (var ms = new MemoryStream(data))
+            using (var reader = new BinaryReader(ms))
+            {
+                for (int i = 0; i < ATTACK_COUNT; ++i)
+                {
+                    Attacks[i] = new Attack((ushort)i, new FFText(MagicNames.Strings[i]),
+                        reader.ReadBytes(Attack.BLOCK_SIZE));
+                    Attacks[i].Description = new FFText(MagicDescriptions.Strings[i]);
+                }
+            }
+        }
+
+        private void ParseMateria(byte[] data)
+        {
+            using (var ms = new MemoryStream(data))
+            using (var reader = new BinaryReader(ms))
+            {
+                for (int i = 0; i < MateriaExt.Length; ++i)
+                {
+                    MateriaExt[i] = new MateriaExt(reader.ReadBytes(20));
+                    MateriaExt[i].Index = i;
+                    MateriaExt[i].Name = MateriaData.Materias[i].Name;
+                    MateriaExt[i].Description = MateriaData.Materias[i].Description;
+                }
+            }
+        }
+
+        private void ParseTextSectionStrings(KernelSection section, byte[] data)
+        {
+            int length = GetCount(section);
+            var strings = new FFText[length];
 
             using (var ms = new MemoryStream(data))
             using (var reader = new BinaryReader(ms))
             {
-                int length = BattleTextFF.Length;
-
                 //get headers
                 var headers = new ushort[length];
                 for (int i = 0; i < length; ++i)
@@ -180,13 +178,35 @@ namespace FF7Scarlet.KernelEditor
                             bytes.Add(b);
                         }
                     }
-                    BattleTextFF[i] = new FFText(bytes.ToArray());
-                    var str = BattleTextFF[i].ToString();
-                    if (str == null) { BattleText.Strings[i] = string.Empty; }
-                    else { BattleText.Strings[i] = str; }
+                    strings[i] = new FFText(bytes.ToArray());
                     bytes.Clear();
                 }
             }
+
+            //update the strings for the section
+            if (section == KernelSection.BattleText)
+            {
+                for (int i = 0; i < strings.Length; ++i)
+                {
+                    BattleTextFF[i] = strings[i];
+                }
+            }
+            else
+            {
+                string? str;
+                for (int i = 0; i < strings.Length; ++i)
+                {
+                    str = strings[i].ToString();
+                    UpdateString(section, str, i);
+                }
+            }
+        }
+
+        public void ReloadBattleText()
+        {
+            loaded = false;
+            ParseTextSectionStrings(KernelSection.BattleText,
+                GetSectionRawData(KernelSection.BattleText, true));
             loaded = true;
         }
 
@@ -213,6 +233,14 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
             return 0;
+        }
+
+        public static bool SectionIsItems(KernelSection section)
+        {
+            var s = GetDataSection(section);
+            return (s == KernelSection.ItemData || s == KernelSection.WeaponData
+                || s == KernelSection.ArmorData || s == KernelSection.AccessoryData
+                || s == KernelSection.MateriaData);
         }
 
         public Attack? GetAttackByID(ushort id)
@@ -279,7 +307,7 @@ namespace FF7Scarlet.KernelEditor
             return null;
         }
 
-        private KernelSection GetDataSection(KernelSection section)
+        public static KernelSection GetDataSection(KernelSection section)
         {
             switch (section)
             {
@@ -321,6 +349,68 @@ namespace FF7Scarlet.KernelEditor
             return section;
         }
 
+        public TextSection? GetTextSection(KernelSection section)
+        {
+            switch (section)
+            {
+                case KernelSection.CommandNames:
+                    return CommandNames;
+
+                case KernelSection.CommandDescriptions:
+                    return CommandDescriptions;
+
+                case KernelSection.MagicNames:
+                    return MagicNames;
+
+                case KernelSection.MagicDescriptions:
+                    return MagicDescriptions;
+
+                case KernelSection.ItemNames:
+                    return ItemNames;
+
+                case KernelSection.ItemDescriptions:
+                    return ItemDescriptions;
+
+                case KernelSection.WeaponNames:
+                    return WeaponNames;
+
+                case KernelSection.WeaponDescriptions:
+                    return WeaponDescriptions;
+
+                case KernelSection.ArmorNames:
+                    return ArmorNames;
+
+                case KernelSection.ArmorDescriptions:
+                    return ArmorDescriptions;
+
+                case KernelSection.AccessoryNames:
+                    return AccessoryNames;
+
+                case KernelSection.AccessoryDescriptions:
+                    return AccessoryDescriptions;
+
+                case KernelSection.MateriaNames:
+                    return MateriaNames;
+
+                case KernelSection.MateriaDescriptions:
+                    return MateriaDescriptions;
+
+                case KernelSection.KeyItemNames:
+                    return KeyItemNames;
+
+                case KernelSection.KeyItemDescriptions:
+                    return KeyItemDescriptions;
+
+                case KernelSection.BattleText:
+                    return BattleText;
+
+                case KernelSection.SummonAttackNames:
+                    return SummonAttackNames;
+                default:
+                    return null;
+            }
+        }
+
         public string[] GetAssociatedNames(KernelSection section, bool fullList = false)
         {
             var ds = GetDataSection(section);
@@ -360,42 +450,6 @@ namespace FF7Scarlet.KernelEditor
             return Array.Empty<string>();
         }
 
-        public void UpdateName(KernelSection section, string name, int pos)
-        {
-            var ds = GetDataSection(section);
-            var names = GetAssociatedNames(ds);
-            if (names.Length > 0)
-            {
-                names[pos] = name;
-                switch (ds) //update associated item name (if it exists)
-                {
-                    case KernelSection.AttackData:
-                        Attacks[pos].Name = new FFText(name);
-                        break;
-
-                    case KernelSection.ItemData:
-                        ItemData.Items[pos].Name = name;
-                        break;
-
-                    case KernelSection.WeaponData:
-                        WeaponData.Weapons[pos].Name = name;
-                        break;
-
-                    case KernelSection.ArmorData:
-                        ArmorData.Armors[pos].Name = name;
-                        break;
-
-                    case KernelSection.AccessoryData:
-                        AccessoryData.Accessories[pos].Name = name;
-                        break;
-
-                    case KernelSection.MateriaData:
-                        MateriaExt[pos].Name = name;
-                        break;
-                }
-            }
-        }
-
         public string[] GetAssociatedDescriptions(KernelSection section)
         {
             var ds = GetDataSection(section);
@@ -427,6 +481,103 @@ namespace FF7Scarlet.KernelEditor
                     return KeyItemDescriptions.Strings;
             }
             return Array.Empty<string>();
+        }
+
+        public void UpdateName(KernelSection section, string? name, int pos)
+        {
+            var ds = GetDataSection(section);
+            var names = GetAssociatedNames(ds);
+            string n = string.Empty;
+            if (name != null) { n = name; }
+            if (names.Length > 0)
+            {
+                names[pos] = n;
+                switch (ds) //update associated item name (if it exists)
+                {
+                    case KernelSection.AttackData:
+                        Attacks[pos].Name = new FFText(n);
+                        break;
+
+                    case KernelSection.ItemData:
+                        ItemData.Items[pos].Name = n;
+                        break;
+
+                    case KernelSection.WeaponData:
+                        WeaponData.Weapons[pos].Name = n;
+                        break;
+
+                    case KernelSection.ArmorData:
+                        ArmorData.Armors[pos].Name = n;
+                        break;
+
+                    case KernelSection.AccessoryData:
+                        AccessoryData.Accessories[pos].Name = n;
+                        break;
+
+                    case KernelSection.MateriaData:
+                        MateriaExt[pos].Name = n;
+                        break;
+                }
+            }
+        }
+
+        public void UpdateDescription(KernelSection section, string? desc, int pos)
+        {
+            var ds = GetDataSection(section);
+            var descs = GetAssociatedDescriptions(ds);
+            string d = string.Empty;
+            if (desc != null) { d = desc; }
+            if (descs.Length > 0)
+            {
+                descs[pos] = d;
+                switch (ds) //update associated item description (if it exists)
+                {
+                    case KernelSection.AttackData:
+                        Attacks[pos].Description = new FFText(d);
+                        break;
+
+                    case KernelSection.ItemData:
+                        ItemData.Items[pos].Description = d;
+                        break;
+
+                    case KernelSection.WeaponData:
+                        WeaponData.Weapons[pos].Description = d;
+                        break;
+
+                    case KernelSection.ArmorData:
+                        ArmorData.Armors[pos].Description = d;
+                        break;
+
+                    case KernelSection.AccessoryData:
+                        AccessoryData.Accessories[pos].Description = d;
+                        break;
+
+                    case KernelSection.MateriaData:
+                        MateriaExt[pos].Description = d;
+                        break;
+                }
+            }
+        }
+
+        public void UpdateString(KernelSection section, string? value, int pos)
+        {
+            var ts = GetTextSection(section);
+            if (ts != null)
+            {
+                if ((int)section < DESCRIPTIONS_END)
+                {
+                    UpdateDescription(section, value, pos);
+                }
+                else if ((int)section < NAMES_END)
+                {
+                    UpdateName(section, value, pos);
+                }
+                else
+                {
+                    if (value == null) { ts.Strings[pos] = string.Empty; }
+                    else { ts.Strings[pos] = value; }
+                }
+            }
         }
 
         public string GetInventoryItemName(InventoryItem item)
@@ -712,16 +863,71 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        public bool ImportChunk (KernelSection section, string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    switch (section)
+                    {
+                        case KernelSection.CommandData:
+                            ParseCommands(File.ReadAllBytes(filePath));
+                            break;
+
+                        case KernelSection.AttackData:
+                            ParseAttacks(File.ReadAllBytes(filePath));
+                            break;
+
+                        case KernelSection.BattleAndGrowthData:
+                            BattleAndGrowthData.ParseData(File.ReadAllBytes(filePath), true);
+                            break;
+
+                        case KernelSection.InitData:
+                            InitialData.ParseData(File.ReadAllBytes(filePath));
+                            break;
+
+                        case KernelSection.ItemData:
+                            ItemData = new ItemData(File.ReadAllBytes(filePath),
+                                ItemNames.Strings, ItemDescriptions.Strings);
+                            break;
+
+                        case KernelSection.WeaponData:
+                            WeaponData = new WeaponData(File.ReadAllBytes(filePath),
+                                WeaponNames.Strings, WeaponDescriptions.Strings);
+                            break;
+
+                        case KernelSection.ArmorData:
+                            ArmorData = new ArmorData(File.ReadAllBytes(filePath),
+                                ArmorNames.Strings, ArmorDescriptions.Strings);
+                            break;
+
+                        case KernelSection.AccessoryData:
+                            AccessoryData = new AccessoryData(File.ReadAllBytes(filePath),
+                                AccessoryNames.Strings, AccessoryDescriptions.Strings);
+                            break;
+
+                        case KernelSection.MateriaData:
+                            ParseMateria(File.ReadAllBytes(filePath));
+                            break;
+
+                        default:
+                            ParseTextSectionStrings(section, File.ReadAllBytes(filePath));
+                            break;
+                    }
+                    return true;
+                }
+                catch { return false; }
+            }    
+            return false;
+        }
+
         public byte[] GetSectionRawData(KernelSection section, bool isKernel2 = false)
         {
             //update data before writing it
             if ((int)section > KERNEL1_END) //text sections
             {
-                if (!isKernel2) //we do not want to write kernel2 data to kernel.bin
-                {
-                    return kernel1TextSections[section];
-                }
-                else if (loaded)
+                if (loaded)
                 {
                     var bytes = new List<byte>();
                     FFText[] text;
@@ -760,19 +966,36 @@ namespace FF7Scarlet.KernelEditor
                     }
 
                     //generate headers
-                    var offset = (ushort)(text.Length * 2);
+                    var offset = (ushort)(text.Length * 2); //starts just after headers
                     ushort length;
+                    bool empty = false;
                     for (i = 0; i < text.Length; ++i)
                     {
                         length = (ushort)text[i].Length;
-                        if (isAttacks && length > 1) //add offset for limit
+                        if (i > 0) //offset for empty strings
+                        {
+                            if (length > 1)
+                            {
+                                if (empty) { offset++; }
+                                empty = false;
+                            }
+                            else
+                            {
+                                length = 0;
+                                if (!empty)
+                                {
+                                    offset--;
+                                    empty = true;
+                                }
+                            }
+                        }
+                        if (isAttacks && length > 1) //offset for limit header
                         {
                             if ((i < ATTACK_COUNT && Attacks[i].IsLimit) || i >= ATTACK_COUNT)
                             {
                                 length += 2;
                             }
                         }
-
                         bytes.AddRange(BitConverter.GetBytes(offset));
                         offset += length;
                     }
@@ -788,7 +1011,10 @@ namespace FF7Scarlet.KernelEditor
                                 bytes.Add(0x02);
                             }
                         }
-                        bytes.AddRange(text[i].GetBytes());
+                        if (text[i].Length > 1 || i == 0) //don't add empty strings
+                        {
+                            bytes.AddRange(text[i].GetBytes());
+                        }
                     }
 
                     //copy the newly converted strings to the KernelData array

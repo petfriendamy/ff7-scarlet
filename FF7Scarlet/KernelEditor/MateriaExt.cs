@@ -238,6 +238,8 @@ namespace FF7Scarlet.KernelEditor
 
                 case MateriaByteValues.Magic:
                 case MateriaByteValues.Summon:
+                case MateriaByteValues.Support1:
+                case MateriaByteValues.Support2:
                     return 0;
 
                 case MateriaByteValues.MasterMagic:
