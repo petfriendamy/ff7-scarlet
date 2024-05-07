@@ -1,4 +1,4 @@
-![Scarlet - FF7 Battle Data Editor](FF7Scarlet/GUI/logo.png)
+![Scarlet - FF7 Battle Data Editor](src/GUI/logo.png)
 
 Scarlet is a battle data editor for Final Fantasy VII. This allows you to modify the following:
 
@@ -28,6 +28,7 @@ Special thanks:
 * NFITC1
 * SegaChief
 * Shojy
+* m4v3k
 * myst6re
 * DLPB
 * titeguy3
