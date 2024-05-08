@@ -28,6 +28,7 @@ Special thanks:
 * NFITC1
 * SegaChief
 * Shojy
+* TrueOdin
 * m4v3k
 * myst6re
 * DLPB

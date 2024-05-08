@@ -90,24 +90,37 @@ namespace FF7Scarlet
 
                     if (result == DialogResult.Yes)
                     {
-                        string? exeDir = null, languageDir = null, kernelDir = null, battleDir = null, temp;
+                        string? exeDir = null, parentDir = null, kernelDir = null, battleDir = null, temp;
                         string code = "en";
+                        bool isSteam = true;
 
                         //figure out relative file paths
                         if (fileClass == FileClass.EXE)
                         {
                             //check for region code
                             string exeName = Path.GetFileNameWithoutExtension(path);
-                            if (exeName.EndsWith("es")) { code = "es"; }
+                            if (exeName.EndsWith("en")) { code = "en"; }
+                            else if (exeName.EndsWith("es")) { code = "es"; }
                             else if (exeName.EndsWith("fr")) { code = "fr"; }
                             else if (exeName.EndsWith("de")) { code = "de"; }
+                            else //no extension, assume 1998 version
+                            {
+                                isSteam = false;
+                            }
 
                             //find kernel and scene files
                             exeDir = Directory.GetParent(path)?.FullName;
                             if (exeDir != null)
                             {
-                                kernelDir = exeDir + @"\data\lang-" + code + @"\kernel";
-                                battleDir = exeDir + @"\data\lang-" + code + @"\battle";
+                                kernelDir = exeDir + @"\data";
+                                battleDir = exeDir + @"\data";
+                                if (isSteam)
+                                {
+                                    kernelDir += @"\lang-" + code;
+                                    battleDir += @"\lang-" + code;
+                                }
+                                kernelDir += @"\kernel";
+                                battleDir += @"\battle";
                             }
                         }
                         else //kernel/scene
@@ -117,10 +130,10 @@ namespace FF7Scarlet
                                 battleDir = Path.GetDirectoryName(path);
                                 if (battleDir != null)
                                 {
-                                    languageDir = Directory.GetParent(battleDir)?.FullName;
-                                    if (languageDir != null)
+                                    parentDir = Directory.GetParent(battleDir)?.FullName;
+                                    if (parentDir != null)
                                     {
-                                        kernelDir = languageDir + @"\kernel";
+                                        kernelDir = parentDir + @"\kernel";
                                     }
                                 }
                             }
@@ -129,27 +142,39 @@ namespace FF7Scarlet
                                 kernelDir = Path.GetDirectoryName(path);
                                 if (kernelDir != null)
                                 {
-                                    languageDir = Directory.GetParent(kernelDir)?.FullName;
-                                    if (languageDir != null)
+                                    parentDir = Directory.GetParent(kernelDir)?.FullName;
+                                    if (parentDir != null)
                                     {
-                                        battleDir = languageDir + @"\battle";
+                                        battleDir = parentDir + @"\battle";
                                     }
                                 }
                             }
 
                             //get EXE directory
-                            if (languageDir != null)
+                            if (parentDir != null)
                             {
                                 //check for region code
-                                string? langDirName = Path.GetDirectoryName(languageDir);
-                                if (langDirName != null)
+                                string? parentDirName = Path.GetDirectoryName(parentDir + '\\');
+                                if (parentDirName != null)
                                 {
-                                    if (langDirName.EndsWith("es")) { code = "es"; }
-                                    else if (langDirName.EndsWith("fr")) { code = "fr"; }
-                                    else if (langDirName.EndsWith("de")) { code = "de"; }
+                                    if (parentDirName.EndsWith("en")) { code = "en"; }
+                                    else if (parentDirName.EndsWith("es")) { code = "es"; }
+                                    else if (parentDirName.EndsWith("fr")) { code = "fr"; }
+                                    else if (parentDirName.EndsWith("de")) { code = "de"; }
+                                    else //no region code, assume 1998 version
+                                    {
+                                        isSteam = false;
+                                    }
                                 }
 
-                                temp = Directory.GetParent(languageDir)?.FullName;
+                                if (isSteam) //one more directory for Steam
+                                {
+                                    temp = Directory.GetParent(parentDir)?.FullName;
+                                }
+                                else
+                                {
+                                    temp = parentDir;
+                                }
                                 if (temp != null)
                                 {
                                     exeDir = Directory.GetParent(temp)?.FullName;
