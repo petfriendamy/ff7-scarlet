@@ -1,6 +1,7 @@
 ﻿using FF7Scarlet.Shared;
 using Shojy.FF7.Elena;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -163,22 +164,52 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        public static bool ValidateEXE(string path)
+        public static bool ValidateEXE(string path, bool unedited)
         {
             if (File.Exists(path))
             {
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
                 using (var reader = new BinaryReader(stream))
                 {
-                    //check if header is correct
-                    for (int i = 0; i < EXE_HEADER.Length; ++i)
+                    if (unedited) //this should be an unedited EXE, so do a hash check
                     {
-                        if (reader.ReadByte() != EXE_HEADER[i])
+                        var lang = GetLanguage(path);
+                        if (lang == Language.English) //only English version supported
                         {
-                            return false;
-                        }
+                            byte[] compare = SHA1.HashData(stream), hash;
+
+                            if (IsSteamVersion(path)) //Steam version
+                            {
+                                hash = Convert.FromHexString("1C9A6F4B6F554B1B4ECB38812F9396A026A677D6");
+                                return hash.SequenceEqual(compare);
+                            }
+                            else //1998 version
+                            {
+                                //1.00
+                                hash = Convert.FromHexString("4EECAF14F30E8B0CC87B88C943F1119B567452D7");
+                                if (hash.SequenceEqual(compare))
+                                {
+                                    return true;
+                                }
+
+                                //1.02
+                                hash = Convert.FromHexString("684A0E87840138B4E02FC8EDB9AE2E2591CE4982");
+                                return hash.SequenceEqual(compare);
+                            }
+                        } 
                     }
-                    return true;
+                    else
+                    {
+                        //check if header is correct
+                        for (int i = 0; i < EXE_HEADER.Length; ++i)
+                        {
+                            if (reader.ReadByte() != EXE_HEADER[i])
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
                 }
             }
             return false;
@@ -211,6 +242,12 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        public static bool IsSteamVersion(string path)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(path);
+            return fileName.Contains('_');
+        }
+
         public void ReadEXE(string path)
         {
             try
@@ -225,7 +262,7 @@ namespace FF7Scarlet.ExeEditor
                     using (var reader = new BinaryReader(stream))
                     {
                         //check if header is correct
-                        if (!ValidateEXE(path))
+                        if (!ValidateEXE(path, false))
                         {
                             throw new FormatException("EXE appears to be invalid.");
                         }

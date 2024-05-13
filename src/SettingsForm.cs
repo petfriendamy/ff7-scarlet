@@ -35,7 +35,15 @@ namespace FF7Scarlet
             {
                 if (File.Exists(path))
                 {
-                    textBoxVanillaExe.Text = path;
+                    if (ExeData.ValidateEXE(path, true))
+                    {
+                        textBoxVanillaExe.Text = path;
+                    }
+                    else
+                    {
+                        MessageBox.Show("This doesn't seem to be a valid EXE. Please provide an unmodified English EXE.",
+                            "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {

@@ -185,7 +185,11 @@ namespace FF7Scarlet
                         //attempt to find the files in their directories
                         if (exeDir != null && fileClass != FileClass.EXE)
                         {
-                            if (!ValidateFile(FileClass.EXE, exeDir + @"\ff7_" + code + ".exe"))
+                            if (isSteam)
+                            {
+                                ValidateFile(FileClass.EXE, exeDir + @"\ff7_" + code + ".exe");
+                            }
+                            else
                             {
                                 ValidateFile(FileClass.EXE, exeDir + @"\FF7.exe");
                             }
@@ -223,7 +227,7 @@ namespace FF7Scarlet
                     switch (fileClass)
                     {
                         case FileClass.EXE:
-                            if (ExeData.ValidateEXE(path))
+                            if (ExeData.ValidateEXE(path, isSetting))
                             {
                                 if (isSetting)
                                 {
