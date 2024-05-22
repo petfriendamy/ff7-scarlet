@@ -129,5 +129,12 @@ namespace FF7Scarlet.Shared
             Array.Copy(copy, rawData, BLOCK_SIZE);
             return copy;
         }
+
+        public bool HasDifferences (Attack other)
+        {
+            var temp1 = GetRawData();
+            var temp2 = other.GetRawData();
+            return !temp1.SequenceEqual(temp2);
+        }
     }
 }

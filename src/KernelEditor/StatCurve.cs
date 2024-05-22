@@ -8,13 +8,14 @@ namespace FF7Scarlet.KernelEditor
 {
     public class StatCurve
     {
-        private readonly byte[] gradients = new byte[8], bases = new byte[8];
+        private readonly byte[] gradients = new byte[8];
+        private readonly sbyte[] bases = new sbyte[8];
 
         public byte[] Gradients
         {
             get { return gradients; }
         }
-        public byte[] Bases
+        public sbyte[] Bases
         {
             get { return bases; }
         }
@@ -27,7 +28,7 @@ namespace FF7Scarlet.KernelEditor
                 for (int i = 0; i < 8; ++i)
                 {
                     Gradients[i] = reader.ReadByte();
-                    Bases[i] = reader.ReadByte();
+                    Bases[i] = reader.ReadSByte();
                 }
             }
         }

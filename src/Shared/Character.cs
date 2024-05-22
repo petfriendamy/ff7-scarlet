@@ -197,11 +197,7 @@ namespace FF7Scarlet.Shared
         {
             var temp1 = GetRawData();
             var temp2 = other.GetRawData();
-            for (int i = 0; i < CHARACTER_DATA_LENGTH; ++i)
-            {
-                if (temp1[i] != temp2[i]) { return true; }
-            }
-            return false;
+            return !temp1.SequenceEqual(temp2);
         }
     }
 }

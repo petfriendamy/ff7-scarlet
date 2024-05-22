@@ -130,11 +130,7 @@ namespace FF7Scarlet.ExeEditor
         {
             var temp1 = GetByteArray();
             var temp2 = other.GetByteArray();
-            for (int i = 0; i < SHOP_DATA_LENGTH; ++i)
-            {
-                if (temp1[i] != temp2[i]) { return true; }
-            }
-            return false;
+            return !temp1.SequenceEqual(temp2);
         }
     }
 }

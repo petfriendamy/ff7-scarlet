@@ -2,6 +2,7 @@
 using Shojy.FF7.Elena;
 using System.IO;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -10,52 +11,55 @@ namespace FF7Scarlet.ExeEditor
     public class ExeData
     {
         //constants
-        private static readonly int[] EXE_HEADER = new int[3] { 0x4D, 0x5A, 0x90 };
+        private static readonly int[] EXE_HEADER = { 0x4D, 0x5A, 0x90 };
         public const string CONFIG_KEY = "VanillaExePath";
-        public const int NUM_LIMITS = 71, NUM_NAMES = 10, NUM_SHOPS = 80;
+        public const int
+            NUM_MENU_TEXTS = 23,
+            NUM_CONFIG_TEXTS = 51,
+            NUM_STATUS_EFFECTS = 27,
+            NUM_LIMITS = 71,
+            NUM_NAMES = 10,
+            NUM_SHOPS = 80,
+            NUM_SHOP_NAMES = 9,
+            NUM_SHOP_TEXTS = 18,
+            
+            MENU_TEXT_LENGTH = 20,
+            SHOP_TEXT_LENGTH = 46;
+
         private const long
             HEXT_OFFSET_1 = 0x400C00,
             HEXT_OFFSET_2 = 0x401600,
 
             AP_MULTIPLIER_POS = 0x31F14F,
             AP_MASTER_OFFSET = 0x4F,
+            CONFIG_MENU_TEXT_POS = 0x5188A8,
+            MAIN_MENU_TEXT_POS = 0x5192C0,
+            STATUS_EFFECT_POS = 0x51D228,
             LIMIT_BREAK_POS = 0x51E0D4,
+            LIMIT_TEXT_POS = 0x51FBF0,
             NAME_DATA_POS = 0x5206B8,
             CAIT_SITH_DATA_POS = 0x520C10,
             SHOP_NAME_POS = 0x5219C8,
+            SHOP_TEXT_POS = 0x521A80,
             SHOP_INVENTORY_POS = 0x521E18,
             ITEM_PRICE_DATA_POS = 0x523858,
-            MATERIA_PRICE_DATA_POS = 0x523E58,
-
-            AP_MULTIPLIER_ES_OFFSET = 0x8B6E2,
-            LIMIT_ES_OFFSET = 0x779D8,
-            NAME_ES_OFFSET = 0x780E0,
-            CAIT_ES_OFFSET = 0x78110,
-            MENU_TEXT_ES_OFFSET = 0x783F0,
-            SHOP_ES_OFFSET = 0x784A0,
-
-            AP_MULTIPLIER_FR_OFFSET = 0x8B365,
-            LIMIT_FR_OFFSET = 0x777C0,
-            NAME_FR_OFFSET = 0x77E70,
-            CAIT_FR_OFFSET = 0x77E90,
-            MENU_TEXT_FR_OFFSET = 0x780B8,
-            SHOP_FR_OFFSET = 0x78A10,
-
-            AP_MULTIPLIER_DE_OFFSET = 0x8B017,
-            LIMIT_DE_OFFSET = 0x76EB8,
-            NAME_DE_OFFSET = 0x77370,
-            CAIT_DE_OFFSET = 0x77388,
-            MENU_TEXT_DE_OFFSET = 0x77650,
-            SHOP_DE_OFFSET = 0x77700;
+            MATERIA_PRICE_DATA_POS = 0x523E58;
 
         //properties
         public string FilePath { get; private set; } = string.Empty;
         public Language Language { get; private set; }
         public Attack[] Limits { get; } = new Attack[NUM_LIMITS];
+        public FFText[] LimitSuccess { get; } = new FFText[Character.PLAYABLE_CHARACTER_COUNT - 1];
+        public FFText[] LimitFail { get; } = new FFText[Character.PLAYABLE_CHARACTER_COUNT - 1];
+        public FFText[] LimitWrong { get; } = new FFText[Character.PLAYABLE_CHARACTER_COUNT];
+        public FFText[] MainMenuTexts { get; } = new FFText[NUM_MENU_TEXTS];
+        public FFText[] ConfigMenuTexts { get; } = new FFText[NUM_CONFIG_TEXTS];
+        public FFText[] StatusEffects { get; } = new FFText[NUM_STATUS_EFFECTS];
         public FFText[] CharacterNames { get; } = new FFText[NUM_NAMES];
         public Character? CaitSith { get; private set; }
         public Character? Vincent { get; private set; }
-        public FFText[] ShopNames { get; } = new FFText[9];
+        public FFText[] ShopNames { get; } = new FFText[NUM_SHOP_NAMES];
+        public FFText[] ShopText { get; } = new FFText[NUM_SHOP_TEXTS];
         public ShopInventory[] Shops { get; } = new ShopInventory[NUM_SHOPS];
         public byte APPriceMultiplier { get; set; }
         public uint[] ItemPrices { get; } = new uint[InventoryItem.ITEM_COUNT];
@@ -79,11 +83,71 @@ namespace FF7Scarlet.ExeEditor
             switch (Language)
             {
                 case Language.Spanish:
-                    return AP_MULTIPLIER_ES_OFFSET;
+                    return 0x8B6E2;
                 case Language.French:
-                    return AP_MULTIPLIER_FR_OFFSET;
+                    return 0x8B365;
                 case Language.German:
-                    return AP_MULTIPLIER_DE_OFFSET;
+                    return 0x8B017;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetConfigOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x77240;
+                case Language.French:
+                    return 0x770B8;
+                case Language.German:
+                    return 0x76C48;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetMainMenuOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x776D0;
+                case Language.French:
+                    return 0x774E0;
+                case Language.German:
+                    return 0x76DA8;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetStatusOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x776E8;
+                case Language.French:
+                    return 0x775F8;
+                case Language.German:
+                    return 0x76E68;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetEquipOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x777C0;
+                case Language.French:
+                    return 0x77788;
+                case Language.German:
+                    return 0x76EF0;
                 default:
                     return 0;
             }
@@ -94,11 +158,26 @@ namespace FF7Scarlet.ExeEditor
             switch (Language)
             {
                 case Language.Spanish:
-                    return LIMIT_ES_OFFSET;
+                    return 0x779D8;
                 case Language.French:
-                    return LIMIT_FR_OFFSET;
+                    return 0x777C0;
                 case Language.German:
-                    return LIMIT_DE_OFFSET;
+                    return 0x76EB8;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetLimitTextOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x78050;
+                case Language.French:
+                    return 0x77BE8;
+                case Language.German:
+                    return 0x772E0;
                 default:
                     return 0;
             }
@@ -109,11 +188,11 @@ namespace FF7Scarlet.ExeEditor
             switch (Language)
             {
                 case Language.Spanish:
-                    return NAME_ES_OFFSET;
+                    return 0x780E0;
                 case Language.French:
-                    return NAME_FR_OFFSET;
+                    return 0x77E70;
                 case Language.German:
-                    return NAME_DE_OFFSET;
+                    return 0x77370;
                 default:
                     return 0;
             }
@@ -124,26 +203,41 @@ namespace FF7Scarlet.ExeEditor
             switch (Language)
             {
                 case Language.Spanish:
-                    return CAIT_ES_OFFSET;
+                    return 0x78110;
                 case Language.French:
-                    return CAIT_FR_OFFSET;
+                    return 0x77E90;
                 case Language.German:
-                    return CAIT_DE_OFFSET;
+                    return 0x77388;
                 default:
                     return 0;
             }
         }
 
-        private long GetMenuTextOffset()
+        private long GetShopNameOffset()
         {
             switch (Language)
             {
                 case Language.Spanish:
-                    return MENU_TEXT_ES_OFFSET;
+                    return 0x783F0;
                 case Language.French:
-                    return MENU_TEXT_FR_OFFSET;
+                    return 0x780B8;
                 case Language.German:
-                    return MENU_TEXT_DE_OFFSET;
+                    return 0x77650;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetShopTextOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x784A0;
+                case Language.French:
+                    return 0x78730;
+                case Language.German:
+                    return 0x77700;
                 default:
                     return 0;
             }
@@ -154,14 +248,68 @@ namespace FF7Scarlet.ExeEditor
             switch (Language)
             {
                 case Language.Spanish:
-                    return SHOP_ES_OFFSET;
+                    return 0x784A0;
                 case Language.French:
-                    return SHOP_FR_OFFSET;
+                    return 0x78A10;
                 case Language.German:
-                    return SHOP_DE_OFFSET;
+                    return 0x77700;
                 default:
                     return 0;
             }
+        }
+
+        public int GetConfigTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 70;
+                case Language.French:
+                    return 60;
+                case Language.German:
+                    return 54;
+                default:
+                    return 48;
+            }
+        }
+
+        public int GetStatusEffectLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 12;
+                case Language.French:
+                    return 20;
+                case Language.German:
+                    return 14;
+                default:
+                    return 10;
+            }
+        }
+
+        public int GetLimitTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                case Language.German:
+                    return 40;
+                case Language.French:
+                    return 60;
+                default:
+                    return 34;
+            }
+        }
+
+        public int GetShopNameLength()
+        {
+            int length = ShopData.SHOP_NAME_LENGTH;
+            if (Language == Language.Spanish || Language == Language.German)
+            {
+                length *= 2;
+            }
+            return length;
         }
 
         public static bool ValidateEXE(string path, bool unedited)
@@ -271,6 +419,27 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
                         APPriceMultiplier = reader.ReadByte();
 
+                        //get config menu text
+                        stream.Seek(CONFIG_MENU_TEXT_POS + GetConfigOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < NUM_CONFIG_TEXTS; ++i)
+                        {
+                            ConfigMenuTexts[i] = new FFText(reader.ReadBytes(GetConfigTextLength()));
+                        }
+
+                        //get main menu text
+                        stream.Seek(MAIN_MENU_TEXT_POS + GetMainMenuOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < NUM_MENU_TEXTS; ++i)
+                        {
+                            MainMenuTexts[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
+                        }
+
+                        //get status effects
+                        stream.Seek(STATUS_EFFECT_POS + GetStatusOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
+                        {
+                            StatusEffects[i] = new FFText(reader.ReadBytes(GetStatusEffectLength()));
+                        }
+
                         //get limit breaks
                         stream.Seek(LIMIT_BREAK_POS + GetLimitOffset(), SeekOrigin.Begin);
                         for (i = 0; i < NUM_LIMITS; ++i)
@@ -278,6 +447,17 @@ namespace FF7Scarlet.ExeEditor
                             Limits[i] = new Attack((ushort)i, new FFText($"(Limit #{i})"),
                                 reader.ReadBytes(Attack.BLOCK_SIZE));
                         }
+
+                        //get L4 limit text
+                        stream.Seek(LIMIT_TEXT_POS + GetLimitTextOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT - 1; ++i)
+                        {
+                            LimitSuccess[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
+                            LimitFail[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
+                            LimitWrong[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
+                        }
+                        LimitWrong[Character.PLAYABLE_CHARACTER_COUNT - 1] =
+                            new FFText(reader.ReadBytes(GetLimitTextLength()));
 
                         //get character names
                         stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
@@ -292,15 +472,17 @@ namespace FF7Scarlet.ExeEditor
                         Vincent = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
 
                         //get shop names
-                        stream.Seek(SHOP_NAME_POS + GetMenuTextOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < 9; ++i)
+                        stream.Seek(SHOP_NAME_POS + GetShopNameOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < NUM_SHOP_NAMES; ++i)
                         {
-                            int length = ShopData.SHOP_NAME_LENGTH;
-                            if (Language == Language.Spanish || Language == Language.German)
-                            {
-                                length *= 2; //double-length strings
-                            }
-                            ShopNames[i] = new FFText(reader.ReadBytes(length));
+                            ShopNames[i] = new FFText(reader.ReadBytes(GetShopNameLength()));
+                        }
+
+                        //get shop texts
+                        stream.Seek(SHOP_TEXT_POS + GetShopTextOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < NUM_SHOP_TEXTS; ++i)
+                        {
+                            ShopText[i] = new FFText(reader.ReadBytes(SHOP_TEXT_LENGTH));
                         }
 
                         //get shop inventories
@@ -369,6 +551,46 @@ namespace FF7Scarlet.ExeEditor
                             SeekOrigin.Begin);
                         writer.Write(APPriceMultiplier);
 
+                        //write config menu text
+                        stream.Seek(CONFIG_MENU_TEXT_POS + GetConfigOffset(), SeekOrigin.Begin);
+                        foreach (var t in ConfigMenuTexts)
+                        {
+                            writer.Write(t.GetBytes(GetConfigTextLength()));
+                        }
+
+                        //write main menu text
+                        stream.Seek(MAIN_MENU_TEXT_POS + GetMainMenuOffset(), SeekOrigin.Begin);
+                        foreach (var t in MainMenuTexts)
+                        {
+                            writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                        }
+
+                        //write status effects
+                        stream.Seek(STATUS_EFFECT_POS + GetStatusOffset(), SeekOrigin.Begin);
+                        foreach (var s in StatusEffects)
+                        {
+                            writer.Write(s.GetBytes(GetStatusEffectLength()));
+                        }
+
+                        //write limit breaks
+                        stream.Seek(LIMIT_BREAK_POS + GetLimitOffset(), SeekOrigin.Begin);
+                        foreach (var l in Limits)
+                        {
+                            writer.Write(l.GetRawData());
+                        }
+
+                        //write L4 limit text
+                        stream.Seek(LIMIT_TEXT_POS + GetLimitTextOffset(), SeekOrigin.Begin);
+                        for (int i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
+                        {
+                            if (i < Character.PLAYABLE_CHARACTER_COUNT - 1)
+                            {
+                                writer.Write(LimitSuccess[i].GetBytes(GetLimitTextLength()));
+                                writer.Write(LimitFail[i].GetBytes(GetLimitTextLength()));
+                            }
+                            writer.Write(LimitWrong[i].GetBytes(GetLimitTextLength()));
+                        }
+
                         //write character names
                         stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
                         foreach (var n in CharacterNames)
@@ -382,6 +604,20 @@ namespace FF7Scarlet.ExeEditor
                             stream.Seek(CAIT_SITH_DATA_POS + GetCaitOffset(), SeekOrigin.Begin);
                             writer.Write(CaitSith.GetRawData());
                             writer.Write(Vincent.GetRawData());
+                        }
+
+                        //write shop names
+                        stream.Seek(SHOP_NAME_POS + GetShopNameLength(), SeekOrigin.Begin);
+                        foreach (var n in ShopNames)
+                        {
+                            writer.Write(n.GetBytes(GetShopNameLength()));
+                        }
+
+                        //write shop text
+                        stream.Seek(SHOP_TEXT_POS + GetShopTextOffset(), SeekOrigin.Begin);
+                        foreach (var t in ShopText)
+                        {
+                            writer.Write(t.GetBytes(SHOP_TEXT_LENGTH));
                         }
 
                         //write shop inventories
@@ -501,6 +737,8 @@ namespace FF7Scarlet.ExeEditor
                             }
                         }
                     }
+
+                    //text
                 }
             }
             catch (EndOfStreamException)
@@ -603,6 +841,8 @@ namespace FF7Scarlet.ExeEditor
                             }
                         }
                     }
+
+                    //write text
                 }
             }
             catch (Exception ex)
@@ -648,18 +888,18 @@ namespace FF7Scarlet.ExeEditor
                             writer.WriteLine();
                         }
 
-                        //compare names
-                        for (i = 0; i < NUM_NAMES; ++i)
+                        //compare config menu text
+                        for (i = 0; i < NUM_CONFIG_TEXTS; ++i)
                         {
-                            string? name1 = CharacterNames[i].ToString(),
-                                name2 = original.CharacterNames[i].ToString();
+                            string text1 = ConfigMenuTexts[i].ToString(),
+                                text2 = original.ConfigMenuTexts[i].ToString();
 
-                            if (name1 != null && name2 != null && name1 != name2)
+                            if (text1 != text2)
                             {
                                 checker = true;
-                                writer.WriteLine($"# {name2} -> {name1}");
-                                var temp = CharacterNames[i].GetBytes();
-                                pos = NAME_DATA_POS + HEXT_OFFSET_2 + (temp.Length * i);
+                                writer.WriteLine($"# {text2} -> {text1}");
+                                var temp = ConfigMenuTexts[i].GetBytes();
+                                pos = CONFIG_MENU_TEXT_POS + HEXT_OFFSET_2 + (GetConfigTextLength() * i);
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var x in temp)
                                 {
@@ -668,7 +908,167 @@ namespace FF7Scarlet.ExeEditor
                                 writer.WriteLine();
                             }
                         }
-                        if (checker) { writer.WriteLine(); }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
+                        }
+
+                        //compare main menu text
+                        for (i = 0; i < NUM_MENU_TEXTS; ++i)
+                        {
+                            string text1 = MainMenuTexts[i].ToString(),
+                                text2 = original.MainMenuTexts[i].ToString();
+
+                            if (text1 != text2)
+                            {
+                                checker = true;
+                                writer.WriteLine($"# {text2} -> {text1}");
+                                var temp = MainMenuTexts[i].GetBytes();
+                                pos = MAIN_MENU_TEXT_POS + HEXT_OFFSET_2 + (MENU_TEXT_LENGTH * i);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var x in temp)
+                                {
+                                    writer.Write($"{x:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
+                        }
+
+                        //compare status effects
+                        for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
+                        {
+                            string text1 = StatusEffects[i].ToString(),
+                                text2 = original.StatusEffects[i].ToString();
+
+                            if (text1 != text2)
+                            {
+                                checker = true;
+                                writer.WriteLine($"# {text2} -> {text1}");
+                                var temp = StatusEffects[i].GetBytes();
+                                pos = STATUS_EFFECT_POS + HEXT_OFFSET_2 + (GetStatusEffectLength() * i);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var x in temp)
+                                {
+                                    writer.Write($"{x:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
+                        }
+
+                        //compare limits
+                        for (i = 0; i < NUM_LIMITS; ++i)
+                        {
+                            if (Limits[i].HasDifferences(original.Limits[i]))
+                            {
+                                var temp1 = Limits[i].GetRawData();
+                                var temp2 = original.Limits[i].GetRawData();
+                                diff = false;
+
+                                writer.WriteLine($"# {original.Limits[i].Name}");
+                                for (i = 0; i < Attack.BLOCK_SIZE; ++i)
+                                {
+                                    if (temp1[i] != temp2[i])
+                                    {
+                                        if (!diff)
+                                        {
+                                            pos = LIMIT_BREAK_POS + HEXT_OFFSET_2 + i;
+                                            writer.Write($"{pos:X2} = ");
+                                            diff = true;
+                                        }
+                                        writer.Write($"{temp1[i]:X2} ");
+                                    }
+                                    else
+                                    {
+                                        if (diff)
+                                        {
+                                            writer.WriteLine();
+                                            diff = false;
+                                        }
+                                    }
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+
+                        //compare limit text
+                        j = 0;
+                        for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
+                        {
+                            string text1, text2;
+                            if (i < Character.PLAYABLE_CHARACTER_COUNT - 1)
+                            {
+                                //limit success
+                                text1 = LimitSuccess[i].ToString();
+                                text2 = original.LimitSuccess[i].ToString();
+
+                                if (text1 != text2)
+                                {
+                                    checker = true;
+                                    writer.WriteLine($"# {text2} -> {text1}");
+                                    var temp = LimitSuccess[i].GetBytes();
+                                    pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
+                                    writer.Write($"{pos:X2} = ");
+                                    foreach (var x in temp)
+                                    {
+                                        writer.Write($"{x:X2} ");
+                                    }
+                                    writer.WriteLine();
+                                }
+                                j++;
+
+                                //limit fail
+                                text1 = LimitFail[i].ToString();
+                                text2 = original.LimitFail[i].ToString();
+
+                                if (text1 != text2)
+                                {
+                                    checker = true;
+                                    writer.WriteLine($"# {text2} -> {text1}");
+                                    var temp = LimitFail[i].GetBytes();
+                                    pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
+                                    writer.Write($"{pos:X2} = ");
+                                    foreach (var x in temp)
+                                    {
+                                        writer.Write($"{x:X2} ");
+                                    }
+                                    writer.WriteLine();
+                                }
+                                j++;
+                            }
+
+                            //limit wrong
+                            text1 = LimitWrong[i].ToString();
+                            text2 = original.LimitWrong[i].ToString();
+
+                            if (text1 != text2)
+                            {
+                                checker = true;
+                                writer.WriteLine($"# {text2} -> {text1}");
+                                var temp = LimitWrong[i].GetBytes();
+                                pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var x in temp)
+                                {
+                                    writer.Write($"{x:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                            j++;
+                        }
+
+                        //compare names
+                        
 
                         //compare Cait Sith's data
                         if (CaitSith != null && original.CaitSith != null)
@@ -738,6 +1138,58 @@ namespace FF7Scarlet.ExeEditor
                                 }
                                 writer.WriteLine();
                             }
+                        }
+
+                        //compare shop names
+                        for (i = 0; i < NUM_SHOP_NAMES; ++i)
+                        {
+                            string name1 = ShopNames[i].ToString(),
+                                name2 = original.ShopNames[i].ToString();
+
+                            if (name1 != name2)
+                            {
+                                checker = true;
+                                writer.WriteLine($"# {name2} -> {name1}");
+                                var temp = ShopNames[i].GetBytes();
+                                pos = SHOP_NAME_POS + HEXT_OFFSET_2 + (GetShopNameLength() * i);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var x in temp)
+                                {
+                                    writer.Write($"{x:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
+                        }
+
+                        //compare shop text
+                        for (i = 0; i < NUM_SHOP_TEXTS; ++i)
+                        {
+                            string text1 = ShopText[i].ToString(),
+                                text2 = original.ShopText[i].ToString();
+
+                            if (text1 != text2)
+                            {
+                                checker = true;
+                                writer.WriteLine($"# {text2} -> {text1}");
+                                var temp = ShopText[i].GetBytes();
+                                pos = SHOP_TEXT_POS + HEXT_OFFSET_2 + (SHOP_TEXT_LENGTH * i);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var x in temp)
+                                {
+                                    writer.Write($"{x:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
                         }
 
                         //compare shop inventories

@@ -120,14 +120,14 @@ namespace FF7Scarlet
 
         public bool IsEmpty()
         {
-            return (ToString() == null);
+            return (ToString() == string.Empty);
         }
 
-        public override string? ToString()
+        public override string ToString()
         {
             if (data == null)
             {
-                return null;
+                return string.Empty;
             }
             else if (data.Length > 0)
             {
@@ -181,11 +181,11 @@ namespace FF7Scarlet
                 }
                 if (text.Count == 0)
                 {
-                    return null;
+                    return string.Empty;
                 }
                 return new string(text.ToArray()).Trim();
             }
-            return null;
+            return string.Empty;
         }
 
         public int ToInt()
@@ -257,7 +257,6 @@ namespace FF7Scarlet
             else if (obj is string)
             {
                 var str = ToString();
-                if (str == null) { throw new ArgumentNullException(); }
                 return str.CompareTo(obj);
             }
             else if (obj is int)
@@ -273,7 +272,6 @@ namespace FF7Scarlet
         public int CompareTo(FFText other)
         {
             var str = ToString();
-            if (str == null) { throw new ArgumentNullException(); }
             return str.CompareTo(other.ToString());
         }
     }
