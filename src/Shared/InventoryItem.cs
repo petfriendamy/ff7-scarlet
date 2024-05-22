@@ -1,5 +1,5 @@
 ﻿using Shojy.FF7.Elena.Equipment;
-using Shojy.FF7.Elena.Materias;
+using FF7Scarlet.KernelEditor;
 
 namespace FF7Scarlet.Shared
 {
@@ -43,7 +43,7 @@ namespace FF7Scarlet.Shared
             Index = (byte)accessory.Index;
         }
 
-        public InventoryItem(Materia materia)
+        public InventoryItem(MateriaExt materia)
         {
             Type = ItemType.Materia;
             Index = (byte)materia.Index;

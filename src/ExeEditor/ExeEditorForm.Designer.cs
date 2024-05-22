@@ -866,6 +866,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxLimitHurtActionIndex.Name = "comboBoxLimitHurtActionIndex";
             comboBoxLimitHurtActionIndex.Size = new Size(180, 23);
             comboBoxLimitHurtActionIndex.TabIndex = 41;
+            comboBoxLimitHurtActionIndex.TextChanged += comboBoxLimitHurtActionIndex_TextChanged;
             // 
             // labelLimitAttackEffectID
             // 
@@ -884,6 +885,7 @@ namespace FF7Scarlet.ExeEditor
             elementsControlLimit.Name = "elementsControlLimit";
             elementsControlLimit.Size = new Size(370, 130);
             elementsControlLimit.TabIndex = 0;
+            elementsControlLimit.ElementsChanged += LimitDataChanged;
             // 
             // comboBoxLimitAttackEffectID
             // 
@@ -892,6 +894,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxLimitAttackEffectID.Name = "comboBoxLimitAttackEffectID";
             comboBoxLimitAttackEffectID.Size = new Size(100, 23);
             comboBoxLimitAttackEffectID.TabIndex = 39;
+            comboBoxLimitAttackEffectID.SelectedIndexChanged += comboBoxLimitAttackEffectID_SelectedIndexChanged;
             // 
             // labelLimitImpactEffectID
             // 
@@ -909,6 +912,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxLimitImpactEffectID.Name = "comboBoxLimitImpactEffectID";
             comboBoxLimitImpactEffectID.Size = new Size(100, 23);
             comboBoxLimitImpactEffectID.TabIndex = 37;
+            comboBoxLimitImpactEffectID.SelectedIndexChanged += comboBoxLimitImpactEffectID_SelectedIndexChanged;
             // 
             // damageCalculationControlLimit
             // 
@@ -923,6 +927,7 @@ namespace FF7Scarlet.ExeEditor
             damageCalculationControlLimit.Name = "damageCalculationControlLimit";
             damageCalculationControlLimit.Size = new Size(553, 140);
             damageCalculationControlLimit.TabIndex = 36;
+            damageCalculationControlLimit.DataChanged += LimitDataChanged;
             // 
             // labelLimitCamMovementIDMulti
             // 
@@ -940,6 +945,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxLimitCamMovementIDMulti.Name = "comboBoxLimitCamMovementIDMulti";
             comboBoxLimitCamMovementIDMulti.Size = new Size(180, 23);
             comboBoxLimitCamMovementIDMulti.TabIndex = 36;
+            comboBoxLimitCamMovementIDMulti.TextChanged += comboBoxLimitCamMovementIDMulti_TextChanged;
             // 
             // labelLimitCamMovementIDSingle
             // 
@@ -957,6 +963,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxLimitCamMovementIDSingle.Name = "comboBoxLimitCamMovementIDSingle";
             comboBoxLimitCamMovementIDSingle.Size = new Size(180, 23);
             comboBoxLimitCamMovementIDSingle.TabIndex = 34;
+            comboBoxLimitCamMovementIDSingle.TextChanged += comboBoxLimitCamMovementIDSingle_TextChanged;
             // 
             // labelSummonText
             // 
@@ -976,6 +983,7 @@ namespace FF7Scarlet.ExeEditor
             numericLimitAttackPercent.Name = "numericLimitAttackPercent";
             numericLimitAttackPercent.Size = new Size(100, 23);
             numericLimitAttackPercent.TabIndex = 10;
+            numericLimitAttackPercent.ValueChanged += LimitDataChanged;
             // 
             // textBoxSummonText
             // 
@@ -1012,6 +1020,7 @@ namespace FF7Scarlet.ExeEditor
             numericLimitMPCost.Name = "numericLimitMPCost";
             numericLimitMPCost.Size = new Size(100, 23);
             numericLimitMPCost.TabIndex = 8;
+            numericLimitMPCost.ValueChanged += LimitDataChanged;
             // 
             // tabPageLimits2
             // 
@@ -1038,23 +1047,26 @@ namespace FF7Scarlet.ExeEditor
             specialAttackFlagsControlLimit.Name = "specialAttackFlagsControlLimit";
             specialAttackFlagsControlLimit.Size = new Size(559, 100);
             specialAttackFlagsControlLimit.TabIndex = 43;
+            specialAttackFlagsControlLimit.FlagsChanged += LimitDataChanged;
             // 
             // numericLimitStatusChangeChance
             // 
-            numericLimitStatusChangeChance.Location = new Point(149, 333);
+            numericLimitStatusChangeChance.Location = new Point(152, 337);
             numericLimitStatusChangeChance.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
             numericLimitStatusChangeChance.Name = "numericLimitStatusChangeChance";
             numericLimitStatusChangeChance.Size = new Size(108, 23);
             numericLimitStatusChangeChance.TabIndex = 5;
+            numericLimitStatusChangeChance.ValueChanged += numericLimitStatusChangeChance_ValueChanged;
             // 
             // comboBoxLimitConditionSubMenu
             // 
             comboBoxLimitConditionSubMenu.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxLimitConditionSubMenu.FormattingEnabled = true;
-            comboBoxLimitConditionSubMenu.Location = new Point(6, 377);
+            comboBoxLimitConditionSubMenu.Location = new Point(6, 380);
             comboBoxLimitConditionSubMenu.Name = "comboBoxLimitConditionSubMenu";
             comboBoxLimitConditionSubMenu.Size = new Size(251, 23);
             comboBoxLimitConditionSubMenu.TabIndex = 44;
+            comboBoxLimitConditionSubMenu.SelectedIndexChanged += LimitDataChanged;
             // 
             // labelLimitStatusChangeChance
             // 
@@ -1069,10 +1081,11 @@ namespace FF7Scarlet.ExeEditor
             // 
             comboBoxLimitStatusChange.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxLimitStatusChange.FormattingEnabled = true;
-            comboBoxLimitStatusChange.Location = new Point(6, 333);
+            comboBoxLimitStatusChange.Location = new Point(6, 336);
             comboBoxLimitStatusChange.Name = "comboBoxLimitStatusChange";
             comboBoxLimitStatusChange.Size = new Size(137, 23);
             comboBoxLimitStatusChange.TabIndex = 3;
+            comboBoxLimitStatusChange.SelectedIndexChanged += comboBoxLimitStatusChange_SelectedIndexChanged;
             // 
             // labelLimitConditionSubMenu
             // 
@@ -1102,6 +1115,7 @@ namespace FF7Scarlet.ExeEditor
             statusesControlLimit.Name = "statusesControlLimit";
             statusesControlLimit.Size = new Size(559, 200);
             statusesControlLimit.TabIndex = 1;
+            statusesControlLimit.StatusesChanged += LimitDataChanged;
             // 
             // tabPageLimits3
             // 
@@ -1119,6 +1133,7 @@ namespace FF7Scarlet.ExeEditor
             targetDataControlLimit.Name = "targetDataControlLimit";
             targetDataControlLimit.Size = new Size(330, 125);
             targetDataControlLimit.TabIndex = 0;
+            targetDataControlLimit.FlagsChanged += LimitDataChanged;
             // 
             // tabPageNames
             // 

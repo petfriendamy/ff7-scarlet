@@ -41,36 +41,22 @@ namespace FF7Scarlet.ExeEditor
                 if (ItemCount > SHOP_ITEM_MAX) { throw new ArgumentOutOfRangeException(nameof(ItemCount)); }
                 reader.ReadByte(); //padding
 
-                if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+                for (int i = 0; i < ItemCount; ++i)
                 {
-                    for (int i = 0; i < ItemCount; ++i)
-                    {
-                        int type = reader.ReadInt32();
-                        ushort index = reader.ReadUInt16();
-                        reader.ReadUInt16(); //padding
+                    int type = reader.ReadInt32();
+                    ushort index = reader.ReadUInt16();
+                    reader.ReadUInt16(); //padding
 
-                        InventoryItem? temp = null;
-                        if (type == 1) //materia
-                        {
-                            var temp2 = DataManager.Kernel.GetMateriaByID((byte)index);
-                            if (temp2 != null)
-                            {
-                                temp = new InventoryItem(temp2);
-                            }
-                        }
-                        else //other item
-                        {
-                            try
-                            {
-                                temp = new InventoryItem(index);
-                            }
-                            catch (ArgumentException)
-                            {
-                                //nothing
-                            }
-                        }
-                        Inventory[i] = temp;
+                    InventoryItem? temp = null;
+                    if (type == 1) //materia
+                    {
+                        temp = new InventoryItem((byte)index, ItemType.Materia);
                     }
+                    else //other item
+                    {
+                        temp = new InventoryItem(index);
+                    }
+                    Inventory[i] = temp;
                 }
             }
         }
@@ -113,7 +99,7 @@ namespace FF7Scarlet.ExeEditor
                         else
                         {
                             writer.Write(0);
-                            writer.Write(InventoryItem.GetCombinedIndex(item.Type, item.Index));
+                            writer.Write((int)InventoryItem.GetCombinedIndex(item.Type, item.Index));
                         }
                     }
                     else

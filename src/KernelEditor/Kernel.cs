@@ -14,7 +14,7 @@ namespace FF7Scarlet.KernelEditor
     public class Kernel : KernelReader, IAttackContainer
     {
         public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17, NAMES_END = 25,
-            ATTACK_COUNT = 128, SUMMON_OFFSET = 0x38, ESKILL_OFFSET = 0x48;
+            ATTACK_COUNT = 128, MATERIA_COUNT = 96, SUMMON_OFFSET = 0x38, ESKILL_OFFSET = 0x48;
         public MenuCommand[] Commands { get; }
         public Attack[] Attacks { get; }
         public InitialData InitialData { get; }
@@ -104,7 +104,7 @@ namespace FF7Scarlet.KernelEditor
             using (var ms = new MemoryStream(data))
             using (var reader = new BinaryReader(ms))
             {
-                for (int i = 0; i < MateriaExt.Length; ++i)
+                for (int i = 0; i < MATERIA_COUNT; ++i)
                 {
                     MateriaExt[i] = new MateriaExt(reader.ReadBytes(20));
                     MateriaExt[i].Index = i;

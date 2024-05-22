@@ -40,6 +40,19 @@ namespace FF7Scarlet
             this.data = data;
         }
 
+        public FFText(byte[] data, int length)
+        {
+            if (length < 1)
+            {
+                this.data = data;
+            }
+            else
+            {
+                this.data = new byte[length];
+                Array.Copy(data, this.data, Math.Min(length, data.Length));
+            }
+        }
+
         public FFText(string? str = null, int length = -1)
         {
             int i, j;
@@ -87,17 +100,7 @@ namespace FF7Scarlet
 
                             //no matching name found, so assume regular character
                             text.Add((byte)TEXT_MAP.IndexOf('{'));
-                            //text.Add((byte)'{' - CHAR_OFFSET);
                         }
-                        /*else if (b < MAP_OFFSET + CHAR_OFFSET) //letters
-                        {
-                            if (b - CHAR_OFFSET == 0x06)
-                            {
-                                var temp = 1;
-                                var temp2 = 1;
-                            }
-                            text.Add((byte)(b - CHAR_OFFSET));
-                        }*/
                         else //search text map
                         {
                             int pos = TEXT_MAP.IndexOf(str[i]);
@@ -215,24 +218,28 @@ namespace FF7Scarlet
                     return threeByteInt;
                 case ParameterTypes.Debug:
                     var temp = ToString();
-                    if (temp == null) { return Array.Empty<byte>(); }
+                    if (temp == string.Empty) { return Array.Empty<byte>(); }
                     return Encoding.ASCII.GetBytes(temp);
                 default:
-                    return data;
+                    var copy = new byte[data.Length];
+                    Array.Copy(data, copy, data.Length);
+                    return copy;
             }
         }
 
         public byte[] GetBytes(int length)
         {
             var bytes = new byte[length];
-            int dataLength = Math.Min(length, data.Length);
-            Array.Copy(data, bytes, dataLength);
-            for (int i = dataLength; i < length - 1; ++i)
-            {
-                bytes[i] = 0xFF;
-            }
             bytes[length - 1] = 0xFF; //last byte must always be null terminator
+            Array.Copy(data, bytes, Math.Min(length, data.Length));
             return bytes;
+        }
+
+        public byte[] GetBytesTruncated()
+        {
+            var str = ToString();
+            var copy = new FFText(str);
+            return copy.GetBytes();
         }
 
         public int CompareTo(object? obj)
@@ -273,6 +280,23 @@ namespace FF7Scarlet
         {
             var str = ToString();
             return str.CompareTo(other.ToString());
+        }
+
+        public static FFText GetTextFromByteArray(byte[] data, int pos, int length = -1)
+        {
+            var bytes = new List<byte>();
+            using (var stream = new MemoryStream(data))
+            using (var reader = new BinaryReader(stream))
+            {
+                stream.Seek(pos, SeekOrigin.Begin);
+                byte b;
+                do
+                {
+                    b = reader.ReadByte();
+                    bytes.Add(b);
+                } while (b != 0xFF);
+            }
+            return new FFText(bytes.ToArray(), length);
         }
     }
 }

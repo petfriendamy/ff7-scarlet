@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Globalization;
+using System.Media;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
@@ -15,12 +17,14 @@ namespace FF7Scarlet.ExeEditor
 
         private const string WINDOW_TITLE = "Scarlet - EXE Editor";
         private ExeData editor;
-        private ReadOnlyCollection<Accessory> arrangedAccessoryList;
-        private ReadOnlyCollection<Materia> arrangedMateriaList;
         private List<StatusChangeType> statusChangeTypes = new();
         private TextBox[] nameTextBoxes;
         private ComboBox[] ShopItemList;
-        private bool loading = true, unsavedChanges = false;
+        private bool
+            loading = true,
+            unsavedChanges = false,
+            limitNeedsSync = false;
+        private int prevLimit;
 
         private Character? SelectedCharacter
         {
@@ -35,6 +39,23 @@ namespace FF7Scarlet.ExeEditor
                     return editor.Vincent;
                 }
             }
+        }
+
+        private Attack? SelectedLimit
+        {
+            get
+            {
+                if (SelectedLimitIndex >= 0 && SelectedLimitIndex < ExeData.NUM_LIMITS)
+                {
+                    return editor.Limits[SelectedLimitIndex];
+                }
+                return null;
+            }
+        }
+
+        private int SelectedLimitIndex
+        {
+            get { return listBoxLimits.SelectedIndex; }
         }
 
         #endregion
@@ -131,22 +152,8 @@ namespace FF7Scarlet.ExeEditor
             }
 
             //kernel-synced data
-            if (DataManager.BothKernelFilePathsExist && DataManager.Kernel != null)
+            if (DataManager.Kernel != null)
             {
-                //arrange accessory list
-                var aLinq =
-                    from a in DataManager.Kernel.AccessoryData.Accessories
-                    orderby a.Name
-                    select a;
-                arrangedAccessoryList = aLinq.ToArray().AsReadOnly();
-
-                //arrange materia list
-                var mLinq =
-                    from m in DataManager.Kernel.MateriaData.Materias
-                    orderby m.MateriaType, string.IsNullOrWhiteSpace(m.Name), m.Name
-                    select m;
-                arrangedMateriaList = mLinq.ToArray().AsReadOnly();
-
                 //set materia slot selectors to equips
                 materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Materia;
                 materiaSlotSelectorCharacterArmor.SlotSelectorType = SlotSelectorType.Materia;
@@ -183,7 +190,7 @@ namespace FF7Scarlet.ExeEditor
 
                 //accessories
                 comboBoxCharacterAccessory.Items.Add("None");
-                foreach (var accessory in arrangedAccessoryList)
+                foreach (var accessory in DataManager.Kernel.AccessoryData.Accessories)
                 {
                     comboBoxCharacterAccessory.Items.Add(accessory.Name);
                     foreach (var InventoryItem in ShopItemList)
@@ -193,7 +200,7 @@ namespace FF7Scarlet.ExeEditor
                 }
 
                 //materia
-                foreach (var materia in arrangedMateriaList)
+                foreach (var materia in DataManager.Kernel.MateriaExt)
                 {
                     //check if name is empty
                     string name = materia.Name;
@@ -210,8 +217,8 @@ namespace FF7Scarlet.ExeEditor
             }
             else //no kernel loaded
             {
-                arrangedMateriaList = Array.Empty<Materia>().AsReadOnly();
-                arrangedAccessoryList = Array.Empty<Accessory>().AsReadOnly();
+                //arrangedMateriaList = Array.Empty<Materia>().AsReadOnly();
+                //arrangedAccessoryList = Array.Empty<Accessory>().AsReadOnly();
                 groupBoxCharacterWeapon.Enabled = false;
                 groupBoxCharacterArmor.Enabled = false;
                 comboBoxCharacterAccessory.Enabled = false;
@@ -264,6 +271,7 @@ namespace FF7Scarlet.ExeEditor
             //clear items
             int shopType = comboBoxShopType.SelectedIndex;
             if (shopType < 0) { shopType = 0; }
+            comboBoxShopType.Items.Clear();
             listBoxMainMenu.Items.Clear();
             listBoxConfigMenu.Items.Clear();
             listBoxStatusEffects.Items.Clear();
@@ -271,7 +279,6 @@ namespace FF7Scarlet.ExeEditor
             listBoxMateriaPrices.Items.Clear();
             listBoxShopNames.Items.Clear();
             listBoxShopText.Items.Clear();
-            comboBoxShopType.Items.Clear();
 
             //set AP price multiplier
             numericMateriaAPPriceMultiplier.Value = editor.APPriceMultiplier;
@@ -332,31 +339,23 @@ namespace FF7Scarlet.ExeEditor
                 }
                 for (i = 0; i < InventoryItem.ACCESSORY_COUNT; ++i)
                 {
-                    int pos = Array.IndexOf(DataManager.Kernel.AccessoryData.Accessories, arrangedAccessoryList[i]);
-                    if (pos != -1)
+                    var name = DataManager.Kernel.AccessoryData.Accessories[i].Name;
+                    if (string.IsNullOrEmpty(name))
                     {
-                        var name = arrangedAccessoryList[i].Name;
-                        if (string.IsNullOrEmpty(name))
-                        {
-                            name = $"(Accessory ID {i})";
-                        }
-                        listBoxItemPrices.Items.Add($"{name} - {editor.AccessoryPrices[pos]}");
+                        name = $"(Accessory ID {i})";
                     }
+                    listBoxItemPrices.Items.Add($"{name} - {editor.AccessoryPrices[i]}");
                 }
 
                 //set materia prices
-                for (i = 0; i < arrangedMateriaList.Count; ++i)
+                for (i = 0; i < DataManager.Kernel.MateriaExt.Length; ++i)
                 {
-                    int pos = Array.IndexOf(DataManager.Kernel.MateriaData.Materias, arrangedMateriaList[i]);
-                    if (pos != -1)
+                    var name = DataManager.Kernel.MateriaExt[i].Name;
+                    if (string.IsNullOrEmpty(name))
                     {
-                        var name = arrangedMateriaList[i].Name;
-                        if (string.IsNullOrEmpty(name))
-                        {
-                            name = $"(Materia ID {i})";
-                        }
-                        listBoxMateriaPrices.Items.Add($"{name} - {editor.MateriaPrices[pos]}");
+                        name = $"(Materia ID {i})";
                     }
+                    listBoxMateriaPrices.Items.Add($"{name} - {editor.MateriaPrices[i]}");
                 }
             }
 
@@ -374,11 +373,15 @@ namespace FF7Scarlet.ExeEditor
                 listBoxShopText.Items.Add(s.ToString());
             }
 
+            //set L4 text
+            SetLimitText();
+
             //resume layouts
             SuspendOrResumeExeTextListBoxes(true);
             listBoxItemPrices.ResumeLayout();
             listBoxMateriaPrices.ResumeLayout();
             comboBoxShopType.ResumeLayout();
+            loading = false;
         }
 
         //suspend comboboxes so we can add stuff to them (or resume when done)
@@ -424,6 +427,27 @@ namespace FF7Scarlet.ExeEditor
                 }
             }
         }
+        private void SyncLimitData(Attack limit)
+        {
+            limit.AccuracyRate = (byte)numericLimitAttackPercent.Value;
+            limit.MPCost = (ushort)numericLimitMPCost.Value;
+            limit.TargetFlags = targetDataControlLimit.GetTargetData();
+            limit.DamageCalculationID = damageCalculationControlLimit.ActualValue;
+            limit.AttackStrength = damageCalculationControlLimit.AttackPower;
+            if (comboBoxLimitConditionSubMenu.SelectedIndex == 0)
+            {
+                limit.AttackConditions = AttackConditions.None;
+            }
+            else
+            {
+                limit.AttackConditions = (AttackConditions)(comboBoxLimitConditionSubMenu.SelectedIndex - 1);
+            }
+            limit.StatusEffects = statusesControlLimit.GetStatuses();
+            limit.Elements = elementsControlLimit.GetElements();
+            limit.SpecialAttackFlags = specialAttackFlagsControlLimit.GetFlags();
+
+            limitNeedsSync = false;
+        }
 
         //update a character's name
         private void ChangeName(TextBox textBox, int charID)
@@ -448,22 +472,14 @@ namespace FF7Scarlet.ExeEditor
 
         private int GetItemIndex(InventoryItem item)
         {
-            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+            if (DataManager.Kernel != null)
             {
-                if (item.Type == ItemType.Accessory)
-                {
-                    var acc = DataManager.Kernel.GetAccessoryByID(item.Index);
-                    if (acc != null)
-                    {
-                        return arrangedAccessoryList.IndexOf(acc) + InventoryItem.ACCESSORY_START;
-                    }
-                }
-                else if (item.Type == ItemType.Materia)
+                if (item.Type == ItemType.Materia)
                 {
                     var mat = DataManager.Kernel.GetMateriaByID(item.Index);
                     if (mat != null)
                     {
-                        return arrangedMateriaList.IndexOf(mat) + InventoryItem.MAX_INDEX + 1;
+                        return mat.Index + InventoryItem.MAX_INDEX + 1;
                     }
                 }
                 else
@@ -481,18 +497,73 @@ namespace FF7Scarlet.ExeEditor
                 throw new ArgumentNullException(nameof(DataManager.Kernel));
             }
 
-            if (index < InventoryItem.ACCESSORY_START)
+            if (index <= InventoryItem.MAX_INDEX)
             {
                 return new InventoryItem((ushort)index);
             }
-            else if (index <= InventoryItem.MAX_INDEX)
-            {
-                return new InventoryItem(arrangedAccessoryList[index - InventoryItem.ACCESSORY_START]);
-            }
             else
             {
-                return new InventoryItem(arrangedMateriaList[index - InventoryItem.MAX_INDEX - 1]);
+                return new InventoryItem(DataManager.Kernel.MateriaExt[index - InventoryItem.MAX_INDEX - 1]);
             }
+        }
+
+        private void SetLimitText()
+        {
+            bool wasAlreadyLoading = loading;
+            loading = true;
+            int i = comboBoxL4Char.SelectedIndex;
+            if (i >= 0 && i < Character.PLAYABLE_CHARACTER_COUNT)
+            {
+                //set character portrait
+                switch (i)
+                {
+                    case 0:
+                        pictureBoxL4Char.Image = Properties.Resources.Cloud;
+                        break;
+                    case 1:
+                        pictureBoxL4Char.Image = Properties.Resources.Barret;
+                        break;
+                    case 2:
+                        pictureBoxL4Char.Image = Properties.Resources.Tifa;
+                        break;
+                    case 3:
+                        pictureBoxL4Char.Image = Properties.Resources.Aeris;
+                        break;
+                    case 4:
+                        pictureBoxL4Char.Image = Properties.Resources.RedXIII;
+                        break;
+                    case 5:
+                        pictureBoxL4Char.Image = Properties.Resources.Yuffie;
+                        break;
+                    case 6:
+                        pictureBoxL4Char.Image = Properties.Resources.Vincent;
+                        break;
+                    case 7:
+                        pictureBoxL4Char.Image = Properties.Resources.Cid;
+                        break;
+                    case 8:
+                        pictureBoxL4Char.Image = Properties.Resources.CaitSith;
+                        break;
+                }
+
+                //set text
+                textBoxL4Success.Enabled = textBoxL4Fail.Enabled =
+                    i < Character.PLAYABLE_CHARACTER_COUNT - 1;
+
+                //disable success and fail for Cait Sith
+                if (i == Character.PLAYABLE_CHARACTER_COUNT - 1)
+                {
+                    textBoxL4Success.Clear();
+                    textBoxL4Fail.Clear();
+                }
+                else
+                {
+                    textBoxL4Success.Text = editor.LimitSuccess[i].ToString();
+                    textBoxL4Fail.Text = editor.LimitFail[i].ToString();
+                }
+                textBoxL4Wrong.Text = editor.LimitWrong[i].ToString();
+            }
+            if (!wasAlreadyLoading) { loading = false; }
         }
 
         #endregion
@@ -624,7 +695,7 @@ namespace FF7Scarlet.ExeEditor
         {
             if (!loading && SelectedCharacter != null)
             {
-                //stuff
+                characterStatsControl.CopyStatsToCharacter(SelectedCharacter);
                 SetUnsaved(true);
             }
         }
@@ -781,7 +852,12 @@ namespace FF7Scarlet.ExeEditor
 
         private void comboBoxCharacterFlags_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //stuff
+            if (!loading && SelectedCharacter != null)
+            {
+                var flags = Enum.GetValues<CharacterFlags>();
+                SelectedCharacter.CharacterFlags = flags[comboBoxCharacterFlags.SelectedIndex];
+                SetUnsaved(true);
+            }
         }
 
         private void checkBoxCharacterBackRow_CheckedChanged(object sender, EventArgs e)
@@ -805,51 +881,192 @@ namespace FF7Scarlet.ExeEditor
         //populate controls with limit data
         private void listBoxLimits_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loading = true;
-            int i = listBoxLimits.SelectedIndex;
-
-            if (i >= 0 && i < ExeData.NUM_LIMITS)
+            if (!loading)
             {
-                var attack = editor.Limits[i];
-                tabControlLimits.Enabled = true;
-
-                //page 1
-                numericLimitAttackPercent.Value = attack.AccuracyRate;
-                numericLimitMPCost.Value = attack.MPCost;
-                comboBoxLimitAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
-                comboBoxLimitImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
-                elementsControlLimit.SetElements(attack.Elements);
-                comboBoxLimitCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
-                comboBoxLimitCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
-                comboBoxLimitHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
-                damageCalculationControlLimit.AttackPower = attack.AttackStrength;
-                damageCalculationControlLimit.ActualValue = attack.DamageCalculationID;
-
-                //page 2
-                specialAttackFlagsControlLimit.SetFlags(attack.SpecialAttackFlags);
-                statusesControlLimit.SetStatuses(attack.StatusEffects);
-                if (attack.AttackConditions == AttackConditions.None)
+                loading = true;
+                if (limitNeedsSync) //sync unsaved limit data
                 {
-                    comboBoxLimitConditionSubMenu.SelectedIndex = 0;
-                }
-                else
-                {
-                    comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
-                }
-                numericLimitStatusChangeChance.Value = attack.StatusChange.Amount;
-                if (attack.StatusChange.Type == StatusChangeType.None)
-                {
-                    comboBoxLimitStatusChange.SelectedIndex = 0;
-                }
-                else
-                {
-                    comboBoxLimitStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
+                    var limit = editor.Limits[prevLimit];
+                    if (limit != null)
+                    {
+                        SyncLimitData(limit);
+                    }
                 }
 
-                //page 3
-                targetDataControlLimit.SetTargetData(attack.TargetFlags);
+                int i = SelectedLimitIndex;
+
+                if (i >= 0 && i < ExeData.NUM_LIMITS)
+                {
+                    var attack = editor.Limits[i];
+                    tabControlLimits.Enabled = true;
+
+                    //page 1
+                    numericLimitAttackPercent.Value = attack.AccuracyRate;
+                    numericLimitMPCost.Value = attack.MPCost;
+                    comboBoxLimitAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
+                    comboBoxLimitImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
+                    elementsControlLimit.SetElements(attack.Elements);
+                    comboBoxLimitCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
+                    comboBoxLimitCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
+                    comboBoxLimitHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
+                    damageCalculationControlLimit.AttackPower = attack.AttackStrength;
+                    damageCalculationControlLimit.ActualValue = attack.DamageCalculationID;
+
+                    //page 2
+                    specialAttackFlagsControlLimit.SetFlags(attack.SpecialAttackFlags);
+                    statusesControlLimit.SetStatuses(attack.StatusEffects);
+                    if (attack.AttackConditions == AttackConditions.None)
+                    {
+                        comboBoxLimitConditionSubMenu.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
+                    }
+                    numericLimitStatusChangeChance.Value = attack.StatusChange.Amount;
+                    if (attack.StatusChange.Type == StatusChangeType.None)
+                    {
+                        comboBoxLimitStatusChange.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        comboBoxLimitStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
+                    }
+
+                    //page 3
+                    targetDataControlLimit.SetTargetData(attack.TargetFlags);
+                }
+                prevLimit = i;
+                loading = false;
             }
-            loading = false;
+        }
+
+        //limit data changed
+        private void LimitDataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                limitNeedsSync = true;
+                SetUnsaved(true);
+            }
+        }
+
+        private void comboBoxLimitAttackEffectID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedLimit != null)
+            {
+                var text = comboBoxLimitAttackEffectID.Text;
+                if (text.Length == 2)
+                {
+                    byte newID;
+                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        SelectedLimit.AttackEffectID = newID;
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxLimitImpactEffectID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedLimit != null)
+            {
+                var text = comboBoxLimitImpactEffectID.Text;
+                if (text.Length == 2)
+                {
+                    byte newID;
+                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        SelectedLimit.ImpactEffectID = newID;
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxLimitCamMovementIDSingle_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedLimit != null)
+            {
+                var text = comboBoxLimitCamMovementIDSingle.Text;
+                if (text.Length == 4)
+                {
+                    ushort newID;
+                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        SelectedLimit.CameraMovementIDSingle = newID;
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxLimitCamMovementIDMulti_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedLimit != null)
+            {
+                var text = comboBoxLimitCamMovementIDMulti.Text;
+                if (text.Length == 4)
+                {
+                    ushort newID;
+                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        SelectedLimit.CameraMovementIDMulti = newID;
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxLimitHurtActionIndex_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedLimit != null)
+            {
+                var text = comboBoxLimitHurtActionIndex.Text;
+                if (text.Length == 2)
+                {
+                    byte newID;
+                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        SelectedLimit.TargetHurtActionIndex = newID;
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxLimitStatusChange_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = comboBoxLimitStatusChange.SelectedIndex;
+            numericLimitStatusChangeChance.Enabled = (i > 0);
+            statusesControlLimit.Enabled = (i > 0);
+            if (!loading && SelectedLimit != null)
+            {
+                if (i == 0)
+                {
+                    SelectedLimit.StatusChange.Type = StatusChangeType.None;
+                }
+                else
+                {
+                    SelectedLimit.StatusChange.Type = statusChangeTypes[i - 1];
+                }
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericLimitStatusChangeChance_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedLimit != null)
+            {
+                SelectedLimit.StatusChange.Amount = (byte)numericLimitStatusChangeChance.Value;
+                SetUnsaved(true);
+            }
         }
 
         //update character names
@@ -957,6 +1174,7 @@ namespace FF7Scarlet.ExeEditor
                     editor.ItemPrices[i] = (uint)numericItemPrice.Value;
                     listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.ItemPrices[i]}";
                 }
+                SetUnsaved(true);
             }
         }
 
@@ -967,8 +1185,7 @@ namespace FF7Scarlet.ExeEditor
             {
                 loading = true;
                 numericMateriaPrice.Enabled = true;
-                int pos = Array.IndexOf(DataManager.Kernel.MateriaData.Materias, arrangedMateriaList[i]);
-                numericMateriaPrice.Value = editor.MateriaPrices[pos];
+                numericMateriaPrice.Value = editor.MateriaPrices[i];
                 loading = false;
             }
         }
@@ -977,10 +1194,10 @@ namespace FF7Scarlet.ExeEditor
         {
             if (!loading && editor != null && DataManager.Kernel != null)
             {
-                int i = listBoxMateriaPrices.SelectedIndex,
-                    pos = Array.IndexOf(DataManager.Kernel.MateriaData.Materias, arrangedMateriaList[i]);
-                editor.MateriaPrices[pos] = (uint)numericMateriaPrice.Value;
-                listBoxMateriaPrices.Items[i] = $"{arrangedMateriaList[i].Name} - {editor.MateriaPrices[pos]}";
+                int i = listBoxMateriaPrices.SelectedIndex;
+                editor.MateriaPrices[i] = (uint)numericMateriaPrice.Value;
+                listBoxMateriaPrices.Items[i] = $"{DataManager.Kernel.MateriaExt[i].Name} - {editor.MateriaPrices[i]}";
+                SetUnsaved(true);
             }
         }
 
@@ -1040,6 +1257,7 @@ namespace FF7Scarlet.ExeEditor
                 {
                     shop.RemoveItem();
                 }
+                SetUnsaved(true);
             }
         }
 
@@ -1055,6 +1273,7 @@ namespace FF7Scarlet.ExeEditor
                         var shop = editor.Shops[comboBoxShopIndex.SelectedIndex];
                         var item = GetShopItem(ShopItemList[i].SelectedIndex);
                         shop.Inventory[i] = item;
+                        SetUnsaved(true);
                         break;
                     }
                 }
@@ -1099,60 +1318,7 @@ namespace FF7Scarlet.ExeEditor
 
         private void comboBoxL4Char_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loading = true;
-            int i = comboBoxL4Char.SelectedIndex;
-            if (i >= 0 && i < Character.PLAYABLE_CHARACTER_COUNT)
-            {
-                //set character portrait
-                switch (i)
-                {
-                    case 0:
-                        pictureBoxL4Char.Image = Properties.Resources.Cloud;
-                        break;
-                    case 1:
-                        pictureBoxL4Char.Image = Properties.Resources.Barret;
-                        break;
-                    case 2:
-                        pictureBoxL4Char.Image = Properties.Resources.Tifa;
-                        break;
-                    case 3:
-                        pictureBoxL4Char.Image = Properties.Resources.Aeris;
-                        break;
-                    case 4:
-                        pictureBoxL4Char.Image = Properties.Resources.RedXIII;
-                        break;
-                    case 5:
-                        pictureBoxL4Char.Image = Properties.Resources.Yuffie;
-                        break;
-                    case 6:
-                        pictureBoxL4Char.Image = Properties.Resources.Vincent;
-                        break;
-                    case 7:
-                        pictureBoxL4Char.Image = Properties.Resources.Cid;
-                        break;
-                    case 8:
-                        pictureBoxL4Char.Image = Properties.Resources.CaitSith;
-                        break;
-                }
-
-                //set text
-                textBoxL4Success.Enabled = textBoxL4Fail.Enabled =
-                    i < Character.PLAYABLE_CHARACTER_COUNT - 1;
-
-                //disable success and fail for Cait Sith
-                if (i == Character.PLAYABLE_CHARACTER_COUNT - 1)
-                {
-                    textBoxL4Success.Clear();
-                    textBoxL4Fail.Clear();
-                }
-                else
-                {
-                    textBoxL4Success.Text = editor.LimitSuccess[i].ToString();
-                    textBoxL4Fail.Text = editor.LimitFail[i].ToString();
-                }
-                textBoxL4Wrong.Text = editor.LimitWrong[i].ToString();
-            }
-            loading = false;
+            SetLimitText();
         }
 
         private void listBoxShopNames_SelectedIndexChanged(object sender, EventArgs e)
@@ -1294,6 +1460,7 @@ namespace FF7Scarlet.ExeEditor
                             MessageBox.Show($"{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         UpdateFormData();
+                        SetUnsaved(true);
                     }
                     else
                     {
@@ -1313,6 +1480,10 @@ namespace FF7Scarlet.ExeEditor
         private void buttonSaveFile_Click(object sender, EventArgs e)
         {
             if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
+            if (limitNeedsSync && SelectedLimit != null)
+            {
+                SyncLimitData(SelectedLimit);
+            }
 
             DialogResult result;
             string path;
@@ -1343,6 +1514,10 @@ namespace FF7Scarlet.ExeEditor
             try
             {
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
+                if (limitNeedsSync && SelectedLimit != null)
+                {
+                    SyncLimitData(SelectedLimit);
+                }
 
                 DialogResult result;
                 string path;
@@ -1419,6 +1594,10 @@ namespace FF7Scarlet.ExeEditor
             try
             {
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
+                if (limitNeedsSync && SelectedLimit != null)
+                {
+                    SyncLimitData(SelectedLimit);
+                }
                 editor.WriteEXE();
                 SetUnsaved(false);
             }

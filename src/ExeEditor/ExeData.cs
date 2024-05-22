@@ -1,4 +1,5 @@
-﻿using FF7Scarlet.Shared;
+﻿using FF7Scarlet.KernelEditor;
+using FF7Scarlet.Shared;
 using Shojy.FF7.Elena;
 using System.IO;
 using System.Security.Cryptography;
@@ -66,15 +67,11 @@ namespace FF7Scarlet.ExeEditor
         public uint[] WeaponPrices { get; } = new uint[InventoryItem.WEAPON_COUNT];
         public uint[] ArmorPrices { get; } = new uint[InventoryItem.ARMOR_COUNT];
         public uint[] AccessoryPrices { get; } = new uint[InventoryItem.ACCESSORY_COUNT];
-        public uint[] MateriaPrices { get; } = Array.Empty<uint>();
+        public uint[] MateriaPrices { get; } = new uint[Kernel.MATERIA_COUNT];
 
 
         public ExeData(string path)
         {
-            if (DataManager.Kernel != null)
-            {
-                MateriaPrices = new uint[DataManager.Kernel.GetCount(KernelSection.MateriaData)];
-            }
             ReadEXE(path);
         }
 
@@ -493,32 +490,29 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //get item prices
-                        if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+                        stream.Seek(ITEM_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < ItemPrices.Length; ++i)
                         {
-                            stream.Seek(ITEM_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
-                            for (i = 0; i < ItemPrices.Length; ++i)
-                            {
-                                ItemPrices[i] = reader.ReadUInt32();
-                            }
-                            for (i = 0; i < WeaponPrices.Length; ++i)
-                            {
-                                WeaponPrices[i] = reader.ReadUInt32();
-                            }
-                            for (i = 0; i < ArmorPrices.Length; ++i)
-                            {
-                                ArmorPrices[i] = reader.ReadUInt32();
-                            }
-                            for (i = 0; i < AccessoryPrices.Length; ++i)
-                            {
-                                AccessoryPrices[i] = reader.ReadUInt32();
-                            }
+                            ItemPrices[i] = reader.ReadUInt32();
+                        }
+                        for (i = 0; i < WeaponPrices.Length; ++i)
+                        {
+                            WeaponPrices[i] = reader.ReadUInt32();
+                        }
+                        for (i = 0; i < ArmorPrices.Length; ++i)
+                        {
+                            ArmorPrices[i] = reader.ReadUInt32();
+                        }
+                        for (i = 0; i < AccessoryPrices.Length; ++i)
+                        {
+                            AccessoryPrices[i] = reader.ReadUInt32();
+                        }
 
-                            //get materia prices
-                            stream.Seek(MATERIA_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
-                            for (i = 0; i < MateriaPrices.Length; ++i)
-                            {
-                                MateriaPrices[i] = reader.ReadUInt32();
-                            }
+                        //get materia prices
+                        stream.Seek(MATERIA_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
+                        for (i = 0; i < MateriaPrices.Length; ++i)
+                        {
+                            MateriaPrices[i] = reader.ReadUInt32();
                         }
                     }
                     FilePath = path;
@@ -687,58 +681,99 @@ namespace FF7Scarlet.ExeEditor
 
                     //read item prices
                     APPriceMultiplier = reader.ReadByte();
-                    if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+                    for (i = 0; i < ItemPrices.Length; ++i)
                     {
-                        for (i = 0; i < ItemPrices.Length; ++i)
-                        {
-                            ItemPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < WeaponPrices.Length; ++i)
-                        {
-                            WeaponPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < ArmorPrices.Length; ++i)
-                        {
-                            ArmorPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < AccessoryPrices.Length; ++i)
-                        {
-                            AccessoryPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < MateriaPrices.Length; ++i)
-                        {
-                            MateriaPrices[i] = reader.ReadUInt32();
-                        }
+                        ItemPrices[i] = reader.ReadUInt32();
+                    }
+                    for (i = 0; i < WeaponPrices.Length; ++i)
+                    {
+                        WeaponPrices[i] = reader.ReadUInt32();
+                    }
+                    for (i = 0; i < ArmorPrices.Length; ++i)
+                    {
+                        ArmorPrices[i] = reader.ReadUInt32();
+                    }
+                    for (i = 0; i < AccessoryPrices.Length; ++i)
+                    {
+                        AccessoryPrices[i] = reader.ReadUInt32();
+                    }
+                    for (i = 0; i < MateriaPrices.Length; ++i)
+                    {
+                        MateriaPrices[i] = reader.ReadUInt32();
                     }
 
                     //read shop inventories
                     for (i = 0; i < NUM_SHOPS; ++i)
                     {
-                        var type = (ShopType)reader.ReadByte();
-                        byte count = reader.ReadByte();
-                        var items = new InventoryItem[count];
-                        for (int j = 0; j < ShopInventory.SHOP_ITEM_MAX; ++j)
-                        {
-                            if (j < count)
-                            {
-                                byte isMateria = reader.ReadByte();
-                                if (isMateria == 1)
-                                {
-                                    var mat = DataManager.Kernel?.GetMateriaByID((byte)reader.ReadUInt16());
-                                    if (mat != null)
-                                    {
-                                        items[j] = new InventoryItem(mat);
-                                    }
-                                }
-                                else
-                                {
-                                    items[j] = new InventoryItem(reader.ReadUInt16());
-                                }
-                            }
-                        }
+                        Shops[i] = new ShopInventory(reader.ReadBytes(ShopInventory.SHOP_DATA_LENGTH));
                     }
 
-                    //text
+                    //read limits
+                    for (i = 0; i < NUM_LIMITS; ++i)
+                    {
+                        Limits[i] = new Attack((ushort)i, new FFText($"(Limit #{i})"),
+                            reader.ReadBytes(Attack.BLOCK_SIZE));
+                    }
+
+                    //read main menu text
+                    for (i = 0; i < NUM_MENU_TEXTS; ++i)
+                    {
+                        MainMenuTexts[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
+                    }
+
+                    //read config menu text
+                    for (i = 0; i < NUM_CONFIG_TEXTS; ++i)
+                    {
+                        ConfigMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            GetConfigTextLength());
+                        stream.Seek(ConfigMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                    }
+
+                    //read status effects
+                    for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
+                    {
+                        StatusEffects[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            GetStatusEffectLength());
+                        stream.Seek(StatusEffects[i].ToString().Length + 1, SeekOrigin.Current);
+                    }
+
+                    //read shop names
+                    for (i = 0; i < NUM_SHOP_NAMES; ++i)
+                    {
+                        ShopNames[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            GetShopNameLength());
+                        stream.Seek(ShopNames[i].ToString().Length + 1, SeekOrigin.Current);
+                    }
+
+                    //read shop texts
+                    for (i = 0; i < NUM_SHOP_TEXTS; ++i)
+                    {
+                        ShopText[i] = new FFText(reader.ReadBytes(SHOP_TEXT_LENGTH));
+                    }
+
+                    //read L4 success text
+                    for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT - 1; ++i)
+                    {
+                        LimitSuccess[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            GetLimitTextLength());
+                        stream.Seek(LimitSuccess[i].ToString().Length + 1, SeekOrigin.Current);
+                    }
+
+                    //read L4 fail text
+                    for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT - 1; ++i)
+                    {
+                        LimitFail[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            GetLimitTextLength());
+                        stream.Seek(LimitFail[i].ToString().Length + 1, SeekOrigin.Current);
+                    }
+
+                    //read L4 wrong text
+                    for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
+                    {
+                        LimitWrong[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            GetLimitTextLength());
+                        stream.Seek(LimitWrong[i].ToString().Length + 1, SeekOrigin.Current);
+                    }
                 }
             }
             catch (EndOfStreamException)
@@ -779,8 +814,6 @@ namespace FF7Scarlet.ExeEditor
                 using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
                 using (var writer = new BinaryWriter(stream))
                 {
-                    stream.Seek(0, SeekOrigin.Begin);
-                    
                     //write character names
                     foreach (var n in CharacterNames)
                     {
@@ -817,32 +850,62 @@ namespace FF7Scarlet.ExeEditor
                     //write shop inventories
                     foreach (var s in Shops)
                     {
-                        writer.Write((byte)s.ShopType);
-                        writer.Write(s.ItemCount);
-                        for (int i = 0; i < ShopInventory.SHOP_ITEM_MAX; ++i)
-                        {
-                            var item = s.Inventory[i];
-                            if (item == null)
-                            {
-                                writer.Write((byte)0);
-                                writer.Write((ushort)0);
-                            }
-                            else
-                            {
-                                if (item.Type == ItemType.Materia)
-                                {
-                                    writer.Write((byte)1);
-                                }
-                                else
-                                {
-                                    writer.Write((byte)0);
-                                }
-                                writer.Write(item.GetCombinedIndex());
-                            }
-                        }
+                        writer.Write(s.GetByteArray());
                     }
 
-                    //write text
+                    //write limits
+                    foreach (var l in Limits)
+                    {
+                        writer.Write(l.GetRawData());
+                    }
+
+                    //write main menu text
+                    foreach (var t in MainMenuTexts)
+                    {
+                        writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                    }
+
+                    //write config menu text
+                    foreach (var t in ConfigMenuTexts)
+                    {
+                        writer.Write(t.GetBytesTruncated());
+                    }
+
+                    //write status effects
+                    foreach (var s in StatusEffects)
+                    {
+                        writer.Write(s.GetBytesTruncated());
+                    }
+
+                    //write shop names
+                    foreach (var n in ShopNames)
+                    {
+                        writer.Write(n.GetBytesTruncated());
+                    }
+
+                    //write shop texts
+                    foreach (var t in ShopText)
+                    {
+                        writer.Write(t.GetBytes(SHOP_TEXT_LENGTH));
+                    }
+
+                    //write L4 success text
+                    foreach (var t in LimitSuccess)
+                    {
+                        writer.Write(t.GetBytesTruncated());
+                    }
+
+                    //write L4 fail text
+                    foreach (var t in LimitFail)
+                    {
+                        writer.Write(t.GetBytesTruncated());
+                    }
+
+                    //write L4 wrong text
+                    foreach (var t in LimitWrong)
+                    {
+                        writer.Write(t.GetBytesTruncated());
+                    }
                 }
             }
             catch (Exception ex)
@@ -1068,7 +1131,30 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //compare names
-                        
+                        for (i = 0; i < NUM_NAMES; ++i)
+                        {
+                            string name1 = CharacterNames[i].ToString(),
+                                name2 = original.CharacterNames[i].ToString();
+
+                            if (name1 != name2)
+                            {
+                                checker = true;
+                                writer.WriteLine($"# {name2} -> {name1}");
+                                var temp = ShopNames[i].GetBytes();
+                                pos = NAME_DATA_POS + HEXT_OFFSET_2 + (GetShopNameLength() * i);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var x in temp)
+                                {
+                                    writer.Write($"{x:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
+                        }
 
                         //compare Cait Sith's data
                         if (CaitSith != null && original.CaitSith != null)
@@ -1299,11 +1385,11 @@ namespace FF7Scarlet.ExeEditor
                             }
 
                             //compare materia prices
-                            for (i = 0; i < DataManager.Kernel.MateriaData.Materias.Length; ++i)
+                            for (i = 0; i < DataManager.Kernel.MateriaExt.Length; ++i)
                             {
                                 if (MateriaPrices[i] != original.MateriaPrices[i])
                                 {
-                                    writer.WriteLine($"# {DataManager.Kernel.MateriaData.Materias[i].Name} price");
+                                    writer.WriteLine($"# {DataManager.Kernel.MateriaExt[i].Name} price");
                                     pos = MATERIA_PRICE_DATA_POS + HEXT_OFFSET_2 + (i * 4);
                                     writer.Write($"{pos:X2} = ");
                                     foreach (var b in BitConverter.GetBytes(MateriaPrices[i]))
