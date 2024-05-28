@@ -28,6 +28,7 @@ namespace FF7Scarlet
         public static string Kernel2Path { get; private set; } = string.Empty;
         public static string ScenePath { get; private set; } = string.Empty;
         public static string BattleLgpPath { get; private set; } = string.Empty;
+        public static ExeData? ExeData { get; private set; }
         public static ExeData? VanillaExe { get; private set; }
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
@@ -97,16 +98,9 @@ namespace FF7Scarlet
                         //figure out relative file paths
                         if (fileClass == FileClass.EXE)
                         {
-                            //check for region code
-                            string exeName = Path.GetFileNameWithoutExtension(path);
-                            if (exeName.EndsWith("en")) { code = "en"; }
-                            else if (exeName.EndsWith("es")) { code = "es"; }
-                            else if (exeName.EndsWith("fr")) { code = "fr"; }
-                            else if (exeName.EndsWith("de")) { code = "de"; }
-                            else //no extension, assume 1998 version
-                            {
-                                isSteam = false;
-                            }
+                            //check for version
+                            code = ExeData.GetLanguageCode(path);
+                            isSteam = ExeData.IsSteamVersion(path);
 
                             //find kernel and scene files
                             exeDir = Directory.GetParent(path)?.FullName;
@@ -238,7 +232,11 @@ namespace FF7Scarlet
                                     }
                                     else { return false; }
                                 }
-                                else { ExePath = path; }
+                                else
+                                {
+                                    ExeData = new ExeData(path);
+                                    ExePath = path;
+                                }
                                 return true;
                             }
                             return false;

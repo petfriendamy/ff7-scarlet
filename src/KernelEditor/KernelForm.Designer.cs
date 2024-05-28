@@ -28,6 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KernelForm));
             tabControlMain = new TabControl();
             tabPageCommandData = new TabPage();
@@ -87,6 +90,8 @@
             tabPageCharacters = new TabPage();
             tabControlCharacters = new TabControl();
             tabPageInitCharacterStats = new TabPage();
+            numericCharacterLevelOffset = new NumericUpDown();
+            labelCharacterLevelOffset = new Label();
             groupBoxCharacterMP = new GroupBox();
             numericCharacterMaxMP = new NumericUpDown();
             labelCharacterMaxMP = new Label();
@@ -130,6 +135,26 @@
             labelCharacterName = new Label();
             listBoxInitCharacters = new ListBox();
             tabPageCharacterGrowth = new TabPage();
+            groupBoxSelectedCurve = new GroupBox();
+            buttonEditBaseCurve = new Button();
+            groupBoxCurveBonuses = new GroupBox();
+            labelCurveExplanation = new Label();
+            numericCurveBonus12 = new NumericUpDown();
+            numericCurveBonus11 = new NumericUpDown();
+            numericCurveBonus10 = new NumericUpDown();
+            numericCurveBonus9 = new NumericUpDown();
+            numericCurveBonus8 = new NumericUpDown();
+            numericCurveBonus7 = new NumericUpDown();
+            numericCurveBonus6 = new NumericUpDown();
+            numericCurveBonus5 = new NumericUpDown();
+            numericCurveBonus4 = new NumericUpDown();
+            numericCurveBonus3 = new NumericUpDown();
+            numericCurveBonus2 = new NumericUpDown();
+            numericCurveBonus1 = new NumericUpDown();
+            numericCurveIndex = new NumericUpDown();
+            labelCurveIndex = new Label();
+            chartMainCurve = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            listBoxStatCurves = new ListBox();
             listBoxCharacterGrowth = new ListBox();
             tabPageCharacterAI = new TabPage();
             scriptControlCharacterAI = new AIEditor.ScriptControl();
@@ -284,16 +309,16 @@
             listBoxKeyItems = new ListBox();
             tabPageMisc = new TabPage();
             tabControlMisc = new TabControl();
-            tabPageBattleText = new TabPage();
-            listBoxBattleText = new ListBox();
-            textBoxBattleText = new TextBox();
-            labelBattleText = new Label();
             tabPageLimitBreaks = new TabPage();
             textBoxLimitDescription = new TextBox();
             labelLimitDescription = new Label();
             textBoxLimitName = new TextBox();
             labelLimitName = new Label();
             listBoxLimitBreaks = new ListBox();
+            tabPageBattleText = new TabPage();
+            listBoxBattleText = new ListBox();
+            textBoxBattleText = new TextBox();
+            labelBattleText = new Label();
             tabPageBattleRNGTable = new TabPage();
             rngTableControl = new Controls.RNGTableControl();
             tabPageMagicOrder = new TabPage();
@@ -312,6 +337,7 @@
             attackCopyToolStripMenuItem = new ToolStripMenuItem();
             attackPasteToolStripMenuItem = new ToolStripMenuItem();
             attackDeleteToolStripMenuItem = new ToolStripMenuItem();
+            labelInaccurateCurve = new Label();
             tabControlMain.SuspendLayout();
             tabPageCommandData.SuspendLayout();
             tabPageAttackData.SuspendLayout();
@@ -326,6 +352,7 @@
             tabPageCharacters.SuspendLayout();
             tabControlCharacters.SuspendLayout();
             tabPageInitCharacterStats.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericCharacterLevelOffset).BeginInit();
             groupBoxCharacterMP.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericCharacterMaxMP).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericCharacterBaseMP).BeginInit();
@@ -342,6 +369,22 @@
             ((System.ComponentModel.ISupportInitialize)numericCharacterLevel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericCharacterID).BeginInit();
             tabPageCharacterGrowth.SuspendLayout();
+            groupBoxSelectedCurve.SuspendLayout();
+            groupBoxCurveBonuses.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus12).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus11).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus10).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus9).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus8).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus7).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus6).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveIndex).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)chartMainCurve).BeginInit();
             tabPageCharacterAI.SuspendLayout();
             groupBoxCharacterAI.SuspendLayout();
             groupBoxCharacterScripts.SuspendLayout();
@@ -383,8 +426,8 @@
             tabPageKeyItemText.SuspendLayout();
             tabPageMisc.SuspendLayout();
             tabControlMisc.SuspendLayout();
-            tabPageBattleText.SuspendLayout();
             tabPageLimitBreaks.SuspendLayout();
+            tabPageBattleText.SuspendLayout();
             tabPageBattleRNGTable.SuspendLayout();
             panelButtons.SuspendLayout();
             toolStripMain.SuspendLayout();
@@ -1029,6 +1072,8 @@
             // 
             // tabPageInitCharacterStats
             // 
+            tabPageInitCharacterStats.Controls.Add(numericCharacterLevelOffset);
+            tabPageInitCharacterStats.Controls.Add(labelCharacterLevelOffset);
             tabPageInitCharacterStats.Controls.Add(groupBoxCharacterMP);
             tabPageInitCharacterStats.Controls.Add(groupBoxCharacterHP);
             tabPageInitCharacterStats.Controls.Add(numericCharacterEXPtoNext);
@@ -1060,6 +1105,24 @@
             tabPageInitCharacterStats.TabIndex = 0;
             tabPageInitCharacterStats.Text = "Initial Stats";
             tabPageInitCharacterStats.UseVisualStyleBackColor = true;
+            // 
+            // numericCharacterLevelOffset
+            // 
+            numericCharacterLevelOffset.Location = new Point(539, 71);
+            numericCharacterLevelOffset.Maximum = new decimal(new int[] { 64, 0, 0, 0 });
+            numericCharacterLevelOffset.Minimum = new decimal(new int[] { 64, 0, 0, int.MinValue });
+            numericCharacterLevelOffset.Name = "numericCharacterLevelOffset";
+            numericCharacterLevelOffset.Size = new Size(120, 23);
+            numericCharacterLevelOffset.TabIndex = 4;
+            // 
+            // labelCharacterLevelOffset
+            // 
+            labelCharacterLevelOffset.AutoSize = true;
+            labelCharacterLevelOffset.Location = new Point(539, 53);
+            labelCharacterLevelOffset.Name = "labelCharacterLevelOffset";
+            labelCharacterLevelOffset.Size = new Size(107, 15);
+            labelCharacterLevelOffset.TabIndex = 3;
+            labelCharacterLevelOffset.Text = "Recruit level offset:";
             // 
             // groupBoxCharacterMP
             // 
@@ -1203,18 +1266,16 @@
             // 
             // numericCharacterEXPtoNext
             // 
-            numericCharacterEXPtoNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            numericCharacterEXPtoNext.Location = new Point(642, 72);
+            numericCharacterEXPtoNext.Location = new Point(406, 71);
             numericCharacterEXPtoNext.Name = "numericCharacterEXPtoNext";
-            numericCharacterEXPtoNext.Size = new Size(120, 23);
+            numericCharacterEXPtoNext.Size = new Size(115, 23);
             numericCharacterEXPtoNext.TabIndex = 28;
             numericCharacterEXPtoNext.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterEXPtoNext
             // 
-            labelCharacterEXPtoNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelCharacterEXPtoNext.AutoSize = true;
-            labelCharacterEXPtoNext.Location = new Point(642, 53);
+            labelCharacterEXPtoNext.Location = new Point(406, 53);
             labelCharacterEXPtoNext.Name = "labelCharacterEXPtoNext";
             labelCharacterEXPtoNext.Size = new Size(75, 15);
             labelCharacterEXPtoNext.TabIndex = 27;
@@ -1273,18 +1334,16 @@
             // 
             // numericCharacterCurrentEXP
             // 
-            numericCharacterCurrentEXP.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            numericCharacterCurrentEXP.Location = new Point(516, 71);
+            numericCharacterCurrentEXP.Location = new Point(285, 71);
             numericCharacterCurrentEXP.Name = "numericCharacterCurrentEXP";
-            numericCharacterCurrentEXP.Size = new Size(120, 23);
+            numericCharacterCurrentEXP.Size = new Size(115, 23);
             numericCharacterCurrentEXP.TabIndex = 21;
             numericCharacterCurrentEXP.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterCurrentEXP
             // 
-            labelCharacterCurrentEXP.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelCharacterCurrentEXP.AutoSize = true;
-            labelCharacterCurrentEXP.Location = new Point(516, 52);
+            labelCharacterCurrentEXP.Location = new Point(285, 52);
             labelCharacterCurrentEXP.Name = "labelCharacterCurrentEXP";
             labelCharacterCurrentEXP.Size = new Size(30, 15);
             labelCharacterCurrentEXP.TabIndex = 20;
@@ -1408,20 +1467,18 @@
             // 
             // numericCharacterLevel
             // 
-            numericCharacterLevel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            numericCharacterLevel.Location = new Point(435, 71);
+            numericCharacterLevel.Location = new Point(164, 71);
             numericCharacterLevel.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             numericCharacterLevel.Name = "numericCharacterLevel";
-            numericCharacterLevel.Size = new Size(75, 23);
+            numericCharacterLevel.Size = new Size(115, 23);
             numericCharacterLevel.TabIndex = 12;
             numericCharacterLevel.Value = new decimal(new int[] { 1, 0, 0, 0 });
             numericCharacterLevel.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterLevel
             // 
-            labelCharacterLevel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelCharacterLevel.AutoSize = true;
-            labelCharacterLevel.Location = new Point(435, 51);
+            labelCharacterLevel.Location = new Point(164, 52);
             labelCharacterLevel.Name = "labelCharacterLevel";
             labelCharacterLevel.Size = new Size(37, 15);
             labelCharacterLevel.TabIndex = 11;
@@ -1450,7 +1507,7 @@
             // 
             // numericCharacterID
             // 
-            numericCharacterID.Location = new Point(158, 26);
+            numericCharacterID.Location = new Point(164, 26);
             numericCharacterID.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             numericCharacterID.Name = "numericCharacterID";
             numericCharacterID.Size = new Size(75, 23);
@@ -1460,7 +1517,7 @@
             // labelCharacterID
             // 
             labelCharacterID.AutoSize = true;
-            labelCharacterID.Location = new Point(158, 6);
+            labelCharacterID.Location = new Point(164, 6);
             labelCharacterID.Name = "labelCharacterID";
             labelCharacterID.Size = new Size(75, 15);
             labelCharacterID.TabIndex = 3;
@@ -1468,17 +1525,16 @@
             // 
             // textBoxCharacterName
             // 
-            textBoxCharacterName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxCharacterName.Location = new Point(158, 71);
+            textBoxCharacterName.Location = new Point(245, 26);
             textBoxCharacterName.Name = "textBoxCharacterName";
-            textBoxCharacterName.Size = new Size(271, 23);
+            textBoxCharacterName.Size = new Size(276, 23);
             textBoxCharacterName.TabIndex = 2;
             textBoxCharacterName.TextChanged += InitCharacterDataChanged;
             // 
             // labelCharacterName
             // 
             labelCharacterName.AutoSize = true;
-            labelCharacterName.Location = new Point(158, 52);
+            labelCharacterName.Location = new Point(245, 6);
             labelCharacterName.Name = "labelCharacterName";
             labelCharacterName.Size = new Size(42, 15);
             labelCharacterName.TabIndex = 1;
@@ -1496,6 +1552,8 @@
             // 
             // tabPageCharacterGrowth
             // 
+            tabPageCharacterGrowth.Controls.Add(groupBoxSelectedCurve);
+            tabPageCharacterGrowth.Controls.Add(listBoxStatCurves);
             tabPageCharacterGrowth.Controls.Add(listBoxCharacterGrowth);
             tabPageCharacterGrowth.Location = new Point(4, 24);
             tabPageCharacterGrowth.Name = "tabPageCharacterGrowth";
@@ -1505,6 +1563,234 @@
             tabPageCharacterGrowth.Text = "Growth Curves";
             tabPageCharacterGrowth.UseVisualStyleBackColor = true;
             // 
+            // groupBoxSelectedCurve
+            // 
+            groupBoxSelectedCurve.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxSelectedCurve.Controls.Add(labelInaccurateCurve);
+            groupBoxSelectedCurve.Controls.Add(buttonEditBaseCurve);
+            groupBoxSelectedCurve.Controls.Add(groupBoxCurveBonuses);
+            groupBoxSelectedCurve.Controls.Add(numericCurveIndex);
+            groupBoxSelectedCurve.Controls.Add(labelCurveIndex);
+            groupBoxSelectedCurve.Controls.Add(chartMainCurve);
+            groupBoxSelectedCurve.Location = new Point(158, 6);
+            groupBoxSelectedCurve.Name = "groupBoxSelectedCurve";
+            groupBoxSelectedCurve.Size = new Size(604, 462);
+            groupBoxSelectedCurve.TabIndex = 3;
+            groupBoxSelectedCurve.TabStop = false;
+            groupBoxSelectedCurve.Text = "Selected curve";
+            // 
+            // buttonEditBaseCurve
+            // 
+            buttonEditBaseCurve.Location = new Point(108, 303);
+            buttonEditBaseCurve.Name = "buttonEditBaseCurve";
+            buttonEditBaseCurve.Size = new Size(186, 23);
+            buttonEditBaseCurve.TabIndex = 5;
+            buttonEditBaseCurve.Text = "Edit base curve...";
+            buttonEditBaseCurve.UseVisualStyleBackColor = true;
+            buttonEditBaseCurve.Click += buttonEditBaseCurve_Click;
+            // 
+            // groupBoxCurveBonuses
+            // 
+            groupBoxCurveBonuses.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxCurveBonuses.Controls.Add(labelCurveExplanation);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus12);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus11);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus10);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus9);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus8);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus7);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus6);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus5);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus4);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus3);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus2);
+            groupBoxCurveBonuses.Controls.Add(numericCurveBonus1);
+            groupBoxCurveBonuses.Location = new Point(6, 334);
+            groupBoxCurveBonuses.Name = "groupBoxCurveBonuses";
+            groupBoxCurveBonuses.Size = new Size(592, 122);
+            groupBoxCurveBonuses.TabIndex = 4;
+            groupBoxCurveBonuses.TabStop = false;
+            groupBoxCurveBonuses.Text = "Random bonus to stat(s)";
+            // 
+            // labelCurveExplanation
+            // 
+            labelCurveExplanation.AutoSize = true;
+            labelCurveExplanation.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            labelCurveExplanation.Location = new Point(6, 77);
+            labelCurveExplanation.Name = "labelCurveExplanation";
+            labelCurveExplanation.Size = new Size(371, 15);
+            labelCurveExplanation.TabIndex = 12;
+            labelCurveExplanation.Text = "Note: These bonuses are used for EVERY character. Edit with care!";
+            // 
+            // numericCurveBonus12
+            // 
+            numericCurveBonus12.Location = new Point(486, 51);
+            numericCurveBonus12.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus12.Name = "numericCurveBonus12";
+            numericCurveBonus12.Size = new Size(90, 23);
+            numericCurveBonus12.TabIndex = 11;
+            numericCurveBonus12.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus11
+            // 
+            numericCurveBonus11.Location = new Point(390, 51);
+            numericCurveBonus11.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus11.Name = "numericCurveBonus11";
+            numericCurveBonus11.Size = new Size(90, 23);
+            numericCurveBonus11.TabIndex = 10;
+            numericCurveBonus11.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus10
+            // 
+            numericCurveBonus10.Location = new Point(294, 51);
+            numericCurveBonus10.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus10.Name = "numericCurveBonus10";
+            numericCurveBonus10.Size = new Size(90, 23);
+            numericCurveBonus10.TabIndex = 9;
+            numericCurveBonus10.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus9
+            // 
+            numericCurveBonus9.Location = new Point(198, 51);
+            numericCurveBonus9.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus9.Name = "numericCurveBonus9";
+            numericCurveBonus9.Size = new Size(90, 23);
+            numericCurveBonus9.TabIndex = 8;
+            numericCurveBonus9.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus8
+            // 
+            numericCurveBonus8.Location = new Point(102, 51);
+            numericCurveBonus8.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus8.Name = "numericCurveBonus8";
+            numericCurveBonus8.Size = new Size(90, 23);
+            numericCurveBonus8.TabIndex = 7;
+            numericCurveBonus8.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus7
+            // 
+            numericCurveBonus7.Location = new Point(6, 51);
+            numericCurveBonus7.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus7.Name = "numericCurveBonus7";
+            numericCurveBonus7.Size = new Size(90, 23);
+            numericCurveBonus7.TabIndex = 6;
+            numericCurveBonus7.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus6
+            // 
+            numericCurveBonus6.Location = new Point(486, 22);
+            numericCurveBonus6.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus6.Name = "numericCurveBonus6";
+            numericCurveBonus6.Size = new Size(90, 23);
+            numericCurveBonus6.TabIndex = 5;
+            numericCurveBonus6.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus5
+            // 
+            numericCurveBonus5.Location = new Point(390, 22);
+            numericCurveBonus5.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus5.Name = "numericCurveBonus5";
+            numericCurveBonus5.Size = new Size(90, 23);
+            numericCurveBonus5.TabIndex = 4;
+            numericCurveBonus5.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus4
+            // 
+            numericCurveBonus4.Location = new Point(294, 22);
+            numericCurveBonus4.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus4.Name = "numericCurveBonus4";
+            numericCurveBonus4.Size = new Size(90, 23);
+            numericCurveBonus4.TabIndex = 3;
+            numericCurveBonus4.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus3
+            // 
+            numericCurveBonus3.Location = new Point(198, 22);
+            numericCurveBonus3.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus3.Name = "numericCurveBonus3";
+            numericCurveBonus3.Size = new Size(90, 23);
+            numericCurveBonus3.TabIndex = 2;
+            numericCurveBonus3.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus2
+            // 
+            numericCurveBonus2.Location = new Point(102, 22);
+            numericCurveBonus2.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus2.Name = "numericCurveBonus2";
+            numericCurveBonus2.Size = new Size(90, 23);
+            numericCurveBonus2.TabIndex = 1;
+            numericCurveBonus2.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveBonus1
+            // 
+            numericCurveBonus1.Location = new Point(6, 22);
+            numericCurveBonus1.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericCurveBonus1.Name = "numericCurveBonus1";
+            numericCurveBonus1.Size = new Size(90, 23);
+            numericCurveBonus1.TabIndex = 0;
+            numericCurveBonus1.ValueChanged += numericCurveBonus_ValueChanged;
+            // 
+            // numericCurveIndex
+            // 
+            numericCurveIndex.Location = new Point(6, 305);
+            numericCurveIndex.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
+            numericCurveIndex.Name = "numericCurveIndex";
+            numericCurveIndex.Size = new Size(96, 23);
+            numericCurveIndex.TabIndex = 2;
+            numericCurveIndex.ValueChanged += numericCurveIndex_ValueChanged;
+            // 
+            // labelCurveIndex
+            // 
+            labelCurveIndex.AutoSize = true;
+            labelCurveIndex.Location = new Point(6, 287);
+            labelCurveIndex.Name = "labelCurveIndex";
+            labelCurveIndex.Size = new Size(73, 15);
+            labelCurveIndex.TabIndex = 1;
+            labelCurveIndex.Text = "Curve index:";
+            // 
+            // chartMainCurve
+            // 
+            chartMainCurve.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            chartMainCurve.BackColor = SystemColors.Control;
+            chartArea2.AxisX.Interval = 10D;
+            chartArea2.AxisX.IntervalOffset = 9D;
+            chartArea2.AxisX.IsStartedFromZero = false;
+            chartArea2.AxisX.Maximum = 99D;
+            chartArea2.AxisX.Minimum = 1D;
+            chartArea2.Name = "ChartArea1";
+            chartMainCurve.ChartAreas.Add(chartArea2);
+            chartMainCurve.Location = new Point(6, 22);
+            chartMainCurve.Name = "chartMainCurve";
+            chartMainCurve.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Color = Color.SteelBlue;
+            series3.Name = "Min";
+            series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series3.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Color = Color.Firebrick;
+            series4.Name = "Max";
+            series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series4.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            chartMainCurve.Series.Add(series3);
+            chartMainCurve.Series.Add(series4);
+            chartMainCurve.Size = new Size(592, 262);
+            chartMainCurve.TabIndex = 0;
+            chartMainCurve.Text = "Main curve";
+            // 
+            // listBoxStatCurves
+            // 
+            listBoxStatCurves.FormattingEnabled = true;
+            listBoxStatCurves.ItemHeight = 15;
+            listBoxStatCurves.Items.AddRange(new object[] { "Strength", "Vitality", "Magic", "Spirit", "Dexterity", "Luck", "HP", "MP", "EXP" });
+            listBoxStatCurves.Location = new Point(6, 151);
+            listBoxStatCurves.Name = "listBoxStatCurves";
+            listBoxStatCurves.Size = new Size(146, 139);
+            listBoxStatCurves.TabIndex = 2;
+            listBoxStatCurves.SelectedIndexChanged += StatCurveChanged;
+            // 
             // listBoxCharacterGrowth
             // 
             listBoxCharacterGrowth.FormattingEnabled = true;
@@ -1513,6 +1799,7 @@
             listBoxCharacterGrowth.Name = "listBoxCharacterGrowth";
             listBoxCharacterGrowth.Size = new Size(146, 139);
             listBoxCharacterGrowth.TabIndex = 1;
+            listBoxCharacterGrowth.SelectedIndexChanged += StatCurveChanged;
             // 
             // tabPageCharacterAI
             // 
@@ -3218,53 +3505,6 @@
             tabControlMisc.Size = new Size(776, 502);
             tabControlMisc.TabIndex = 11;
             // 
-            // tabPageBattleText
-            // 
-            tabPageBattleText.Controls.Add(listBoxBattleText);
-            tabPageBattleText.Controls.Add(textBoxBattleText);
-            tabPageBattleText.Controls.Add(labelBattleText);
-            tabPageBattleText.Location = new Point(4, 24);
-            tabPageBattleText.Name = "tabPageBattleText";
-            tabPageBattleText.Padding = new Padding(3);
-            tabPageBattleText.Size = new Size(768, 474);
-            tabPageBattleText.TabIndex = 0;
-            tabPageBattleText.Text = "Battle Text";
-            tabPageBattleText.UseVisualStyleBackColor = true;
-            // 
-            // listBoxBattleText
-            // 
-            listBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            listBoxBattleText.FormattingEnabled = true;
-            listBoxBattleText.ItemHeight = 15;
-            listBoxBattleText.Location = new Point(7, 6);
-            listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
-            listBoxBattleText.Name = "listBoxBattleText";
-            listBoxBattleText.Size = new Size(174, 454);
-            listBoxBattleText.TabIndex = 2;
-            listBoxBattleText.SelectedIndexChanged += listBoxBattleText_SelectedIndexChanged;
-            // 
-            // textBoxBattleText
-            // 
-            textBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxBattleText.Enabled = false;
-            textBoxBattleText.Location = new Point(189, 24);
-            textBoxBattleText.Margin = new Padding(4, 3, 4, 3);
-            textBoxBattleText.Name = "textBoxBattleText";
-            textBoxBattleText.Size = new Size(572, 23);
-            textBoxBattleText.TabIndex = 10;
-            textBoxBattleText.TextChanged += textBoxBattleText_TextChanged;
-            // 
-            // labelBattleText
-            // 
-            labelBattleText.AutoSize = true;
-            labelBattleText.Enabled = false;
-            labelBattleText.Location = new Point(189, 6);
-            labelBattleText.Margin = new Padding(4, 0, 4, 0);
-            labelBattleText.Name = "labelBattleText";
-            labelBattleText.Size = new Size(31, 15);
-            labelBattleText.TabIndex = 9;
-            labelBattleText.Text = "Text:";
-            // 
             // tabPageLimitBreaks
             // 
             tabPageLimitBreaks.Controls.Add(textBoxLimitDescription);
@@ -3333,6 +3573,53 @@
             listBoxLimitBreaks.Size = new Size(174, 454);
             listBoxLimitBreaks.TabIndex = 9;
             listBoxLimitBreaks.SelectedIndexChanged += listBoxLimitBreaks_SelectedIndexChanged;
+            // 
+            // tabPageBattleText
+            // 
+            tabPageBattleText.Controls.Add(listBoxBattleText);
+            tabPageBattleText.Controls.Add(textBoxBattleText);
+            tabPageBattleText.Controls.Add(labelBattleText);
+            tabPageBattleText.Location = new Point(4, 24);
+            tabPageBattleText.Name = "tabPageBattleText";
+            tabPageBattleText.Padding = new Padding(3);
+            tabPageBattleText.Size = new Size(768, 474);
+            tabPageBattleText.TabIndex = 0;
+            tabPageBattleText.Text = "Battle Text";
+            tabPageBattleText.UseVisualStyleBackColor = true;
+            // 
+            // listBoxBattleText
+            // 
+            listBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxBattleText.FormattingEnabled = true;
+            listBoxBattleText.ItemHeight = 15;
+            listBoxBattleText.Location = new Point(7, 6);
+            listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
+            listBoxBattleText.Name = "listBoxBattleText";
+            listBoxBattleText.Size = new Size(174, 454);
+            listBoxBattleText.TabIndex = 2;
+            listBoxBattleText.SelectedIndexChanged += listBoxBattleText_SelectedIndexChanged;
+            // 
+            // textBoxBattleText
+            // 
+            textBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxBattleText.Enabled = false;
+            textBoxBattleText.Location = new Point(189, 24);
+            textBoxBattleText.Margin = new Padding(4, 3, 4, 3);
+            textBoxBattleText.Name = "textBoxBattleText";
+            textBoxBattleText.Size = new Size(572, 23);
+            textBoxBattleText.TabIndex = 10;
+            textBoxBattleText.TextChanged += textBoxBattleText_TextChanged;
+            // 
+            // labelBattleText
+            // 
+            labelBattleText.AutoSize = true;
+            labelBattleText.Enabled = false;
+            labelBattleText.Location = new Point(189, 6);
+            labelBattleText.Margin = new Padding(4, 0, 4, 0);
+            labelBattleText.Name = "labelBattleText";
+            labelBattleText.Size = new Size(31, 15);
+            labelBattleText.TabIndex = 9;
+            labelBattleText.Text = "Text:";
             // 
             // tabPageBattleRNGTable
             // 
@@ -3497,6 +3784,16 @@
             attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
             // 
+            // labelInaccurateCurve
+            // 
+            labelInaccurateCurve.AutoSize = true;
+            labelInaccurateCurve.Location = new Point(367, 287);
+            labelInaccurateCurve.Name = "labelInaccurateCurve";
+            labelInaccurateCurve.Size = new Size(231, 15);
+            labelInaccurateCurve.TabIndex = 6;
+            labelInaccurateCurve.Text = "*Load ff7.exe to display this chart correctly";
+            labelInaccurateCurve.Visible = false;
+            // 
             // KernelForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3531,6 +3828,7 @@
             tabControlCharacters.ResumeLayout(false);
             tabPageInitCharacterStats.ResumeLayout(false);
             tabPageInitCharacterStats.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericCharacterLevelOffset).EndInit();
             groupBoxCharacterMP.ResumeLayout(false);
             groupBoxCharacterMP.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericCharacterMaxMP).EndInit();
@@ -3549,6 +3847,24 @@
             ((System.ComponentModel.ISupportInitialize)numericCharacterLevel).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericCharacterID).EndInit();
             tabPageCharacterGrowth.ResumeLayout(false);
+            groupBoxSelectedCurve.ResumeLayout(false);
+            groupBoxSelectedCurve.PerformLayout();
+            groupBoxCurveBonuses.ResumeLayout(false);
+            groupBoxCurveBonuses.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus12).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus11).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus10).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus9).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus8).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus7).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus6).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus4).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveBonus1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericCurveIndex).EndInit();
+            ((System.ComponentModel.ISupportInitialize)chartMainCurve).EndInit();
             tabPageCharacterAI.ResumeLayout(false);
             groupBoxCharacterAI.ResumeLayout(false);
             groupBoxCharacterScripts.ResumeLayout(false);
@@ -3604,10 +3920,10 @@
             tabPageKeyItemText.PerformLayout();
             tabPageMisc.ResumeLayout(false);
             tabControlMisc.ResumeLayout(false);
-            tabPageBattleText.ResumeLayout(false);
-            tabPageBattleText.PerformLayout();
             tabPageLimitBreaks.ResumeLayout(false);
             tabPageLimitBreaks.PerformLayout();
+            tabPageBattleText.ResumeLayout(false);
+            tabPageBattleText.PerformLayout();
             tabPageBattleRNGTable.ResumeLayout(false);
             panelButtons.ResumeLayout(false);
             toolStripMain.ResumeLayout(false);
@@ -3901,5 +4217,28 @@
         private TextBox textBoxLimitName;
         private Label labelLimitName;
         private ListBox listBoxLimitBreaks;
+        private ListBox listBoxStatCurves;
+        private GroupBox groupBoxSelectedCurve;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartMainCurve;
+        private Label labelCurveIndex;
+        private NumericUpDown numericCurveIndex;
+        private NumericUpDown numericCharacterLevelOffset;
+        private Label labelCharacterLevelOffset;
+        private GroupBox groupBoxCurveBonuses;
+        private NumericUpDown numericCurveBonus11;
+        private NumericUpDown numericCurveBonus10;
+        private NumericUpDown numericCurveBonus9;
+        private NumericUpDown numericCurveBonus8;
+        private NumericUpDown numericCurveBonus7;
+        private NumericUpDown numericCurveBonus6;
+        private NumericUpDown numericCurveBonus5;
+        private NumericUpDown numericCurveBonus4;
+        private NumericUpDown numericCurveBonus3;
+        private NumericUpDown numericCurveBonus2;
+        private NumericUpDown numericCurveBonus1;
+        private NumericUpDown numericCurveBonus12;
+        private Button buttonEditBaseCurve;
+        private Label labelCurveExplanation;
+        private Label labelInaccurateCurve;
     }
 }

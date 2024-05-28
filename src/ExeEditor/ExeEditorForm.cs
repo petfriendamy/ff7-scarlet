@@ -1599,6 +1599,10 @@ namespace FF7Scarlet.ExeEditor
                     SyncLimitData(SelectedLimit);
                 }
                 editor.WriteEXE();
+                if (DataManager.ExeData != null) //sync with DataManager
+                {
+                    DataManager.ExeData.ReadBytes(editor.GetBytes());
+                }
                 SetUnsaved(false);
             }
             catch (IOException ex)

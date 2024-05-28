@@ -23,6 +23,7 @@ Scarlet is a battle data editor for Final Fantasy VII. This allows you to modify
   * Limit breaks
   * Character names (as seen in the naming menu)
   * Shop data
+  * Assorted in-game text
 
 Special thanks:
 * NFITC1
@@ -30,7 +31,7 @@ Special thanks:
 * Shojy
 * TrueOdin
 * m4v3k
-* myst6re
 * DLPB
+* myst6re
 * titeguy3
 * Bosola

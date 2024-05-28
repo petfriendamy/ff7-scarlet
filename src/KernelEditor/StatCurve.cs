@@ -8,6 +8,7 @@ namespace FF7Scarlet.KernelEditor
 {
     public class StatCurve
     {
+        public const int STAT_COUNT = 9;
         private readonly byte[] gradients = new byte[8];
         private readonly sbyte[] bases = new sbyte[8];
 

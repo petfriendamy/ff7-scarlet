@@ -387,6 +387,22 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        public static string GetLanguageCode(string path)
+        {
+            var lang = GetLanguage(path);
+            switch (lang)
+            {
+                case Language.Spanish:
+                    return "es";
+                case Language.French:
+                    return "fr";
+                case Language.German:
+                    return "de";
+                default:
+                    return "en";
+            }
+        }
+
         public static bool IsSteamVersion(string path)
         {
             string fileName = Path.GetFileNameWithoutExtension(path);
@@ -786,6 +802,110 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        //write data to a byte array
+        public byte[] GetBytes()
+        {
+            if (CaitSith == null) { throw new ArgumentNullException(nameof(CaitSith)); }
+            if (Vincent == null) { throw new ArgumentNullException(nameof(Vincent)); }
+
+            var output = new List<byte>();
+
+            //write character names
+            foreach (var n in CharacterNames)
+            {
+                output.AddRange(n.GetBytes(Character.NAME_LENGTH));
+            }
+
+            //write character data
+            output.AddRange(CaitSith.GetRawData());
+            output.AddRange(Vincent.GetRawData());
+
+            //write item prices
+            output.Add(APPriceMultiplier);
+            foreach (var i in ItemPrices)
+            {
+                output.AddRange(BitConverter.GetBytes(i));
+            }
+            foreach (var p in WeaponPrices)
+            {
+                output.AddRange(BitConverter.GetBytes(p));
+            }
+            foreach (var p in ArmorPrices)
+            {
+                output.AddRange(BitConverter.GetBytes(p));
+            }
+            foreach (var p in AccessoryPrices)
+            {
+                output.AddRange(BitConverter.GetBytes(p));
+            }
+            foreach (var p in MateriaPrices)
+            {
+                output.AddRange(BitConverter.GetBytes(p));
+            }
+
+            //write shop inventories
+            foreach (var s in Shops)
+            {
+                output.AddRange(s.GetByteArray());
+            }
+
+            //write limits
+            foreach (var l in Limits)
+            {
+                output.AddRange(l.GetRawData());
+            }
+
+            //write main menu text
+            foreach (var t in MainMenuTexts)
+            {
+                output.AddRange(t.GetBytes(MENU_TEXT_LENGTH));
+            }
+
+            //write config menu text
+            foreach (var t in ConfigMenuTexts)
+            {
+                output.AddRange(t.GetBytesTruncated());
+            }
+
+            //write status effects
+            foreach (var s in StatusEffects)
+            {
+                output.AddRange(s.GetBytesTruncated());
+            }
+
+            //write shop names
+            foreach (var n in ShopNames)
+            {
+                output.AddRange(n.GetBytesTruncated());
+            }
+
+            //write shop texts
+            foreach (var t in ShopText)
+            {
+                output.AddRange(t.GetBytes(SHOP_TEXT_LENGTH));
+            }
+
+            //write L4 success text
+            foreach (var t in LimitSuccess)
+            {
+                output.AddRange(t.GetBytesTruncated());
+            }
+
+            //write L4 fail text
+            foreach (var t in LimitFail)
+            {
+                output.AddRange(t.GetBytesTruncated());
+            }
+
+            //write L4 wrong text
+            foreach (var t in LimitWrong)
+            {
+                output.AddRange(t.GetBytesTruncated());
+            }
+
+            return output.ToArray();
+        }
+
         //read data from a file
         public void ReadFile(string path)
         {
@@ -808,105 +928,7 @@ namespace FF7Scarlet.ExeEditor
         {
             try
             {
-                if (CaitSith == null) { throw new ArgumentNullException(nameof(CaitSith)); }
-                if (Vincent == null) { throw new ArgumentNullException(nameof(Vincent)); }
-
-                using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
-                using (var writer = new BinaryWriter(stream))
-                {
-                    //write character names
-                    foreach (var n in CharacterNames)
-                    {
-                        writer.Write(n.GetBytes(Character.NAME_LENGTH));
-                    }
-
-                    //write character data
-                    writer.Write(CaitSith.GetRawData());
-                    writer.Write(Vincent.GetRawData());
-
-                    //write item prices
-                    writer.Write(APPriceMultiplier);
-                    foreach (var i in ItemPrices)
-                    {
-                        writer.Write(i);
-                    }
-                    foreach (var p in WeaponPrices)
-                    {
-                        writer.Write(p);
-                    }
-                    foreach (var p in ArmorPrices)
-                    {
-                        writer.Write(p);
-                    }
-                    foreach (var p in AccessoryPrices)
-                    {
-                        writer.Write(p);
-                    }
-                    foreach (var p in MateriaPrices)
-                    {
-                        writer.Write(p);
-                    }
-
-                    //write shop inventories
-                    foreach (var s in Shops)
-                    {
-                        writer.Write(s.GetByteArray());
-                    }
-
-                    //write limits
-                    foreach (var l in Limits)
-                    {
-                        writer.Write(l.GetRawData());
-                    }
-
-                    //write main menu text
-                    foreach (var t in MainMenuTexts)
-                    {
-                        writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
-                    }
-
-                    //write config menu text
-                    foreach (var t in ConfigMenuTexts)
-                    {
-                        writer.Write(t.GetBytesTruncated());
-                    }
-
-                    //write status effects
-                    foreach (var s in StatusEffects)
-                    {
-                        writer.Write(s.GetBytesTruncated());
-                    }
-
-                    //write shop names
-                    foreach (var n in ShopNames)
-                    {
-                        writer.Write(n.GetBytesTruncated());
-                    }
-
-                    //write shop texts
-                    foreach (var t in ShopText)
-                    {
-                        writer.Write(t.GetBytes(SHOP_TEXT_LENGTH));
-                    }
-
-                    //write L4 success text
-                    foreach (var t in LimitSuccess)
-                    {
-                        writer.Write(t.GetBytesTruncated());
-                    }
-
-                    //write L4 fail text
-                    foreach (var t in LimitFail)
-                    {
-                        writer.Write(t.GetBytesTruncated());
-                    }
-
-                    //write L4 wrong text
-                    foreach (var t in LimitWrong)
-                    {
-                        writer.Write(t.GetBytesTruncated());
-                    }
-                }
+                File.WriteAllBytes(path, GetBytes());
             }
             catch (Exception ex)
             {

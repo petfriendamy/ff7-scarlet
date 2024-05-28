@@ -1,14 +1,19 @@
 ﻿using FF7Scarlet.AIEditor;
-using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
-using Shojy.FF7.Elena;
+using static System.Windows.Forms.AxHost;
 
 namespace FF7Scarlet.KernelEditor
 {
+    public enum CurveStats
+    {
+        Strength, Vitality, Magic, Spirit, Dexterity, Luck, HP, MP, EXP
+    }
+
     public class BattleAndGrowthData
     {
-        public const int AI_BLOCK_SIZE = 2024, AI_BLOCK_COUNT = 12,
-            RNG_TABLE_SIZE = 256, LOOKUP_TABLE_SIZE = 64;
+        public const int AI_BLOCK_SIZE = 2024, AI_BLOCK_COUNT = 12, STAT_CURVE_COUNT = 64,
+            RNG_TABLE_SIZE = 256, LOOKUP_TABLE_SIZE = 64,
+            MIN_STAT_MODIFIER = 1, MAX_STAT_MODIFIER = 8;
         private readonly CharacterGrowth[] characterGrowth = new CharacterGrowth[Character.PLAYABLE_CHARACTER_COUNT];
         private readonly byte[]
             randomBonusToPrimaryStats = new byte[12],
@@ -17,11 +22,7 @@ namespace FF7Scarlet.KernelEditor
             rawAIdata = new byte[AI_BLOCK_SIZE],
             rngTable = new byte[RNG_TABLE_SIZE],
             sceneLookupTable = new byte[LOOKUP_TABLE_SIZE];
-        private readonly StatCurve[]
-            primaryStatCurves = new StatCurve[37],
-            hpStatCurves = new StatCurve[9],
-            mpStatCurves = new StatCurve[9],
-            expStatCurves = new StatCurve[9];
+        private readonly StatCurve[] statCurves = new StatCurve[STAT_CURVE_COUNT];
         private ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
         private readonly CharacterAI[] characterAI = new CharacterAI[AI_BLOCK_COUNT];
         private byte[] rawData = [];
@@ -43,21 +44,9 @@ namespace FF7Scarlet.KernelEditor
         {
             get { return randomBonusToMP; }
         }
-        public StatCurve[] PrimaryStatCurves
+        public StatCurve[] StatCurves
         {
-            get { return primaryStatCurves; }
-        }
-        public StatCurve[] HPStatCurves
-        {
-            get { return hpStatCurves; }
-        }
-        public StatCurve[] MPStatCurves
-        {
-            get { return mpStatCurves; }
-        }
-        public StatCurve[] EXPStatCurves
-        {
-            get { return expStatCurves; }
+            get { return statCurves; }
         }
         public byte[] RNGTable
         {
@@ -98,21 +87,9 @@ namespace FF7Scarlet.KernelEditor
                 {
                     RandomBonusToMP[i] = reader.ReadByte();
                 }
-                for (i = 0; i < 37; ++i)
+                for (i = 0; i < STAT_CURVE_COUNT; ++i)
                 {
-                    PrimaryStatCurves[i] = new StatCurve(reader.ReadBytes(16));
-                }
-                for (i = 0; i < 9; ++i)
-                {
-                    HPStatCurves[i] = new StatCurve(reader.ReadBytes(16));
-                }
-                for (i = 0; i < 9; ++i)
-                {
-                    MPStatCurves[i] = new StatCurve(reader.ReadBytes(16));
-                }
-                for (i = 0; i < 9; ++i)
-                {
-                    EXPStatCurves[i] = new StatCurve(reader.ReadBytes(16));
+                    StatCurves[i] = new StatCurve(reader.ReadBytes(16));
                 }
                 for (i = 0; i < AI_BLOCK_COUNT; ++i)
                 {
@@ -141,6 +118,173 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        public int[] CalculateMinStats(int chara, int stat)
+        {
+            return CalcStats(chara, stat, MIN_STAT_MODIFIER);
+        }
+
+        public int[] CalculateMaxStats(int chara, int stat)
+        {
+            return CalcStats(chara, stat, MAX_STAT_MODIFIER);
+        }
+
+        private Character? GetCharacter(int chara)
+        {
+            var charStats = Parent.InitialData.Characters[chara];
+            //grab Cait Sith/Vincent data from the EXE
+            if (DataManager.ExeData != null)
+            {
+                if (chara == (int)CharacterNames.CaitSith)
+                {
+                    charStats = DataManager.ExeData.CaitSith;
+                }
+                else if (chara == (int)CharacterNames.Vincent)
+                {
+                    charStats = DataManager.ExeData.Vincent;
+                }
+            }
+            return charStats;
+        }
+
+        private int GetBaseStat(Character chara, int stat)
+        {
+            switch ((CurveStats)stat) //get base stat
+            {
+                case CurveStats.Strength:
+                    return chara.Strength;
+                case CurveStats.Vitality:
+                    return chara.Vitality;
+                case CurveStats.Magic:
+                    return chara.Magic;
+                case CurveStats.Spirit:
+                    return chara.Spirit;
+                case CurveStats.Dexterity:
+                    return chara.Dexterity;
+                case CurveStats.Luck:
+                    return chara.Luck;
+                case CurveStats.HP:
+                    return chara.BaseHP;
+                case CurveStats.MP:
+                    return chara.BaseMP;
+                default:
+                    return 0;
+            }
+        }
+
+        private int GetBracket(int level)
+        {
+            if (level < 12) { return 0; }
+            else if (level < 22) { return 1; }
+            else if (level < 32) { return 2; }
+            else if (level < 42) { return 3; }
+            else if (level < 52) { return 4; }
+            else if (level < 62) { return 5; }
+            else if (level < 82) { return 6; }
+            else { return 7; }
+        }
+
+        private int CalcStatGain(int chara, int level, int baseLevel, int stat, int prevStat,
+            int rnd)
+        {
+            //thanks to DLPB for helping with these formulas!
+
+            var s = (CurveStats)stat;
+            int bracket = GetBracket(level);
+            var curve = StatCurves[CharGrowth[chara].CurveIndex[stat]];
+
+            //calculate the stat gain
+            if (level <= baseLevel) //don't calc at start level
+            {
+                return 0;
+            }
+            else if (s == CurveStats.EXP) //special calc for EXP
+            {
+                return curve.Gradients[bracket] * ((level - 1) * (level - 1)) / 10;
+            }
+            else //everything else
+            {
+                int baseline = CalcBaseline(s, curve, level),
+                    difference = CalcDifference(s, baseline, prevStat, rnd);
+
+                if (s == CurveStats.HP)
+                {
+                    return (RandomBonusToHP[difference] * curve.Gradients[bracket]) / 100;
+                }
+                else if (s == CurveStats.MP)
+                {
+                    return RandomBonusToMP[difference] * ((level * curve.Gradients[bracket] / 10) -
+                        ((level - 1) * curve.Gradients[bracket] / 10)) / 100;
+                }
+                else
+                {
+                    return RandomBonusToPrimaryStats[difference];
+                }
+            }
+        }
+
+        private int CalcBaseline(CurveStats stat, StatCurve curve, int level)
+        {
+            int bracket = GetBracket(level);
+            if (stat == CurveStats.HP)
+            {
+                return (curve.Bases[bracket] * 40) + (level - 1) * curve.Gradients[bracket];
+            }
+            else if (stat == CurveStats.MP)
+            {
+                return (curve.Bases[bracket] * 2) + ((level - 1) * curve.Gradients[bracket] / 10);
+            }
+            else
+            {
+                return curve.Bases[bracket] + (curve.Gradients[bracket] * level / 100);
+            }
+        }
+
+        private int CalcDifference(CurveStats stat, int baseline, int prevStat, int rnd)
+        {
+            int difference = 0;
+            if (stat == CurveStats.HP || stat == CurveStats.MP)
+            {
+                difference = rnd + (100 * baseline / prevStat) - 100;
+            }
+            else
+            {
+                difference = rnd + baseline - prevStat;
+            }
+            if (difference < 0) { difference = 0; }
+            if (difference > 11) { difference = 11; }
+            return difference;
+        }
+
+        private int[] CalcStats(int chara, int stat, int modifier)
+        {
+            var stats = new int[99];
+            var charStats = GetCharacter(chara);
+            if (charStats == null)
+            {
+                throw new ArgumentException("Invalid character ID.");
+            }
+            int currStat = GetBaseStat(charStats, stat);
+            var brackets = new int[8];
+
+            for (int i = charStats.Level; i <= 99; ++i)
+            {
+                if (stat == (int)CurveStats.EXP)
+                {
+                    for (int j = 0; j < 8; ++j)
+                    {
+                        brackets[j] += CalcStatGain(chara, i, 1, stat, 0, 0);
+                    }
+                    currStat = brackets[GetBracket(i)];
+                }
+                else
+                {
+                    currStat += CalcStatGain(chara, i, charStats.Level, stat, currStat, modifier);
+                }
+                stats[i - 1] = currStat;
+            }
+            return stats;
+        }
+
         public byte[] GetRawData()
         {
             int i;
@@ -163,21 +307,9 @@ namespace FF7Scarlet.KernelEditor
                 {
                     writer.Write(RandomBonusToMP[i]);
                 }
-                for (i = 0; i < 37; ++i)
+                for (i = 0; i < STAT_CURVE_COUNT; ++i)
                 {
-                    writer.Write(PrimaryStatCurves[i].GetRawData());
-                }
-                for (i = 0; i < 9; ++i)
-                {
-                    writer.Write(HPStatCurves[i].GetRawData());
-                }
-                for (i = 0; i < 9; ++i)
-                {
-                    writer.Write(MPStatCurves[i].GetRawData());
-                }
-                for (i = 0; i < 9; ++i)
-                {
-                    writer.Write(EXPStatCurves[i].GetRawData());
+                    writer.Write(StatCurves[i].GetRawData());
                 }
 
                 //write AI data

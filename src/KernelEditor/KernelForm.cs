@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Media;
+using System.Windows.Forms.DataVisualization.Charting;
 
 using Shojy.FF7.Elena;
 using Shojy.FF7.Elena.Battle;
@@ -13,6 +14,7 @@ using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
 using Shojy.FF7.Elena.Items;
+using System;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -70,6 +72,7 @@ namespace FF7Scarlet.KernelEditor
         private readonly Dictionary<KernelSection, ComboBox> equipmentStatus = new();
         private readonly Dictionary<KernelSection, ComboBox> statusChangeComboBoxes = new();
         private readonly Dictionary<KernelSection, SpecialAttackFlagsControl> specialAttackFlags = new();
+        private readonly NumericUpDown[] curveBonuses;
 
         /// <summary>
         /// The section associated with the currently associated tab page
@@ -157,6 +160,16 @@ namespace FF7Scarlet.KernelEditor
         private int SelectedCharacterIndex
         {
             get { return listBoxInitCharacters.SelectedIndex; }
+        }
+
+        private Series MainCurveMin
+        {
+            get { return chartMainCurve.Series[0]; }
+        }
+
+        private Series MainCurveMax
+        {
+            get { return chartMainCurve.Series[1]; }
         }
 
         /// <summary>
@@ -289,6 +302,13 @@ namespace FF7Scarlet.KernelEditor
                 if (DataManager.AttackIsSynced(a.ID)) { syncedAttackIDs.Add(a.ID); }
             }
             selectedAttackToolStripMenuItem.Enabled = false;
+
+            //get curve controls
+            curveBonuses = [
+                numericCurveBonus1, numericCurveBonus2, numericCurveBonus3, numericCurveBonus4,
+                numericCurveBonus5, numericCurveBonus6, numericCurveBonus7, numericCurveBonus8,
+                numericCurveBonus9, numericCurveBonus10, numericCurveBonus11, numericCurveBonus12
+            ];
 
             //associate controls with kernel data
             //command data
@@ -534,7 +554,9 @@ namespace FF7Scarlet.KernelEditor
             {
                 EnableOrDisableTabPageControls(tab.Key, false);
             }
-            EnableOrDisableInner(tabPageInitCharacterStats, false, listBoxInitCharacters);
+            EnableOrDisableInner(tabPageInitCharacterStats, false,
+                new List<Control> { listBoxInitCharacters }.AsReadOnly());
+            EnableOrDisableInner(groupBoxSelectedCurve, false, Array.Empty<Control>().AsReadOnly());
             loading = false;
         }
 
@@ -576,7 +598,7 @@ namespace FF7Scarlet.KernelEditor
         }
 
         /// <summary>
-        /// Enables or disables controls for a control and all of its children
+        /// Recursively enables or disables controls for a control and all of its children.
         /// </summary>
         /// <param name="group">The parent control</param>
         /// <param name="enabled">Whether to enable or disable controls</param>
@@ -618,18 +640,6 @@ namespace FF7Scarlet.KernelEditor
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Enables or disables controls for a control and all of its children
-        /// </summary>
-        /// <param name="group">The parent control</param>
-        /// <param name="enabled">Whether to enable or disable controls</param>
-        /// <param name="ignore">A control to ignore while enabling</param>
-        private void EnableOrDisableInner(Control group, bool enable, Control ignore)
-        {
-            var list = new List<Control> { ignore };
-            EnableOrDisableInner(group, enable, list.AsReadOnly());
         }
 
         /// <summary>
@@ -772,7 +782,7 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
             listBoxInitInventory.SelectedIndex = i;
-            
+
 
             //materia
             i = listBoxInitMateria.SelectedIndex;
@@ -1092,12 +1102,15 @@ namespace FF7Scarlet.KernelEditor
                 }
 
                 var character = kernel.InitialData.Characters[charIndex];
+                var charGrowth = kernel.BattleAndGrowthData.CharGrowth[charIndex];
 
                 textBoxCharacterName.Text = character.Name.ToString();
                 numericCharacterID.Value = character.ID;
                 numericCharacterLevel.Value = character.Level;
                 numericCharacterCurrentEXP.Value = character.CurrentEXP;
                 numericCharacterEXPtoNext.Value = character.EXPtoNextLevel;
+                numericCharacterLevelOffset.Value = charGrowth.RecruitLevelOffset;
+                numericCharacterLevelOffset.Enabled = !charGrowth.IsYuffie;
 
                 numericCharacterCurrHP.Value = character.CurrentHP;
                 numericCharacterBaseHP.Value = character.BaseHP;
@@ -1135,6 +1148,68 @@ namespace FF7Scarlet.KernelEditor
                     comboBoxCharacterAccessory.SelectedIndex = character.AccessoryID + 1;
                 }
                 characterStatsControl.SetStatsFromCharacter(character);
+                loading = false;
+            }
+        }
+
+        /// <summary>
+        /// Updates the stat growth chart with relevant data.
+        /// </summary>
+        /// <param name="chara">The index of the currently selected character.</param>
+        /// <param name="stat">The index of the currently selected stat.</param>
+        private void UpdateStatCurves(int chara, int stat)
+        {
+            if (chara >= 0 && chara < Character.PLAYABLE_CHARACTER_COUNT && stat >= 0 && stat < 9)
+            {
+                loading = true;
+                var charGrowth = kernel.BattleAndGrowthData.CharGrowth[chara];
+
+                //enable the controls
+                EnableOrDisableInner(groupBoxSelectedCurve, true, null);
+                labelInaccurateCurve.Visible = (chara == (int)CharacterNames.CaitSith
+                    || chara == (int)CharacterNames.Vincent) && DataManager.ExeData == null
+                    && stat != (int)CurveStats.EXP;
+
+                //fill out the charts
+                chartMainCurve.SuspendLayout();
+                MainCurveMin.Points.Clear();
+                MainCurveMax.Points.Clear();
+                var minStats = kernel.BattleAndGrowthData.CalculateMinStats(chara, stat);
+                var maxStats = kernel.BattleAndGrowthData.CalculateMaxStats(chara, stat);
+                for (int i = 1; i <= 99; ++i)
+                {
+                    if (stat != (int)CurveStats.EXP)
+                    {
+                        MainCurveMin.Points.AddXY(i, minStats[i - 1]);
+                    }
+                    MainCurveMax.Points.AddXY(i, maxStats[i - 1]);
+                }
+                chartMainCurve.ResumeLayout();
+
+                //set numerics
+                numericCurveIndex.Value = charGrowth.CurveIndex[stat];
+                bool isEXP = (stat == (int)CurveStats.EXP);
+                groupBoxCurveBonuses.Enabled = !isEXP;
+                EnableOrDisableInner(groupBoxCurveBonuses, !isEXP, null);
+                if (!isEXP)
+                {
+                    for (int i = 0; i < 12; ++i)
+                    {
+                        if (stat == (int)CurveStats.HP)
+                        {
+                            curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToHP[i];
+                        }
+                        else if (stat == (int)CurveStats.MP)
+                        {
+                            curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToMP[i];
+                        }
+                        else
+                        {
+                            curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToPrimaryStats[i];
+                        }
+                    }
+                }
+
                 loading = false;
             }
         }
@@ -2307,6 +2382,12 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void StatCurveChanged(object sender, EventArgs e)
+        {
+            UpdateStatCurves(listBoxCharacterGrowth.SelectedIndex,
+                listBoxStatCurves.SelectedIndex);
+        }
+
         private void ItemDataChanged(object sender, EventArgs e)
         {
             if (!loading)
@@ -2598,6 +2679,71 @@ namespace FF7Scarlet.KernelEditor
                     {
                         SelectedCharacter.ArmorMateria[slot] = mat;
                         materiaSlotSelectorCharacterArmor.SetMateria(slot, mat, kernel);
+                        SetUnsaved(true);
+                    }
+                }
+            }
+        }
+
+        private void numericCurveIndex_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int chara = listBoxCharacterGrowth.SelectedIndex,
+                    stat = listBoxStatCurves.SelectedIndex;
+
+                kernel.BattleAndGrowthData.CharGrowth[chara].CurveIndex[stat] = (byte)numericCurveIndex.Value;
+                UpdateStatCurves(chara, stat);
+                SetUnsaved(true);
+            }
+        }
+
+        private void buttonEditBaseCurve_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            byte curveIndex = (byte)numericCurveIndex.Value;
+            bool unsaved;
+
+            using (var editForm = new CurveEditForm(kernel.BattleAndGrowthData, curveIndex))
+            {
+                result = editForm.ShowDialog();
+                unsaved = editForm.Unsaved;
+            }
+
+            if (result == DialogResult.OK && unsaved)
+            {
+                int chara = listBoxCharacterGrowth.SelectedIndex,
+                    stat = listBoxStatCurves.SelectedIndex;
+                UpdateStatCurves(chara, stat);
+                SetUnsaved(true);
+            }
+        }
+
+        private void numericCurveBonus_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                var numeric = sender as NumericUpDown;
+                if (numeric != null)
+                {
+                    int i = curveBonuses.ToList().IndexOf(numeric),
+                        chara = listBoxCharacterGrowth.SelectedIndex,
+                        stat = listBoxStatCurves.SelectedIndex;
+                    if (i >= 0 && i < 12)
+                    {
+                        if (stat == (int)CurveStats.HP)
+                        {
+                            kernel.BattleAndGrowthData.RandomBonusToHP[i] = (byte)numeric.Value;
+                        }
+                        else if (stat == (int)CurveStats.MP)
+                        {
+                            kernel.BattleAndGrowthData.RandomBonusToMP[i] = (byte)numeric.Value;
+                        }
+                        else
+                        {
+                            kernel.BattleAndGrowthData.RandomBonusToPrimaryStats[i] = (byte)numeric.Value;
+                        }
+                        UpdateStatCurves(chara, stat);
                         SetUnsaved(true);
                     }
                 }
