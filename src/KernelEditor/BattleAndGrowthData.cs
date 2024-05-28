@@ -279,6 +279,16 @@ namespace FF7Scarlet.KernelEditor
                 else
                 {
                     currStat += CalcStatGain(chara, i, charStats.Level, stat, currStat, modifier);
+                    if (stat == (int)CurveStats.HP)
+                    {
+                        if (currStat > 9999) { currStat = 9999; }
+                    }
+                    else if (stat == (int)CurveStats.MP)
+                    {
+                        if (currStat > 999) { currStat = 999; }
+                        
+                    }
+                    else if (currStat > 100) { currStat = 100; }
                 }
                 stats[i - 1] = currStat;
             }

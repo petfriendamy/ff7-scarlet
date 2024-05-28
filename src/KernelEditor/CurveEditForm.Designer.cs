@@ -188,7 +188,7 @@
             // 
             numericBase1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             numericBase1.Location = new Point(67, 17);
-            numericBase1.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericBase1.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
             numericBase1.Minimum = new decimal(new int[] { 128, 0, 0, int.MinValue });
             numericBase1.Name = "numericBase1";
             numericBase1.Size = new Size(57, 23);
@@ -226,6 +226,7 @@
             numericGradient2.Name = "numericGradient2";
             numericGradient2.Size = new Size(57, 23);
             numericGradient2.TabIndex = 3;
+            numericGradient2.ValueChanged += numericGradient_ValueChanged;
             // 
             // labelGradient2
             // 
@@ -240,11 +241,12 @@
             // 
             numericBase2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             numericBase2.Location = new Point(67, 17);
-            numericBase2.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericBase2.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
             numericBase2.Minimum = new decimal(new int[] { 128, 0, 0, int.MinValue });
             numericBase2.Name = "numericBase2";
             numericBase2.Size = new Size(57, 23);
             numericBase2.TabIndex = 1;
+            numericBase2.ValueChanged += numericBase_ValueChanged;
             // 
             // labelBase2
             // 
@@ -277,6 +279,7 @@
             numericGradient4.Name = "numericGradient4";
             numericGradient4.Size = new Size(57, 23);
             numericGradient4.TabIndex = 3;
+            numericGradient4.ValueChanged += numericGradient_ValueChanged;
             // 
             // labelGradient4
             // 
@@ -291,11 +294,12 @@
             // 
             numericBase4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             numericBase4.Location = new Point(67, 17);
-            numericBase4.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericBase4.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
             numericBase4.Minimum = new decimal(new int[] { 128, 0, 0, int.MinValue });
             numericBase4.Name = "numericBase4";
             numericBase4.Size = new Size(57, 23);
             numericBase4.TabIndex = 1;
+            numericBase4.ValueChanged += numericBase_ValueChanged;
             // 
             // labelBase4
             // 
@@ -328,6 +332,7 @@
             numericGradient3.Name = "numericGradient3";
             numericGradient3.Size = new Size(57, 23);
             numericGradient3.TabIndex = 3;
+            numericGradient3.ValueChanged += numericGradient_ValueChanged;
             // 
             // labelGradient3
             // 
@@ -342,11 +347,12 @@
             // 
             numericBase3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             numericBase3.Location = new Point(67, 17);
-            numericBase3.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericBase3.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
             numericBase3.Minimum = new decimal(new int[] { 128, 0, 0, int.MinValue });
             numericBase3.Name = "numericBase3";
             numericBase3.Size = new Size(57, 23);
             numericBase3.TabIndex = 1;
+            numericBase3.ValueChanged += numericBase_ValueChanged;
             // 
             // labelBase3
             // 
@@ -379,6 +385,7 @@
             numericGradient8.Name = "numericGradient8";
             numericGradient8.Size = new Size(57, 23);
             numericGradient8.TabIndex = 3;
+            numericGradient8.ValueChanged += numericGradient_ValueChanged;
             // 
             // labelGradient8
             // 
@@ -393,11 +400,12 @@
             // 
             numericBase8.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             numericBase8.Location = new Point(67, 17);
-            numericBase8.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericBase8.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
             numericBase8.Minimum = new decimal(new int[] { 128, 0, 0, int.MinValue });
             numericBase8.Name = "numericBase8";
             numericBase8.Size = new Size(57, 23);
             numericBase8.TabIndex = 1;
+            numericBase8.ValueChanged += numericBase_ValueChanged;
             // 
             // labelBase8
             // 
@@ -430,6 +438,7 @@
             numericGradient7.Name = "numericGradient7";
             numericGradient7.Size = new Size(57, 23);
             numericGradient7.TabIndex = 3;
+            numericGradient7.ValueChanged += numericGradient_ValueChanged;
             // 
             // labelGradient7
             // 
@@ -444,11 +453,12 @@
             // 
             numericBase7.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             numericBase7.Location = new Point(67, 17);
-            numericBase7.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericBase7.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
             numericBase7.Minimum = new decimal(new int[] { 128, 0, 0, int.MinValue });
             numericBase7.Name = "numericBase7";
             numericBase7.Size = new Size(57, 23);
             numericBase7.TabIndex = 1;
+            numericBase7.ValueChanged += numericBase_ValueChanged;
             // 
             // labelBase7
             // 
@@ -481,6 +491,7 @@
             numericGradient6.Name = "numericGradient6";
             numericGradient6.Size = new Size(57, 23);
             numericGradient6.TabIndex = 3;
+            numericGradient6.ValueChanged += numericGradient_ValueChanged;
             // 
             // labelGradient6
             // 
@@ -495,11 +506,12 @@
             // 
             numericBase6.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             numericBase6.Location = new Point(67, 17);
-            numericBase6.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericBase6.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
             numericBase6.Minimum = new decimal(new int[] { 128, 0, 0, int.MinValue });
             numericBase6.Name = "numericBase6";
             numericBase6.Size = new Size(57, 23);
             numericBase6.TabIndex = 1;
+            numericBase6.ValueChanged += numericBase_ValueChanged;
             // 
             // labelBase6
             // 
@@ -532,6 +544,7 @@
             numericGradient5.Name = "numericGradient5";
             numericGradient5.Size = new Size(57, 23);
             numericGradient5.TabIndex = 3;
+            numericGradient5.ValueChanged += numericGradient_ValueChanged;
             // 
             // labelGradient5
             // 
@@ -546,11 +559,12 @@
             // 
             numericBase5.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             numericBase5.Location = new Point(67, 17);
-            numericBase5.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericBase5.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
             numericBase5.Minimum = new decimal(new int[] { 128, 0, 0, int.MinValue });
             numericBase5.Name = "numericBase5";
             numericBase5.Size = new Size(57, 23);
             numericBase5.TabIndex = 1;
+            numericBase5.ValueChanged += numericBase_ValueChanged;
             // 
             // labelBase5
             // 
