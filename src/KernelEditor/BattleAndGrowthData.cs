@@ -1,17 +1,11 @@
 ﻿using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
-using static System.Windows.Forms.AxHost;
 
 namespace FF7Scarlet.KernelEditor
 {
-    public enum CurveStats
-    {
-        Strength, Vitality, Magic, Spirit, Dexterity, Luck, HP, MP, EXP
-    }
-
     public class BattleAndGrowthData
     {
-        public const int AI_BLOCK_SIZE = 2024, AI_BLOCK_COUNT = 12, STAT_CURVE_COUNT = 64,
+        public const int AI_BLOCK_SIZE = 2024, AI_BLOCK_COUNT = 12,
             RNG_TABLE_SIZE = 256, LOOKUP_TABLE_SIZE = 64,
             MIN_STAT_MODIFIER = 1, MAX_STAT_MODIFIER = 8;
         private readonly CharacterGrowth[] characterGrowth = new CharacterGrowth[Character.PLAYABLE_CHARACTER_COUNT];
@@ -22,7 +16,8 @@ namespace FF7Scarlet.KernelEditor
             rawAIdata = new byte[AI_BLOCK_SIZE],
             rngTable = new byte[RNG_TABLE_SIZE],
             sceneLookupTable = new byte[LOOKUP_TABLE_SIZE];
-        private readonly StatCurve[] statCurves = new StatCurve[STAT_CURVE_COUNT];
+        private readonly StatCurve[] statCurves = new StatCurve[StatCurve.NUM_CURVES];
+        private readonly SpellIndex[] spellIndices = new SpellIndex[SpellIndex.INDEXED_SPELL_COUNT];
         private ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
         private readonly CharacterAI[] characterAI = new CharacterAI[AI_BLOCK_COUNT];
         private byte[] rawData = [];
@@ -51,6 +46,10 @@ namespace FF7Scarlet.KernelEditor
         public byte[] RNGTable
         {
             get { return rngTable; }
+        }
+        public SpellIndex[] SpellIndices
+        {
+            get { return spellIndices; }
         }
         public CharacterAI[] CharacterAI
         {
@@ -87,7 +86,7 @@ namespace FF7Scarlet.KernelEditor
                 {
                     RandomBonusToMP[i] = reader.ReadByte();
                 }
-                for (i = 0; i < STAT_CURVE_COUNT; ++i)
+                for (i = 0; i < StatCurve.NUM_CURVES; ++i)
                 {
                     StatCurves[i] = new StatCurve(reader.ReadBytes(16));
                 }
@@ -114,7 +113,10 @@ namespace FF7Scarlet.KernelEditor
                         sceneLookupTable[i] = reader.ReadByte();
                     }
                 }
-                //spell order
+                for (i = 0; i < SpellIndex.INDEXED_SPELL_COUNT; ++i)
+                {
+                    SpellIndices[i] = new SpellIndex((byte)i, reader.ReadByte());
+                }
             }
         }
 
@@ -297,60 +299,59 @@ namespace FF7Scarlet.KernelEditor
 
         public byte[] GetRawData()
         {
-            int i;
-            using (var ms = new MemoryStream(rawData))
-            using (var writer = new BinaryWriter(ms))
+            var output = new List<byte>();
+            foreach (var c in CharGrowth)
             {
-                for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
-                {
-                    writer.Write(CharGrowth[i].GetRawData());
-                }
-                for (i = 0; i < 12; ++i)
-                {
-                    writer.Write(RandomBonusToPrimaryStats[i]);
-                }
-                for (i = 0; i < 12; ++i)
-                {
-                    writer.Write(RandomBonusToHP[i]);
-                }
-                for (i = 0; i < 12; ++i)
-                {
-                    writer.Write(RandomBonusToMP[i]);
-                }
-                for (i = 0; i < STAT_CURVE_COUNT; ++i)
-                {
-                    writer.Write(StatCurves[i].GetRawData());
-                }
-
-                //write AI data
-                try
-                {
-                    if (ScriptsLoaded) //don't update scripts if not loaded
-                    {
-                        Array.Copy(AIContainer.GetGroupedScriptBlock(AI_BLOCK_COUNT, AI_BLOCK_SIZE,
-                            characterAI, ref characterAIoffsets), rawAIdata, AI_BLOCK_SIZE);
-                    }
-                    foreach (var o in characterAIoffsets)
-                    {
-                        writer.Write(o);
-                    }
-                    writer.Write(rawAIdata);
-                }
-                catch (ScriptTooLongException)
-                {
-                    throw new ScriptTooLongException("Character A.I. block is too long!");
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Compiler error in A.I. scripts: {ex.Message}");
-                }
-
-                writer.Write(rngTable);
-                writer.Write(sceneLookupTable);
+                output.AddRange(c.GetRawData());
             }
-            var copy = new byte[rawData.Length];
-            Array.Copy(rawData, copy, rawData.Length);
-            return copy;
+            foreach (byte b in RandomBonusToPrimaryStats)
+            {
+                output.Add(b);
+            }
+            foreach (byte b in RandomBonusToHP)
+            {
+                output.Add(b);
+            }
+            foreach (byte b in RandomBonusToMP)
+            {
+                output.Add(b);
+            }
+            foreach (var c in StatCurves)
+            {
+                output.AddRange(c.GetRawData());
+            }
+
+            //write AI data
+            try
+            {
+                if (ScriptsLoaded) //don't update scripts if not loaded
+                {
+                    Array.Copy(AIContainer.GetGroupedScriptBlock(AI_BLOCK_COUNT, AI_BLOCK_SIZE,
+                        characterAI, ref characterAIoffsets), rawAIdata, AI_BLOCK_SIZE);
+                }
+                foreach (var o in characterAIoffsets)
+                {
+                    output.AddRange(BitConverter.GetBytes(o));
+                }
+                output.AddRange(rawAIdata);
+            }
+            catch (ScriptTooLongException)
+            {
+                throw new ScriptTooLongException("Character A.I. block is too long!");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Compiler error in A.I. scripts: {ex.Message}");
+            }
+
+            output.AddRange(rngTable);
+            output.AddRange(sceneLookupTable);
+
+            foreach (var index in SpellIndices)
+            {
+                output.Add(index.GetByteValue());
+            }
+            return output.ToArray();
         }
 
         public void ParseAIScripts()

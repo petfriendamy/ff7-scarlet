@@ -35,6 +35,7 @@ namespace FF7Scarlet.KernelEditor
         private List<ushort> syncedAttackIDs = new();
         private List<StatusChangeType> statusChangeTypes = new();
         private List<IndependentMateriaTypes> independentMateriaTypes = new();
+        private List<SpellIndex>[] spellIndices = new List<SpellIndex>[(int)MagicTypes.Unlisted];
         private int prevCommand, prevAttack, prevCharacter, prevItem,
             prevWeapon, prevArmor, prevAccessory, prevMateria;
         private bool
@@ -494,6 +495,20 @@ namespace FF7Scarlet.KernelEditor
                     comboBoxItemStatusChange.Items.Add(s);
                     statusChangeTypes.Add(s);
                 }
+            }
+
+            //spell type
+            foreach (var t in Enum.GetNames<MagicTypes>())
+            {
+                comboBoxMagicType.Items.Add(StringParser.AddSpaces(t));
+            }
+            for (int i = 0; i < (int)MagicTypes.Unlisted; ++i)
+            {
+                spellIndices[i] =
+                    (from s in kernel.BattleAndGrowthData.SpellIndices
+                    where (int)s.MagicType == i
+                    orderby s.SectionIndex
+                    select s).ToList();
             }
 
             //materia info
@@ -1000,6 +1015,26 @@ namespace FF7Scarlet.KernelEditor
                                 comboBoxAttackStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
                                 numericAttackStatusChangeChance.Enabled = true;
                                 statusesControlAttack.Enabled = true;
+                            }
+                            if (i < SpellIndex.INDEXED_SPELL_COUNT)
+                            {
+                                comboBoxMagicType.Enabled = true;
+                                int type = (int)kernel.BattleAndGrowthData.SpellIndices[i].MagicType;
+                                if (type < (int)MagicTypes.Unlisted)
+                                {
+                                    comboBoxMagicType.SelectedIndex = type;
+                                    buttonMagicOrder.Enabled = true;
+                                }
+                                else
+                                {
+                                    comboBoxMagicType.SelectedIndex = (int)MagicTypes.Unlisted;
+                                    buttonMagicOrder.Enabled = false;
+                                }
+                            }
+                            else
+                            {
+                                comboBoxMagicType.Enabled = false;
+                                buttonMagicOrder.Enabled = false;
                             }
                             checkBoxAttackSyncWithSceneBin.Checked = syncedAttackIDs.Contains(attack.ID);
                             break;
@@ -2523,6 +2558,58 @@ namespace FF7Scarlet.KernelEditor
             {
                 SelectedAttack.StatusChange.Amount = (byte)numericAttackStatusChangeChance.Value;
                 SetUnsaved(true);
+            }
+        }
+
+        private void comboBoxMagicType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedAttack != null && SelectedAttackIndex < SpellIndex.INDEXED_SPELL_COUNT)
+            {
+                //get spell index
+                var index = kernel.BattleAndGrowthData.SpellIndices[SelectedAttackIndex];
+                MagicTypes oldType = index.MagicType,
+                    newType = (MagicTypes)comboBoxMagicType.SelectedIndex;
+                byte i, type;
+
+                //remove spell from the old list
+                if (oldType != MagicTypes.Unlisted)
+                {
+                    type = (byte)oldType;
+                    spellIndices[type].Remove(index);
+                    for (i = 0; i < spellIndices[type].Count; ++i)
+                    {
+                        spellIndices[type][i].SectionIndex = i;
+                    }
+                }
+
+                //add spell to the new list
+                if (newType != MagicTypes.Unlisted)
+                {
+                    type = (byte)newType;
+                    spellIndices[type].Add(index);
+                    for (i = 0; i < spellIndices[type].Count; ++i)
+                    {
+                        spellIndices[type][i].SectionIndex = i;
+                    }
+                }
+                SetUnsaved(true);
+            }
+        }
+
+        private void buttonSpellPosition_Click(object sender, EventArgs e)
+        {
+            if (SelectedAttack != null && SelectedAttackIndex < SpellIndex.INDEXED_SPELL_COUNT)
+            {
+                var index = kernel.BattleAndGrowthData.SpellIndices[SelectedAttackIndex];
+                using (var form = new MagicOrderForm(spellIndices[(int)index.MagicType],
+                    index, kernel.GetAssociatedNames(KernelSection.AttackData)))
+                {
+                    if (form.ShowDialog() == DialogResult.OK)
+                    {
+                        spellIndices[(int)index.MagicType] = form.SpellIndices;
+                        SetUnsaved(true);
+                    }
+                }
             }
         }
 

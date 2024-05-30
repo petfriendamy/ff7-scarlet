@@ -82,6 +82,9 @@
             labelAttackStatusChange = new Label();
             statusesControlAttack = new Controls.StatusesControl();
             tabPageAttacks3 = new TabPage();
+            buttonMagicOrder = new Button();
+            comboBoxMagicType = new ComboBox();
+            labelMagicType = new Label();
             targetDataControlAttack = new Controls.TargetDataControl();
             groupBoxAttackSpecialActions = new GroupBox();
             buttonAttackSyncAll = new Button();
@@ -136,6 +139,7 @@
             listBoxInitCharacters = new ListBox();
             tabPageCharacterGrowth = new TabPage();
             groupBoxSelectedCurve = new GroupBox();
+            labelInaccurateCurve = new Label();
             buttonEditBaseCurve = new Button();
             groupBoxCurveBonuses = new GroupBox();
             labelCurveExplanation = new Label();
@@ -321,7 +325,6 @@
             labelBattleText = new Label();
             tabPageBattleRNGTable = new TabPage();
             rngTableControl = new Controls.RNGTableControl();
-            tabPageMagicOrder = new TabPage();
             buttonSave = new Button();
             buttonImport = new Button();
             buttonExport = new Button();
@@ -337,7 +340,6 @@
             attackCopyToolStripMenuItem = new ToolStripMenuItem();
             attackPasteToolStripMenuItem = new ToolStripMenuItem();
             attackDeleteToolStripMenuItem = new ToolStripMenuItem();
-            labelInaccurateCurve = new Label();
             tabControlMain.SuspendLayout();
             tabPageCommandData.SuspendLayout();
             tabPageAttackData.SuspendLayout();
@@ -982,6 +984,9 @@
             // 
             // tabPageAttacks3
             // 
+            tabPageAttacks3.Controls.Add(buttonMagicOrder);
+            tabPageAttacks3.Controls.Add(comboBoxMagicType);
+            tabPageAttacks3.Controls.Add(labelMagicType);
             tabPageAttacks3.Controls.Add(targetDataControlAttack);
             tabPageAttacks3.Controls.Add(groupBoxAttackSpecialActions);
             tabPageAttacks3.Location = new Point(4, 24);
@@ -990,6 +995,37 @@
             tabPageAttacks3.TabIndex = 2;
             tabPageAttacks3.Text = "Page 3";
             tabPageAttacks3.UseVisualStyleBackColor = true;
+            // 
+            // buttonMagicOrder
+            // 
+            buttonMagicOrder.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            buttonMagicOrder.Location = new Point(342, 53);
+            buttonMagicOrder.Name = "buttonMagicOrder";
+            buttonMagicOrder.Size = new Size(220, 23);
+            buttonMagicOrder.TabIndex = 48;
+            buttonMagicOrder.Text = "Set magic order...";
+            buttonMagicOrder.UseVisualStyleBackColor = true;
+            buttonMagicOrder.Click += buttonSpellPosition_Click;
+            // 
+            // comboBoxMagicType
+            // 
+            comboBoxMagicType.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxMagicType.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxMagicType.FormattingEnabled = true;
+            comboBoxMagicType.Location = new Point(342, 24);
+            comboBoxMagicType.Name = "comboBoxMagicType";
+            comboBoxMagicType.Size = new Size(220, 23);
+            comboBoxMagicType.TabIndex = 47;
+            comboBoxMagicType.SelectedIndexChanged += comboBoxMagicType_SelectedIndexChanged;
+            // 
+            // labelMagicType
+            // 
+            labelMagicType.AutoSize = true;
+            labelMagicType.Location = new Point(342, 6);
+            labelMagicType.Name = "labelMagicType";
+            labelMagicType.Size = new Size(69, 15);
+            labelMagicType.TabIndex = 46;
+            labelMagicType.Text = "Magic type:";
             // 
             // targetDataControlAttack
             // 
@@ -1578,6 +1614,16 @@
             groupBoxSelectedCurve.TabIndex = 3;
             groupBoxSelectedCurve.TabStop = false;
             groupBoxSelectedCurve.Text = "Selected curve";
+            // 
+            // labelInaccurateCurve
+            // 
+            labelInaccurateCurve.AutoSize = true;
+            labelInaccurateCurve.Location = new Point(367, 287);
+            labelInaccurateCurve.Name = "labelInaccurateCurve";
+            labelInaccurateCurve.Size = new Size(231, 15);
+            labelInaccurateCurve.TabIndex = 6;
+            labelInaccurateCurve.Text = "*Load ff7.exe to display this chart correctly";
+            labelInaccurateCurve.Visible = false;
             // 
             // buttonEditBaseCurve
             // 
@@ -3497,7 +3543,6 @@
             tabControlMisc.Controls.Add(tabPageLimitBreaks);
             tabControlMisc.Controls.Add(tabPageBattleText);
             tabControlMisc.Controls.Add(tabPageBattleRNGTable);
-            tabControlMisc.Controls.Add(tabPageMagicOrder);
             tabControlMisc.Dock = DockStyle.Fill;
             tabControlMisc.Location = new Point(0, 0);
             tabControlMisc.Name = "tabControlMisc";
@@ -3640,15 +3685,6 @@
             rngTableControl.Size = new Size(757, 340);
             rngTableControl.TabIndex = 0;
             // 
-            // tabPageMagicOrder
-            // 
-            tabPageMagicOrder.Location = new Point(4, 24);
-            tabPageMagicOrder.Name = "tabPageMagicOrder";
-            tabPageMagicOrder.Size = new Size(768, 474);
-            tabPageMagicOrder.TabIndex = 2;
-            tabPageMagicOrder.Text = "Magic Order";
-            tabPageMagicOrder.UseVisualStyleBackColor = true;
-            // 
             // buttonSave
             // 
             buttonSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
@@ -3784,16 +3820,6 @@
             attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
             // 
-            // labelInaccurateCurve
-            // 
-            labelInaccurateCurve.AutoSize = true;
-            labelInaccurateCurve.Location = new Point(367, 287);
-            labelInaccurateCurve.Name = "labelInaccurateCurve";
-            labelInaccurateCurve.Size = new Size(231, 15);
-            labelInaccurateCurve.TabIndex = 6;
-            labelInaccurateCurve.Text = "*Load ff7.exe to display this chart correctly";
-            labelInaccurateCurve.Visible = false;
-            // 
             // KernelForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3822,6 +3848,7 @@
             tabPageAttacks2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).EndInit();
             tabPageAttacks3.ResumeLayout(false);
+            tabPageAttacks3.PerformLayout();
             groupBoxAttackSpecialActions.ResumeLayout(false);
             groupBoxAttackSpecialActions.PerformLayout();
             tabPageCharacters.ResumeLayout(false);
@@ -4189,7 +4216,6 @@
         private TabPage tabPageBattleText;
         private TabPage tabPageBattleRNGTable;
         private Controls.RNGTableControl rngTableControl;
-        private TabPage tabPageMagicOrder;
         private TabPage tabPageAttacks3;
         private Controls.TargetDataControl targetDataControlAttack;
         private ToolStrip toolStripMain;
@@ -4240,5 +4266,8 @@
         private Button buttonEditBaseCurve;
         private Label labelCurveExplanation;
         private Label labelInaccurateCurve;
+        private Label labelMagicType;
+        private ComboBox comboBoxMagicType;
+        private Button buttonMagicOrder;
     }
 }
