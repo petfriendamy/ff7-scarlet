@@ -36,11 +36,15 @@
             buttonOK = new Button();
             buttonCancel = new Button();
             groupBoxVanillaExe = new GroupBox();
-            label1 = new Label();
+            labelVanillaExe = new Label();
             textBoxVanillaExe = new TextBox();
             buttonVanillaExeBrowse = new Button();
+            groupBoxPS3Tweaks = new GroupBox();
+            checkBoxPS3Tweaks = new CheckBox();
+            labelPS3Tweaks = new Label();
             groupBoxBattleLgp.SuspendLayout();
             groupBoxVanillaExe.SuspendLayout();
+            groupBoxPS3Tweaks.SuspendLayout();
             SuspendLayout();
             // 
             // groupBoxBattleLgp
@@ -70,10 +74,10 @@
             // textBoxBattleLgp
             // 
             textBoxBattleLgp.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxBattleLgp.Location = new Point(8, 67);
+            textBoxBattleLgp.Location = new Point(10, 67);
             textBoxBattleLgp.Margin = new Padding(4, 3, 4, 3);
             textBoxBattleLgp.Name = "textBoxBattleLgp";
-            textBoxBattleLgp.Size = new Size(326, 23);
+            textBoxBattleLgp.Size = new Size(324, 23);
             textBoxBattleLgp.TabIndex = 5;
             // 
             // buttonBattleLgpBrowse
@@ -91,7 +95,7 @@
             // buttonOK
             // 
             buttonOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonOK.Location = new Point(376, 226);
+            buttonOK.Location = new Point(376, 296);
             buttonOK.Name = "buttonOK";
             buttonOK.Size = new Size(75, 23);
             buttonOK.TabIndex = 3;
@@ -102,7 +106,7 @@
             // buttonCancel
             // 
             buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonCancel.Location = new Point(295, 226);
+            buttonCancel.Location = new Point(295, 296);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(75, 23);
             buttonCancel.TabIndex = 2;
@@ -112,7 +116,7 @@
             // groupBoxVanillaExe
             // 
             groupBoxVanillaExe.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBoxVanillaExe.Controls.Add(label1);
+            groupBoxVanillaExe.Controls.Add(labelVanillaExe);
             groupBoxVanillaExe.Controls.Add(textBoxVanillaExe);
             groupBoxVanillaExe.Controls.Add(buttonVanillaExeBrowse);
             groupBoxVanillaExe.Location = new Point(14, 12);
@@ -124,14 +128,14 @@
             groupBoxVanillaExe.TabStop = false;
             groupBoxVanillaExe.Text = "Unedited ff7.exe";
             // 
-            // label1
+            // labelVanillaExe
             // 
-            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label1.Location = new Point(9, 19);
-            label1.Name = "label1";
-            label1.Size = new Size(420, 43);
-            label1.TabIndex = 6;
-            label1.Text = "This should be a completely unedited ff7.exe file, to be referenced when creating Hext files. Currently only English EXEs are supported.";
+            labelVanillaExe.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            labelVanillaExe.Location = new Point(9, 19);
+            labelVanillaExe.Name = "labelVanillaExe";
+            labelVanillaExe.Size = new Size(420, 43);
+            labelVanillaExe.TabIndex = 6;
+            labelVanillaExe.Text = "This should be a completely unedited ff7.exe file, to be referenced when creating Hext files. Currently only English EXEs are supported.";
             // 
             // textBoxVanillaExe
             // 
@@ -154,25 +158,60 @@
             buttonVanillaExeBrowse.UseVisualStyleBackColor = true;
             buttonVanillaExeBrowse.Click += buttonVanillaExeBrowse_Click;
             // 
+            // groupBoxPS3Tweaks
+            // 
+            groupBoxPS3Tweaks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxPS3Tweaks.Controls.Add(checkBoxPS3Tweaks);
+            groupBoxPS3Tweaks.Controls.Add(labelPS3Tweaks);
+            groupBoxPS3Tweaks.Location = new Point(13, 220);
+            groupBoxPS3Tweaks.Name = "groupBoxPS3Tweaks";
+            groupBoxPS3Tweaks.Size = new Size(438, 70);
+            groupBoxPS3Tweaks.TabIndex = 4;
+            groupBoxPS3Tweaks.TabStop = false;
+            groupBoxPS3Tweaks.Text = "Postscriptthree tweaks";
+            // 
+            // checkBoxPS3Tweaks
+            // 
+            checkBoxPS3Tweaks.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            checkBoxPS3Tweaks.AutoSize = true;
+            checkBoxPS3Tweaks.Location = new Point(10, 45);
+            checkBoxPS3Tweaks.Name = "checkBoxPS3Tweaks";
+            checkBoxPS3Tweaks.Size = new Size(68, 19);
+            checkBoxPS3Tweaks.TabIndex = 1;
+            checkBoxPS3Tweaks.Text = "Enabled";
+            checkBoxPS3Tweaks.UseVisualStyleBackColor = true;
+            // 
+            // labelPS3Tweaks
+            // 
+            labelPS3Tweaks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            labelPS3Tweaks.Location = new Point(10, 19);
+            labelPS3Tweaks.Name = "labelPS3Tweaks";
+            labelPS3Tweaks.Size = new Size(422, 17);
+            labelPS3Tweaks.TabIndex = 0;
+            labelPS3Tweaks.Text = "Include additional features enabled by the Postscriptthree Tweaks mod.";
+            // 
             // SettingsForm
             // 
             AcceptButton = buttonOK;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = buttonCancel;
-            ClientSize = new Size(464, 261);
+            ClientSize = new Size(464, 331);
+            Controls.Add(groupBoxPS3Tweaks);
             Controls.Add(groupBoxVanillaExe);
             Controls.Add(buttonCancel);
             Controls.Add(buttonOK);
             Controls.Add(groupBoxBattleLgp);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(340, 190);
+            MinimumSize = new Size(440, 370);
             Name = "SettingsForm";
             Text = "Scarlet - Settings";
             groupBoxBattleLgp.ResumeLayout(false);
             groupBoxBattleLgp.PerformLayout();
             groupBoxVanillaExe.ResumeLayout(false);
             groupBoxVanillaExe.PerformLayout();
+            groupBoxPS3Tweaks.ResumeLayout(false);
+            groupBoxPS3Tweaks.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -185,8 +224,11 @@
         private Button buttonOK;
         private Button buttonCancel;
         private GroupBox groupBoxVanillaExe;
-        private Label label1;
+        private Label labelVanillaExe;
         private TextBox textBoxVanillaExe;
         private Button buttonVanillaExeBrowse;
+        private GroupBox groupBoxPS3Tweaks;
+        private Label labelPS3Tweaks;
+        private CheckBox checkBoxPS3Tweaks;
     }
 }

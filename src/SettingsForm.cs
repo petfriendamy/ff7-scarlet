@@ -19,6 +19,7 @@ namespace FF7Scarlet
             {
                 textBoxBattleLgp.Text = DataManager.BattleLgpPath;
             }
+            checkBoxPS3Tweaks.Checked = DataManager.PS3TweaksEnabled;
         }
 
         private void buttonVanillaExeBrowse_Click(object sender, EventArgs e)
@@ -104,7 +105,6 @@ namespace FF7Scarlet
                         {
                             settings[ExeData.CONFIG_KEY].Value = vanillaExePath;
                         }
-                        config.Save();
                     }
                 }
 
@@ -122,9 +122,21 @@ namespace FF7Scarlet
                         {
                             settings[BattleLgp.CONFIG_KEY].Value = battleLgpPath;
                         }
-                        config.Save();
                     }
                 }
+
+                //enable/disable PS3 tweaks
+                DataManager.PS3TweaksEnabled = checkBoxPS3Tweaks.Checked;
+                if (settings[DataManager.PS3_TWEAKS_KEY] == null)
+                {
+                    settings.Add(DataManager.PS3_TWEAKS_KEY, $"{DataManager.PS3TweaksEnabled}");
+                }
+                else
+                {
+                    settings[DataManager.PS3_TWEAKS_KEY].Value = $"{DataManager.PS3TweaksEnabled}";
+                }
+                config.Save();
+
             }
             DialogResult = DialogResult.OK;
             Close();

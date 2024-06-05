@@ -58,6 +58,16 @@ namespace FF7Scarlet
                         config.Save();
                     }
                 }
+
+                //check PS3 tweaks
+                if (settings[DataManager.PS3_TWEAKS_KEY] != null)
+                {
+                    bool temp;
+                    if (bool.TryParse(settings[DataManager.PS3_TWEAKS_KEY].Value, out temp))
+                    {
+                        DataManager.PS3TweaksEnabled = temp;
+                    }
+                }
             }
         }
 

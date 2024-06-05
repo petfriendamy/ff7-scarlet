@@ -20,7 +20,6 @@ namespace FF7Scarlet.KernelEditor
         private readonly SpellIndex[] spellIndices = new SpellIndex[SpellIndex.INDEXED_SPELL_COUNT];
         private ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
         private readonly CharacterAI[] characterAI = new CharacterAI[AI_BLOCK_COUNT];
-        private byte[] rawData = [];
 
         public Kernel Parent { get; }
         public CharacterGrowth[] CharGrowth
@@ -65,7 +64,6 @@ namespace FF7Scarlet.KernelEditor
 
         public void ParseData(byte[] data, bool ignoreLookupTable)
         {
-            rawData = data;
             int i;
             using (var ms = new MemoryStream(data))
             using (var reader = new BinaryReader(ms))

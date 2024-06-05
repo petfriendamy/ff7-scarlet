@@ -27,10 +27,30 @@ namespace FF7Scarlet.KernelEditor
             this.materia = materia;
             loading = true;
 
+            //check if should enable PS3 tweaks
+            if (materia.MateriaType == MateriaType.Support &&
+                materia.Attributes[0] == (byte)SupportMateriaTypes.MorphAsWell &&
+                !DataManager.PS3TweaksEnabled)
+            {
+                var result = MessageBox.Show("This appears to be a custom materia type! Would you like to enable Postscriptthree Tweaks?",
+                                "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    DataManager.PS3TweaksEnabled = true;
+                }
+            }
+
             //get stat types
             stats = Enum.GetValues<MateriaStats>().ToList();
             specialStats = Enum.GetValues<MateriaSpecialStats>().ToList();
-            supportTypes = Enum.GetValues<SupportMateriaTypes>().ToList();
+            supportTypes = new List<SupportMateriaTypes>();
+            foreach (var type in Enum.GetValues<SupportMateriaTypes>())
+            {
+                if (type != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
+                {
+                    comboBoxStatAffected.Items.Add(StringParser.AddSpaces(type.ToString()));
+                }
+            }
 
             //add types to the combobox
             comboBoxStatAffected.SuspendLayout();
@@ -78,7 +98,10 @@ namespace FF7Scarlet.KernelEditor
             {
                 foreach (var type in supportTypes)
                 {
-                    comboBoxStatAffected.Items.Add(StringParser.AddSpaces(type.ToString()));
+                    if (type != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
+                    {
+                        comboBoxStatAffected.Items.Add(StringParser.AddSpaces(type.ToString()));
+                    }
                 }
                 comboBoxStatAffected.SelectedIndex =
                     supportTypes.IndexOf((SupportMateriaTypes)materia.Attributes[0]) + 1;

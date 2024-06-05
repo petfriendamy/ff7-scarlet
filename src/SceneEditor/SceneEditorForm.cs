@@ -292,11 +292,14 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxEnemyMorphItem.Items.Add(acc.Name);
                     itemList.Add(new InventoryItem((byte)acc.Index, ItemType.Accessory));
                 }
-                foreach (var mat in DataManager.Kernel.MateriaData.Materias)
+                if (DataManager.PS3TweaksEnabled)
                 {
-                    comboBoxEnemyDropItemID.Items.Add(mat.Name);
-                    comboBoxEnemyMorphItem.Items.Add(mat.Name);
-                    itemList.Add(new InventoryItem((byte)mat.Index, ItemType.Materia));
+                    foreach (var mat in DataManager.Kernel.MateriaExt)
+                    {
+                        comboBoxEnemyDropItemID.Items.Add(mat.Name);
+                        comboBoxEnemyMorphItem.Items.Add(mat.Name);
+                        itemList.Add(new InventoryItem((byte)mat.Index, ItemType.Materia));
+                    }
                 }
             }
             else
@@ -505,7 +508,24 @@ namespace FF7Scarlet.SceneEditor
                     }
                     else
                     {
-                        comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
+                        if (enemy.MorphItemIndex >= InventoryItem.MATERIA_START)
+                        {
+                            var result = MessageBox.Show("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
+                                "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (result == DialogResult.Yes)
+                            {
+                                DataManager.PS3TweaksEnabled = true;
+                                comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
+                            }
+                            else
+                            {
+                                comboBoxEnemyMorphItem.SelectedIndex = 0;
+                            }
+                        }
+                        else
+                        {
+                            comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
+                        }
                     }
                 }
 

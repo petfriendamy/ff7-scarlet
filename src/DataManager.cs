@@ -32,8 +32,10 @@ namespace FF7Scarlet
         public static ExeData? VanillaExe { get; private set; }
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
-        public static bool MultiLinkedSlotsEnabled { get; set; }
+        public static bool PS3TweaksEnabled { get; set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
+
+        public const string PS3_TWEAKS_KEY = "PS3TweaksEnabled";
 
         //clipboard
         public static Scene? CopiedScene { get; set; }

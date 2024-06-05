@@ -122,7 +122,7 @@ namespace FF7Scarlet.Shared.Controls
                 pictureBoxSlot1, pictureBoxSlot2, pictureBoxSlot3, pictureBoxSlot4, pictureBoxSlot5,
                 pictureBoxSlot6, pictureBoxSlot7, pictureBoxSlot8
             };
-            multiLinkEnabled = DataManager.MultiLinkedSlotsEnabled;
+            multiLinkEnabled = DataManager.PS3TweaksEnabled;
         }
 
         private Image GetMatchingImage(MateriaSlot slot, MateriaExt? equipped)
@@ -261,11 +261,11 @@ namespace FF7Scarlet.Shared.Controls
                         //if multi-linked slots are not enabled, ask to enable them
                         if (!multiLinkEnabled)
                         {
-                            var result = MessageBox.Show("This kernel file appears to use multi-linked materia slots! Would you like to enable those?",
-                                "Enable Multi-Linked Slots?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            var result = MessageBox.Show("This kernel file appears to use multi-linked materia slots! Would you like to enable Postscriptthree Tweaks?",
+                                "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (result == DialogResult.Yes)
                             {
-                                DataManager.MultiLinkedSlotsEnabled = true;
+                                DataManager.PS3TweaksEnabled = true;
                                 EnableMultiLinkSlots();
                                 MultiLinkEnabled?.Invoke(this, EventArgs.Empty);
                             }
@@ -322,7 +322,7 @@ namespace FF7Scarlet.Shared.Controls
                             var prevValue = GetMatchingSlot(slots[slot - 1]);
                             if (SlotIsRightLinked(newValue) && !SlotIsLeftLinked(prevValue))
                             {
-                                if (DataManager.MultiLinkedSlotsEnabled && SlotIsRightLinked(prevValue))
+                                if (DataManager.PS3TweaksEnabled && SlotIsRightLinked(prevValue))
                                 {
                                     SetSlotInner(slot - 1, DOUBLE_LINKED_NORMAL, rate, true, true);
                                 }
@@ -334,7 +334,7 @@ namespace FF7Scarlet.Shared.Controls
                             else if (!SlotIsRightLinked(newValue) && SlotIsRightLinked(currentValue)
                                 && SlotIsLeftLinked(prevValue))
                             {
-                                if (DataManager.MultiLinkedSlotsEnabled && SlotIsDoubleLinked(prevValue))
+                                if (DataManager.PS3TweaksEnabled && SlotIsDoubleLinked(prevValue))
                                 {
                                     SetSlotInner(slot - 1, MateriaSlot.NormalRightLinkedSlot, rate, true, true);
                                 }
@@ -349,7 +349,7 @@ namespace FF7Scarlet.Shared.Controls
                             var nextValue = GetMatchingSlot(slots[slot + 1]);
                             if (SlotIsLeftLinked(newValue) && !SlotIsRightLinked(nextValue))
                             {
-                                if (DataManager.MultiLinkedSlotsEnabled && SlotIsLeftLinked(nextValue))
+                                if (DataManager.PS3TweaksEnabled && SlotIsLeftLinked(nextValue))
                                 {
                                     SetSlotInner(slot + 1, DOUBLE_LINKED_NORMAL, rate, true, true);
                                 }
@@ -361,7 +361,7 @@ namespace FF7Scarlet.Shared.Controls
                             else if (!SlotIsLeftLinked(newValue) && SlotIsLeftLinked(currentValue)
                                 && SlotIsRightLinked(nextValue))
                             {
-                                if (DataManager.MultiLinkedSlotsEnabled && SlotIsDoubleLinked(nextValue))
+                                if (DataManager.PS3TweaksEnabled && SlotIsDoubleLinked(nextValue))
                                 {
                                     SetSlotInner(slot - 1, MateriaSlot.NormalLeftLinkedSlot, rate, true, true);
                                 }
