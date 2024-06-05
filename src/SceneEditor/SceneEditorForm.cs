@@ -292,6 +292,12 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxEnemyMorphItem.Items.Add(acc.Name);
                     itemList.Add(new InventoryItem((byte)acc.Index, ItemType.Accessory));
                 }
+                foreach (var mat in DataManager.Kernel.MateriaData.Materias)
+                {
+                    comboBoxEnemyDropItemID.Items.Add(mat.Name);
+                    comboBoxEnemyMorphItem.Items.Add(mat.Name);
+                    itemList.Add(new InventoryItem((byte)mat.Index, ItemType.Materia));
+                }
             }
             else
             {

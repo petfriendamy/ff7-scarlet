@@ -479,7 +479,7 @@ namespace FF7Scarlet.ExeEditor
                     var mat = DataManager.Kernel.GetMateriaByID(item.Index);
                     if (mat != null)
                     {
-                        return mat.Index + InventoryItem.MAX_INDEX + 1;
+                        return mat.Index + InventoryItem.MATERIA_START;
                     }
                 }
                 else

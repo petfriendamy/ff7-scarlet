@@ -51,6 +51,7 @@ namespace FF7Scarlet.KernelEditor
         StealAsWell = 0x5D,
         Elemental = 0x5E,
         AddedEffect = 0x5F,
+        MorphAsWell = 0x60,
         QuadraMagic = 0x63
     };
 

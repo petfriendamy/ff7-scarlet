@@ -12,11 +12,12 @@ namespace FF7Scarlet.Shared
     {
         #region Properties
 
-        public const ushort WEAPON_START = 128, ARMOR_START = 256, ACCESSORY_START = 288, MAX_INDEX = 319,
+        public const ushort WEAPON_START = 128, ARMOR_START = 256, ACCESSORY_START = 288, MATERIA_START = 320, MAX_INDEX = 415,
             ITEM_COUNT = WEAPON_START,
             WEAPON_COUNT = ARMOR_START - WEAPON_START,
             ARMOR_COUNT = ACCESSORY_START - ARMOR_START,
-            ACCESSORY_COUNT = MAX_INDEX - ACCESSORY_START + 1;
+            ACCESSORY_COUNT = MATERIA_START - ACCESSORY_START,
+            MATERIA_COUNT = MAX_INDEX - MATERIA_START + 1;
 
         public byte Index { get; private set; }
         public ItemType Type { get; private set; }
@@ -70,6 +71,8 @@ namespace FF7Scarlet.Shared
                     return (byte)(value - ARMOR_START);
                 case ItemType.Accessory:
                     return (byte)(value - ACCESSORY_START);
+                case ItemType.Materia:
+                    return (byte)(value - MATERIA_START);
                 default:
                     return 0xFF;
             }
@@ -87,6 +90,8 @@ namespace FF7Scarlet.Shared
                     return (ushort)(index + ARMOR_START);
                 case ItemType.Accessory:
                     return (ushort)(index + ACCESSORY_START);
+                case ItemType.Materia:
+                    return (ushort)(index + MATERIA_START);
                 default:
                     return HexParser.NULL_OFFSET_16_BIT;
             }
@@ -115,9 +120,13 @@ namespace FF7Scarlet.Shared
             {
                 return ItemType.Armor;
             }
-            else
+            else if(value < MATERIA_START)
             {
                 return ItemType.Accessory;
+            }
+            else
+            {
+                return ItemType.Materia;
             }
         }
 
