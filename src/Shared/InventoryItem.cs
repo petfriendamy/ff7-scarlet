@@ -38,12 +38,6 @@ namespace FF7Scarlet.Shared
             Type = type;
         }
 
-        public InventoryItem(Accessory accessory)
-        {
-            Type = ItemType.Accessory;
-            Index = (byte)accessory.Index;
-        }
-
         public InventoryItem(MateriaExt materia)
         {
             Type = ItemType.Materia;
@@ -120,7 +114,7 @@ namespace FF7Scarlet.Shared
             {
                 return ItemType.Armor;
             }
-            else if(value < MATERIA_START)
+            else if (value < MATERIA_START)
             {
                 return ItemType.Accessory;
             }

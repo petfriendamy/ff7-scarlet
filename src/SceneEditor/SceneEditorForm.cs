@@ -259,10 +259,14 @@ namespace FF7Scarlet.SceneEditor
 
         private void LoadKernelData()
         {
+            int drop = comboBoxEnemyDropItemID.SelectedIndex,
+                steal = comboBoxEnemyMorphItem.SelectedIndex;
+            if (drop < 0) { drop = 0; }
             comboBoxEnemyDropItemID.BeginUpdate();
             comboBoxEnemyMorphItem.BeginUpdate();
             comboBoxEnemyDropItemID.Items.Clear();
             comboBoxEnemyMorphItem.Items.Clear();
+            itemList.Clear();
 
             comboBoxEnemyDropItemID.Items.Add("None");
             comboBoxEnemyMorphItem.Items.Add("None");
@@ -309,7 +313,8 @@ namespace FF7Scarlet.SceneEditor
             }
             comboBoxEnemyDropItemID.EndUpdate();
             comboBoxEnemyMorphItem.EndUpdate();
-            comboBoxEnemyDropItemID.SelectedIndex = 0;
+            comboBoxEnemyDropItemID.SelectedIndex = drop;
+            comboBoxEnemyMorphItem.SelectedIndex = steal;
             EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, false);
         }
 
@@ -508,18 +513,21 @@ namespace FF7Scarlet.SceneEditor
                     }
                     else
                     {
-                        if (enemy.MorphItemIndex >= InventoryItem.MATERIA_START)
+                        if (enemy.MorphItemIndex >= InventoryItem.MATERIA_START && !DataManager.PS3TweaksEnabled)
                         {
                             var result = MessageBox.Show("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
                                 "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (result == DialogResult.Yes)
                             {
                                 DataManager.PS3TweaksEnabled = true;
+                                LoadKernelData();
                                 comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
                             }
                             else
                             {
                                 comboBoxEnemyMorphItem.SelectedIndex = 0;
+                                enemy.MorphItemIndex = HexParser.NULL_OFFSET_16_BIT;
+                                SetUnsaved(true);
                             }
                         }
                         else
@@ -664,11 +672,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else
                 {
-                    var item = DataManager.Kernel.GetItemByID(comboBoxEnemyMorphItem.SelectedIndex - 1);
-                    if (item != null)
-                    {
-                        enemy.MorphItemIndex = (ushort)item.Index;
-                    }
+                    enemy.MorphItemIndex = (ushort)(comboBoxEnemyMorphItem.SelectedIndex - 1);
                 }
             }
             enemyNeedsSync = false;
@@ -1493,6 +1497,25 @@ namespace FF7Scarlet.SceneEditor
                 {
                     comboBoxEnemyDropItemID.SelectedIndex = 0;
                     EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, true, comboBoxEnemyDropItemID);
+                }
+                else if (item.ItemID >= InventoryItem.MATERIA_START && !DataManager.PS3TweaksEnabled)
+                {
+                    var result = MessageBox.Show("This scene file appears to use materia drops! Would you like to enable Postscriptthree Tweaks?",
+                                "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        DataManager.PS3TweaksEnabled = true;
+                        LoadKernelData();
+                        EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, true, false);
+                        comboBoxEnemyDropItemID.SelectedIndex = item.ItemID + 1;
+                        checkBoxEnemyItemIsSteal.Checked = item.IsSteal;
+                        numericEnemyDropRate.Value = item.DropRate;
+                    }
+                    else
+                    {
+                        comboBoxEnemyDropItemID.SelectedIndex = 0;
+                        EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, true, comboBoxEnemyDropItemID);
+                    }
                 }
                 else
                 {
