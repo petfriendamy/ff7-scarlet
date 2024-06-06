@@ -9,6 +9,8 @@
     <ApplicationIcon>scarlet_icon.ico</ApplicationIcon>
     <AssemblyName>Scarlet</AssemblyName>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <Version>0.0.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
