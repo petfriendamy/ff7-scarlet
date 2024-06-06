@@ -48,7 +48,8 @@ namespace FF7Scarlet.KernelEditor
             {
                 if (type != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
                 {
-                    comboBoxStatAffected.Items.Add(StringParser.AddSpaces(type.ToString()));
+                    //comboBoxStatAffected.Items.Add(StringParser.AddSpaces(type.ToString()));
+                    supportTypes.Add(type);
                 }
             }
 
