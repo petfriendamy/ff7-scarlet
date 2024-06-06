@@ -9,6 +9,8 @@ namespace FF7Scarlet
         public StartupForm()
         {
             InitializeComponent();
+            this.Text = $"{Application.ProductName} v{Application.ProductVersion} - Main Menu";
+
             DataManager.SetStartupForm(this);
             toolTipHoverText.SetToolTip(groupBoxKernel2, "kernel2 cannot be loaded without kernel.bin.");
 
