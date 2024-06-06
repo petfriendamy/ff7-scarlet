@@ -235,7 +235,8 @@ namespace FF7Scarlet.SceneEditor
                     {
                         enemyName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
                         temp = reader.ReadBytes(Enemy.DATA_BLOCK_SIZE);
-                        if (!enemyName[i].IsEmpty())
+                        //if (!enemyName[i].IsEmpty())
+                        if (enemyModelID[i] < 65535)
                         {
                             Enemies[i] = new Enemy(this, enemyModelID[i], enemyName[i], temp);
                         }
