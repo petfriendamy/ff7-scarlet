@@ -68,6 +68,7 @@ namespace FF7Scarlet.ExeEditor
         public uint[] ArmorPrices { get; } = new uint[InventoryItem.ARMOR_COUNT];
         public uint[] AccessoryPrices { get; } = new uint[InventoryItem.ACCESSORY_COUNT];
         public uint[] MateriaPrices { get; } = new uint[Kernel.MATERIA_COUNT];
+        public bool IsUnedited { get; private set; }
 
 
         public ExeData(string path)
@@ -313,37 +314,14 @@ namespace FF7Scarlet.ExeEditor
         {
             if (File.Exists(path))
             {
-                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-                using (var reader = new BinaryReader(stream))
+                if (unedited) //this should be an unedited EXE, so do a hash check
                 {
-                    if (unedited) //this should be an unedited EXE, so do a hash check
-                    {
-                        var lang = GetLanguage(path);
-                        if (lang == Language.English) //only English version supported
-                        {
-                            byte[] compare = SHA1.HashData(stream), hash;
-
-                            if (IsSteamVersion(path)) //Steam version
-                            {
-                                hash = Convert.FromHexString("1C9A6F4B6F554B1B4ECB38812F9396A026A677D6");
-                                return hash.SequenceEqual(compare);
-                            }
-                            else //1998 version
-                            {
-                                //1.00
-                                hash = Convert.FromHexString("4EECAF14F30E8B0CC87B88C943F1119B567452D7");
-                                if (hash.SequenceEqual(compare))
-                                {
-                                    return true;
-                                }
-
-                                //1.02
-                                hash = Convert.FromHexString("684A0E87840138B4E02FC8EDB9AE2E2591CE4982");
-                                return hash.SequenceEqual(compare);
-                            }
-                        } 
-                    }
-                    else
+                    return HashCheck(path);
+                }
+                else
+                {
+                    using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                    using (var reader = new BinaryReader(stream))
                     {
                         //check if header is correct
                         for (int i = 0; i < EXE_HEADER.Length; ++i)
@@ -355,6 +333,35 @@ namespace FF7Scarlet.ExeEditor
                         }
                         return true;
                     }
+                }
+            }
+            return false;
+        }
+
+        private static bool HashCheck(string path)
+        {
+            byte[] compare = SHA1.HashData(File.ReadAllBytes(path)), hash;
+
+            if (GetLanguage(path) == Language.English) //only English version supported
+            {
+                if (IsSteamVersion(path)) //Steam version
+                {
+                    hash = Convert.FromHexString("1C9A6F4B6F554B1B4ECB38812F9396A026A677D6");
+                    return hash.SequenceEqual(compare);
+                }
+                else //1998 version
+                {
+                    //1.00
+                    hash = Convert.FromHexString("4EECAF14F30E8B0CC87B88C943F1119B567452D7");
+                    if (hash.SequenceEqual(compare)) { return true; }
+
+                    //1.02
+                    hash = Convert.FromHexString("684A0E87840138B4E02FC8EDB9AE2E2591CE4982");
+                    if (hash.SequenceEqual(compare)) { return true; }
+
+                    //1.02 4GB patch
+                    hash = Convert.FromHexString("141822081B3F24EA70BE35D59449E0CA098881E3");
+                    return hash.SequenceEqual(compare);
                 }
             }
             return false;
@@ -416,6 +423,7 @@ namespace FF7Scarlet.ExeEditor
                 if (File.Exists(path))
                 {
                     Language = GetLanguage(path);
+                    IsUnedited = HashCheck(path);
 
                     //attempt to open and read the EXE
                     int i;
@@ -666,6 +674,7 @@ namespace FF7Scarlet.ExeEditor
                             }
                         }
                     }
+                    IsUnedited = true;
                 }
                 catch (Exception ex)
                 {

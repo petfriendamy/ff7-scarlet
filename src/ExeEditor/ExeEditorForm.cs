@@ -6,8 +6,6 @@ using System.Media;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
-using Shojy.FF7.Elena.Equipment;
-using Shojy.FF7.Elena.Materias;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -1527,6 +1525,10 @@ namespace FF7Scarlet.ExeEditor
                     {
                         DataManager.LoadVanillaEXE();
                     }
+                    else if (editor.IsUnedited)
+                    {
+                        DataManager.SetFilePath(FileClass.EXE, editor.FilePath, true);
+                    }
                     else
                     {
                         MessageBox.Show("You will need to provide an unmodified English EXE for the Hext comparison.",
@@ -1547,7 +1549,6 @@ namespace FF7Scarlet.ExeEditor
                             try
                             {
                                 DataManager.SetFilePath(FileClass.EXE, path, true);
-                                DataManager.LoadVanillaEXE();
                             }
                             catch (Exception ex)
                             {
@@ -1591,12 +1592,25 @@ namespace FF7Scarlet.ExeEditor
         //update EXE
         private void buttonSaveEXE_Click(object sender, EventArgs e)
         {
+            if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
+            if (limitNeedsSync && SelectedLimit != null)
+            {
+                SyncLimitData(SelectedLimit);
+            }
+
             try
             {
-                if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
-                if (limitNeedsSync && SelectedLimit != null)
+                string backupPath = editor.FilePath + ".bak";
+                if (editor.IsUnedited && !File.Exists(backupPath)) //ask to make a backup
                 {
-                    SyncLimitData(SelectedLimit);
+                    var result = MessageBox.Show("Make a backup of the EXE before saving?", "Make backup?",
+                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    if (result == DialogResult.Cancel) { return; }
+                    else if (result == DialogResult.Yes)
+                    {
+                        File.Copy(editor.FilePath, backupPath);
+                        DataManager.SetFilePath(FileClass.EXE, backupPath, true);
+                    }
                 }
                 editor.WriteEXE();
                 if (DataManager.ExeData != null) //sync with DataManager

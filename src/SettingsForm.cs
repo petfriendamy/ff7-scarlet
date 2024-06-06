@@ -28,7 +28,7 @@ namespace FF7Scarlet
             string path;
             using (var loadFile = new OpenFileDialog())
             {
-                loadFile.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7.exe";
+                loadFile.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7.exe;ff7_en.exe.bak;ff7.exe.bak";
                 result = loadFile.ShowDialog();
                 path = loadFile.FileName;
             }
