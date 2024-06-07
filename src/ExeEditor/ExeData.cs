@@ -31,6 +31,7 @@ namespace FF7Scarlet.ExeEditor
             HEXT_OFFSET_1 = 0x400C00,
             HEXT_OFFSET_2 = 0x401600,
 
+            TEST_BYTE_POS = 0x94,
             AP_MULTIPLIER_POS = 0x31F14F,
             AP_MASTER_OFFSET = 0x4F,
             CONFIG_MENU_TEXT_POS = 0x5188A8,
@@ -131,21 +132,6 @@ namespace FF7Scarlet.ExeEditor
                     return 0x775F8;
                 case Language.German:
                     return 0x76E68;
-                default:
-                    return 0;
-            }
-        }
-
-        private long GetEquipOffset()
-        {
-            switch (Language)
-            {
-                case Language.Spanish:
-                    return 0x777C0;
-                case Language.French:
-                    return 0x77788;
-                case Language.German:
-                    return 0x76EF0;
                 default:
                     return 0;
             }
@@ -331,6 +317,13 @@ namespace FF7Scarlet.ExeEditor
                                 return false;
                             }
                         }
+
+                        //test a certain byte (this is different in 1.00)
+                        stream.Seek(TEST_BYTE_POS, SeekOrigin.Begin);
+                        if (reader.ReadByte() != 5)
+                        {
+                            return false;
+                        }
                         return true;
                     }
                 }
@@ -351,10 +344,6 @@ namespace FF7Scarlet.ExeEditor
                 }
                 else //1998 version
                 {
-                    //1.00
-                    hash = Convert.FromHexString("4EECAF14F30E8B0CC87B88C943F1119B567452D7");
-                    if (hash.SequenceEqual(compare)) { return true; }
-
                     //1.02
                     hash = Convert.FromHexString("684A0E87840138B4E02FC8EDB9AE2E2591CE4982");
                     if (hash.SequenceEqual(compare)) { return true; }
