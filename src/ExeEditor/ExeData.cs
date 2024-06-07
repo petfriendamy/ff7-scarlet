@@ -625,7 +625,7 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //write shop names
-                        stream.Seek(SHOP_NAME_POS + GetShopNameLength(), SeekOrigin.Begin);
+                        stream.Seek(SHOP_NAME_POS + GetShopNameOffset(), SeekOrigin.Begin);
                         foreach (var n in ShopNames)
                         {
                             writer.Write(n.GetBytes(GetShopNameLength()));
