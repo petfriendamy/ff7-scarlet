@@ -1280,38 +1280,47 @@ namespace FF7Scarlet.ExeEditor
 
         private void listBoxMainMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loading = true;
-            int i = listBoxMainMenu.SelectedIndex;
-            if (i >= 0 && i < ExeData.NUM_MENU_TEXTS)
+            if (!loading)
             {
-                textBoxMainMenuText.Enabled = true;
-                textBoxMainMenuText.Text = editor.MainMenuTexts[i].ToString();
+                loading = true;
+                int i = listBoxMainMenu.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_MENU_TEXTS)
+                {
+                    textBoxMainMenuText.Enabled = true;
+                    textBoxMainMenuText.Text = editor.MainMenuTexts[i].ToString();
+                }
+                loading = false;
             }
-            loading = false;
         }
 
         private void listBoxConfigMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loading = true;
-            int i = listBoxConfigMenu.SelectedIndex;
-            if (i >= 0 && i < ExeData.NUM_CONFIG_TEXTS)
+            if (!loading)
             {
-                textBoxConfigMenuText.Enabled = true;
-                textBoxConfigMenuText.Text = editor.ConfigMenuTexts[i].ToString();
+                loading = true;
+                int i = listBoxConfigMenu.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_CONFIG_TEXTS)
+                {
+                    textBoxConfigMenuText.Enabled = true;
+                    textBoxConfigMenuText.Text = editor.ConfigMenuTexts[i].ToString();
+                }
+                loading = false;
             }
-            loading = false;
         }
 
         private void listBoxStatusEffects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loading = true;
-            int i = listBoxStatusEffects.SelectedIndex;
-            if (i >= 0 && i < ExeData.NUM_STATUS_EFFECTS)
+            if (!loading)
             {
-                textBoxStatusEffectText.Enabled = true;
-                textBoxStatusEffectText.Text = editor.StatusEffects[i].ToString();
+                loading = true;
+                int i = listBoxStatusEffects.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_STATUS_EFFECTS)
+                {
+                    textBoxStatusEffectText.Enabled = true;
+                    textBoxStatusEffectText.Text = editor.StatusEffects[i].ToString();
+                }
+                loading = false;
             }
-            loading = false;
         }
 
         private void comboBoxL4Char_SelectedIndexChanged(object sender, EventArgs e)
@@ -1321,36 +1330,44 @@ namespace FF7Scarlet.ExeEditor
 
         private void listBoxShopNames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loading = true;
-            int i = listBoxShopNames.SelectedIndex;
-            if (i >= 0 && i < ExeData.NUM_SHOP_NAMES)
+            if (!loading)
             {
-                textBoxShopNameText.Enabled = true;
-                textBoxShopNameText.Text = editor.ShopNames[i].ToString();
+                loading = true;
+                int i = listBoxShopNames.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_SHOP_NAMES)
+                {
+                    textBoxShopNameText.Enabled = true;
+                    textBoxShopNameText.Text = editor.ShopNames[i].ToString();
+                }
+                loading = false;
             }
-            loading = false;
         }
 
         private void listBoxShopText_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loading = true;
-            int i = listBoxShopText.SelectedIndex;
-            if (i >= 0 && i < ExeData.NUM_SHOP_TEXTS)
+            if (!loading)
             {
-                textBoxShopText.Enabled = true;
-                textBoxShopText.Text = editor.ShopText[i].ToString();
+                loading = true;
+                int i = listBoxShopText.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_SHOP_TEXTS)
+                {
+                    textBoxShopText.Enabled = true;
+                    textBoxShopText.Text = editor.ShopText[i].ToString();
+                }
+                loading = false;
             }
-            loading = false;
         }
 
         private void textBoxMainMenuText_TextChanged(object sender, EventArgs e)
         {
             if (!loading)
             {
+                loading = true;
                 int i = listBoxMainMenu.SelectedIndex;
                 editor.MainMenuTexts[i] = new FFText(textBoxMainMenuText.Text);
                 listBoxMainMenu.Items[i] = textBoxMainMenuText.Text;
                 SetUnsaved(true);
+                loading = false;
             }
         }
 
@@ -1358,10 +1375,12 @@ namespace FF7Scarlet.ExeEditor
         {
             if (!loading)
             {
+                loading = true;
                 int i = listBoxConfigMenu.SelectedIndex;
                 editor.ConfigMenuTexts[i] = new FFText(textBoxConfigMenuText.Text);
                 listBoxConfigMenu.Items[i] = textBoxConfigMenuText.Text;
                 SetUnsaved(true);
+                loading = false;
             }
         }
 
@@ -1369,10 +1388,12 @@ namespace FF7Scarlet.ExeEditor
         {
             if (!loading)
             {
+                loading = true;
                 int i = listBoxStatusEffects.SelectedIndex;
                 editor.StatusEffects[i] = new FFText(textBoxStatusEffectText.Text);
-                listBoxStatusEffects.Items[i] = listBoxStatusEffects.Text;
+                listBoxStatusEffects.Items[i] = textBoxStatusEffectText.Text;
                 SetUnsaved(true);
+                loading = false;
             }
         }
 
@@ -1410,11 +1431,13 @@ namespace FF7Scarlet.ExeEditor
         {
             if (!loading)
             {
+                loading = true;
                 int i = listBoxShopNames.SelectedIndex;
                 editor.ShopNames[i] = new FFText(textBoxShopNameText.Text);
                 listBoxShopNames.Items[i] = textBoxShopNameText.Text;
                 comboBoxShopType.Items[i] = textBoxShopNameText.Text;
                 SetUnsaved(true);
+                loading = false;
             }
         }
 
@@ -1422,10 +1445,12 @@ namespace FF7Scarlet.ExeEditor
         {
             if (!loading)
             {
+                loading = true;
                 int i = listBoxShopText.SelectedIndex;
                 editor.ShopText[i] = new FFText(textBoxShopText.Text);
-                listBoxShopText.Items[i] = listBoxShopText.Text;
+                listBoxShopText.Items[i] = textBoxShopText.Text;
                 SetUnsaved(true);
+                loading = false;
             }
         }
 
