@@ -82,6 +82,10 @@
                     {
                         MaxLevel = i;
                     }
+                    if(i > MaxLevel)
+                    {
+                        MaxLevel = i;
+                    }
                     APSelectors[index].Value = value;
                     prevValues[index] = value;
                 }
