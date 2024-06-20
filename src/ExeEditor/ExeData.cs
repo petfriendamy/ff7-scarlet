@@ -1160,8 +1160,8 @@ namespace FF7Scarlet.ExeEditor
                             {
                                 checker = true;
                                 writer.WriteLine($"# {name2} -> {name1}");
-                                var temp = ShopNames[i].GetBytes();
-                                pos = NAME_DATA_POS + HEXT_OFFSET_2 + (GetShopNameLength() * i);
+                                var temp = CharacterNames[i].GetBytes();
+                                pos = NAME_DATA_POS + HEXT_OFFSET_2 + (Character.NAME_LENGTH * i);
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var x in temp)
                                 {
