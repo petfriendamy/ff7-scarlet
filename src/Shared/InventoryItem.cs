@@ -3,12 +3,7 @@ using FF7Scarlet.KernelEditor;
 
 namespace FF7Scarlet.Shared
 {
-    public enum ItemType
-    {
-        None, Item, Weapon, Armor, Accessory, Materia
-    }
-
-    public class InventoryItem
+    /*public class InventoryItem
     {
         #region Properties
 
@@ -131,5 +126,5 @@ namespace FF7Scarlet.Shared
         }
 
         #endregion
-    }
+    }*/
 }

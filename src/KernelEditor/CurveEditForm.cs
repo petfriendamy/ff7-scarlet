@@ -1,19 +1,20 @@
 ﻿using FF7Scarlet.Shared;
-using System.Security.Cryptography;
+using Shojy.FF7.Elena.Battle;
+using Shojy.FF7.Elena.Sections;
 
 namespace FF7Scarlet.KernelEditor
 {
     public partial class CurveEditForm : Form
     {
-        //public StatCurve Curve { get; private set; }
         public bool Unsaved { get; private set; } = false;
-        private BattleAndGrowthData growthData;
+        private Kernel kernel;
         private NumericUpDown[] bases, gradients;
         private StatCurve curve;
         private byte curveIndex;
         private bool loading;
+        private const int STAT_COUNT = 9, NUM_CURVES = 64;
 
-        public CurveEditForm(BattleAndGrowthData growthData, byte curveIndex)
+        public CurveEditForm(Kernel kernel, byte curveIndex)
         {
             InitializeComponent();
             loading = true;
@@ -29,11 +30,13 @@ namespace FF7Scarlet.KernelEditor
             ];
 
             //fill out controls with values
-            this.growthData = growthData;
+            this.kernel = kernel;
             this.curveIndex = curveIndex;
-            curve = new StatCurve(growthData.StatCurves[curveIndex].GetRawData());
+            curve = new StatCurve();
             for (int i = 0; i < 8; ++i)
             {
+                curve.Bases[i] = kernel.BattleAndGrowthData.StatCurves[curveIndex].Bases[i];
+                curve.Gradients[i] = kernel.BattleAndGrowthData.StatCurves[curveIndex].Gradients[i];
                 bases[i].Value = curve.Bases[i];
                 gradients[i].Value = curve.Gradients[i];
             }
@@ -41,11 +44,11 @@ namespace FF7Scarlet.KernelEditor
 
             //show which stats are currently using this curve index
             var stats = new List<string>();
-            for (int i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
+            for (int i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
             {
-                for (int j = 0; j < StatCurve.STAT_COUNT; ++j)
+                for (int j = 0; j < STAT_COUNT; ++j)
                 {
-                    if (growthData.CharGrowth[i].CurveIndex[j] == curveIndex)
+                    if (kernel.GetCurveIndex(i, j) == curveIndex)
                     {
                         string? name = Enum.GetName((CharacterNames)i),
                             stat = Enum.GetName((CurveStats)j);
@@ -103,7 +106,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (Unsaved)
             {
-                growthData.StatCurves[curveIndex] = curve;
+                kernel.BattleAndGrowthData.StatCurves[curveIndex] = curve;
             }
             DialogResult = DialogResult.OK;
             Close();

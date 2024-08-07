@@ -8,7 +8,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FF7Scarlet.KernelEditor
 {
-    public class InitialData
+    /*public class InitialData
     {
         public const int INVENTORY_SIZE = 320, MATERIA_INVENTORY_SIZE = 200, STOLEN_MATERIA_COUNT = 48;
         private readonly Character[] characters = new Character[Character.PLAYABLE_CHARACTER_COUNT];
@@ -110,5 +110,5 @@ namespace FF7Scarlet.KernelEditor
             Array.Copy(rawData, copy, rawData.Length);
             return copy;
         }
-    }
+    }*/
 }

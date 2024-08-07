@@ -11,25 +11,25 @@ namespace FF7Scarlet.KernelEditor
 
         public bool UnsavedChanges { get; private set; }
         private NumericUpDown[] numerics;
-        private MateriaExt materia;
+        private Materia materia;
         private bool loading;
 
-        public MateriaEffectScaleForm(MateriaExt materia)
+        public MateriaEffectScaleForm(Materia materia)
         {
             InitializeComponent();
 
 
-            numerics = new NumericUpDown[]
-            {
+            numerics =
+            [
                 numericLevel1, numericLevel2, numericLevel3, numericLevel4, numericLevel5
-            };
+            ];
 
             this.materia = materia;
             loading = true;
 
             //check if should enable PS3 tweaks
-            if (materia.MateriaType == MateriaType.Support &&
-                materia.Attributes[0] == (byte)SupportMateriaTypes.MorphAsWell &&
+            var type = Materia.GetMateriaType(materia.MateriaTypeByte);
+            if (type == MateriaType.Support && materia.Attributes[0] == (byte)SupportMateriaTypes.MorphAsWell &&
                 !DataManager.PS3TweaksEnabled)
             {
                 var result = MessageBox.Show("This appears to be a custom materia type! Would you like to enable Postscriptthree Tweaks?",
@@ -44,19 +44,19 @@ namespace FF7Scarlet.KernelEditor
             stats = Enum.GetValues<MateriaStats>().ToList();
             specialStats = Enum.GetValues<MateriaSpecialStats>().ToList();
             supportTypes = new List<SupportMateriaTypes>();
-            foreach (var type in Enum.GetValues<SupportMateriaTypes>())
+            foreach (var t in Enum.GetValues<SupportMateriaTypes>())
             {
-                if (type != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
+                if (t != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
                 {
                     //comboBoxStatAffected.Items.Add(StringParser.AddSpaces(type.ToString()));
-                    supportTypes.Add(type);
+                    supportTypes.Add(t);
                 }
             }
 
             //add types to the combobox
             comboBoxStatAffected.SuspendLayout();
             comboBoxStatAffected.Items.Add("None");
-            if (materia.MateriaType == MateriaType.Independent)
+            if (type == MateriaType.Independent)
             {
                 foreach (var stat in stats)
                 {
@@ -95,13 +95,13 @@ namespace FF7Scarlet.KernelEditor
                         stats.IndexOf((MateriaStats)materia.Attributes[0]) + 1;
                 }
             }
-            else if (materia.MateriaType == MateriaType.Support)
+            else if (type == MateriaType.Support)
             {
-                foreach (var type in supportTypes)
+                foreach (var t in supportTypes)
                 {
-                    if (type != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
+                    if (t != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
                     {
-                        comboBoxStatAffected.Items.Add(StringParser.AddSpaces(type.ToString()));
+                        comboBoxStatAffected.Items.Add(StringParser.AddSpaces(t.ToString()));
                     }
                 }
                 comboBoxStatAffected.SelectedIndex =
@@ -128,21 +128,22 @@ namespace FF7Scarlet.KernelEditor
             {
                 //set affected attribute
                 int i = comboBoxStatAffected.SelectedIndex;
+                var type = Materia.GetMateriaType(materia.MateriaTypeByte);
                 if (i == 0) //none
                 {
                     materia.Attributes[0] = 0xFF;
                 }
-                else if (materia.MateriaType == MateriaType.Support) //support type
+                else if (type == MateriaType.Support) //support type
                 {
-                    materia.SetMateriaSubtype(supportTypes[i - 1]);
+                    MateriaExt.SetMateriaSubtype(materia, supportTypes[i - 1]);
                 }
                 else if (i > stats.Count) //special stats
                 {
-                    materia.SetMateriaSubtype(specialStats[i - stats.Count - 1]);
+                    MateriaExt.SetMateriaSubtype(materia, specialStats[i - stats.Count - 1]);
                 }
                 else //regular stats
                 {
-                    materia.SetMateriaSubtype(stats[i - 1]);
+                    MateriaExt.SetMateriaSubtype(materia, stats[i - 1]);
                 }
 
                 //set other attributes

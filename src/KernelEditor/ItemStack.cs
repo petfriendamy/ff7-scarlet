@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace FF7Scarlet.KernelEditor
 {
-    public class ItemStack
+    /*public class ItemStack
     {
         public InventoryItem Item;
         public int Amount;
@@ -66,5 +66,5 @@ namespace FF7Scarlet.KernelEditor
 
             return BitConverter.ToUInt16(combinedBytes);
         }
-    }
+    }*/
 }

@@ -2,7 +2,7 @@
 
 namespace FF7Scarlet.KernelEditor
 {
-    public enum MagicTypes : byte
+    /*public enum MagicTypes : byte
     {
         Restore, Attack, Indirect, Special, Unlisted
     }
@@ -80,5 +80,5 @@ namespace FF7Scarlet.KernelEditor
                 return temp[0];
             }
         }
-    }
+    }*/
 }

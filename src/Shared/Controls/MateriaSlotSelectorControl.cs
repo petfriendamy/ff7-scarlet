@@ -1,5 +1,6 @@
 ﻿using FF7Scarlet.KernelEditor;
 using Shojy.FF7.Elena.Equipment;
+using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Materias;
 
 namespace FF7Scarlet.Shared.Controls
@@ -15,7 +16,7 @@ namespace FF7Scarlet.Shared.Controls
 
         private SlotSelectorType slotSelectorType;
         private readonly MateriaSlot[] slots = new MateriaSlot[SLOT_COUNT];
-        private readonly MateriaExt?[] equippedMateria = new MateriaExt?[SLOT_COUNT];
+        private readonly Materia?[] equippedMateria = new Materia?[SLOT_COUNT];
         private GrowthRate growthRate;
         private PictureBox[] pictureBoxes;
         private ContextMenuStrip[] menuStrips = new ContextMenuStrip[SLOT_COUNT];
@@ -125,7 +126,7 @@ namespace FF7Scarlet.Shared.Controls
             multiLinkEnabled = DataManager.PS3TweaksEnabled;
         }
 
-        private Image GetMatchingImage(MateriaSlot slot, MateriaExt? equipped)
+        private Image GetMatchingImage(MateriaSlot slot, Materia? equipped)
         {
             if (equipped != null) //materia is equipped
             {
@@ -133,7 +134,7 @@ namespace FF7Scarlet.Shared.Controls
                 switch (fixedSlot)
                 {
                     case MateriaSlot.NormalUnlinkedSlot:
-                        switch (equipped.MateriaType)
+                        switch (MateriaExt.GetMateriaType(equipped.MateriaTypeByte))
                         {
                             case MateriaType.Independent:
                                 return Properties.Resources.materia_slot_independent1;
@@ -148,7 +149,7 @@ namespace FF7Scarlet.Shared.Controls
                         }
                         break;
                     case MateriaSlot.NormalLeftLinkedSlot:
-                        switch (equipped.MateriaType)
+                        switch (MateriaExt.GetMateriaType(equipped.MateriaTypeByte))
                         {
                             case MateriaType.Independent:
                                 return Properties.Resources.materia_slot_independent2;
@@ -163,7 +164,7 @@ namespace FF7Scarlet.Shared.Controls
                         }
                         break;
                     case MateriaSlot.NormalRightLinkedSlot:
-                        switch (equipped.MateriaType)
+                        switch (MateriaExt.GetMateriaType(equipped.MateriaTypeByte))
                         {
                             case MateriaType.Independent:
                                 return Properties.Resources.materia_slot_independent3;
@@ -178,7 +179,7 @@ namespace FF7Scarlet.Shared.Controls
                         }
                         break;
                     case DOUBLE_LINKED_NORMAL:
-                        switch (equipped.MateriaType)
+                        switch (MateriaExt.GetMateriaType(equipped.MateriaTypeByte))
                         {
                             case MateriaType.Independent:
                                 return Properties.Resources.materia_slot_independent_dl;
@@ -388,7 +389,7 @@ namespace FF7Scarlet.Shared.Controls
             }
         }
 
-        public void SetMateria(int slot, MateriaExt? materia)
+        public void SetMateria(int slot, Materia? materia)
         {
             equippedMateria[slot] = materia;
             pictureBoxes[slot].Image = GetMatchingImage(slots[slot], materia);

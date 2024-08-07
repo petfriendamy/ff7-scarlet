@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Media;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
+using Shojy.FF7.Elena.Attacks;
+using Shojy.FF7.Elena.Characters;
+using Shojy.FF7.Elena.Inventory;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -198,7 +198,7 @@ namespace FF7Scarlet.ExeEditor
                 }
 
                 //materia
-                foreach (var materia in DataManager.Kernel.MateriaExt)
+                foreach (var materia in DataManager.Kernel.MateriaData.Materias)
                 {
                     //check if name is empty
                     string name = materia.Name;
@@ -215,8 +215,6 @@ namespace FF7Scarlet.ExeEditor
             }
             else //no kernel loaded
             {
-                //arrangedMateriaList = Array.Empty<Materia>().AsReadOnly();
-                //arrangedAccessoryList = Array.Empty<Accessory>().AsReadOnly();
                 groupBoxCharacterWeapon.Enabled = false;
                 groupBoxCharacterArmor.Enabled = false;
                 comboBoxCharacterAccessory.Enabled = false;
@@ -308,7 +306,7 @@ namespace FF7Scarlet.ExeEditor
             //set item prices
             if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
             {
-                for (i = 0; i < InventoryItem.ITEM_COUNT; ++i)
+                for (i = 0; i < DataParser.ITEM_COUNT; ++i)
                 {
                     var name = DataManager.Kernel.ItemData.Items[i].Name;
                     if (string.IsNullOrEmpty(name))
@@ -317,7 +315,7 @@ namespace FF7Scarlet.ExeEditor
                     }
                     listBoxItemPrices.Items.Add($"{name} - {editor.ItemPrices[i]}");
                 }
-                for (i = 0; i < InventoryItem.WEAPON_COUNT; ++i)
+                for (i = 0; i < DataParser.WEAPON_COUNT; ++i)
                 {
                     var name = DataManager.Kernel.WeaponData.Weapons[i].Name;
                     if (string.IsNullOrEmpty(name))
@@ -326,7 +324,7 @@ namespace FF7Scarlet.ExeEditor
                     }
                     listBoxItemPrices.Items.Add($"{name} - {editor.WeaponPrices[i]}");
                 }
-                for (i = 0; i < InventoryItem.ARMOR_COUNT; ++i)
+                for (i = 0; i < DataParser.ARMOR_COUNT; ++i)
                 {
                     var name = DataManager.Kernel.ArmorData.Armors[i].Name;
                     if (string.IsNullOrEmpty(name))
@@ -335,7 +333,7 @@ namespace FF7Scarlet.ExeEditor
                     }
                     listBoxItemPrices.Items.Add($"{name} - {editor.ArmorPrices[i]}");
                 }
-                for (i = 0; i < InventoryItem.ACCESSORY_COUNT; ++i)
+                for (i = 0; i < DataParser.ACCESSORY_COUNT; ++i)
                 {
                     var name = DataManager.Kernel.AccessoryData.Accessories[i].Name;
                     if (string.IsNullOrEmpty(name))
@@ -346,9 +344,9 @@ namespace FF7Scarlet.ExeEditor
                 }
 
                 //set materia prices
-                for (i = 0; i < DataManager.Kernel.MateriaExt.Length; ++i)
+                for (i = 0; i < DataManager.Kernel.MateriaData.Materias.Length; ++i)
                 {
-                    var name = DataManager.Kernel.MateriaExt[i].Name;
+                    var name = DataManager.Kernel.MateriaData.Materias[i].Name;
                     if (string.IsNullOrEmpty(name))
                     {
                         name = $"(Materia ID {i})";
@@ -434,13 +432,13 @@ namespace FF7Scarlet.ExeEditor
             limit.AttackStrength = damageCalculationControlLimit.AttackPower;
             if (comboBoxLimitConditionSubMenu.SelectedIndex == 0)
             {
-                limit.AttackConditions = AttackConditions.None;
+                limit.ConditionSubmenu = ConditionSubmenu.None;
             }
             else
             {
-                limit.AttackConditions = (AttackConditions)(comboBoxLimitConditionSubMenu.SelectedIndex - 1);
+                limit.ConditionSubmenu = (ConditionSubmenu)(comboBoxLimitConditionSubMenu.SelectedIndex - 1);
             }
-            limit.StatusEffects = statusesControlLimit.GetStatuses();
+            limit.Statuses = statusesControlLimit.GetStatuses();
             limit.Elements = elementsControlLimit.GetElements();
             limit.SpecialAttackFlags = specialAttackFlagsControlLimit.GetFlags();
 
@@ -472,17 +470,18 @@ namespace FF7Scarlet.ExeEditor
         {
             if (DataManager.Kernel != null)
             {
-                if (item.Type == ItemType.Materia)
+                var type = DataParser.GetItemType(item.Item);
+                if (type == ItemType.Materia)
                 {
-                    var mat = DataManager.Kernel.GetMateriaByID(item.Index);
+                    var mat = DataManager.Kernel.GetMateriaByID(DataParser.GetItemIndex(item.Item));
                     if (mat != null)
                     {
-                        return mat.Index + InventoryItem.MATERIA_START;
+                        return mat.Index + DataParser.MATERIA_START;
                     }
                 }
                 else
                 {
-                    return item.GetCombinedIndex();
+                    return item.Item;
                 }
             }
             return 0;
@@ -495,13 +494,17 @@ namespace FF7Scarlet.ExeEditor
                 throw new ArgumentNullException(nameof(DataManager.Kernel));
             }
 
-            if (index <= InventoryItem.MAX_INDEX)
+            if (index <= DataParser.MAX_INDEX)
             {
-                return new InventoryItem((ushort)index);
+                var item = new InventoryItem();
+                item.Item = (ushort)index;
+                return item;
             }
             else
             {
-                return new InventoryItem(DataManager.Kernel.MateriaExt[index - InventoryItem.MAX_INDEX - 1]);
+                var mat = new InventoryItem();
+                DataParser.SetItem(mat, DataManager.Kernel.MateriaData.Materias[index - DataParser.MAX_INDEX - 1]);
+                return mat;
             }
         }
 
@@ -510,7 +513,7 @@ namespace FF7Scarlet.ExeEditor
             bool wasAlreadyLoading = loading;
             loading = true;
             int i = comboBoxL4Char.SelectedIndex;
-            if (i >= 0 && i < Character.PLAYABLE_CHARACTER_COUNT)
+            if (i >= 0 && i < Kernel.PLAYABLE_CHARACTER_COUNT)
             {
                 //set character portrait
                 switch (i)
@@ -546,10 +549,10 @@ namespace FF7Scarlet.ExeEditor
 
                 //set text
                 textBoxL4Success.Enabled = textBoxL4Fail.Enabled =
-                    i < Character.PLAYABLE_CHARACTER_COUNT - 1;
+                    i < Kernel.PLAYABLE_CHARACTER_COUNT - 1;
 
                 //disable success and fail for Cait Sith
-                if (i == Character.PLAYABLE_CHARACTER_COUNT - 1)
+                if (i == Kernel.PLAYABLE_CHARACTER_COUNT - 1)
                 {
                     textBoxL4Success.Clear();
                     textBoxL4Fail.Clear();
@@ -657,7 +660,7 @@ namespace FF7Scarlet.ExeEditor
         {
             if (!loading && SelectedCharacter != null)
             {
-                SelectedCharacter.Name = new FFText(textBoxCharacterName.Text);
+                SelectedCharacter.Name = textBoxCharacterName.Text;
                 SetUnsaved(true);
             }
         }
@@ -813,7 +816,7 @@ namespace FF7Scarlet.ExeEditor
                 int slot = materiaSlotSelectorCharacterWeapon.SelectedSlot;
                 if (slot != -1)
                 {
-                    var mat = SelectedCharacter.WeaponMateria[slot].Copy();
+                    var mat = DataParser.CopyMateria(SelectedCharacter.WeaponMateria[slot]);
                     using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData))
                     {
                         if (edit.ShowDialog() == DialogResult.OK)
@@ -834,7 +837,7 @@ namespace FF7Scarlet.ExeEditor
                 int slot = materiaSlotSelectorCharacterArmor.SelectedSlot;
                 if (slot != -1)
                 {
-                    var mat = SelectedCharacter.ArmorMateria[slot].Copy();
+                    var mat = DataParser.CopyMateria(SelectedCharacter.ArmorMateria[slot]);
                     using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData))
                     {
                         if (edit.ShowDialog() == DialogResult.OK)
@@ -912,14 +915,14 @@ namespace FF7Scarlet.ExeEditor
 
                     //page 2
                     specialAttackFlagsControlLimit.SetFlags(attack.SpecialAttackFlags);
-                    statusesControlLimit.SetStatuses(attack.StatusEffects);
-                    if (attack.AttackConditions == AttackConditions.None)
+                    statusesControlLimit.SetStatuses(attack.Statuses);
+                    if (attack.ConditionSubmenu == ConditionSubmenu.None)
                     {
                         comboBoxLimitConditionSubMenu.SelectedIndex = 0;
                     }
                     else
                     {
-                        comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
+                        comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
                     }
                     numericLimitStatusChangeChance.Value = attack.StatusChange.Amount;
                     if (attack.StatusChange.Type == StatusChangeType.None)
@@ -1126,17 +1129,19 @@ namespace FF7Scarlet.ExeEditor
                 loading = true;
                 numericItemPrice.Enabled = true;
                 var item = GetShopItem(i);
-                if (item.Type == ItemType.Weapon)
+                var type = DataParser.GetItemType(item.Item);
+                int index = DataParser.GetItemIndex(item.Item);
+                if (type == ItemType.Weapon)
                 {
-                    numericItemPrice.Value = editor.WeaponPrices[item.Index];
+                    numericItemPrice.Value = editor.WeaponPrices[index];
                 }
-                else if (item.Type == ItemType.Armor)
+                else if (type == ItemType.Armor)
                 {
-                    numericItemPrice.Value = editor.ArmorPrices[item.Index];
+                    numericItemPrice.Value = editor.ArmorPrices[index];
                 }
-                else if (item.Type == ItemType.Accessory)
+                else if (type == ItemType.Accessory)
                 {
-                    numericItemPrice.Value = editor.AccessoryPrices[item.Index];
+                    numericItemPrice.Value = editor.AccessoryPrices[index];
                 }
                 else
                 {
@@ -1152,20 +1157,22 @@ namespace FF7Scarlet.ExeEditor
             {
                 int i = listBoxItemPrices.SelectedIndex;
                 var item = GetShopItem(i);
-                if (item.Type == ItemType.Weapon)
+                var type = DataParser.GetItemType(item.Item);
+                int index = DataParser.GetItemIndex(item.Item);
+                if (type == ItemType.Weapon)
                 {
-                    editor.WeaponPrices[item.Index] = (uint)numericItemPrice.Value;
-                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.WeaponPrices[item.Index]}";
+                    editor.WeaponPrices[index] = (uint)numericItemPrice.Value;
+                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.WeaponPrices[index]}";
                 }
-                else if (item.Type == ItemType.Armor)
+                else if (type == ItemType.Armor)
                 {
-                    editor.ArmorPrices[item.Index] = (uint)numericItemPrice.Value;
-                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.ArmorPrices[item.Index]}";
+                    editor.ArmorPrices[index] = (uint)numericItemPrice.Value;
+                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.ArmorPrices[index]}";
                 }
-                else if (item.Type == ItemType.Accessory)
+                else if (type == ItemType.Accessory)
                 {
-                    editor.AccessoryPrices[item.Index] = (uint)numericItemPrice.Value;
-                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.AccessoryPrices[item.Index]}";
+                    editor.AccessoryPrices[index] = (uint)numericItemPrice.Value;
+                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.AccessoryPrices[index]}";
                 }
                 else
                 {
@@ -1194,7 +1201,7 @@ namespace FF7Scarlet.ExeEditor
             {
                 int i = listBoxMateriaPrices.SelectedIndex;
                 editor.MateriaPrices[i] = (uint)numericMateriaPrice.Value;
-                listBoxMateriaPrices.Items[i] = $"{DataManager.Kernel.MateriaExt[i].Name} - {editor.MateriaPrices[i]}";
+                listBoxMateriaPrices.Items[i] = $"{DataManager.Kernel.MateriaData.Materias[i].Name} - {editor.MateriaPrices[i]}";
                 SetUnsaved(true);
             }
         }

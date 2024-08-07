@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FF7Scarlet.Shared
 {
-    public class InventoryMateria
+    /*public class InventoryMateria
     {
         public byte Index { get; set; }
         public int CurrentAP { get; set; }
@@ -38,5 +38,5 @@ namespace FF7Scarlet.Shared
             Array.Copy(BitConverter.GetBytes(CurrentAP), 0, data, 1, 3);
             return data;
         }
-    }
+    }*/
 }

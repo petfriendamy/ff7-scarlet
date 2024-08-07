@@ -4,7 +4,7 @@ using Shojy.FF7.Elena.Battle;
 
 namespace FF7Scarlet.Shared
 {
-    public class Attack
+    public class AttackOld
     {
         public const int BLOCK_SIZE = 28;
         private byte[] rawData;
@@ -34,14 +34,14 @@ namespace FF7Scarlet.Shared
 
         public bool IsLimit { get; set; } = false;
 
-        public Attack(ushort id)
+        public AttackOld(ushort id)
         {
             ID = id;
             Name = new FFText();
             rawData = new byte[BLOCK_SIZE];
         }
 
-        public Attack(ushort id, FFText name, byte[] data)
+        public AttackOld(ushort id, FFText name, byte[] data)
         {
             ID = id;
             Name = name;
@@ -49,9 +49,9 @@ namespace FF7Scarlet.Shared
             ParseData(data);
         }
 
-        public Attack(Attack other) : this(other.ID, other) { }
+        public AttackOld(AttackOld other) : this(other.ID, other) { }
 
-        public Attack(ushort id, Attack other)
+        public AttackOld(ushort id, AttackOld other)
         {
             ID = id;
             Name = other.Name;
@@ -112,7 +112,7 @@ namespace FF7Scarlet.Shared
                 writer.Write(DamageCalculationID);
                 writer.Write(AttackStrength);
                 writer.Write((byte)AttackConditions);
-                writer.Write(StatusChange.GetValue());
+                //writer.Write(StatusChange.GetValue());
                 writer.Write(AdditionalEffects);
                 writer.Write(AdditionalEffectsModifier);
                 if (StatusChange.Type == StatusChangeType.None)
@@ -130,7 +130,7 @@ namespace FF7Scarlet.Shared
             return copy;
         }
 
-        public bool HasDifferences (Attack other)
+        public bool HasDifferences (AttackOld other)
         {
             var temp1 = GetRawData();
             var temp2 = other.GetRawData();

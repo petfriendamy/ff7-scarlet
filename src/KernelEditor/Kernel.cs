@@ -1,11 +1,17 @@
-﻿using FF7Scarlet.Shared;
+﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.Shared;
+
 using Shojy.FF7.Elena;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
+using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Equipment;
+using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Items;
+using Shojy.FF7.Elena.Materias;
 using Shojy.FF7.Elena.Sections;
-using System.Xml.Linq;
+
+using System.Collections;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -14,27 +20,41 @@ namespace FF7Scarlet.KernelEditor
     public class Kernel : KernelReader, IAttackContainer
     {
         public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17, NAMES_END = 25,
-            ATTACK_COUNT = 128, MATERIA_COUNT = 96, SUMMON_OFFSET = 0x38, ESKILL_OFFSET = 0x48;
-        public MenuCommand[] Commands { get; }
-        public Attack[] Attacks { get; }
-        public InitialData InitialData { get; }
-        public BattleAndGrowthData BattleAndGrowthData { get; }
-        public MateriaExt[] MateriaExt { get; }
+            ATTACK_COUNT = 128, MATERIA_COUNT = 96, SUMMON_OFFSET = 0x38, ESKILL_OFFSET = 0x48,
+            CHARACTER_COUNT = 11, PLAYABLE_CHARACTER_COUNT = 9, AI_BLOCK_COUNT = 12, AI_BLOCK_SIZE = 2024,
+            INVENTORY_SIZE = 320, MATERIA_INVENTORY_SIZE = 200, STOLEN_MATERIA_COUNT = 48,
+            INDEXED_SPELL_COUNT = 56;
+        public bool[] AttackIsLimit = new bool[ATTACK_COUNT];
+
+        public CharacterAI[] CharacterAI { get; } = new CharacterAI[AI_BLOCK_COUNT];
+        public bool ScriptsLoaded { get; private set; } = false;
         public FFText[] BattleTextFF { get; }
         private bool loaded = false;
+        public Character[] CharacterList { get; }
+        private ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
 
         public Kernel(string file) : base(file, KernelType.KernelBin)
         {
-            //get menu commands
-            Commands = new MenuCommand[GetCount(KernelSection.CommandData)];
-            ParseCommands(GetSectionRawData(KernelSection.CommandData));
+            //get characters as a list
+            CharacterList =
+            [
+                CharacterData.Cloud, CharacterData.Barret, CharacterData.Tifa, CharacterData.Aerith,
+                CharacterData.RedXIII, CharacterData.Yuffie, CharacterData.CaitSithYoungCloud,
+                CharacterData.VincentSephiroth, CharacterData.Cid
+            ];
 
-            //get attack data
-            Attacks = new Attack[ATTACK_COUNT];
-            ParseAttacks(GetSectionRawData(KernelSection.AttackData));
+            //get AI offsets
+            using (var ms = new MemoryStream(CharacterData.CharacterAIBlock, false))
+            using (var reader = new BinaryReader(ms))
+            {
+                for (int i = 0; i < AI_BLOCK_COUNT; ++i)
+                {
+                    characterAIoffsets[i] = reader.ReadUInt16();
+                }
+            }
 
             //mark limits as limits (this adds a special function to attack names/descriptions)
-            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.MagicNames, true)))
+            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.MagicNames, false)))
             using (var reader = new BinaryReader(ms))
             {
                 //get headers
@@ -51,67 +71,16 @@ namespace FF7Scarlet.KernelEditor
                     var temp = reader.ReadBytes(2);
                     if (temp[0] == 0xF8 && temp[1] == 0x02)
                     {
-                        Attacks[i].IsLimit = true;
-                    } 
+                        AttackIsLimit[i] = true;
+                    }
                 }
             }
-
-            //get battle and growth data
-            BattleAndGrowthData = new BattleAndGrowthData(this, GetSectionRawData(KernelSection.BattleAndGrowthData));
-
-            //get initial data
-            InitialData = new InitialData(GetSectionRawData(KernelSection.InitData));
-
-            //re-get materia data
-            MateriaExt = new MateriaExt[MateriaData.Materias.Length];
-            ParseMateria(GetSectionRawData(KernelSection.MateriaData));
 
             //get battle text as FFText
             BattleTextFF = new FFText[BattleText.Strings.Length];
             ReloadBattleText();
 
             loaded = true;
-        }
-
-        private void ParseCommands(byte[] data)
-        {
-            using (var ms = new MemoryStream(data))
-            using (var reader = new BinaryReader(ms))
-            {
-                for (int i = 0; i < Commands.Length; ++i)
-                {
-                    Commands[i] = new MenuCommand(reader.ReadBytes(8));
-                }
-            }
-        }
-
-        private void ParseAttacks(byte[] data)
-        {
-            using (var ms = new MemoryStream(data))
-            using (var reader = new BinaryReader(ms))
-            {
-                for (int i = 0; i < ATTACK_COUNT; ++i)
-                {
-                    Attacks[i] = new Attack((ushort)i, new FFText(MagicNames.Strings[i]),
-                        reader.ReadBytes(Attack.BLOCK_SIZE));
-                    Attacks[i].Description = new FFText(MagicDescriptions.Strings[i]);
-                }
-            }
-        }
-
-        private void ParseMateria(byte[] data)
-        {
-            using (var ms = new MemoryStream(data))
-            using (var reader = new BinaryReader(ms))
-            {
-                for (int i = 0; i < MATERIA_COUNT; ++i)
-                {
-                    MateriaExt[i] = new MateriaExt(reader.ReadBytes(20));
-                    MateriaExt[i].Index = i;
-                    MateriaExt[i].Name = MateriaData.Materias[i].Name;
-                    MateriaExt[i].Description = MateriaData.Materias[i].Description;
-                }
-            }
         }
 
         private void ParseTextSectionStrings(KernelSection section, byte[] data)
@@ -212,12 +181,40 @@ namespace FF7Scarlet.KernelEditor
 
         public byte[] GetLookupTable()
         {
-            return BattleAndGrowthData.CopyLookupTable();
+            var copy = new byte[BattleAndGrowthData.SceneLookupTable.Length];
+            Array.Copy(BattleAndGrowthData.SceneLookupTable, copy, copy.Length);
+            return copy;
         }
 
         public void UpdateLookupTable(byte[] table)
         {
-            BattleAndGrowthData.UpdateLookupTable(table);
+            Array.Copy(table, BattleAndGrowthData.SceneLookupTable, BattleAndGrowthData.SceneLookupTable.Length);
+        }
+
+        public void ParseAIScripts()
+        {
+            int i, j, next;
+            var blockWithoutHeaders = new byte[AI_BLOCK_SIZE];
+            Array.Copy(CharacterData.CharacterAIBlock, 24, blockWithoutHeaders, 0, AI_BLOCK_SIZE);
+
+            for (i = 0; i < AI_BLOCK_COUNT; ++i)
+            {
+                CharacterAI[i] = new CharacterAI(this);
+                if (characterAIoffsets[i] != HexParser.NULL_OFFSET_16_BIT)
+                {
+                    next = -1;
+                    for (j = i + 1; j < AI_BLOCK_COUNT && next == -1; ++j)
+                    {
+                        if (characterAIoffsets[j] != HexParser.NULL_OFFSET_16_BIT)
+                        {
+                            next = characterAIoffsets[j];
+                        }
+                    }
+                    CharacterAI[i].ParseScripts(blockWithoutHeaders, AI_BLOCK_COUNT * 2,
+                        characterAIoffsets[i], next);
+                }
+            }
+            ScriptsLoaded = true;
         }
 
         public int GetCount(KernelSection section)
@@ -245,9 +242,9 @@ namespace FF7Scarlet.KernelEditor
 
         public Attack? GetAttackByID(ushort id)
         {
-            foreach (var atk in Attacks)
+            foreach (var atk in AttackData.Attacks)
             {
-                if (atk.ID == id) { return atk; }
+                if (atk.Index == id) { return atk; }
             }
             return null;
         }
@@ -257,7 +254,7 @@ namespace FF7Scarlet.KernelEditor
             var atk = GetAttackByID(id);
             if (atk != null)
             {
-                return atk.GetNameString();
+                return DataParser.GetAttackNameString(atk);
             }
             return $"Unknown ({id:X4})";
         }
@@ -298,9 +295,9 @@ namespace FF7Scarlet.KernelEditor
             return null;
         }
 
-        public MateriaExt? GetMateriaByID(byte id)
+        public Materia? GetMateriaByID(byte id)
         {
-            foreach (var mat in MateriaExt)
+            foreach (var mat in MateriaData.Materias)
             {
                 if (mat.Index == id) { return mat; }
             }
@@ -495,7 +492,7 @@ namespace FF7Scarlet.KernelEditor
                 switch (ds) //update associated item name (if it exists)
                 {
                     case KernelSection.AttackData:
-                        Attacks[pos].Name = new FFText(n);
+                        AttackData.Attacks[pos].Name = n;
                         break;
 
                     case KernelSection.ItemData:
@@ -515,7 +512,7 @@ namespace FF7Scarlet.KernelEditor
                         break;
 
                     case KernelSection.MateriaData:
-                        MateriaExt[pos].Name = n;
+                        MateriaData.Materias[pos].Name = n;
                         break;
                 }
             }
@@ -533,7 +530,7 @@ namespace FF7Scarlet.KernelEditor
                 switch (ds) //update associated item description (if it exists)
                 {
                     case KernelSection.AttackData:
-                        Attacks[pos].Description = new FFText(d);
+                        AttackData.Attacks[pos].Description = d;
                         break;
 
                     case KernelSection.ItemData:
@@ -553,7 +550,7 @@ namespace FF7Scarlet.KernelEditor
                         break;
 
                     case KernelSection.MateriaData:
-                        MateriaExt[pos].Description = d;
+                        MateriaData.Materias[pos].Description = d;
                         break;
                 }
             }
@@ -582,27 +579,28 @@ namespace FF7Scarlet.KernelEditor
 
         public string GetInventoryItemName(InventoryItem item)
         {
-            switch (item.Type)
+            byte index = DataParser.GetItemIndex(item.Item);
+            switch (DataParser.GetItemType(item.Item))
             {
                 case ItemType.Item:
-                    var i = GetItemByID(item.Index);
-                    if (i == null) { return $"(Item ID {item.Index})"; }
+                    var i = GetItemByID(index);
+                    if (i == null) { return $"(Item ID {index})"; }
                     else { return i.Name; }
                 case ItemType.Weapon:
-                    var w = GetWeaponByID(item.Index);
-                    if (w == null) { return $"(Weapon ID {item.Index})"; }
+                    var w = GetWeaponByID(index);
+                    if (w == null) { return $"(Weapon ID {index})"; }
                     else { return w.Name; }
                 case ItemType.Armor:
-                    var ar = GetArmorByID(item.Index);
-                    if (ar == null) { return $"(Armor ID {item.Index})"; }
+                    var ar = GetArmorByID(index);
+                    if (ar == null) { return $"(Armor ID {index})"; }
                     else { return ar.Name; }
                 case ItemType.Accessory:
-                    var acc = GetAccessoryByID(item.Index);
-                    if (acc == null) { return $"(Accessory ID {item.Index})"; }
+                    var acc = GetAccessoryByID(index);
+                    if (acc == null) { return $"(Accessory ID {index})"; }
                     else { return acc.Name; }
                 case ItemType.Materia:
-                    var m = GetMateriaByID(item.Index);
-                    if (m == null) { return $"(Materia ID {item.Index})"; }
+                    var m = GetMateriaByID(index);
+                    if (m == null) { return $"(Materia ID {index})"; }
                     else { return m.Name; }
                 default:
                     return "(none)";
@@ -614,9 +612,9 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.CommandData:
-                    return Commands[pos].CameraMovementIDSingle;
+                    return CommandData.Commands[pos].CameraMovementIDSingle;
                 case KernelSection.AttackData:
-                    return Attacks[pos].CameraMovementIDSingle;
+                    return AttackData.Attacks[pos].CameraMovementIDSingle;
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].CameraMovementId;
                 default:
@@ -629,9 +627,9 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.CommandData:
-                    return Commands[pos].CameraMovementIDMulti;
+                    return CommandData.Commands[pos].CameraMovementIDMulti;
                 case KernelSection.AttackData:
-                    return Attacks[pos].CameraMovementIDMulti;
+                    return AttackData.Attacks[pos].CameraMovementIDMulti;
                 default:
                     return HexParser.NULL_OFFSET_16_BIT;
             }
@@ -642,7 +640,7 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.AttackData:
-                    return Attacks[pos].AttackEffectID;
+                    return AttackData.Attacks[pos].AttackEffectID;
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].AttackEffectId;
                 default:
@@ -689,9 +687,9 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.CommandData:
-                    return Commands[pos].TargetFlags;
+                    return CommandData.Commands[pos].TargetFlags;
                 case KernelSection.AttackData:
-                    return Attacks[pos].TargetFlags;
+                    return AttackData.Attacks[pos].TargetFlags;
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].TargetData;
                 case KernelSection.WeaponData:
@@ -706,7 +704,7 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.AttackData:
-                    return Attacks[pos].DamageCalculationID;
+                    return AttackData.Attacks[pos].DamageCalculationID;
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].DamageCalculationId;
                 case KernelSection.WeaponData:
@@ -721,7 +719,7 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.AttackData:
-                    return Attacks[pos].AttackStrength;
+                    return AttackData.Attacks[pos].AttackStrength;
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].AttackPower;
                 case KernelSection.WeaponData:
@@ -793,7 +791,7 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.AttackData:
-                    return Attacks[pos].Elements;
+                    return AttackData.Attacks[pos].Elements;
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].Element;
                 case KernelSection.WeaponData:
@@ -825,13 +823,13 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.AttackData:
-                    return Attacks[pos].StatusEffects;
+                    return AttackData.Attacks[pos].Statuses;
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].Status;
                 case KernelSection.AccessoryData:
                     return AccessoryData.Accessories[pos].StatusDefense;
                 case KernelSection.MateriaData:
-                    return MateriaExt[pos].Status;
+                    return MateriaData.Materias[pos].Status;
                 default:
                     return 0;
             }
@@ -855,13 +853,105 @@ namespace FF7Scarlet.KernelEditor
             switch (section)
             {
                 case KernelSection.AttackData:
-                    return Attacks[pos].SpecialAttackFlags;
+                    return AttackData.Attacks[pos].SpecialAttackFlags;
                 case KernelSection.ItemData:
                     return ItemData.Items[pos].Special;
                 default:
                     return 0;
             }
         }
+
+        public byte GetCurveIndex(int chara, int stat)
+        {
+            switch ((CurveStats)stat)
+            {
+                case CurveStats.Strength:
+                    return CharacterList[chara].StrengthCurveIndex;
+                case CurveStats.Vitality:
+                    return CharacterList[chara].VitalityCurveIndex;
+                case CurveStats.Magic:
+                    return CharacterList[chara].MagicCurveIndex;
+                case CurveStats.Spirit:
+                    return CharacterList[chara].SpiritCurveIndex;
+                case CurveStats.Dexterity:
+                    return CharacterList[chara].DexterityCurveIndex;
+                case CurveStats.Luck:
+                    return CharacterList[chara].LuckCurveIndex;
+                case CurveStats.HP:
+                    return CharacterList[chara].HPCurveIndex;
+                case CurveStats.MP:
+                    return CharacterList[chara].MPCurveIndex;
+                case CurveStats.EXP:
+                    return CharacterList[chara].EXPCurveIndex;
+            }
+            return 0;
+        }
+
+        public void SetCurveIndex(int chara, int stat, byte value)
+        {
+            switch ((CurveStats)stat)
+            {
+                case CurveStats.Strength:
+                    CharacterList[chara].StrengthCurveIndex = value;
+                    break;
+                case CurveStats.Vitality:
+                    CharacterList[chara].VitalityCurveIndex = value;
+                    break;
+                case CurveStats.Magic:
+                    CharacterList[chara].MagicCurveIndex = value;
+                    break;
+                case CurveStats.Spirit:
+                    CharacterList[chara].SpiritCurveIndex = value;
+                    break;
+                case CurveStats.Dexterity:
+                    CharacterList[chara].DexterityCurveIndex = value;
+                    break;
+                case CurveStats.Luck:
+                    CharacterList[chara].LuckCurveIndex = value;
+                    break;
+                case CurveStats.HP:
+                    CharacterList[chara].HPCurveIndex = value;
+                    break;
+                case CurveStats.MP:
+                    CharacterList[chara].MPCurveIndex = value;
+                    break;
+                case CurveStats.EXP:
+                    CharacterList[chara].EXPCurveIndex = value;
+                    break;
+            }
+        }
+
+        private byte GetSpellIndexByte(SpellIndex index)
+        {
+            if (index.SpellType == SpellType.Unlisted) { return 0xFF; }
+            else
+            {
+                var temp = new byte[1];
+                var holder = new BitArray(8);
+                int i;
+
+                //get section index bits
+                temp[0] = index.SectionIndex;
+                var converter = new BitArray(temp);
+                for (i = 0; i < 5; ++i)
+                {
+                    holder[i] = converter[i];
+                }
+
+                //get magic type bits
+                temp[0] = (byte)index.SpellType;
+                converter = new BitArray(temp);
+                for (i = 0; i < 3; ++i)
+                {
+                    holder[i + 5] = converter[i];
+                }
+
+                //get and return the byte
+                holder.CopyTo(temp, 0);
+                return temp[0];
+            }
+        }
+
 
         public bool ImportChunk (KernelSection section, string filePath)
         {
@@ -872,19 +962,23 @@ namespace FF7Scarlet.KernelEditor
                     switch (section)
                     {
                         case KernelSection.CommandData:
-                            ParseCommands(File.ReadAllBytes(filePath));
+                            CommandData = new CommandData(File.ReadAllBytes(filePath),
+                                CommandNames.Strings, CommandDescriptions.Strings);
                             break;
 
                         case KernelSection.AttackData:
-                            ParseAttacks(File.ReadAllBytes(filePath));
+                            AttackData = new AttackData(File.ReadAllBytes(filePath),
+                                MagicNames.Strings, MagicDescriptions.Strings);
                             break;
 
                         case KernelSection.BattleAndGrowthData:
-                            BattleAndGrowthData.ParseData(File.ReadAllBytes(filePath), true);
+                            var temp = GetLookupTable();
+                            BattleAndGrowthData = new BattleAndGrowthData(File.ReadAllBytes(filePath));
+                            UpdateLookupTable(temp);
                             break;
 
                         case KernelSection.InitData:
-                            InitialData.ParseData(File.ReadAllBytes(filePath));
+                            InitialData = new InitialData(File.ReadAllBytes(filePath));
                             break;
 
                         case KernelSection.ItemData:
@@ -908,7 +1002,8 @@ namespace FF7Scarlet.KernelEditor
                             break;
 
                         case KernelSection.MateriaData:
-                            ParseMateria(File.ReadAllBytes(filePath));
+                            MateriaData = new MateriaData(File.ReadAllBytes(filePath),
+                                MateriaNames.Strings, MateriaDescriptions.Strings);
                             break;
 
                         default:
@@ -925,6 +1020,7 @@ namespace FF7Scarlet.KernelEditor
         public byte[] GetSectionRawData(KernelSection section, bool isKernel2 = false)
         {
             //update data before writing it
+            int i;
             if ((int)section > KERNEL1_END) //text sections
             {
                 if (loaded)
@@ -932,8 +1028,7 @@ namespace FF7Scarlet.KernelEditor
                     var bytes = new List<byte>();
                     FFText[] text;
                     bool isAttacks = GetDataSection(section) == KernelSection.AttackData;
-                    int i;
-
+                    
                     if (section == KernelSection.BattleText) //write the BattleTextFFs
                     {
                         text = BattleTextFF;
@@ -991,7 +1086,7 @@ namespace FF7Scarlet.KernelEditor
                         }
                         if (isAttacks && length > 1) //offset for limit header
                         {
-                            if ((i < ATTACK_COUNT && Attacks[i].IsLimit) || i >= ATTACK_COUNT)
+                            if ((i < ATTACK_COUNT && AttackIsLimit[i]) || i >= ATTACK_COUNT)
                             {
                                 length += 2;
                             }
@@ -1005,7 +1100,7 @@ namespace FF7Scarlet.KernelEditor
                     {
                         if (isAttacks && text[i].Length > 1) //add limit function
                         {
-                            if ((i < ATTACK_COUNT && Attacks[i].IsLimit) || i >= ATTACK_COUNT)
+                            if ((i < ATTACK_COUNT && AttackIsLimit[i]) || i >= ATTACK_COUNT)
                             {
                                 bytes.Add(0xF8);
                                 bytes.Add(0x02);
@@ -1029,33 +1124,151 @@ namespace FF7Scarlet.KernelEditor
                     switch (section)
                     {
                         case KernelSection.CommandData:
-                            foreach (var c in Commands)
+                            foreach (var c in CommandData.Commands)
                             {
                                 if (c == null)
                                 {
                                     writer.Write(HexParser.GetNullBlock(MenuCommand.DATA_LENGTH));
                                 }
-                                else { writer.Write(c.GetBytes()); }
+                                else
+                                {
+                                    writer.Write(c.InitialCursorAction);
+                                    writer.Write((byte)c.TargetFlags);
+                                    writer.Write(HexParser.NULL_OFFSET_16_BIT); //unknown
+                                    writer.Write(c.CameraMovementIDSingle);
+                                    writer.Write(c.CameraMovementIDMulti);
+                                }
                             }
                             break;
 
                         case KernelSection.AttackData:
-                            foreach (var a in Attacks)
+                            foreach (var a in AttackData.Attacks)
                             {
                                 if (a == null)
                                 {
-                                    writer.Write(HexParser.GetNullBlock(Attack.BLOCK_SIZE));
+                                    writer.Write(HexParser.GetNullBlock(DataParser.ATTACK_BLOCK_SIZE));
                                 }
-                                else { writer.Write(a.GetRawData()); }
+                                else { writer.Write(DataParser.GetAttackBytes(a)); }
                             }
                             break;
 
                         case KernelSection.BattleAndGrowthData:
-                            writer.Write(BattleAndGrowthData.GetRawData());
+                            foreach (var c in CharacterList)
+                            {
+                                writer.Write(c.StrengthCurveIndex);
+                                writer.Write(c.VitalityCurveIndex);
+                                writer.Write(c.MagicCurveIndex);
+                                writer.Write(c.SpiritCurveIndex);
+                                writer.Write(c.DexterityCurveIndex);
+                                writer.Write(c.LuckCurveIndex);
+                                writer.Write(c.HPCurveIndex);
+                                writer.Write(c.MPCurveIndex);
+                                writer.Write(c.EXPCurveIndex);
+                                writer.Write((byte)0xFF);
+                                if (c == CharacterData.Yuffie)
+                                {
+                                    writer.Write((byte)1);
+                                }
+                                else
+                                {
+                                    writer.Write((sbyte)(c.RecruitLevelOffset * 2));
+                                }
+                                writer.Write((byte)0xFF);
+                                writer.Write(c.Limit1_1Index);
+                                writer.Write(c.Limit1_2Index);
+                                writer.Write(c.Limit2_1Index);
+                                writer.Write(c.Limit2_2Index);
+                                writer.Write(c.Limit3_1Index);
+                                writer.Write(c.Limit3_2Index);
+                                writer.Write(c.Limit4Index);
+                                writer.Write(c.KillsForLimitLv2);
+                                writer.Write(c.KillsForLimitLv3);
+                                writer.Write(c.UsesForLimit1_2);
+                                writer.Write(c.UsesForLimit2_2);
+                                writer.Write(c.UsesForLimit3_2);
+                                writer.Write(c.LimitLv1HPDivisor);
+                                writer.Write(c.LimitLv2HPDivisor);
+                                writer.Write(c.LimitLv3HPDivisor);
+                                writer.Write(c.LimitLv4HPDivisor);
+                            }
+                            foreach (byte b in BattleAndGrowthData.RandomBonusToPrimaryStats)
+                            {
+                                writer.Write(b);
+                            }
+                            foreach (byte b in BattleAndGrowthData.RandomBonusToHP)
+                            {
+                                writer.Write(b);
+                            }
+                            foreach (byte b in BattleAndGrowthData.RandomBonusToMP)
+                            {
+                                writer.Write(b);
+                            }
+                            foreach (var c in BattleAndGrowthData.StatCurves)
+                            {
+                                for (i = 0; i < 8; ++i)
+                                {
+                                    writer.Write(c.Gradients[i]);
+                                    writer.Write(c.Bases[i]);
+                                }
+                            }
+
+                            //write AI data
+                            try
+                            {
+                                if (ScriptsLoaded) //don't update scripts if not loaded
+                                {
+                                    Array.Copy(AIContainer.GetGroupedScriptBlock(AI_BLOCK_COUNT, AI_BLOCK_SIZE,
+                                        CharacterAI, ref characterAIoffsets), CharacterData.CharacterAIBlock,
+                                        AI_BLOCK_SIZE);
+                                }
+                                foreach (var o in characterAIoffsets)
+                                {
+                                    writer.Write(BitConverter.GetBytes(o));
+                                }
+                                writer.Write(CharacterData.CharacterAIBlock);
+                            }
+                            catch (ScriptTooLongException)
+                            {
+                                throw new ScriptTooLongException("Character A.I. block is too long!");
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Exception($"Compiler error in A.I. scripts: {ex.Message}");
+                            }
+
+                            writer.Write(BattleAndGrowthData.RNGTable);
+                            writer.Write(BattleAndGrowthData.SceneLookupTable);
+
+                            foreach (var index in BattleAndGrowthData.SpellIndexes)
+                            {
+                                writer.Write(GetSpellIndexByte(index));
+                            }
                             break;
 
                         case KernelSection.InitData:
-                            writer.Write(InitialData.GetRawData());
+                            foreach (var c in CharacterList)
+                            {
+                                writer.Write(DataParser.GetCharacterInitialDataBytes(c));
+                            }
+                            writer.Write(InitialData.Party1);
+                            writer.Write(InitialData.Party2);
+                            writer.Write(InitialData.Party3);
+                            writer.Write((byte)0xFF);
+
+                            foreach (var item in InitialData.Inventory)
+                            {
+                                writer.Write(DataParser.GetItemValue(item));
+                            }
+                            foreach (var mat in InitialData.Materia)
+                            {
+                                writer.Write(DataParser.GetMateriaBytes(mat));
+                            }
+                            foreach (var mat in InitialData.StolenMateria)
+                            {
+                                writer.Write(DataParser.GetMateriaBytes(mat));
+                            }
+                            writer.Write(HexParser.GetNullBlock(32)); //padding
+                            writer.Write(InitialData.Gil);
                             break;
 
                         case KernelSection.ItemData:
@@ -1074,7 +1287,10 @@ namespace FF7Scarlet.KernelEditor
                                     writer.Write(item.AttackEffectId);
                                     writer.Write(item.DamageCalculationId);
                                     writer.Write(item.AttackPower);
-                                    writer.Seek(4, SeekOrigin.Current); //missing data
+                                    writer.Write((byte)item.ConditionSubmenu);
+                                    writer.Write(DataParser.GetStatusChangeValue(item.StatusChange));
+                                    writer.Write(item.AdditionalEffects);
+                                    writer.Write(item.AdditionalEffectsModifier);
                                     writer.Write((uint)item.Status);
                                     writer.Write((ushort)item.Element);
                                     writer.Write((ushort)~item.Special);
@@ -1101,7 +1317,7 @@ namespace FF7Scarlet.KernelEditor
                                     writer.Write(w.CriticalRate);
                                     writer.Write(w.AccuracyRate);
                                     writer.Write(w.WeaponModelId);
-                                    writer.Seek(4, SeekOrigin.Current); //missing data
+                                    writer.Write(w.HighSoundIDMask);
                                     writer.Write((ushort)w.EquipableBy);
                                     writer.Write((ushort)w.AttackElements);
                                     writer.Seek(2, SeekOrigin.Current); //padding
@@ -1113,11 +1329,14 @@ namespace FF7Scarlet.KernelEditor
                                     writer.Write(w.BoostedStat2Bonus);
                                     writer.Write(w.BoostedStat3Bonus);
                                     writer.Write(w.BoostedStat4Bonus);
-                                    for (int i = 0; i < 8; ++i)
+                                    for (i = 0; i < 8; ++i)
                                     {
                                         writer.Write((byte)w.MateriaSlots[i]);
                                     }
-                                    writer.Seek(6, SeekOrigin.Current); //more missing data
+                                    writer.Write(w.NormalHitSoundID);
+                                    writer.Write(w.CriticalHitSoundID);
+                                    writer.Write(w.MissedAttackSoundID);
+                                    writer.Write(w.ImpactEffectID);
                                     writer.Write((ushort)~w.Restrictions);
                                 }
                             }
@@ -1134,7 +1353,7 @@ namespace FF7Scarlet.KernelEditor
                                 writer.Write(a.MagicEvade);
                                 writer.Write((byte)a.Status);
                                 writer.Seek(2, SeekOrigin.Current); //unknown
-                                for (int i = 0; i < 8; ++i)
+                                for (i = 0; i < 8; ++i)
                                 {
                                     writer.Write((byte)a.MateriaSlots[i]);
                                 }
@@ -1172,7 +1391,7 @@ namespace FF7Scarlet.KernelEditor
                             break;
 
                         case KernelSection.MateriaData:
-                            foreach (var m in MateriaExt)
+                            foreach (var m in MateriaData.Materias)
                             {
                                 writer.Write((ushort)(m.Level2AP / 100));
                                 writer.Write((ushort)(m.Level3AP / 100));

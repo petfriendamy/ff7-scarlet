@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Shojy.FF7.Elena.Characters;
 
 namespace FF7Scarlet.Shared.Controls
 {

@@ -10,7 +10,14 @@ namespace FF7Scarlet.SceneEditor
 
         public ItemDropRate(byte itemID, ItemType type, byte rate, bool isSteal)
         {
-            ItemID = InventoryItem.GetCombinedIndex(type, itemID);
+            ItemID = DataParser.GetCombinedItemIndex(type, itemID);
+            DropRate = rate;
+            IsSteal = isSteal;
+        }
+
+        public ItemDropRate(ushort itemId, byte rate, bool isSteal)
+        {
+            ItemID = itemId;
             DropRate = rate;
             IsSteal = isSteal;
         }

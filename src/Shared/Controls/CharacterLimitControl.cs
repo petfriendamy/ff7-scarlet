@@ -1,4 +1,6 @@
-﻿namespace FF7Scarlet.Shared.Controls
+﻿using Shojy.FF7.Elena.Characters;
+
+namespace FF7Scarlet.Shared.Controls
 {
     public partial class CharacterLimitControl : UserControl
     {

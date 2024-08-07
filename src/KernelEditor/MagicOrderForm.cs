@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Shojy.FF7.Elena.Battle;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -23,7 +15,7 @@ namespace FF7Scarlet.KernelEditor
                 listBoxSpellList.Items.Add(spellNames[spell.SpellID]);
             }
             listBoxSpellList.SelectedIndex = spellIndices.IndexOf(selected);
-            groupBoxSpellList.Text = Enum.GetName(spellIndices[0].MagicType) + " spell list";
+            groupBoxSpellList.Text = Enum.GetName(spellIndices[0].SpellType) + " spell list";
         }
 
         private void buttonMoveUp_Click(object sender, EventArgs e)

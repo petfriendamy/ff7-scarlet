@@ -1,6 +1,9 @@
 ﻿using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
+using Shojy.FF7.Elena.Inventory;
+
 using System.Globalization;
 using System.Media;
 
@@ -163,9 +166,9 @@ namespace FF7Scarlet.SceneEditor
 
             comboBoxAttackConditionSubMenu.BeginUpdate();
             comboBoxAttackConditionSubMenu.Items.Add("None");
-            foreach (var c in Enum.GetValues<AttackConditions>())
+            foreach (var c in Enum.GetValues<ConditionSubmenu>())
             {
-                if (c != AttackConditions.None)
+                if (c != ConditionSubmenu.None)
                 {
                     comboBoxAttackConditionSubMenu.Items.Add(c);
                 }
@@ -230,9 +233,9 @@ namespace FF7Scarlet.SceneEditor
                 comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
                 foreach (var atk in sceneList[i].AttackList)
                 {
-                    if (atk != null && atk.ID > lastAttackID && atk.ID != HexParser.NULL_OFFSET_16_BIT)
+                    if (atk != null && atk.Index > lastAttackID && atk.Index != HexParser.NULL_OFFSET_16_BIT)
                     {
-                        lastAttackID = atk.ID;
+                        lastAttackID = (ushort)atk.Index;
                     }
                 }
                 if (syncedAttacks.Count > 0)
@@ -276,33 +279,43 @@ namespace FF7Scarlet.SceneEditor
                 {
                     comboBoxEnemyDropItemID.Items.Add(item.Name);
                     comboBoxEnemyMorphItem.Items.Add(item.Name);
-                    itemList.Add(new InventoryItem((byte)item.Index, ItemType.Item));
+                    var inv = new InventoryItem();
+                    inv.Item = DataParser.GetCombinedItemIndex(ItemType.Item, (byte)item.Index);
+                    itemList.Add(inv);
                 }
                 foreach (var wpn in DataManager.Kernel.WeaponData.Weapons)
                 {
                     comboBoxEnemyDropItemID.Items.Add(wpn.Name);
                     comboBoxEnemyMorphItem.Items.Add(wpn.Name);
-                    itemList.Add(new InventoryItem((byte)wpn.Index, ItemType.Weapon));
+                    var inv = new InventoryItem();
+                    inv.Item = DataParser.GetCombinedItemIndex(ItemType.Weapon, (byte)wpn.Index);
+                    itemList.Add(inv);
                 }
                 foreach (var armor in DataManager.Kernel.ArmorData.Armors)
                 {
                     comboBoxEnemyDropItemID.Items.Add(armor.Name);
                     comboBoxEnemyMorphItem.Items.Add(armor.Name);
-                    itemList.Add(new InventoryItem((byte)armor.Index, ItemType.Armor));
+                    var inv = new InventoryItem();
+                    inv.Item = DataParser.GetCombinedItemIndex(ItemType.Armor, (byte)armor.Index);
+                    itemList.Add(inv);
                 }
                 foreach (var acc in DataManager.Kernel.AccessoryData.Accessories)
                 {
                     comboBoxEnemyDropItemID.Items.Add(acc.Name);
                     comboBoxEnemyMorphItem.Items.Add(acc.Name);
-                    itemList.Add(new InventoryItem((byte)acc.Index, ItemType.Accessory));
+                    var inv = new InventoryItem();
+                    inv.Item = DataParser.GetCombinedItemIndex(ItemType.Accessory, (byte)acc.Index);
+                    itemList.Add(inv);
                 }
                 if (DataManager.PS3TweaksEnabled)
                 {
-                    foreach (var mat in DataManager.Kernel.MateriaExt)
+                    foreach (var mat in DataManager.Kernel.MateriaData.Materias)
                     {
                         comboBoxEnemyDropItemID.Items.Add(mat.Name);
                         comboBoxEnemyMorphItem.Items.Add(mat.Name);
-                        itemList.Add(new InventoryItem((byte)mat.Index, ItemType.Materia));
+                        var inv = new InventoryItem();
+                        inv.Item = DataParser.GetCombinedItemIndex(ItemType.Materia, (byte)mat.Index);
+                        itemList.Add(inv);
                     }
                 }
             }
@@ -349,7 +362,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else
                 {
-                    listBoxAttacks.Items.Add(a.GetNameString());
+                    listBoxAttacks.Items.Add(DataParser.GetAttackNameString(a));
                 }
             }
             listBoxAttacks.EndUpdate();
@@ -365,7 +378,7 @@ namespace FF7Scarlet.SceneEditor
             comboBoxEnemyAttackID.Items.Add("None");
             foreach (var a in validAttacks)
             {
-                comboBoxEnemyAttackID.Items.Add(a.GetNameString());
+                comboBoxEnemyAttackID.Items.Add(DataParser.GetAttackNameString(a));
             }
             comboBoxEnemyAttackID.EndUpdate();
             comboBoxEnemyAttackID.SelectedIndex = 0;
@@ -513,7 +526,7 @@ namespace FF7Scarlet.SceneEditor
                     }
                     else
                     {
-                        if (enemy.MorphItemIndex >= InventoryItem.MATERIA_START && !DataManager.PS3TweaksEnabled)
+                        if (enemy.MorphItemIndex >= DataParser.MATERIA_START && !DataManager.PS3TweaksEnabled)
                         {
                             var result = MessageBox.Show("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
                                 "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -634,7 +647,8 @@ namespace FF7Scarlet.SceneEditor
             if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
             {
                 //get item name
-                var item = new InventoryItem(rate.ItemID);
+                var item = new InventoryItem();
+                item.Item = rate.ItemID;
                 name = DataManager.Kernel.GetInventoryItemName(item);
             }
             text += name;
@@ -708,7 +722,7 @@ namespace FF7Scarlet.SceneEditor
                 attackDeleteToolStripMenuItem.Enabled = true;
 
                 //page 1
-                textBoxAttackID.Text = attack.ID.ToString("X4");
+                textBoxAttackID.Text = attack.Index.ToString("X4");
                 textBoxAttackName.Text = attack.Name.ToString();
                 numericAttackAttackPercent.Value = attack.AccuracyRate;
                 numericAttackMPCost.Value = attack.MPCost;
@@ -723,14 +737,14 @@ namespace FF7Scarlet.SceneEditor
 
                 //page 2
                 specialAttackFlagsControlAttack.SetFlags(attack.SpecialAttackFlags);
-                statusesControlAttack.SetStatuses(attack.StatusEffects);
-                if (attack.AttackConditions == AttackConditions.None)
+                statusesControlAttack.SetStatuses(attack.Statuses);
+                if (attack.ConditionSubmenu == ConditionSubmenu.None)
                 {
                     comboBoxAttackConditionSubMenu.SelectedIndex = 0;
                 }
                 else
                 {
-                    comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
+                    comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
                 }
                 numericAttackStatusChangeChance.Value = attack.StatusChange.Amount;
                 if (attack.StatusChange.Type == StatusChangeType.None)
@@ -752,7 +766,8 @@ namespace FF7Scarlet.SceneEditor
         private void CreateNewAttack(Scene scene, int attack)
         {
             lastAttackID++;
-            var newAttack = new Attack(lastAttackID);
+            var newAttack = new Attack();
+            newAttack.Index = lastAttackID;
             scene.AttackList[attack] = newAttack;
             var name = scene.GetAttackName(lastAttackID);
             UpdateSelectedAttackName(scene, SelectedEnemy, attack);
@@ -771,7 +786,7 @@ namespace FF7Scarlet.SceneEditor
                 if (atk != null)
                 {
                     loading = true;
-                    string name = scene.GetAttackName(atk.ID);
+                    string name = scene.GetAttackName((ushort)atk.Index);
                     int i, j;
                     listBoxAttacks.SelectedIndex = attack;
                     listBoxAttacks.Items[attack] = name;
@@ -781,7 +796,7 @@ namespace FF7Scarlet.SceneEditor
                     {
                         for (i = 0; i < Enemy.ATTACK_COUNT; ++i)
                         {
-                            if (enemy.AttackIDs[i] == atk.ID)
+                            if (enemy.AttackIDs[i] == atk.Index)
                             {
                                 listBoxEnemyAttacks.Items[i] = name;
                                 break;
@@ -807,13 +822,13 @@ namespace FF7Scarlet.SceneEditor
             attack.AttackStrength = damageCalculationControlAttack.AttackPower;
             if (comboBoxAttackConditionSubMenu.SelectedIndex == 0)
             {
-                attack.AttackConditions = AttackConditions.None;
+                attack.ConditionSubmenu = ConditionSubmenu.None;
             }
             else
             {
-                attack.AttackConditions = (AttackConditions)(comboBoxAttackConditionSubMenu.SelectedIndex - 1);
+                attack.ConditionSubmenu = (ConditionSubmenu)(comboBoxAttackConditionSubMenu.SelectedIndex - 1);
             }
-            attack.StatusEffects = statusesControlAttack.GetStatuses();
+            attack.Statuses = statusesControlAttack.GetStatuses();
             attack.Elements = elementsControlAttack.GetElements();
             attack.SpecialAttackFlags = specialAttackFlagsControlAttack.GetFlags();
 
@@ -923,7 +938,7 @@ namespace FF7Scarlet.SceneEditor
             }
             else
             {
-                formation.BattleSetupData.NextSceneID = (ushort)comboBoxFormationNext.SelectedIndex;
+                formation.BattleSetupData.NextSceneID = (ushort)(comboBoxFormationNext.SelectedIndex - 1);
             }
             formation.BattleSetupData.BattleType = (BattleType)comboBoxFormationBattleType.SelectedIndex;
             formation.BattleSetupData.EscapeCounter = (ushort)numericFormationEscapeCounter.Value;
@@ -951,28 +966,50 @@ namespace FF7Scarlet.SceneEditor
             formationEnemyNeedsSync = false;
         }
 
-        private void SyncAllUnsavedData()
+        private void SyncAllUnsavedData(bool prev = false)
         {
-            //sync unsaved enemy data
-            if (SelectedEnemy != null && enemyNeedsSync)
+            var scene = SelectedScene;
+            if (prev) { scene = sceneList[prevScene]; }
+
+            if (scene != null)
             {
-                SyncEnemyData(SelectedEnemy);
-            }
-            //sync unsaved attack data
-            if (SelectedAttack != null && attackNeedsSync)
-            {
-                SyncAttackData(SelectedAttack);
-            }
-            //sync unsaved formation data
-            if (SelectedFormation != null)
-            {
-                if (formationNeedsSync)
+                //sync the unsaved enemy data
+                if (enemyNeedsSync)
                 {
-                    SyncFormationData(SelectedFormation);
+                    var enemy = SelectedEnemy;
+                    if (prev) { enemy = scene.Enemies[prevEnemy]; }
+                    if (enemy != null)
+                    {
+                        SyncEnemyData(enemy);
+                    }
                 }
-                if (formationEnemyNeedsSync)
+
+                //sync unsaved attack data
+                if (attackNeedsSync)
                 {
-                    SyncFormationEnemyData(SelectedFormation.EnemyLocations[comboBoxFormationSelectedEnemy.SelectedIndex]);
+                    var attack = SelectedAttack;
+                    if (prev) { attack = scene.AttackList[prevAttack]; }
+                    if (attack != null)
+                    {
+                        SyncAttackData(attack);
+                    }
+                }
+
+                //sync unsaved formation data
+                var form = SelectedFormation;
+                if (prev) { form = scene.Formations[prevFormation]; }
+                if (form != null)
+                {
+                    if (formationNeedsSync)
+                    {
+                        SyncFormationData(form);
+                    }
+                    if (formationEnemyNeedsSync)
+                    {
+                        int fe = comboBoxFormationSelectedEnemy.SelectedIndex;
+                        if (prev) { fe = prevFormationEnemy; }
+                        SyncFormationEnemyData(form.EnemyLocations[fe]);
+                    }
                 }
             }
         }
@@ -1071,23 +1108,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (!loading && SelectedScene != null)
             {
-                var prev = sceneList[prevScene];
-                if (enemyNeedsSync) //sync the unsaved enemy data
-                {
-                    var enemy = prev.Enemies[prevEnemy];
-                    if (enemy != null)
-                    {
-                        SyncEnemyData(enemy);
-                    }
-                }
-                if (attackNeedsSync) //sync the unsaved attack data
-                {
-                    var attack = prev.AttackList[prevAttack];
-                    if (attack != null)
-                    {
-                        SyncAttackData(attack);
-                    }
-                }
+                SyncAllUnsavedData(true);
                 prevScene = SelectedSceneIndex;
                 LoadSceneData(SelectedSceneIndex, true, false);
             }
@@ -1317,7 +1338,7 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxEnemyAttackID.SelectedIndex = validAttacks.IndexOf(atk) + 1;
                     numericAttackAnimationIndex.Value = SelectedEnemy.ActionAnimationIndexes[i];
                     comboBoxEnemyAttackCamID.Text = SelectedEnemy.CameraMovementIDs[i].ToString("X4");
-                    checkBoxEnemyAttackIsManipable.Checked = SelectedEnemy.AttackIsManipable(atk.ID);
+                    checkBoxEnemyAttackIsManipable.Checked = SelectedEnemy.AttackIsManipable((ushort)atk.Index);
                     if (SelectedEnemy.ManipListIsEmpty())
                     {
                         buttonViewManipList.Enabled = false;
@@ -1344,8 +1365,8 @@ namespace FF7Scarlet.SceneEditor
                 else //add attack
                 {
                     var atk = validAttacks[newAttack - 1];
-                    SelectedEnemy.AttackIDs[selectedAttack] = atk.ID;
-                    listBoxEnemyAttacks.Items[selectedAttack] = atk.GetNameString();
+                    SelectedEnemy.AttackIDs[selectedAttack] = (ushort)atk.Index;
+                    listBoxEnemyAttacks.Items[selectedAttack] = DataParser.GetAttackNameString(atk);
                     EnableOrDisableGroupBox(groupBoxEnemyAttacks, true, false);
                 }
                 SetUnsaved(true);
@@ -1476,7 +1497,7 @@ namespace FF7Scarlet.SceneEditor
                         if (manipAttack != null)
                         {
                             loading = true;
-                            checkBoxEnemyAttackIsManipable.Checked = SelectedEnemy.AttackIsManipable(manipAttack.ID);
+                            checkBoxEnemyAttackIsManipable.Checked = SelectedEnemy.AttackIsManipable((ushort)manipAttack.Index);
                             loading = false;
                         }
                         SetUnsaved(true);
@@ -1498,7 +1519,7 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxEnemyDropItemID.SelectedIndex = 0;
                     EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, true, comboBoxEnemyDropItemID);
                 }
-                else if (item.ItemID >= InventoryItem.MATERIA_START && !DataManager.PS3TweaksEnabled)
+                else if (item.ItemID >= DataParser.MATERIA_START && !DataManager.PS3TweaksEnabled)
                 {
                     var result = MessageBox.Show("This scene file appears to use materia drops! Would you like to enable Postscriptthree Tweaks?",
                                 "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1549,13 +1570,13 @@ namespace FF7Scarlet.SceneEditor
 
                     if (drop == null)
                     {
-                        drop = new ItemDropRate(item.Index, item.Type, rate, false);
+                        drop = new ItemDropRate(item.Item, rate, false);
                         SelectedEnemy.ItemDropRates[selectedItem] = drop;
                         listBoxEnemyItemDropRates.Items[selectedItem] = GetItemDropText(drop);
                     }
                     else
                     {
-                        drop.ItemID = InventoryItem.GetCombinedIndex(item.Type, item.Index);
+                        drop.ItemID = item.Item;
                         listBoxEnemyItemDropRates.Items[selectedItem] = GetItemDropText(drop);
                     }
                 }
@@ -1681,7 +1702,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (!loading && SelectedScene != null && SelectedEnemy != null && SelectedAttack != null)
             {
-                SelectedAttack.Name = new FFText(textBoxAttackName.Text);
+                SelectedAttack.Name = textBoxAttackName.Text;
                 UpdateSelectedAttackName(SelectedScene, SelectedEnemy, SelectedAttackIndex);
                 SetUnsaved(true);
             }
@@ -2188,7 +2209,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedAttack != null)
             {
-                DataManager.CopiedAttack = new Attack(SelectedAttack);
+                DataManager.CopiedAttack = DataParser.CopyAttack(SelectedAttack);
                 attackPasteToolStripMenuItem.Enabled = true;
             }
         }
@@ -2199,7 +2220,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 //check if this is a synced attack
                 bool getSynced = false;
-                if (syncedAttacks.ContainsKey(DataManager.CopiedAttack.ID))
+                if (syncedAttacks.ContainsKey((ushort)DataManager.CopiedAttack.Index))
                 {
                     var result = MessageBox.Show("The copied enemy is a synced attack. Would you like to sync this one as well?",
                         "Sync Attack?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
@@ -2210,11 +2231,11 @@ namespace FF7Scarlet.SceneEditor
                 //set the new attack data
                 if (getSynced)
                 {
-                    SelectedScene.AttackList[SelectedAttackIndex] = syncedAttacks[DataManager.CopiedAttack.ID];
+                    SelectedScene.AttackList[SelectedAttackIndex] = syncedAttacks[(ushort)DataManager.CopiedAttack.Index];
                 }
                 else
                 {
-                    SelectedScene.AttackList[SelectedAttackIndex] = new Attack(DataManager.CopiedAttack);
+                    SelectedScene.AttackList[SelectedAttackIndex] = DataParser.CopyAttack(DataManager.CopiedAttack);
                 }
                 LoadAttackData(SelectedAttack, true);
                 UpdateSelectedAttackName(SelectedScene, SelectedEnemy, SelectedAttackIndex);

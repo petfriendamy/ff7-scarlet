@@ -4,8 +4,12 @@ using System.Media;
 using System.Windows.Forms.DataVisualization.Charting;
 
 using Shojy.FF7.Elena;
+using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
+using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Equipment;
+using Shojy.FF7.Elena.Inventory;
+using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Materias;
 
 using FF7Scarlet.SceneEditor;
@@ -13,7 +17,6 @@ using FF7Scarlet.KernelEditor.Controls;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
-using Shojy.FF7.Elena.Items;
 using System;
 
 namespace FF7Scarlet.KernelEditor
@@ -35,7 +38,7 @@ namespace FF7Scarlet.KernelEditor
         private List<ushort> syncedAttackIDs = new();
         private List<StatusChangeType> statusChangeTypes = new();
         private List<IndependentMateriaTypes> independentMateriaTypes = new();
-        private List<SpellIndex>[] spellIndices = new List<SpellIndex>[(int)MagicTypes.Unlisted];
+        private List<SpellIndex>[] SpellIndexes = new List<SpellIndex>[(int)SpellType.Unlisted];
         private int prevCommand, prevAttack, prevCharacter, prevItem,
             prevWeapon, prevArmor, prevAccessory, prevMateria;
         private bool
@@ -96,13 +99,13 @@ namespace FF7Scarlet.KernelEditor
         /// <summary>
         /// The currently selected command. Returns null if none is selected.
         /// </summary>
-        private MenuCommand? SelectedCommand
+        private Command? SelectedCommand
         {
             get
             {
-                if (SelectedCommandIndex >= 0 && SelectedCommandIndex < kernel.Commands.Length)
+                if (SelectedCommandIndex >= 0 && SelectedCommandIndex < kernel.CommandData.Commands.Length)
                 {
-                    return kernel.Commands[SelectedCommandIndex];
+                    return kernel.CommandData.Commands[SelectedCommandIndex];
                 }
                 return null;
             }
@@ -125,7 +128,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 if (SelectedAttackIndex >= 0 && SelectedAttackIndex < Kernel.ATTACK_COUNT)
                 {
-                    return kernel.Attacks[SelectedAttackIndex];
+                    return kernel.AttackData.Attacks[SelectedAttackIndex];
                 }
                 return null;
             }
@@ -147,9 +150,9 @@ namespace FF7Scarlet.KernelEditor
             get
             {
                 if (SelectedCharacterIndex >= 0 &&
-                    SelectedCharacterIndex < Character.CHARACTER_COUNT)
+                    SelectedCharacterIndex < Kernel.CHARACTER_COUNT)
                 {
-                    return kernel.InitialData.Characters[SelectedCharacterIndex];
+                    return kernel.CharacterList[SelectedCharacterIndex];
                 }
                 return null;
             }
@@ -269,14 +272,14 @@ namespace FF7Scarlet.KernelEditor
         /// <summary>
         /// The currently selected materia. Returns null if none is selected.
         /// </summary>
-        private MateriaExt? SelectedMateria
+        private Materia? SelectedMateria
         {
             get
             {
                 if (SelectedMateriaIndex >= 0
                     && SelectedMateriaIndex < kernel.MateriaData.Materias.Length)
                 {
-                    return kernel.MateriaExt[SelectedMateriaIndex];
+                    return kernel.MateriaData.Materias[SelectedMateriaIndex];
                 }
                 return null;
             }
@@ -298,9 +301,9 @@ namespace FF7Scarlet.KernelEditor
         {
             InitializeComponent();
             kernel = DataManager.CopyKernel();
-            foreach (var a in kernel.Attacks)
+            foreach (var a in kernel.AttackData.Attacks)
             {
-                if (DataManager.AttackIsSynced(a.ID)) { syncedAttackIDs.Add(a.ID); }
+                if (DataManager.AttackIsSynced((ushort)a.Index)) { syncedAttackIDs.Add((ushort)a.Index); }
             }
             selectedAttackToolStripMenuItem.Enabled = false;
 
@@ -424,7 +427,7 @@ namespace FF7Scarlet.KernelEditor
             comboBoxParty1.Items.Add("None");
             comboBoxParty2.Items.Add("None");
             comboBoxParty3.Items.Add("None");
-            for (int i = 0; i < Character.CHARACTER_COUNT; ++i)
+            for (int i = 0; i < Kernel.CHARACTER_COUNT; ++i)
             {
                 var name = Enum.GetName((CharacterNames)i);
                 if (name != null)
@@ -436,7 +439,7 @@ namespace FF7Scarlet.KernelEditor
                     comboBoxParty3.Items.Add(parsedName);
 
                     //playable characters
-                    if (i < Character.PLAYABLE_CHARACTER_COUNT)
+                    if (i < Kernel.PLAYABLE_CHARACTER_COUNT)
                     {
                         listBoxCharacterGrowth.Items.Add(parsedName);
 
@@ -498,15 +501,15 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //spell type
-            foreach (var t in Enum.GetNames<MagicTypes>())
+            foreach (var t in Enum.GetNames<SpellType>())
             {
                 comboBoxMagicType.Items.Add(StringParser.AddSpaces(t));
             }
-            for (int i = 0; i < (int)MagicTypes.Unlisted; ++i)
+            for (int i = 0; i < (int)SpellType.Unlisted; ++i)
             {
-                spellIndices[i] =
-                    (from s in kernel.BattleAndGrowthData.SpellIndices
-                    where (int)s.MagicType == i
+                SpellIndexes[i] =
+                    (from s in kernel.BattleAndGrowthData.SpellIndexes
+                    where (int)s.SpellType == i
                     orderby s.SectionIndex
                     select s).ToList();
             }
@@ -785,15 +788,15 @@ namespace FF7Scarlet.KernelEditor
             //inventory
             int i = listBoxInitInventory.SelectedIndex;
             listBoxInitInventory.Items.Clear();
-            foreach (var inv in kernel.InitialData.InventoryItems)
+            foreach (var inv in kernel.InitialData.Inventory)
             {
-                if (inv.Item.Type == ItemType.None)
+                if (DataParser.GetItemType(inv.Item) == ItemType.None)
                 {
                     listBoxInitInventory.Items.Add("(empty)");
                 }
                 else
                 {
-                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv.Item)} x{inv.Amount}");
+                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv)} x{inv.Amount}");
                 }
             }
             listBoxInitInventory.SelectedIndex = i;
@@ -802,7 +805,7 @@ namespace FF7Scarlet.KernelEditor
             //materia
             i = listBoxInitMateria.SelectedIndex;
             listBoxInitMateria.Items.Clear();
-            foreach (var invm in kernel.InitialData.InventoryMateria)
+            foreach (var invm in kernel.InitialData.Materia)
             {
                 var m = kernel.GetMateriaByID(invm.Index);
                 if (m == null)
@@ -963,7 +966,7 @@ namespace FF7Scarlet.KernelEditor
                     {
                         //command data
                         case KernelSection.CommandData:
-                            var command = kernel.Commands[i];
+                            var command = kernel.CommandData.Commands[i];
                             if (command.InitialCursorAction == 0xFF)
                             {
                                 comboBoxCommandInitialCursorAction.SelectedIndex = 0;
@@ -977,7 +980,7 @@ namespace FF7Scarlet.KernelEditor
                         //attack data
                         case KernelSection.AttackData:
                             attackPasteToolStripMenuItem.Enabled = DataManager.CopiedAttack != null;
-                            var attack = kernel.Attacks[i];
+                            var attack = kernel.AttackData.Attacks[i];
                             j = i - Kernel.SUMMON_OFFSET;
                             if (j >= 0 && j < kernel.SummonAttackNames.Strings.Length)
                             {
@@ -989,19 +992,19 @@ namespace FF7Scarlet.KernelEditor
                                 textBoxSummonText.Enabled = false;
                                 textBoxSummonText.Clear();
                             }
-                            checkBoxAttackIsLimit.Checked = attack.IsLimit;
+                            checkBoxAttackIsLimit.Checked = kernel.AttackIsLimit[i];
                             numericAttackAttackPercent.Value = attack.AccuracyRate;
                             numericAttackMPCost.Value = attack.MPCost;
                             comboBoxAttackAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
                             comboBoxAttackImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
                             comboBoxAttackHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
-                            if (attack.AttackConditions == AttackConditions.None)
+                            if (attack.ConditionSubmenu == ConditionSubmenu.None)
                             {
                                 comboBoxAttackConditionSubMenu.SelectedIndex = 0;
                             }
                             else
                             {
-                                comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.AttackConditions + 1;
+                                comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
                             }
                             numericAttackStatusChangeChance.Value = attack.StatusChange.Amount;
                             if (attack.StatusChange.Type == StatusChangeType.None)
@@ -1016,18 +1019,18 @@ namespace FF7Scarlet.KernelEditor
                                 numericAttackStatusChangeChance.Enabled = true;
                                 statusesControlAttack.Enabled = true;
                             }
-                            if (i < SpellIndex.INDEXED_SPELL_COUNT)
+                            if (i < Kernel.INDEXED_SPELL_COUNT)
                             {
                                 comboBoxMagicType.Enabled = true;
-                                int type = (int)kernel.BattleAndGrowthData.SpellIndices[i].MagicType;
-                                if (type < (int)MagicTypes.Unlisted)
+                                int type = (int)kernel.BattleAndGrowthData.SpellIndexes[i].SpellType;
+                                if (type < (int)SpellType.Unlisted)
                                 {
                                     comboBoxMagicType.SelectedIndex = type;
                                     buttonMagicOrder.Enabled = true;
                                 }
                                 else
                                 {
-                                    comboBoxMagicType.SelectedIndex = (int)MagicTypes.Unlisted;
+                                    comboBoxMagicType.SelectedIndex = (int)SpellType.Unlisted;
                                     buttonMagicOrder.Enabled = false;
                                 }
                             }
@@ -1036,7 +1039,7 @@ namespace FF7Scarlet.KernelEditor
                                 comboBoxMagicType.Enabled = false;
                                 buttonMagicOrder.Enabled = false;
                             }
-                            checkBoxAttackSyncWithSceneBin.Checked = syncedAttackIDs.Contains(attack.ID);
+                            checkBoxAttackSyncWithSceneBin.Checked = syncedAttackIDs.Contains((ushort)attack.Index);
                             break;
 
                         //item data
@@ -1078,7 +1081,7 @@ namespace FF7Scarlet.KernelEditor
 
                         //materia data
                         case KernelSection.MateriaData:
-                            var materia = kernel.MateriaExt[i];
+                            var materia = kernel.MateriaData.Materias[i];
                             if (Enum.IsDefined(materia.Element))
                             {
                                 comboBoxMateriaElement.SelectedIndex = (int)materia.Element + 1;
@@ -1087,7 +1090,7 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 comboBoxMateriaElement.SelectedIndex = 0;
                             }
-                            comboBoxMateriaType.SelectedIndex = (int)materia.MateriaType;
+                            comboBoxMateriaType.SelectedIndex = (int)Materia.GetMateriaType(materia.MateriaTypeByte);
                             UpdateMateriaSubtype(materia);
                             materiaLevelControl.SetAPLevels(materia.Level2AP, materia.Level3AP, materia.Level4AP,
                                 materia.Level5AP);
@@ -1136,16 +1139,15 @@ namespace FF7Scarlet.KernelEditor
                     tabPageIsEnabled.Add(tabPageInitCharacterStats, true);
                 }
 
-                var character = kernel.InitialData.Characters[charIndex];
-                var charGrowth = kernel.BattleAndGrowthData.CharGrowth[charIndex];
+                var character = kernel.CharacterList[charIndex];
 
                 textBoxCharacterName.Text = character.Name.ToString();
                 numericCharacterID.Value = character.ID;
                 numericCharacterLevel.Value = character.Level;
                 numericCharacterCurrentEXP.Value = character.CurrentEXP;
                 numericCharacterEXPtoNext.Value = character.EXPtoNextLevel;
-                numericCharacterLevelOffset.Value = charGrowth.RecruitLevelOffset;
-                numericCharacterLevelOffset.Enabled = !charGrowth.IsYuffie;
+                numericCharacterLevelOffset.Value = character.RecruitLevelOffset;
+                numericCharacterLevelOffset.Enabled = character == kernel.CharacterData.Yuffie;
 
                 numericCharacterCurrHP.Value = character.CurrentHP;
                 numericCharacterBaseHP.Value = character.BaseHP;
@@ -1194,10 +1196,10 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="stat">The index of the currently selected stat.</param>
         private void UpdateStatCurves(int chara, int stat)
         {
-            if (chara >= 0 && chara < Character.PLAYABLE_CHARACTER_COUNT && stat >= 0 && stat < 9)
+            if (chara >= 0 && chara < Kernel.PLAYABLE_CHARACTER_COUNT && stat >= 0 && stat < 9)
             {
                 loading = true;
-                var charGrowth = kernel.BattleAndGrowthData.CharGrowth[chara];
+                var c = kernel.CharacterList[chara];
 
                 //enable the controls
                 EnableOrDisableInner(groupBoxSelectedCurve, true, null);
@@ -1209,8 +1211,8 @@ namespace FF7Scarlet.KernelEditor
                 chartMainCurve.SuspendLayout();
                 MainCurveMin.Points.Clear();
                 MainCurveMax.Points.Clear();
-                var minStats = kernel.BattleAndGrowthData.CalculateMinStats(chara, stat);
-                var maxStats = kernel.BattleAndGrowthData.CalculateMaxStats(chara, stat);
+                var minStats = kernel.BattleAndGrowthData.CalculateMinStats(c, (CurveStats)stat);
+                var maxStats = kernel.BattleAndGrowthData.CalculateMaxStats(c, (CurveStats)stat);
                 for (int i = 1; i <= 99; ++i)
                 {
                     if (stat != (int)CurveStats.EXP)
@@ -1222,7 +1224,7 @@ namespace FF7Scarlet.KernelEditor
                 chartMainCurve.ResumeLayout();
 
                 //set numerics
-                numericCurveIndex.Value = charGrowth.CurveIndex[stat];
+                numericCurveIndex.Value = kernel.GetCurveIndex(chara, stat);
                 bool isEXP = (stat == (int)CurveStats.EXP);
                 groupBoxCurveBonuses.Enabled = !isEXP;
                 EnableOrDisableInner(groupBoxCurveBonuses, !isEXP, null);
@@ -1255,31 +1257,23 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="selected">The selected item</param>
         private void PopulateInitInventoryBox(int selected)
         {
-            if (selected >= 0 && selected < InitialData.INVENTORY_SIZE)
+            if (selected >= 0 && selected < Kernel.INVENTORY_SIZE)
             {
-                var item = kernel.InitialData.InventoryItems[selected];
+                var item = kernel.InitialData.Inventory[selected];
                 loading = true;
                 comboBoxInitItem.Enabled = true;
-                switch (item.Item.Type)
+                var type = DataParser.GetItemType(item.Item);
+                switch (DataParser.GetItemType(item.Item))
                 {
-                    case ItemType.Item:
-                        comboBoxInitItem.SelectedIndex = item.Item.Index + 1;
-                        break;
-                    case ItemType.Weapon:
-                        comboBoxInitItem.SelectedIndex = item.Item.Index + InventoryItem.WEAPON_START + 1;
-                        break;
-                    case ItemType.Armor:
-                        comboBoxInitItem.SelectedIndex = item.Item.Index + InventoryItem.ARMOR_START + 1;
-                        break;
-                    case ItemType.Accessory:
-                        comboBoxInitItem.SelectedIndex = item.Item.Index + InventoryItem.ACCESSORY_START + 1;
+                    case ItemType.None:
+                        comboBoxInitItem.SelectedIndex = 0;
                         break;
                     default:
-                        comboBoxInitItem.SelectedIndex = 0;
+                        comboBoxInitItem.SelectedIndex = item.Item + 1;
                         break;
                 }
 
-                if (item.Item.Type == ItemType.None)
+                if (type == ItemType.None)
                 {
                     numericInitItemAmount.Value = 0;
                     numericInitItemAmount.Enabled = false;
@@ -1304,12 +1298,12 @@ namespace FF7Scarlet.KernelEditor
             if (isStolen)
             {
                 i = listBoxInitMateriaStolen.SelectedIndex;
-                max = InitialData.STOLEN_MATERIA_COUNT;
+                max = Kernel.STOLEN_MATERIA_COUNT;
             }
             else
             {
                 i = listBoxInitMateria.SelectedIndex;
-                max = InitialData.MATERIA_INVENTORY_SIZE;
+                max = Kernel.MATERIA_INVENTORY_SIZE;
             }
 
             if (i >= 0 && i < max)
@@ -1329,7 +1323,7 @@ namespace FF7Scarlet.KernelEditor
                 }
                 else
                 {
-                    materia = kernel.InitialData.InventoryMateria[i];
+                    materia = kernel.InitialData.Materia[i];
                     comboBox = comboBoxInitMateria;
                     editButton = buttonInitMateriaEdit;
                 }
@@ -1355,18 +1349,18 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="selectedChar">The index of the selected character</param>
         private void UpdateCharacterAIScripts(int selectedChar)
         {
-            if (selectedChar >= 0 && selectedChar < BattleAndGrowthData.AI_BLOCK_COUNT)
+            if (selectedChar >= 0 && selectedChar < Kernel.AI_BLOCK_COUNT)
             {
                 try
                 {
                     //load the scripts if they aren't
-                    if (!kernel.BattleAndGrowthData.ScriptsLoaded)
+                    if (!kernel.ScriptsLoaded)
                     {
-                        kernel.BattleAndGrowthData.ParseAIScripts();
+                        kernel.ParseAIScripts();
                         groupBoxCharacterScripts.Enabled = true;
                         scriptControlCharacterAI.Enabled = true;
                     }
-                    var chara = kernel.BattleAndGrowthData.CharacterAI[selectedChar];
+                    var chara = kernel.CharacterAI[selectedChar];
                     for (int i = 0; i < Script.SCRIPT_COUNT; ++i)
                     {
                         listBoxCharacterScripts.Items[i] = SCRIPT_LIST[i];
@@ -1400,7 +1394,7 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="scriptID">The index of the selected script</param>
         private void DisplayScript(int charID, int scriptID)
         {
-            var chara = kernel.BattleAndGrowthData.CharacterAI[charID];
+            var chara = kernel.CharacterAI[charID];
             scriptControlCharacterAI.AIContainer = chara;
             scriptControlCharacterAI.SelectedScriptIndex = scriptID;
         }
@@ -1472,7 +1466,7 @@ namespace FF7Scarlet.KernelEditor
             else { comboBoxParty2.SelectedIndex = kernel.InitialData.Party2 + 1; }
             if (kernel.InitialData.Party3 == 0xFF) { comboBoxParty3.SelectedIndex = 0; }
             else { comboBoxParty3.SelectedIndex = kernel.InitialData.Party3 + 1; }
-            numericStartingGil.Value = kernel.InitialData.StartingGil;
+            numericStartingGil.Value = kernel.InitialData.Gil;
 
 
             if (!wasAlreadyLoading) { loading = false; }
@@ -1545,10 +1539,10 @@ namespace FF7Scarlet.KernelEditor
         /// Get list of subtypes for the selected materia type
         /// </summary>
         /// <param name="mat">The selected materia</param>
-        private void UpdateMateriaSubtype(MateriaExt mat)
+        private void UpdateMateriaSubtype(Materia mat)
         {
-            comboBoxMateriaSubtype.SelectedIndex = mat.GetSubtypeIndex();
-            buttonMateriaAttributes.Enabled = mat.HasEditableAttributes;
+            comboBoxMateriaSubtype.SelectedIndex = MateriaExt.GetSubtypeIndex(mat);
+            buttonMateriaAttributes.Enabled = MateriaExt.MateriaHasEditableAttribules(mat);
         }
 
         #endregion
@@ -1559,7 +1553,7 @@ namespace FF7Scarlet.KernelEditor
         /// Update the selected command with info from controls
         /// </summary>
         /// <param name="command">The selected command</param>
-        private void SyncCommandData(MenuCommand command)
+        private void SyncCommandData(Command command)
         {
             int i = comboBoxCommandInitialCursorAction.SelectedIndex;
             if (i <= 0)
@@ -1587,13 +1581,13 @@ namespace FF7Scarlet.KernelEditor
             attack.AttackStrength = damageCalculationControlAttack.AttackPower;
             if (comboBoxAttackConditionSubMenu.SelectedIndex == 0)
             {
-                attack.AttackConditions = AttackConditions.None;
+                attack.ConditionSubmenu = ConditionSubmenu.None;
             }
             else
             {
-                attack.AttackConditions = (AttackConditions)(comboBoxAttackConditionSubMenu.SelectedIndex - 1);
+                attack.ConditionSubmenu = (ConditionSubmenu)(comboBoxAttackConditionSubMenu.SelectedIndex - 1);
             }
-            attack.StatusEffects = statusesControlAttack.GetStatuses();
+            attack.Statuses = statusesControlAttack.GetStatuses();
             attack.Elements = elementsControlAttack.GetElements();
             attack.SpecialAttackFlags = specialAttackFlagsControlAttack.GetFlags();
 
@@ -1607,7 +1601,7 @@ namespace FF7Scarlet.KernelEditor
         private void SyncInitialStats(Character chara)
         {
             chara.ID = (byte)numericCharacterID.Value;
-            chara.Name = new FFText(textBoxCharacterName.Text);
+            chara.Name = textBoxCharacterName.Text;
             chara.Level = (byte)numericCharacterLevel.Value;
             chara.CurrentEXP = (uint)numericCharacterCurrentEXP.Value;
             chara.EXPtoNextLevel = (uint)numericCharacterEXPtoNext.Value;
@@ -1879,13 +1873,13 @@ namespace FF7Scarlet.KernelEditor
                 newItemIndex = comboBoxInitItem.SelectedIndex,
                 amount = (int)numericInitItemAmount.Value;
 
-            if (selectedItem >= 0 && selectedItem < InitialData.INVENTORY_SIZE)
+            if (selectedItem >= 0 && selectedItem < Kernel.INVENTORY_SIZE)
             {
                 loading = true;
-                var item = kernel.InitialData.InventoryItems[selectedItem];
+                var item = kernel.InitialData.Inventory[selectedItem];
                 if (newItemIndex == 0) //none
                 {
-                    item.Item.SetItem(ItemType.None, 0);
+                    DataParser.SetItem(item, ItemType.None, 0);
                     listBoxInitInventory.Items[selectedItem] = "(empty)";
                     numericInitItemAmount.Value = 0;
                     numericInitItemAmount.Enabled = false;
@@ -1899,12 +1893,12 @@ namespace FF7Scarlet.KernelEditor
                     }
                     numericInitItemAmount.Enabled = true;
 
-                    var type = InventoryItem.GetType((ushort)(newItemIndex - 1));
-                    byte index = InventoryItem.GetIndex((ushort)(newItemIndex - 1));
+                    var type = DataParser.GetItemType((ushort)(newItemIndex - 1));
+                    byte index = DataParser.GetItemIndex((ushort)(newItemIndex - 1));
 
-                    item.Item.SetItem(type, index);
+                    DataParser.SetItem(item, type, index);
                     item.Amount = amount;
-                    var name = kernel.GetInventoryItemName(item.Item);
+                    var name = kernel.GetInventoryItemName(item);
                     listBoxInitInventory.Items[selectedItem] = $"{name} x{amount}";
                 }
                 loading = false;
@@ -1926,14 +1920,14 @@ namespace FF7Scarlet.KernelEditor
 
             if (isStolen)
             {
-                max = InitialData.STOLEN_MATERIA_COUNT;
+                max = Kernel.STOLEN_MATERIA_COUNT;
                 listBox = listBoxInitMateriaStolen;
                 comboBox = comboBoxInitMateriaStolen;
                 editButton = buttonInitMateriaStolenEdit;
             }
             else
             {
-                max = InitialData.MATERIA_INVENTORY_SIZE;
+                max = Kernel.MATERIA_INVENTORY_SIZE;
                 listBox = listBoxInitMateria;
                 comboBox = comboBoxInitMateria;
                 editButton = buttonInitMateriaEdit;
@@ -1947,7 +1941,7 @@ namespace FF7Scarlet.KernelEditor
 
                 InventoryMateria materia;
                 if (isStolen) { materia = kernel.InitialData.StolenMateria[selectedMateria]; }
-                else { materia = kernel.InitialData.InventoryMateria[selectedMateria]; }
+                else { materia = kernel.InitialData.Materia[selectedMateria]; }
 
                 if (newMateriaIndex == 0) //no materia
                 {
@@ -2032,7 +2026,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 if (commandNeedsSync) //sync unsaved command data
                 {
-                    var command = kernel.Commands[prevCommand];
+                    var command = kernel.CommandData.Commands[prevCommand];
                     if (command != null)
                     {
                         SyncCommandData(command);
@@ -2049,7 +2043,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 if (attackNeedsSync) //sync unsaved attack data
                 {
-                    var attack = kernel.Attacks[prevAttack];
+                    var attack = kernel.AttackData.Attacks[prevAttack];
                     if (attack != null)
                     {
                         SyncAttackData(attack);
@@ -2066,7 +2060,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 if (initialStatsNeedSync) //sync unsaved stat data
                 {
-                    var chara = kernel.InitialData.Characters[prevCharacter];
+                    var chara = kernel.CharacterList[prevCharacter];
                     if (chara != null)
                     {
                         SyncInitialStats(chara);
@@ -2478,7 +2472,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 loading = true;
                 string name = textBoxAttackName.Text;
-                SelectedAttack.Name = new FFText(name);
+                SelectedAttack.Name = name;
                 kernel.MagicNames.Strings[SelectedAttackIndex] = name;
                 listBoxAttacks.Items[SelectedAttackIndex] = name;
                 SetUnsaved(true);
@@ -2491,7 +2485,7 @@ namespace FF7Scarlet.KernelEditor
             if (!loading && SelectedAttack != null)
             {
                 string desc = textBoxAttackDescription.Text;
-                SelectedAttack.Description = new FFText(desc);
+                SelectedAttack.Description = desc;
                 kernel.MagicDescriptions.Strings[SelectedAttackIndex] = desc;
                 SetUnsaved(true);
             }
@@ -2511,7 +2505,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading && SelectedAttack != null)
             {
-                SelectedAttack.IsLimit = checkBoxAttackIsLimit.Checked;
+                kernel.AttackIsLimit[SelectedAttackIndex] = checkBoxAttackIsLimit.Checked;
                 SetUnsaved(true);
             }
         }
@@ -2563,33 +2557,33 @@ namespace FF7Scarlet.KernelEditor
 
         private void comboBoxMagicType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!loading && SelectedAttack != null && SelectedAttackIndex < SpellIndex.INDEXED_SPELL_COUNT)
+            if (!loading && SelectedAttack != null && SelectedAttackIndex < Kernel.INDEXED_SPELL_COUNT)
             {
                 //get spell index
-                var index = kernel.BattleAndGrowthData.SpellIndices[SelectedAttackIndex];
-                MagicTypes oldType = index.MagicType,
-                    newType = (MagicTypes)comboBoxMagicType.SelectedIndex;
+                var index = kernel.BattleAndGrowthData.SpellIndexes[SelectedAttackIndex];
+                SpellType oldType = index.SpellType,
+                    newType = (SpellType)comboBoxMagicType.SelectedIndex;
                 byte i, type;
 
                 //remove spell from the old list
-                if (oldType != MagicTypes.Unlisted)
+                if (oldType != SpellType.Unlisted)
                 {
                     type = (byte)oldType;
-                    spellIndices[type].Remove(index);
-                    for (i = 0; i < spellIndices[type].Count; ++i)
+                    SpellIndexes[type].Remove(index);
+                    for (i = 0; i < SpellIndexes[type].Count; ++i)
                     {
-                        spellIndices[type][i].SectionIndex = i;
+                        SpellIndexes[type][i].SectionIndex = i;
                     }
                 }
 
                 //add spell to the new list
-                if (newType != MagicTypes.Unlisted)
+                if (newType != SpellType.Unlisted)
                 {
                     type = (byte)newType;
-                    spellIndices[type].Add(index);
-                    for (i = 0; i < spellIndices[type].Count; ++i)
+                    SpellIndexes[type].Add(index);
+                    for (i = 0; i < SpellIndexes[type].Count; ++i)
                     {
-                        spellIndices[type][i].SectionIndex = i;
+                        SpellIndexes[type][i].SectionIndex = i;
                     }
                 }
                 SetUnsaved(true);
@@ -2598,15 +2592,15 @@ namespace FF7Scarlet.KernelEditor
 
         private void buttonSpellPosition_Click(object sender, EventArgs e)
         {
-            if (SelectedAttack != null && SelectedAttackIndex < SpellIndex.INDEXED_SPELL_COUNT)
+            if (SelectedAttack != null && SelectedAttackIndex < Kernel.INDEXED_SPELL_COUNT)
             {
-                var index = kernel.BattleAndGrowthData.SpellIndices[SelectedAttackIndex];
-                using (var form = new MagicOrderForm(spellIndices[(int)index.MagicType],
+                var index = kernel.BattleAndGrowthData.SpellIndexes[SelectedAttackIndex];
+                using (var form = new MagicOrderForm(SpellIndexes[(int)index.SpellType],
                     index, kernel.GetAssociatedNames(KernelSection.AttackData)))
                 {
                     if (form.ShowDialog() == DialogResult.OK)
                     {
-                        spellIndices[(int)index.MagicType] = form.SpellIndices;
+                        SpellIndexes[(int)index.SpellType] = form.SpellIndices;
                         SetUnsaved(true);
                     }
                 }
@@ -2621,7 +2615,7 @@ namespace FF7Scarlet.KernelEditor
                 var selected = listBoxAttacks.SelectedIndex;
                 if (selected >= 0 && selected < kernel.GetCount(KernelSection.AttackData))
                 {
-                    var atk = kernel.Attacks[selected];
+                    var atk = kernel.AttackData.Attacks[selected];
                     loading = true;
                     if (isChecked)
                     {
@@ -2629,22 +2623,22 @@ namespace FF7Scarlet.KernelEditor
                             "Sync Attack?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
                         if (result)
                         {
-                            SyncAttack(atk.ID);
+                            SyncAttack((ushort)atk.Index);
                             SetUnsaved(true);
                         }
                         checkBoxAttackSyncWithSceneBin.Checked = result;
                     }
                     else
                     {
-                        if (DataManager.AttackIsSynced(atk.ID))
+                        if (DataManager.AttackIsSynced((ushort)atk.Index))
                         {
                             bool result = MessageBox.Show("This will desync this attack from every instance of this attack in scene.bin. Are you sure you want to do this?",
                                 "Desync Attack?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
                             if (result)
                             {
-                                syncedAttackIDs.Remove(atk.ID);
-                                DataManager.UnsyncAttack(atk.ID);
-                                kernel.Attacks[selected] = new Attack(atk.ID, atk.Name, atk.GetRawData());
+                                syncedAttackIDs.Remove((ushort)atk.Index);
+                                DataManager.UnsyncAttack((ushort)atk.Index);
+                                kernel.AttackData.Attacks[selected] = DataParser.CopyAttack(atk);
                                 SetUnsaved(true);
                             }
                             checkBoxAttackSyncWithSceneBin.Checked = result;
@@ -2663,9 +2657,9 @@ namespace FF7Scarlet.KernelEditor
             if (result == DialogResult.Yes)
             {
                 loading = true;
-                foreach (var a in kernel.Attacks)
+                foreach (var a in kernel.AttackData.Attacks)
                 {
-                    SyncAttack(a.ID);
+                    SyncAttack((ushort)a.Index);
                 }
                 checkBoxAttackSyncWithSceneBin.Checked = true;
                 loading = false;
@@ -2741,7 +2735,7 @@ namespace FF7Scarlet.KernelEditor
             int slot = materiaSlotSelectorCharacterWeapon.SelectedSlot;
             if (slot != -1 && SelectedCharacter != null)
             {
-                var mat = SelectedCharacter.WeaponMateria[slot].Copy();
+                var mat = DataParser.CopyMateria(SelectedCharacter.WeaponMateria[slot]);
                 using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
@@ -2759,7 +2753,7 @@ namespace FF7Scarlet.KernelEditor
             int slot = materiaSlotSelectorCharacterArmor.SelectedSlot;
             if (slot != -1 && SelectedCharacter != null)
             {
-                var mat = SelectedCharacter.ArmorMateria[slot].Copy();
+                var mat = DataParser.CopyMateria(SelectedCharacter.ArmorMateria[slot]);
                 using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
@@ -2779,7 +2773,7 @@ namespace FF7Scarlet.KernelEditor
                 int chara = listBoxCharacterGrowth.SelectedIndex,
                     stat = listBoxStatCurves.SelectedIndex;
 
-                kernel.BattleAndGrowthData.CharGrowth[chara].CurveIndex[stat] = (byte)numericCurveIndex.Value;
+                kernel.SetCurveIndex(chara, stat, (byte)numericCurveIndex.Value);
                 UpdateStatCurves(chara, stat);
                 SetUnsaved(true);
             }
@@ -2791,7 +2785,7 @@ namespace FF7Scarlet.KernelEditor
             byte curveIndex = (byte)numericCurveIndex.Value;
             bool unsaved;
 
-            using (var editForm = new CurveEditForm(kernel.BattleAndGrowthData, curveIndex))
+            using (var editForm = new CurveEditForm(kernel, curveIndex))
             {
                 result = editForm.ShowDialog();
                 unsaved = editForm.Unsaved;
@@ -2848,7 +2842,7 @@ namespace FF7Scarlet.KernelEditor
         private void listBoxCharacterScripts_SelectedIndexChanged(object sender, EventArgs e)
         {
             int selectedChar = listBoxCharacterAI.SelectedIndex;
-            if (!loading && selectedChar >= 0 && selectedChar < BattleAndGrowthData.AI_BLOCK_COUNT)
+            if (!loading && selectedChar >= 0 && selectedChar < Kernel.AI_BLOCK_COUNT)
             {
                 DisplayScript(selectedChar, listBoxCharacterScripts.SelectedIndex);
             }
@@ -2923,7 +2917,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading)
             {
-                kernel.InitialData.StartingGil = (uint)numericStartingGil.Value;
+                kernel.InitialData.Gil = (uint)numericStartingGil.Value;
                 SetUnsaved(true);
             }
         }
@@ -2973,12 +2967,12 @@ namespace FF7Scarlet.KernelEditor
             int slot = listBoxInitMateria.SelectedIndex;
             if (slot != -1)
             {
-                var mat = kernel.InitialData.InventoryMateria[slot].Copy();
+                var mat = DataParser.CopyMateria(kernel.InitialData.Materia[slot]);
                 using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
-                        kernel.InitialData.InventoryMateria[slot] = mat;
+                        kernel.InitialData.Materia[slot] = mat;
                     }
                 }
             }
@@ -3005,7 +2999,7 @@ namespace FF7Scarlet.KernelEditor
             int slot = listBoxInitMateriaStolen.SelectedIndex;
             if (slot != -1)
             {
-                var mat = kernel.InitialData.StolenMateria[slot].Copy();
+                var mat = DataParser.CopyMateria(kernel.InitialData.StolenMateria[slot]);
                 using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
@@ -3028,7 +3022,7 @@ namespace FF7Scarlet.KernelEditor
                 var newType = (MateriaType)comboBoxMateriaType.SelectedIndex;
                 if (!loading)
                 {
-                    SelectedMateria.SetMateriaType(newType);
+                    MateriaExt.SetMateriaType(SelectedMateria, newType);
                 }
 
                 //update subtypes list
@@ -3091,10 +3085,10 @@ namespace FF7Scarlet.KernelEditor
             if (!loading && SelectedMateria != null)
             {
                 int i = comboBoxMateriaSubtype.SelectedIndex;
-                switch (SelectedMateria.MateriaType)
+                switch (Materia.GetMateriaType(SelectedMateria.MateriaTypeByte))
                 {
                     case MateriaType.Independent:
-                        SelectedMateria.SetMateriaSubtype(independentMateriaTypes[i]);
+                        MateriaExt.SetMateriaSubtype(SelectedMateria, independentMateriaTypes[i]);
                         break;
 
                     case MateriaType.Support:
@@ -3102,11 +3096,11 @@ namespace FF7Scarlet.KernelEditor
 
                     case MateriaType.Command:
                         var temp = MateriaExt.COMMAND_TYPES.ToList();
-                        SelectedMateria.SetMateriaSubtype(temp[i].Key);
+                        MateriaExt.SetMateriaSubtype(SelectedMateria, temp[i].Key);
                         break;
 
                     default:
-                        SelectedMateria.SetMaster(i == 1);
+                        MateriaExt.SetMaster(SelectedMateria, i == 1);
                         break;
                 }
             }
@@ -3114,12 +3108,12 @@ namespace FF7Scarlet.KernelEditor
 
         private void buttonMateriaAttributes_Click(object sender, EventArgs e)
         {
-            if (SelectedMateria != null && SelectedMateria.HasEditableAttributes)
+            if (SelectedMateria != null && MateriaExt.MateriaHasEditableAttribules(SelectedMateria))
             {
                 var result = DialogResult.None;
                 bool changed = false;
-                if (SelectedMateria.MateriaType == MateriaType.Magic ||
-                    SelectedMateria.MateriaType == MateriaType.Summon)
+                var type = Materia.GetMateriaType(SelectedMateria.MateriaTypeByte);
+                if (type == MateriaType.Magic || type == MateriaType.Summon)
                 {
                     using (var aForm = new MateriaSpellsForm(SelectedMateria, kernel.MagicNames.Strings))
                     {
@@ -3127,7 +3121,7 @@ namespace FF7Scarlet.KernelEditor
                         changed = aForm.UnsavedChanges;
                     }
                 }
-                else if (SelectedMateria.MateriaType == MateriaType.Command)
+                else if (type == MateriaType.Command)
                 {
                     using (var aForm = new MateriaSpellsForm(SelectedMateria, kernel.CommandNames.Strings))
                     {
@@ -3392,7 +3386,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (SelectedAttack != null)
             {
-                DataManager.CopiedAttack = new Attack(SelectedAttack);
+                DataManager.CopiedAttack = DataParser.CopyAttack(SelectedAttack);
                 attackPasteToolStripMenuItem.Enabled = true;
             }
         }
@@ -3401,8 +3395,8 @@ namespace FF7Scarlet.KernelEditor
         {
             if (SelectedAttackIndex != -1 && DataManager.CopiedAttack != null)
             {
-                kernel.Attacks[SelectedAttackIndex] = new Attack((ushort)SelectedAttackIndex,
-                    DataManager.CopiedAttack);
+                DataManager.CopiedAttack.Index = SelectedAttackIndex;
+                kernel.AttackData.Attacks[SelectedAttackIndex] = DataParser.CopyAttack(DataManager.CopiedAttack);
                 SetUnsaved(true);
             }
         }

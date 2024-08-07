@@ -1,5 +1,6 @@
 ﻿using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Attacks;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -124,7 +125,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 foreach (var atk in AttackList)
                 {
-                    if (atk?.ID == id) { return atk; }
+                    if (atk?.Index == id) { return atk; }
                 }
             }
             return null;
@@ -135,7 +136,7 @@ namespace FF7Scarlet.SceneEditor
             var atk = GetAttackByID(id);
             if (atk != null)
             {
-                return atk.GetNameString();
+                return DataParser.GetAttackNameString(atk);
             }
             else if (id == HexParser.NULL_OFFSET_16_BIT)
             {
@@ -245,7 +246,7 @@ namespace FF7Scarlet.SceneEditor
                     //attack data
                     for (i = 0; i < ATTACK_COUNT; ++i)
                     {
-                        attackData.Add(reader.ReadBytes(Attack.BLOCK_SIZE));
+                        attackData.Add(reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
                     }
 
                     //attack IDs
@@ -260,7 +261,7 @@ namespace FF7Scarlet.SceneEditor
                         attackName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
                         if (attackID[i] != HexParser.NULL_OFFSET_16_BIT)
                         {
-                            AttackList[i] = new Attack(attackID[i], attackName[i], attackData[i]);
+                            AttackList[i] = DataParser.ReadAttack(attackID[i], attackName[i].ToString(), attackData[i]);
                         }
                         else { AttackList[i] = null; }
                     }
@@ -364,7 +365,7 @@ namespace FF7Scarlet.SceneEditor
                 var atk = AttackList[i];
                 if (atk != null)
                 {
-                    if (atk.ID == attack.ID)
+                    if (atk.Index == attack.Index)
                     {
                         AttackList[i] = attack;
                         count++;
@@ -449,14 +450,14 @@ namespace FF7Scarlet.SceneEditor
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
                             atk = AttackList[i];
-                            if (atk == null) { writer.Write(HexParser.GetNullBlock(Attack.BLOCK_SIZE)); }
-                            else { writer.Write(atk.GetRawData()); }
+                            if (atk == null) { writer.Write(HexParser.GetNullBlock(DataParser.ATTACK_BLOCK_SIZE)); }
+                            else { writer.Write(DataParser.GetAttackBytes(atk)); }
                         }
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
                             atk = AttackList[i];
                             if (atk == null) { writer.Write(HexParser.NULL_OFFSET_16_BIT); }
-                            else { writer.Write(atk.ID); }
+                            else { writer.Write(atk.Index); }
                         }
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
@@ -464,7 +465,7 @@ namespace FF7Scarlet.SceneEditor
                             if (atk == null) { writer.Write(HexParser.GetNullBlock(NAME_LENGTH)); }
                             else
                             {
-                                writer.Write(atk.Name.GetBytes(NAME_LENGTH));
+                                writer.Write(new FFText(atk.Name, NAME_LENGTH).GetBytes());
                             }
                         }
                     }

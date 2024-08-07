@@ -11,7 +11,7 @@ namespace FF7Scarlet.Shared
         Cloud, Barret, Tifa, Aerith, RedXIII, Yuffie, CaitSith, Vincent, Cid, YoungCloud, Sephiroth
     }
 
-    public enum CharacterFlags
+    /*public enum CharacterFlags
     {
         None = 0x00,
         Sadness = 0x10,
@@ -199,5 +199,5 @@ namespace FF7Scarlet.Shared
             var temp2 = other.GetRawData();
             return !temp1.SequenceEqual(temp2);
         }
-    }
+    }*/
 }

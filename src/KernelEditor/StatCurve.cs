@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FF7Scarlet.KernelEditor
 {
-    public class StatCurve
+    /*public class StatCurve
     {
         public const int STAT_COUNT = 9, NUM_CURVES = 64;
         private readonly byte[] gradients = new byte[8];
@@ -48,5 +48,5 @@ namespace FF7Scarlet.KernelEditor
             }
             return bytes;
         }
-    }
+    }*/
 }

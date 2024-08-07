@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
 using System.Configuration;
 using Shojy.FF7.Elena;
+using Shojy.FF7.Elena.Attacks;
 using FF7Scarlet.Compression;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
@@ -352,10 +353,10 @@ namespace FF7Scarlet
                 }
                 for (int i = 0; i < Kernel.ATTACK_COUNT; ++i)
                 {
-                    ushort id = k.Attacks[i].ID;
+                    ushort id = (ushort)k.AttackData.Attacks[i].Index;
                     if (AttackIsSynced(id))
                     {
-                        k.Attacks[i] = syncedAttacks[id];
+                        k.AttackData.Attacks[i] = syncedAttacks[id];
                     }
                 }
                 return k;
@@ -420,9 +421,9 @@ namespace FF7Scarlet
         public static int SyncAttack(Attack attack, bool syncInternal)
         {
             //make a copy of the attack to keep in the sync list
-            var newAtk = new Attack(attack.ID, attack.Name, attack.GetRawData());
-            if (syncedAttacks.ContainsKey(attack.ID)) { syncedAttacks[attack.ID] = newAtk; } 
-            else { syncedAttacks.Add(attack.ID, newAtk); }
+            var newAtk = DataParser.CopyAttack(attack);
+            if (syncedAttacks.ContainsKey((ushort)attack.Index)) { syncedAttacks[(ushort)attack.Index] = newAtk; } 
+            else { syncedAttacks.Add((ushort)attack.Index, newAtk); }
 
             //if the scene editor is open, sync data over there
             if (sceneEditorForm != null)
@@ -433,7 +434,7 @@ namespace FF7Scarlet
             if (syncInternal)
             {
                 //make another copy of the attack to keep separate from unsaved data
-                var newAtkInner = new Attack(attack.ID, attack.Name, attack.GetRawData());
+                var newAtkInner = DataParser.CopyAttack(attack);
                 int count = 0;
                 foreach (var s in sceneList)
                 {

@@ -1,9 +1,8 @@
 ﻿using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
-using Shojy.FF7.Elena;
-using System.IO;
+using Shojy.FF7.Elena.Attacks;
+using Shojy.FF7.Elena.Characters;
 using System.Security.Cryptography;
-using System.Xml.Linq;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -51,9 +50,9 @@ namespace FF7Scarlet.ExeEditor
         public string FilePath { get; private set; } = string.Empty;
         public Language Language { get; private set; }
         public Attack[] Limits { get; } = new Attack[NUM_LIMITS];
-        public FFText[] LimitSuccess { get; } = new FFText[Character.PLAYABLE_CHARACTER_COUNT - 1];
-        public FFText[] LimitFail { get; } = new FFText[Character.PLAYABLE_CHARACTER_COUNT - 1];
-        public FFText[] LimitWrong { get; } = new FFText[Character.PLAYABLE_CHARACTER_COUNT];
+        public FFText[] LimitSuccess { get; } = new FFText[Kernel.PLAYABLE_CHARACTER_COUNT - 1];
+        public FFText[] LimitFail { get; } = new FFText[Kernel.PLAYABLE_CHARACTER_COUNT - 1];
+        public FFText[] LimitWrong { get; } = new FFText[Kernel.PLAYABLE_CHARACTER_COUNT];
         public FFText[] MainMenuTexts { get; } = new FFText[NUM_MENU_TEXTS];
         public FFText[] ConfigMenuTexts { get; } = new FFText[NUM_CONFIG_TEXTS];
         public FFText[] StatusEffects { get; } = new FFText[NUM_STATUS_EFFECTS];
@@ -64,10 +63,10 @@ namespace FF7Scarlet.ExeEditor
         public FFText[] ShopText { get; } = new FFText[NUM_SHOP_TEXTS];
         public ShopInventory[] Shops { get; } = new ShopInventory[NUM_SHOPS];
         public byte APPriceMultiplier { get; set; }
-        public uint[] ItemPrices { get; } = new uint[InventoryItem.ITEM_COUNT];
-        public uint[] WeaponPrices { get; } = new uint[InventoryItem.WEAPON_COUNT];
-        public uint[] ArmorPrices { get; } = new uint[InventoryItem.ARMOR_COUNT];
-        public uint[] AccessoryPrices { get; } = new uint[InventoryItem.ACCESSORY_COUNT];
+        public uint[] ItemPrices { get; } = new uint[DataParser.ITEM_COUNT];
+        public uint[] WeaponPrices { get; } = new uint[DataParser.WEAPON_COUNT];
+        public uint[] ArmorPrices { get; } = new uint[DataParser.ARMOR_COUNT];
+        public uint[] AccessoryPrices { get; } = new uint[DataParser.ACCESSORY_COUNT];
         public uint[] MateriaPrices { get; } = new uint[Kernel.MATERIA_COUNT];
         public bool IsUnedited { get; private set; }
 
@@ -454,32 +453,31 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(LIMIT_BREAK_POS + GetLimitOffset(), SeekOrigin.Begin);
                         for (i = 0; i < NUM_LIMITS; ++i)
                         {
-                            Limits[i] = new Attack((ushort)i, new FFText($"(Limit #{i})"),
-                                reader.ReadBytes(Attack.BLOCK_SIZE));
+                            DataParser.ReadAttack((ushort)i, $"(Limit #{i})", reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
                         }
 
                         //get L4 limit text
                         stream.Seek(LIMIT_TEXT_POS + GetLimitTextOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT - 1; ++i)
+                        for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT - 1; ++i)
                         {
                             LimitSuccess[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
                             LimitFail[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
                             LimitWrong[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
                         }
-                        LimitWrong[Character.PLAYABLE_CHARACTER_COUNT - 1] =
+                        LimitWrong[Kernel.PLAYABLE_CHARACTER_COUNT - 1] =
                             new FFText(reader.ReadBytes(GetLimitTextLength()));
 
                         //get character names
                         stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
                         for (i = 0; i < NUM_NAMES; ++i)
                         {
-                            CharacterNames[i] = new FFText(reader.ReadBytes(Character.NAME_LENGTH));
+                            CharacterNames[i] = new FFText(reader.ReadBytes(DataParser.CHARACTER_NAME_LENGTH));
                         }
 
                         //get Cait Sith + Vincent data
                         stream.Seek(CAIT_SITH_DATA_POS + GetCaitOffset(), SeekOrigin.Begin);
-                        CaitSith = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
-                        Vincent = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
+                        CaitSith = DataParser.ReadCharacter(reader.ReadBytes(DataParser.CHARACTER_RECORD_LENGTH));
+                        Vincent = DataParser.ReadCharacter(reader.ReadBytes(DataParser.CHARACTER_RECORD_LENGTH));
 
                         //get shop names
                         stream.Seek(SHOP_NAME_POS + GetShopNameOffset(), SeekOrigin.Begin);
@@ -583,14 +581,14 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(LIMIT_BREAK_POS + GetLimitOffset(), SeekOrigin.Begin);
                         foreach (var l in Limits)
                         {
-                            writer.Write(l.GetRawData());
+                            writer.Write(DataParser.GetAttackBytes(l));
                         }
 
                         //write L4 limit text
                         stream.Seek(LIMIT_TEXT_POS + GetLimitTextOffset(), SeekOrigin.Begin);
-                        for (int i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
+                        for (int i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
                         {
-                            if (i < Character.PLAYABLE_CHARACTER_COUNT - 1)
+                            if (i < Kernel.PLAYABLE_CHARACTER_COUNT - 1)
                             {
                                 writer.Write(LimitSuccess[i].GetBytes(GetLimitTextLength()));
                                 writer.Write(LimitFail[i].GetBytes(GetLimitTextLength()));
@@ -602,15 +600,15 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
                         foreach (var n in CharacterNames)
                         {
-                            writer.Write(n.GetBytes(Character.NAME_LENGTH));
+                            writer.Write(n.GetBytes(DataParser.CHARACTER_NAME_LENGTH));
                         }
 
                         //write Cait Sith/Vincent data
                         if (CaitSith != null && Vincent != null)
                         {
                             stream.Seek(CAIT_SITH_DATA_POS + GetCaitOffset(), SeekOrigin.Begin);
-                            writer.Write(CaitSith.GetRawData());
-                            writer.Write(Vincent.GetRawData());
+                            writer.Write(DataParser.GetCharacterInitialDataBytes(CaitSith));
+                            writer.Write(DataParser.GetCharacterInitialDataBytes(Vincent));
                         }
 
                         //write shop names
@@ -686,12 +684,12 @@ namespace FF7Scarlet.ExeEditor
                     //read character names
                     for (i = 0; i < NUM_NAMES; ++i)
                     {
-                        CharacterNames[i] = new FFText(reader.ReadBytes(Character.NAME_LENGTH));
+                        CharacterNames[i] = new FFText(reader.ReadBytes(DataParser.CHARACTER_NAME_LENGTH));
                     }
 
                     //read character data
-                    CaitSith = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
-                    Vincent = new Character(reader.ReadBytes(Character.CHARACTER_DATA_LENGTH));
+                    CaitSith = DataParser.ReadCharacter(reader.ReadBytes(DataParser.CHARACTER_RECORD_LENGTH));
+                    Vincent = DataParser.ReadCharacter(reader.ReadBytes(DataParser.CHARACTER_RECORD_LENGTH));
 
                     //read item prices
                     APPriceMultiplier = reader.ReadByte();
@@ -725,8 +723,7 @@ namespace FF7Scarlet.ExeEditor
                     //read limits
                     for (i = 0; i < NUM_LIMITS; ++i)
                     {
-                        Limits[i] = new Attack((ushort)i, new FFText($"(Limit #{i})"),
-                            reader.ReadBytes(Attack.BLOCK_SIZE));
+                        DataParser.ReadAttack((ushort)i, $"(Limit #{i})", reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
                     }
 
                     //read main menu text
@@ -766,7 +763,7 @@ namespace FF7Scarlet.ExeEditor
                     }
 
                     //read L4 success text
-                    for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT - 1; ++i)
+                    for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT - 1; ++i)
                     {
                         LimitSuccess[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetLimitTextLength());
@@ -774,7 +771,7 @@ namespace FF7Scarlet.ExeEditor
                     }
 
                     //read L4 fail text
-                    for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT - 1; ++i)
+                    for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT - 1; ++i)
                     {
                         LimitFail[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetLimitTextLength());
@@ -782,7 +779,7 @@ namespace FF7Scarlet.ExeEditor
                     }
 
                     //read L4 wrong text
-                    for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
+                    for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
                     {
                         LimitWrong[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetLimitTextLength());
@@ -811,12 +808,12 @@ namespace FF7Scarlet.ExeEditor
             //write character names
             foreach (var n in CharacterNames)
             {
-                output.AddRange(n.GetBytes(Character.NAME_LENGTH));
+                output.AddRange(n.GetBytes(DataParser.CHARACTER_NAME_LENGTH));
             }
 
             //write character data
-            output.AddRange(CaitSith.GetRawData());
-            output.AddRange(Vincent.GetRawData());
+            output.AddRange(DataParser.GetCharacterInitialDataBytes(CaitSith));
+            output.AddRange(DataParser.GetCharacterInitialDataBytes(Vincent));
 
             //write item prices
             output.Add(APPriceMultiplier);
@@ -850,7 +847,7 @@ namespace FF7Scarlet.ExeEditor
             //write limits
             foreach (var l in Limits)
             {
-                output.AddRange(l.GetRawData());
+                output.AddRange(DataParser.GetAttackBytes(l));
             }
 
             //write main menu text
@@ -1052,14 +1049,14 @@ namespace FF7Scarlet.ExeEditor
                         //compare limits
                         for (i = 0; i < NUM_LIMITS; ++i)
                         {
-                            if (Limits[i].HasDifferences(original.Limits[i]))
+                            if (!DataParser.AttacksAreIdentical(Limits[i], original.Limits[i]))
                             {
-                                var temp1 = Limits[i].GetRawData();
-                                var temp2 = original.Limits[i].GetRawData();
+                                byte[] temp1 = DataParser.GetAttackBytes(Limits[i]),
+                                    temp2 = DataParser.GetAttackBytes(original.Limits[i]);
                                 diff = false;
 
                                 writer.WriteLine($"# {original.Limits[i].Name}");
-                                for (i = 0; i < Attack.BLOCK_SIZE; ++i)
+                                for (i = 0; i < DataParser.ATTACK_BLOCK_SIZE; ++i)
                                 {
                                     if (temp1[i] != temp2[i])
                                     {
@@ -1086,10 +1083,10 @@ namespace FF7Scarlet.ExeEditor
 
                         //compare limit text
                         j = 0;
-                        for (i = 0; i < Character.PLAYABLE_CHARACTER_COUNT; ++i)
+                        for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
                         {
                             string text1, text2;
-                            if (i < Character.PLAYABLE_CHARACTER_COUNT - 1)
+                            if (i < Kernel.PLAYABLE_CHARACTER_COUNT - 1)
                             {
                                 //limit success
                                 text1 = LimitSuccess[i].ToString();
@@ -1161,7 +1158,7 @@ namespace FF7Scarlet.ExeEditor
                                 checker = true;
                                 writer.WriteLine($"# {name2} -> {name1}");
                                 var temp = CharacterNames[i].GetBytes();
-                                pos = NAME_DATA_POS + HEXT_OFFSET_2 + (Character.NAME_LENGTH * i);
+                                pos = NAME_DATA_POS + HEXT_OFFSET_2 + (DataParser.CHARACTER_NAME_LENGTH * i);
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var x in temp)
                                 {
@@ -1179,14 +1176,14 @@ namespace FF7Scarlet.ExeEditor
                         //compare Cait Sith's data
                         if (CaitSith != null && original.CaitSith != null)
                         {
-                            if (CaitSith.HasDifferences(original.CaitSith))
+                            if (!DataParser.CharacterDataIsIdentical(CaitSith, original.CaitSith))
                             {
-                                var temp1 = CaitSith.GetRawData();
-                                var temp2 = original.CaitSith.GetRawData();
+                                byte[] temp1 = DataParser.GetCharacterInitialDataBytes(CaitSith),
+                                    temp2 = DataParser.GetCharacterInitialDataBytes(original.CaitSith);
                                 diff = false;
 
                                 writer.WriteLine("# Cait Sith's initial data");
-                                for (i = 0; i < Character.CHARACTER_DATA_LENGTH; ++i)
+                                for (i = 0; i < DataParser.CHARACTER_RECORD_LENGTH; ++i)
                                 {
                                     if (temp1[i] != temp2[i])
                                     {
@@ -1214,20 +1211,20 @@ namespace FF7Scarlet.ExeEditor
                         //compare Vincent's data
                         if (Vincent != null && original.Vincent != null)
                         {
-                            if (Vincent.HasDifferences(original.Vincent))
+                            if (!DataParser.CharacterDataIsIdentical(Vincent, original.Vincent))
                             {
-                                var temp1 = Vincent.GetRawData();
-                                var temp2 = original.Vincent.GetRawData();
+                                byte[] temp1 = DataParser.GetCharacterInitialDataBytes(Vincent),
+                                    temp2 = DataParser.GetCharacterInitialDataBytes(original.Vincent);
                                 diff = false;
 
                                 writer.WriteLine("# Vincent's initial data");
-                                for (i = 0; i < Character.CHARACTER_DATA_LENGTH; ++i)
+                                for (i = 0; i < DataParser.CHARACTER_RECORD_LENGTH; ++i)
                                 {
                                     if (temp1[i] != temp2[i])
                                     {
                                         if (!diff)
                                         {
-                                            pos = CAIT_SITH_DATA_POS + HEXT_OFFSET_2 + Character.CHARACTER_DATA_LENGTH + i;
+                                            pos = CAIT_SITH_DATA_POS + HEXT_OFFSET_2 + DataParser.CHARACTER_RECORD_LENGTH + i;
                                             writer.Write($"{pos:X2} = ");
                                             diff = true;
                                         }
@@ -1337,7 +1334,7 @@ namespace FF7Scarlet.ExeEditor
                             }
 
                             //compare item prices
-                            for (i = 0; i < InventoryItem.ITEM_COUNT; ++i)
+                            for (i = 0; i < DataParser.ITEM_COUNT; ++i)
                             {
                                 if (ItemPrices[i] != original.ItemPrices[i])
                                 {
@@ -1354,12 +1351,12 @@ namespace FF7Scarlet.ExeEditor
                             }
 
                             //compare weapon prices
-                            for (i = 0; i < InventoryItem.WEAPON_COUNT; ++i)
+                            for (i = 0; i < DataParser.WEAPON_COUNT; ++i)
                             {
                                 if (WeaponPrices[i] != original.WeaponPrices[i])
                                 {
                                     writer.WriteLine($"# {DataManager.Kernel.WeaponData.Weapons[i].Name} price");
-                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (InventoryItem.WEAPON_START * 4) + (i * 4);
+                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.WEAPON_START * 4) + (i * 4);
                                     writer.Write($"{pos:X2} = ");
                                     foreach (var b in BitConverter.GetBytes(WeaponPrices[i]))
                                     {
@@ -1371,12 +1368,12 @@ namespace FF7Scarlet.ExeEditor
                             }
 
                             //compare armor prices
-                            for (i = 0; i < InventoryItem.ARMOR_COUNT; ++i)
+                            for (i = 0; i < DataParser.ARMOR_COUNT; ++i)
                             {
                                 if (ArmorPrices[i] != original.ArmorPrices[i])
                                 {
                                     writer.WriteLine($"# {DataManager.Kernel.ArmorData.Armors[i].Name} price");
-                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (InventoryItem.ARMOR_START * 4) + (i * 4);
+                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.ARMOR_START * 4) + (i * 4);
                                     writer.Write($"{pos:X2} = ");
                                     foreach (var b in BitConverter.GetBytes(ArmorPrices[i]))
                                     {
@@ -1388,12 +1385,12 @@ namespace FF7Scarlet.ExeEditor
                             }
 
                             //compare accessory prices
-                            for (i = 0; i < InventoryItem.ACCESSORY_COUNT; ++i)
+                            for (i = 0; i < DataParser.ACCESSORY_COUNT; ++i)
                             {
                                 if (AccessoryPrices[i] != original.AccessoryPrices[i])
                                 {
                                     writer.WriteLine($"# {DataManager.Kernel.AccessoryData.Accessories[i].Name} price");
-                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (InventoryItem.ACCESSORY_START * 4) + (i * 4);
+                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.ACCESSORY_START * 4) + (i * 4);
                                     writer.Write($"{pos:X2} = ");
                                     foreach (var b in BitConverter.GetBytes(AccessoryPrices[i]))
                                     {
@@ -1405,11 +1402,11 @@ namespace FF7Scarlet.ExeEditor
                             }
 
                             //compare materia prices
-                            for (i = 0; i < DataManager.Kernel.MateriaExt.Length; ++i)
+                            for (i = 0; i < DataManager.Kernel.MateriaData.Materias.Length; ++i)
                             {
                                 if (MateriaPrices[i] != original.MateriaPrices[i])
                                 {
-                                    writer.WriteLine($"# {DataManager.Kernel.MateriaExt[i].Name} price");
+                                    writer.WriteLine($"# {DataManager.Kernel.MateriaData.Materias[i].Name} price");
                                     pos = MATERIA_PRICE_DATA_POS + HEXT_OFFSET_2 + (i * 4);
                                     writer.Write($"{pos:X2} = ");
                                     foreach (var b in BitConverter.GetBytes(MateriaPrices[i]))

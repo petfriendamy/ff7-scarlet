@@ -1,4 +1,5 @@
-﻿using Shojy.FF7.Elena.Sections;
+﻿using Shojy.FF7.Elena.Inventory;
+using Shojy.FF7.Elena.Sections;
 
 namespace FF7Scarlet.Shared
 {

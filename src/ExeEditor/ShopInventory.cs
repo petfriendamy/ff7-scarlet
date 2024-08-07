@@ -1,4 +1,5 @@
 ﻿using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Inventory;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -50,11 +51,13 @@ namespace FF7Scarlet.ExeEditor
                     InventoryItem? temp = null;
                     if (type == 1) //materia
                     {
-                        temp = new InventoryItem((byte)index, ItemType.Materia);
+                        temp = new InventoryItem();
+                        DataParser.SetItem(temp, ItemType.Materia, (byte)index);
                     }
                     else //other item
                     {
-                        temp = new InventoryItem(index);
+                        temp = new InventoryItem();
+                        temp.Item = index;
                     }
                     Inventory[i] = temp;
                 }
@@ -91,15 +94,19 @@ namespace FF7Scarlet.ExeEditor
                             writer.Write(0);
                             writer.Write(0);
                         }
-                        else if (item.Type == ItemType.Materia)
-                        {
-                            writer.Write(1);
-                            writer.Write((int)item.Index);
-                        }
                         else
                         {
-                            writer.Write(0);
-                            writer.Write((int)InventoryItem.GetCombinedIndex(item.Type, item.Index));
+                            var type = DataParser.GetItemType(item.Item);
+                            if (type == ItemType.Materia)
+                            {
+                                writer.Write(1);
+                                writer.Write((int)item.Item);
+                            }
+                            else
+                            {
+                                writer.Write(0);
+                                writer.Write((int)item.Item);
+                            }
                         }
                     }
                     else

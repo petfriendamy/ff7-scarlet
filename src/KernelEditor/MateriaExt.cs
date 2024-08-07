@@ -1,5 +1,4 @@
-﻿using Shojy.FF7.Elena.Battle;
-using Shojy.FF7.Elena.Materias;
+﻿using Shojy.FF7.Elena.Materias;
 using System.Collections.ObjectModel;
 
 namespace FF7Scarlet.KernelEditor
@@ -110,9 +109,7 @@ namespace FF7Scarlet.KernelEditor
         }.AsReadOnly();
 
         public const int ATTRIBUTE_COUNT = 6, MAX_AP = HexParser.NULL_OFFSET_16_BIT * 100;
-        public new MateriaType MateriaType { get; private set; }
-        public byte MateriaTypeByte { get; private set; }
-        public byte[] Attributes { get; }
+        /*public MateriaType MateriaType { get; private set; }
 
 
         public byte BaseType
@@ -160,7 +157,6 @@ namespace FF7Scarlet.KernelEditor
 
         public MateriaExt(byte[] data)
         {
-            Attributes = new byte[ATTRIBUTE_COUNT];
             int i;
 
             using (var ms = new MemoryStream(data))
@@ -186,27 +182,27 @@ namespace FF7Scarlet.KernelEditor
                     Attributes[i] = reader.ReadByte();
                 }
             }
-        }
+        }*/
 
-        public int GetMaxLevel()
+        public static byte GetBaseType(Materia mat)
         {
-            int level = 1;
-            if (Level2AP < MAX_AP) { level++; }
-            if (Level3AP < MAX_AP) { level++; }
-            if (Level4AP < MAX_AP) { level++; }
-            if (Level5AP < MAX_AP) { level++; }
-            return level;
+            return HexParser.GetLowerNybble(mat.MateriaTypeByte);
         }
 
-        public int GetSubtypeIndex()
+        public static byte GetSubtype(Materia mat)
+        {
+            return HexParser.GetUpperNybble(mat.MateriaTypeByte);
+        }
+
+        public static int GetSubtypeIndex(Materia mat)
         {
             var independentTypes = Enum.GetValues<IndependentMateriaTypes>().ToList();
             var commandTypes = COMMAND_TYPES.Keys.ToList();
 
-            switch ((MateriaByteValues)MateriaTypeByte)
+            switch ((MateriaByteValues)mat.MateriaTypeByte)
             {
                 case MateriaByteValues.IndependentFunction:
-                    return independentTypes.IndexOf((IndependentMateriaTypes)Attributes[0]);
+                    return independentTypes.IndexOf((IndependentMateriaTypes)mat.Attributes[0]);
 
                 case MateriaByteValues.IndependentStatBoost1:
                 case MateriaByteValues.IndependentPreEmptive:
@@ -232,7 +228,7 @@ namespace FF7Scarlet.KernelEditor
                     return commandTypes.IndexOf(CommandMateriaTypes.EnemySkill);
 
                 case MateriaByteValues.CommandDouble:
-                    return commandTypes.IndexOf((CommandMateriaTypes)Attributes[0]);
+                    return commandTypes.IndexOf((CommandMateriaTypes)mat.Attributes[0]);
 
                 case MateriaByteValues.MasterCommand:
                     return commandTypes.IndexOf(CommandMateriaTypes.Master);
@@ -251,181 +247,216 @@ namespace FF7Scarlet.KernelEditor
             return -1;
         }
 
-        public void SetMateriaType(MateriaType type)
+        public static bool MateriaIsMaster(Materia mat)
         {
-            if (type != MateriaType)
+            var type = (MateriaByteValues)mat.MateriaTypeByte;
+            return (type == MateriaByteValues.MasterMagic || type == MateriaByteValues.MasterSummon
+                || type == MateriaByteValues.MasterCommand);
+        }
+
+        public static bool MateriaHasEditableAttribules(Materia mat)
+        {
+            var type = GetMateriaType(mat.MateriaTypeByte);
+            var baseType = GetBaseType(mat);
+            var subtype = GetSubtype(mat);
+            bool isMaster = MateriaIsMaster(mat);
+
+            if (isMaster) { return false; }
+            else if (type == MateriaType.Command)
+            {
+                if (baseType != 2 && baseType != 6) { return false; }
+            }
+            else if (type == MateriaType.Independent)
+            {
+                if (mat.MateriaTypeByte == 0 || subtype == 3) { return false; }
+            }
+            return true;
+        }
+
+        public static int GetMaxLevel(Materia mat)
+        {
+            int level = 1;
+            if (mat.Level2AP < MAX_AP) { level++; }
+            if (mat.Level3AP < MAX_AP) { level++; }
+            if (mat.Level4AP < MAX_AP) { level++; }
+            if (mat.Level5AP < MAX_AP) { level++; }
+            return level;
+        }
+
+        public static void SetMateriaType(Materia mat, MateriaType type)
+        {
+            if (type != GetMateriaType(mat.MateriaTypeByte))
             {
                 //reset all attributes to defaults
-                MateriaType = type;
                 for (byte i = 0; i < ATTRIBUTE_COUNT; ++i)
                 {
                     if (type == MateriaType.Summon && i > 0) //always 1-5
                     {
-                        Attributes[i] = i;
+                        mat.Attributes[i] = i;
                     }
                     else
                     {
-                        Attributes[i] = 0xFF;
+                        mat.Attributes[i] = 0xFF;
                     }
                 }
 
                 switch (type)
                 {
                     case MateriaType.Independent:
-                        MateriaTypeByte = (byte)MateriaByteValues.IndependentStatBoost1;
+                        mat.MateriaTypeByte = (byte)MateriaByteValues.IndependentStatBoost1;
                         break;
                     case MateriaType.Support:
-                        MateriaTypeByte = (byte)MateriaByteValues.Support1;
+                        mat.MateriaTypeByte = (byte)MateriaByteValues.Support1;
                         break;
                     case MateriaType.Magic:
-                        MateriaTypeByte = (byte)MateriaByteValues.Magic;
+                        mat.MateriaTypeByte = (byte)MateriaByteValues.Magic;
                         break;
                     case MateriaType.Summon:
-                        MateriaTypeByte = (byte)MateriaByteValues.Summon;
+                        mat.MateriaTypeByte = (byte)MateriaByteValues.Summon;
                         break;
                     case MateriaType.Command:
-                        MateriaTypeByte = (byte)MateriaByteValues.CommandAdd;
+                        mat.MateriaTypeByte = (byte)MateriaByteValues.CommandAdd;
                         break;
                 }
             }
             
         }
 
-        public void SetMateriaSubtype(MateriaStats stats)
+        public static void SetMateriaSubtype(Materia mat, MateriaStats stats)
         {
-            SetMateriaType(MateriaType.Independent);
-            MateriaTypeByte = (byte)MateriaByteValues.IndependentStatBoost1;
-            Attributes[0] = (byte)stats;
+            SetMateriaType(mat, MateriaType.Independent);
+            mat.MateriaTypeByte = (byte)MateriaByteValues.IndependentStatBoost1;
+            mat.Attributes[0] = (byte)stats;
         }
 
-        public void SetMateriaSubtype(MateriaSpecialStats stats)
+        public static void SetMateriaSubtype(Materia mat, MateriaSpecialStats stats)
         {
-            SetMateriaType(MateriaType.Independent);
+            SetMateriaType(mat, MateriaType.Independent);
             switch (stats)
             {
                 case MateriaSpecialStats.PreEmptiveChance:
-                    MateriaTypeByte = (byte)MateriaByteValues.IndependentPreEmptive;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.IndependentPreEmptive;
                     break;
 
                 case MateriaSpecialStats.EXPEarned:
-                    MateriaTypeByte = (byte)MateriaByteValues.IndependentEXPPlus;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.IndependentEXPPlus;
                     break;
 
                 default:
-                    MateriaTypeByte = (byte)MateriaByteValues.IndependentStatBoost2;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.IndependentStatBoost2;
                     break;
             }
-            Attributes[0] = (byte)stats;
+            mat.Attributes[0] = (byte)stats;
         }
 
-        public void SetMateriaSubtype(SupportMateriaTypes type)
+        public static void SetMateriaSubtype(Materia mat, SupportMateriaTypes type)
         {
-            SetMateriaType(MateriaType.Support);
+            SetMateriaType(mat, MateriaType.Support);
             if (type == SupportMateriaTypes.All || type == SupportMateriaTypes.FinalAttack ||
                 type == SupportMateriaTypes.QuadraMagic)
             {
-                MateriaTypeByte = (byte)MateriaByteValues.Support2;
+                mat.MateriaTypeByte = (byte)MateriaByteValues.Support2;
             }
             else
             {
-                MateriaTypeByte = (byte)MateriaByteValues.Support1;
+                mat.MateriaTypeByte = (byte)MateriaByteValues.Support1;
             }
-            Attributes[0] = (byte)type;
+            mat.Attributes[0] = (byte)type;
         }
 
-        public void SetMateriaSubtype(CommandMateriaTypes type)
+        public static void SetMateriaSubtype(Materia mat, CommandMateriaTypes type)
         {
-            MateriaType = MateriaType.Command;
+            SetMateriaType(mat, MateriaType.Command);
             int i;
             for (i = 0; i < ATTRIBUTE_COUNT; ++i) //clear all attributes
             {
-                Attributes[i] = 0xFF;
+                mat.Attributes[i] = 0xFF;
             }
 
             switch (type)
             {
                 case CommandMateriaTypes.AddCommand:
-                    MateriaTypeByte = (byte)MateriaByteValues.CommandAdd;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.CommandAdd;
                     break;
 
                 case CommandMateriaTypes.ReplaceAttack:
-                    MateriaTypeByte = (byte)MateriaByteValues.CommandReplaceAttack;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.CommandReplaceAttack;
                     break;
 
                 case CommandMateriaTypes.EnemySkill:
-                    MateriaTypeByte = (byte)MateriaByteValues.CommandEnemySkill;
-                    Attributes[0] = (byte)CommandMateriaTypes.EnemySkill;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.CommandEnemySkill;
+                    mat.Attributes[0] = (byte)CommandMateriaTypes.EnemySkill;
                     break;
 
                 case CommandMateriaTypes.WMagic:
                 case CommandMateriaTypes.WSummon:
                 case CommandMateriaTypes.WItem:
-                    MateriaTypeByte = (byte)MateriaByteValues.CommandDouble;
-                    Attributes[0] = (byte)type;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.CommandDouble;
+                    mat.Attributes[0] = (byte)type;
                     break;
 
                 case CommandMateriaTypes.Master:
-                    SetMaster(true);
+                    SetMaster(mat, true);
                     break;
             }
         }
 
-        public void SetMateriaSubtype(IndependentMateriaTypes type)
+        public static void SetMateriaSubtype(Materia mat, IndependentMateriaTypes type)
         {
-            MateriaType = MateriaType.Independent;
-            Attributes[0] = (byte)type;
+            SetMateriaType(mat, MateriaType.Independent);
+            mat.Attributes[0] = (byte)type;
             byte i;
 
             if (type != IndependentMateriaTypes.StatBonus && type != IndependentMateriaTypes.MegaAll)
             {
                 for (i = 1; i < ATTRIBUTE_COUNT; ++i) //clear all attributes
                 {
-                    Attributes[i] = 0xFF;
+                    mat.Attributes[i] = 0xFF;
                 }
             }
 
             switch (type)
             {
                 case IndependentMateriaTypes.StatBonus:
-                    SetMateriaSubtype((MateriaStats)0xFF);
+                    SetMateriaSubtype(mat, (MateriaStats)0xFF);
                     break;
 
                 case IndependentMateriaTypes.Underwater:
                 case IndependentMateriaTypes.HPtoMP:
-                    MateriaTypeByte = (byte)MateriaByteValues.IndependentFunction;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.IndependentFunction;
                     break;
 
                 case IndependentMateriaTypes.LongRange:
-                    MateriaTypeByte = (byte)MateriaByteValues.IndependentLongRange;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.IndependentLongRange;
                     break;
 
                 case IndependentMateriaTypes.MegaAll:
-                    MateriaTypeByte = (byte)MateriaByteValues.IndependentMegaAll;
+                    mat.MateriaTypeByte = (byte)MateriaByteValues.IndependentMegaAll;
                     for (i = 1; i < ATTRIBUTE_COUNT; ++i) //1-5
                     {
-                        Attributes[i] = i;
+                        mat.Attributes[i] = i;
                     }
                     break;
             }
         }
 
-        public void SetMaster(bool isMaster)
+        public static void SetMaster(Materia mat, bool isMaster)
         {
-            switch (MateriaType)
+            switch (GetMateriaType(mat.MateriaTypeByte))
             {
                 case MateriaType.Command:
-                    if (isMaster) { MateriaTypeByte = (byte)MateriaByteValues.MasterCommand; }
+                    if (isMaster) { mat.MateriaTypeByte = (byte)MateriaByteValues.MasterCommand; }
                     else { throw new ArgumentException("Unclear command type."); }
                     break;
 
                 case MateriaType.Magic:
-                    if (isMaster) { MateriaTypeByte = (byte)MateriaByteValues.MasterMagic; }
-                    else { MateriaTypeByte = (byte)MateriaByteValues.Magic; }
+                    if (isMaster) { mat.MateriaTypeByte = (byte)MateriaByteValues.MasterMagic; }
+                    else { mat.MateriaTypeByte = (byte)MateriaByteValues.Magic; }
                     break;
 
                 case MateriaType.Summon:
-                    if (isMaster) { MateriaTypeByte = (byte)MateriaByteValues.MasterSummon; }
-                    else { MateriaTypeByte = (byte)MateriaByteValues.Summon; }
+                    if (isMaster) { mat.MateriaTypeByte = (byte)MateriaByteValues.MasterSummon; }
+                    else { mat.MateriaTypeByte = (byte)MateriaByteValues.Summon; }
                     break;
 
                 default:

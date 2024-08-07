@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FF7Scarlet.Shared
 {
-    public enum StatusChangeType
+    /*public enum StatusChangeType
     {
         None, Inflict, Cure, Swap
     }
@@ -54,5 +54,5 @@ namespace FF7Scarlet.Shared
                     return 0xFF;
             }
         }
-    }
+    }*/
 }

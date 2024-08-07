@@ -3,7 +3,7 @@ using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.KernelEditor
 {
-    public class BattleAndGrowthData
+    /*public class BattleAndGrowthData
     {
         public const int AI_BLOCK_SIZE = 2024, AI_BLOCK_COUNT = 12,
             RNG_TABLE_SIZE = 256, LOOKUP_TABLE_SIZE = 64,
@@ -393,5 +393,5 @@ namespace FF7Scarlet.KernelEditor
                 sceneLookupTable[i] = table[i];
             }
         }
-    }
+    }*/
 }

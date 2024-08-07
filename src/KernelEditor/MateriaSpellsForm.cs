@@ -6,28 +6,29 @@ namespace FF7Scarlet.KernelEditor
     {
         public bool UnsavedChanges { get; private set; }
         private ComboBox[] comboBoxes;
-        private MateriaExt materia;
+        private Materia materia;
         private int offset = 0;
         private bool loading;
 
-        public MateriaSpellsForm(MateriaExt materia, string[] names)
+        public MateriaSpellsForm(Materia materia, string[] names)
         {
             InitializeComponent();
 
-            comboBoxes = new ComboBox[]
-            {
+            comboBoxes =
+            [
                 comboBoxLevel1, comboBoxLevel2, comboBoxLevel3, comboBoxLevel4, comboBoxLevel5
-            };
+            ];
 
             this.materia = materia;
 
             //get name offsets
             int start = 0, end = names.Length;
-            if (materia.MateriaType == MateriaType.Magic)
+            var type = Materia.GetMateriaType(materia.MateriaTypeByte);
+            if (type == MateriaType.Magic)
             {
                 end = Kernel.SUMMON_OFFSET;
             }
-            else if (materia.MateriaType == MateriaType.Summon)
+            else if (type == MateriaType.Summon)
             {
                 start = offset = Kernel.SUMMON_OFFSET;
                 end = Kernel.ESKILL_OFFSET;
@@ -37,7 +38,7 @@ namespace FF7Scarlet.KernelEditor
             loading = true;
             for (int i = 0; i < MateriaExt.ATTRIBUTE_COUNT - 1; ++i)
             {
-                if (i > 0 && materia.MateriaType == MateriaType.Summon)
+                if (i > 0 && type == MateriaType.Summon)
                 {
                     comboBoxes[i].Enabled = false;
                 }
@@ -74,7 +75,8 @@ namespace FF7Scarlet.KernelEditor
             {
                 for (byte i = 0; i < MateriaExt.ATTRIBUTE_COUNT - 1; ++i)
                 {
-                    if (materia.MateriaType == MateriaType.Summon && i > 0)
+                    var type = Materia.GetMateriaType(materia.MateriaTypeByte);
+                    if (type == MateriaType.Summon && i > 0)
                     {
                         materia.Attributes[i] = i;
                     }
