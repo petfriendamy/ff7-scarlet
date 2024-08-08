@@ -179,38 +179,45 @@ namespace FF7Scarlet.Shared
             return atk;
         }
 
-        public static byte[] GetAttackBytes(Attack atk)
+        public static byte[] GetAttackBytes(Attack? atk)
         {
             var data = new byte[ATTACK_BLOCK_SIZE];
-            using (var ms = new MemoryStream(data))
-            using (var writer = new BinaryWriter(ms))
+            if (atk == null)
             {
-                writer.Write(atk.AccuracyRate);
-                writer.Write(atk.ImpactEffectID);
-                writer.Write(atk.TargetHurtActionIndex);
-                writer.Write((byte)0xFF);
-                writer.Write(atk.MPCost);
-                writer.Write(atk.ImpactSound);
-                writer.Write(atk.CameraMovementIDSingle);
-                writer.Write(atk.CameraMovementIDMulti);
-                writer.Write((byte)atk.TargetFlags);
-                writer.Write(atk.AttackEffectID);
-                writer.Write(atk.DamageCalculationID);
-                writer.Write(atk.AttackStrength);
-                writer.Write((byte)atk.ConditionSubmenu);
-                writer.Write(GetStatusChangeValue(atk.StatusChange));
-                writer.Write(atk.AditionalEffects);
-                writer.Write(atk.AdditionalEffectsModifier);
-                if (atk.StatusChange.Type == StatusChangeType.None)
+                data = HexParser.GetNullBlock(ATTACK_BLOCK_SIZE);
+            }
+            else
+            {
+                using (var ms = new MemoryStream(data))
+                using (var writer = new BinaryWriter(ms))
                 {
-                    writer.Write(HexParser.NULL_OFFSET_32_BIT);
+                    writer.Write(atk.AccuracyRate);
+                    writer.Write(atk.ImpactEffectID);
+                    writer.Write(atk.TargetHurtActionIndex);
+                    writer.Write((byte)0xFF);
+                    writer.Write(atk.MPCost);
+                    writer.Write(atk.ImpactSound);
+                    writer.Write(atk.CameraMovementIDSingle);
+                    writer.Write(atk.CameraMovementIDMulti);
+                    writer.Write((byte)atk.TargetFlags);
+                    writer.Write(atk.AttackEffectID);
+                    writer.Write(atk.DamageCalculationID);
+                    writer.Write(atk.AttackStrength);
+                    writer.Write((byte)atk.ConditionSubmenu);
+                    writer.Write(GetStatusChangeValue(atk.StatusChange));
+                    writer.Write(atk.AditionalEffects);
+                    writer.Write(atk.AdditionalEffectsModifier);
+                    if (atk.StatusChange.Type == StatusChangeType.None)
+                    {
+                        writer.Write(HexParser.NULL_OFFSET_32_BIT);
+                    }
+                    else
+                    {
+                        writer.Write((uint)atk.Statuses);
+                    }
+                    writer.Write((ushort)atk.Elements);
+                    writer.Write((ushort)~atk.SpecialAttackFlags);
                 }
-                else
-                {
-                    writer.Write((uint)atk.Statuses);
-                }
-                writer.Write((ushort)atk.Elements);
-                writer.Write((ushort)~atk.SpecialAttackFlags);
             }
             return data;
         }

@@ -6,6 +6,8 @@ using FF7Scarlet.Shared.Controls;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Inventory;
+using Shojy.FF7.Elena.Materias;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -222,6 +224,10 @@ namespace FF7Scarlet.ExeEditor
                 {
                     c.Enabled = false;
                 }
+                foreach (Control c in tabPageSortOrder.Controls)
+                {
+                    c.Enabled = false;
+                }
             }
 
             //resume combo boxes
@@ -254,7 +260,6 @@ namespace FF7Scarlet.ExeEditor
         //sync controls with EXE data
         private void UpdateFormData()
         {
-            if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
             loading = true;
             int i;
 
@@ -263,6 +268,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxItemPrices.SuspendLayout();
             listBoxMateriaPrices.SuspendLayout();
             comboBoxShopType.SuspendLayout();
+            listBoxSortItemName.SuspendLayout();
 
             //clear items
             int shopType = comboBoxShopType.SelectedIndex;
@@ -275,6 +281,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxMateriaPrices.Items.Clear();
             listBoxShopNames.Items.Clear();
             listBoxShopText.Items.Clear();
+            listBoxSortItemName.Items.Clear();
 
             //set AP price multiplier
             numericMateriaAPPriceMultiplier.Value = editor.APPriceMultiplier;
@@ -303,9 +310,10 @@ namespace FF7Scarlet.ExeEditor
                 listBoxStatusEffects.Items.Add(editor.StatusEffects[i].ToString());
             }
 
-            //set item prices
-            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+            //kernel-synced data
+            if (DataManager.Kernel != null)
             {
+                //set item prices
                 for (i = 0; i < DataParser.ITEM_COUNT; ++i)
                 {
                     var name = DataManager.Kernel.ItemData.Items[i].Name;
@@ -353,6 +361,19 @@ namespace FF7Scarlet.ExeEditor
                     }
                     listBoxMateriaPrices.Items.Add($"{name} - {editor.MateriaPrices[i]}");
                 }
+
+                //sorted items
+                var sortedItems =
+                    from item in editor.ItemsSortedByName
+                    orderby item.Value
+                    select item;
+                foreach (var item in sortedItems)
+                {
+                    listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(item.Key));
+                }
+
+                //materia priority list
+                LoadMateriaPriorityList();
             }
 
             //set shop names
@@ -377,6 +398,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxItemPrices.ResumeLayout();
             listBoxMateriaPrices.ResumeLayout();
             comboBoxShopType.ResumeLayout();
+            listBoxSortItemName.ResumeLayout();
             loading = false;
         }
 
@@ -506,6 +528,37 @@ namespace FF7Scarlet.ExeEditor
                 DataParser.SetItem(mat, DataManager.Kernel.MateriaData.Materias[index - DataParser.MAX_INDEX - 1]);
                 return mat;
             }
+        }
+
+        private int LoadMateriaPriorityList(byte currentMateriaID = 0xFF)
+        {
+            int pos = -1;
+            listBoxMateriaPriority.SuspendLayout();
+            listBoxMateriaPriority.Items.Clear();
+            if (DataManager.Kernel != null)
+            {
+                var sortedMateria =
+                    from mat in editor.MateriaPriority
+                    orderby mat.Value descending
+                    select mat;
+                foreach (var mat in sortedMateria)
+                {
+                    var m = DataManager.Kernel.GetMateriaByID(mat.Key);
+                    if (m != null)
+                    {
+                        string name = m.Name;
+                        if (string.IsNullOrEmpty(name)) { name = $"(Materia ID {mat.Key})"; }
+                        if (mat.Value == 0) { name = "[null] " + name; }
+                        listBoxMateriaPriority.Items.Add(name);
+                    }
+                }
+                if (currentMateriaID < DataParser.MATERIA_COUNT) //find index of materia
+                {
+                    pos = (from mat in sortedMateria select mat.Key).ToList().IndexOf(currentMateriaID);
+                }
+            }
+            listBoxMateriaPriority.ResumeLayout();
+            return pos;
         }
 
         private void SetLimitText()
@@ -1458,6 +1511,185 @@ namespace FF7Scarlet.ExeEditor
                 listBoxShopText.Items[i] = textBoxShopText.Text;
                 SetUnsaved(true);
                 loading = false;
+            }
+        }
+
+        private void listBoxSortItemName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = listBoxSortItemName.SelectedIndex;
+            buttonItemsMoveUp.Enabled = (i > 0 && i < DataParser.MATERIA_START);
+            buttonItemsMoveDown.Enabled = (i >= 0 && i < DataParser.MATERIA_START - 1);
+        }
+
+        private void buttonItemsAutoSort_Click(object sender, EventArgs e)
+        {
+            if (DataManager.Kernel != null)
+            {
+                var sortedItems =
+                    (from item in editor.ItemsSortedByName
+                     let name = DataManager.Kernel.GetInventoryItemName(item.Key)
+                     orderby name.StartsWith("(Item ID"), name
+                     select item).ToArray();
+
+                listBoxSortItemName.SuspendLayout();
+                editor.ItemsSortedByName.Clear();
+                listBoxSortItemName.Items.Clear();
+                for (ushort i = 0; i < sortedItems.Length; ++i)
+                {
+                    editor.ItemsSortedByName.Add(sortedItems[i].Key, i);
+                    listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(sortedItems[i].Key));
+                }
+                listBoxSortItemName.ResumeLayout();
+                buttonItemsMoveUp.Enabled = false;
+                buttonItemsMoveDown.Enabled = false;
+                SetUnsaved(true);
+            }
+        }
+
+        private void buttonItemsMoveUp_Click(object sender, EventArgs e)
+        {
+            int i = listBoxSortItemName.SelectedIndex;
+            if (i > 0 && i < DataParser.MATERIA_START)
+            {
+                //get the actual position of the item
+                var itemList =
+                    (from item in editor.ItemsSortedByName
+                     orderby item.Value
+                     select item.Key).ToArray();
+
+                //swap items in the dictionary
+                ushort curr = editor.ItemsSortedByName[itemList[i]],
+                    prev = editor.ItemsSortedByName[itemList[i - 1]];
+                editor.ItemsSortedByName[itemList[i]] = prev;
+                editor.ItemsSortedByName[itemList[i - 1]] = curr;
+
+                //swap items in the listbox
+                var temp = listBoxSortItemName.Items[i];
+                listBoxSortItemName.Items[i] = listBoxSortItemName.Items[i - 1];
+                listBoxSortItemName.Items[i - 1] = temp;
+                listBoxSortItemName.SelectedIndex = i - 1;
+
+                SetUnsaved(true);
+            }
+        }
+
+        private void buttonItemsMoveDown_Click(object sender, EventArgs e)
+        {
+            int i = listBoxSortItemName.SelectedIndex;
+            if (i >= 0 && i < DataParser.MATERIA_START - 1)
+            {
+                //get the actual position of the item
+                var itemList =
+                    (from item in editor.ItemsSortedByName
+                     orderby item.Value
+                     select item.Key).ToArray();
+
+                //swap items in the dictionary
+                ushort curr = editor.ItemsSortedByName[itemList[i]],
+                    next = editor.ItemsSortedByName[itemList[i + 1]];
+                editor.ItemsSortedByName[itemList[i]] = next;
+                editor.ItemsSortedByName[itemList[i + 1]] = curr;
+
+                //swap items in the listbox
+                var temp = listBoxSortItemName.Items[i];
+                listBoxSortItemName.Items[i] = listBoxSortItemName.Items[i + 1];
+                listBoxSortItemName.Items[i + 1] = temp;
+                listBoxSortItemName.SelectedIndex = i + 1;
+
+                SetUnsaved(true);
+            }
+        }
+
+        private void listBoxMateriaPriority_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = listBoxMateriaPriority.SelectedIndex;
+            buttonMateriaMoveUp.Enabled = (i > 0 && i < DataParser.MATERIA_COUNT);
+            buttonMateriaMoveDown.Enabled = (i >= 0 && i < DataParser.MATERIA_COUNT - 1
+                && editor.MateriaPriority[(byte)i] > 0);
+        }
+
+        private void buttonMateriaMoveUp_Click(object sender, EventArgs e)
+        {
+            int i = listBoxMateriaPriority.SelectedIndex;
+            if (i > 0 && i < DataParser.MATERIA_COUNT)
+            {
+                //get the actual position of the materia
+                var matList =
+                    (from mat in editor.MateriaPriority
+                     orderby mat.Value descending
+                     select mat.Key).ToArray();
+
+                //special handling for 0 priority materia
+                if (editor.MateriaPriority[matList[i]] == 0)
+                {
+                    //increase value of everything else
+                    for (byte j = 0; j < DataParser.MATERIA_COUNT; ++j)
+                    {
+                        if (editor.MateriaPriority[j] > 0)
+                        {
+                            editor.MateriaPriority[j]++;
+                        }
+                    }
+                    editor.MateriaPriority[matList[i]] = 1;
+                    listBoxMateriaPriority.SelectedIndex = LoadMateriaPriorityList(matList[i]);
+                    listBoxMateriaPriority.TopIndex = DataParser.MATERIA_COUNT - 1;
+
+                }
+                else
+                {
+                    //swap items in the dictionary
+                    editor.MateriaPriority[matList[i]]++;
+                    editor.MateriaPriority[matList[i - 1]]--;
+
+                    //swap items in the listbox
+                    var temp = listBoxMateriaPriority.Items[i];
+                    listBoxMateriaPriority.Items[i] = listBoxMateriaPriority.Items[i - 1];
+                    listBoxMateriaPriority.Items[i - 1] = temp;
+                    listBoxMateriaPriority.SelectedIndex = i - 1;
+                }
+                SetUnsaved(true);
+            }
+        }
+
+        private void buttonMateriaMoveDown_Click(object sender, EventArgs e)
+        {
+            int i = listBoxMateriaPriority.SelectedIndex;
+            if (i >= 0 && i < DataParser.MATERIA_COUNT - 1)
+            {
+                //get the actual position of the materia
+                var matList =
+                    (from mat in editor.MateriaPriority
+                     orderby mat.Value descending
+                     select mat.Key).ToArray();
+
+                //special handling for 0 priority materia
+                if (editor.MateriaPriority[matList[i]] == 1)
+                {
+                    //decrease value of everything else
+                    for (byte j = 0; j < DataParser.MATERIA_COUNT; ++j)
+                    {
+                        if (editor.MateriaPriority[j] > 0)
+                        {
+                            editor.MateriaPriority[j]--;
+                        }
+                    }
+                    listBoxMateriaPriority.SelectedIndex = LoadMateriaPriorityList(matList[i]);
+                    listBoxMateriaPriority.TopIndex = DataParser.MATERIA_COUNT - 1;
+
+                }
+                else
+                {
+                    //swap items in the dictionary
+                    editor.MateriaPriority[matList[i]]--;
+                    editor.MateriaPriority[matList[i + 1]]++;
+
+                    //swap items in the listbox
+                    var temp = listBoxMateriaPriority.Items[i];
+                    listBoxMateriaPriority.Items[i] = listBoxMateriaPriority.Items[i + 1];
+                    listBoxMateriaPriority.Items[i + 1] = temp;
+                    listBoxMateriaPriority.SelectedIndex = i + 1;
+                }
+                SetUnsaved(true);
             }
         }
 

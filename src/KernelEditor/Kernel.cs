@@ -577,34 +577,56 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        public string GetInventoryItemName(InventoryItem item)
+        public string GetInventoryItemName(ushort id)
         {
-            byte index = DataParser.GetItemIndex(item.Item);
-            switch (DataParser.GetItemType(item.Item))
+            var type = DataParser.GetItemType(id);
+            byte index = DataParser.GetItemIndex(id);
+            switch (type)
             {
                 case ItemType.Item:
                     var i = GetItemByID(index);
-                    if (i == null) { return $"(Item ID {index})"; }
+                    if (i == null || string.IsNullOrEmpty(i.Name))
+                    {
+                        return $"(Item ID {index})";
+                    }
                     else { return i.Name; }
                 case ItemType.Weapon:
                     var w = GetWeaponByID(index);
-                    if (w == null) { return $"(Weapon ID {index})"; }
+                    if (w == null || string.IsNullOrEmpty(w.Name))
+                    {
+                        return $"(Weapon ID {index})";
+                    }
                     else { return w.Name; }
                 case ItemType.Armor:
                     var ar = GetArmorByID(index);
-                    if (ar == null) { return $"(Armor ID {index})"; }
+                    if (ar == null || string.IsNullOrEmpty(ar.Name))
+                    {
+                        return $"(Armor ID {index})";
+                    }
                     else { return ar.Name; }
                 case ItemType.Accessory:
                     var acc = GetAccessoryByID(index);
-                    if (acc == null) { return $"(Accessory ID {index})"; }
+                    if (acc == null || string.IsNullOrEmpty(acc.Name))
+                    {
+                        return $"(Accessory ID {index})";
+                    }
                     else { return acc.Name; }
                 case ItemType.Materia:
                     var m = GetMateriaByID(index);
-                    if (m == null) { return $"(Materia ID {index})"; }
+                    if (m == null || string.IsNullOrEmpty(m.Name))
+                    {
+                        return $"(Materia ID {index})";
+                    }
+
                     else { return m.Name; }
                 default:
                     return "(none)";
             }
+        }
+
+        public string GetInventoryItemName(InventoryItem item)
+        {
+            return GetInventoryItemName(item.Item);
         }
 
         public ushort GetCameraMovementIDSingle(KernelSection section, int pos)

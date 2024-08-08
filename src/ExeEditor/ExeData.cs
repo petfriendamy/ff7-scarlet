@@ -2,6 +2,8 @@
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
+using Shojy.FF7.Elena.Inventory;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace FF7Scarlet.ExeEditor
@@ -35,9 +37,11 @@ namespace FF7Scarlet.ExeEditor
             AP_MASTER_OFFSET = 0x4F,
             CONFIG_MENU_TEXT_POS = 0x5188A8,
             MAIN_MENU_TEXT_POS = 0x5192C0,
+            MATERIA_PRIORITY_POS = 0x519498,
             STATUS_EFFECT_POS = 0x51D228,
             LIMIT_BREAK_POS = 0x51E0D4,
             LIMIT_TEXT_POS = 0x51FBF0,
+            ITEM_SORT_POS = 0x51FF48,
             NAME_DATA_POS = 0x5206B8,
             CAIT_SITH_DATA_POS = 0x520C10,
             SHOP_NAME_POS = 0x5219C8,
@@ -68,6 +72,8 @@ namespace FF7Scarlet.ExeEditor
         public uint[] ArmorPrices { get; } = new uint[DataParser.ARMOR_COUNT];
         public uint[] AccessoryPrices { get; } = new uint[DataParser.ACCESSORY_COUNT];
         public uint[] MateriaPrices { get; } = new uint[Kernel.MATERIA_COUNT];
+        public Dictionary<ushort, ushort> ItemsSortedByName { get; } = new();
+        public Dictionary<byte, byte> MateriaPriority { get; } = new();
         public bool IsUnedited { get; private set; }
 
 
@@ -424,6 +430,24 @@ namespace FF7Scarlet.ExeEditor
                             throw new FormatException("EXE appears to be invalid.");
                         }
 
+                        //English only stuff (for now)
+                        if (Language == Language.English)
+                        {
+                            //get materia priority values
+                            stream.Seek(MATERIA_PRIORITY_POS, SeekOrigin.Begin);
+                            for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
+                            {
+                                MateriaPriority.Add((byte)i, reader.ReadByte());
+                            }
+
+                            //get item sort values
+                            stream.Seek(ITEM_SORT_POS, SeekOrigin.Begin);
+                            for (i = 0; i < DataParser.MATERIA_START; ++i)
+                            {
+                                ItemsSortedByName.Add((ushort)i, reader.ReadUInt16());
+                            }
+                        }
+
                         //get AP multiplier
                         stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
                         APPriceMultiplier = reader.ReadByte();
@@ -549,6 +573,32 @@ namespace FF7Scarlet.ExeEditor
                     using (var stream = new FileStream(path, FileMode.Open, FileAccess.Write))
                     using (var writer = new BinaryWriter(stream))
                     {
+                        //English-only stuff (for now)
+                        if (Language == Language.English)
+                        {
+                            //write materia priority list
+                            stream.Seek(MATERIA_PRIORITY_POS, SeekOrigin.Begin);
+                            var materiaPositions =
+                                from mat in MateriaPriority
+                                orderby mat.Key
+                                select mat.Value;
+                            foreach (var p in materiaPositions)
+                            {
+                                writer.Write(p);
+                            }
+
+                            //write item sort list
+                            stream.Seek(ITEM_SORT_POS, SeekOrigin.Begin);
+                            var itemPositions =
+                                from item in ItemsSortedByName
+                                orderby item.Key
+                                select item.Value;
+                            foreach (var p in itemPositions)
+                            {
+                                writer.Write(p);
+                            }
+                        }
+
                         //write AP multiplier
                         stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
                         writer.Write(APPriceMultiplier);
@@ -785,6 +835,22 @@ namespace FF7Scarlet.ExeEditor
                             GetLimitTextLength());
                         stream.Seek(LimitWrong[i].ToString().Length + 1, SeekOrigin.Current);
                     }
+
+                    //English-only stuff (for now)
+                    if (Language == Language.English)
+                    {
+                        //read item sort list
+                        for (i = 0; i < DataParser.MATERIA_START; ++i)
+                        {
+                            ItemsSortedByName[(ushort)i] = reader.ReadUInt16();
+                        }
+
+                        //read materia priority list
+                        for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
+                        {
+                            MateriaPriority[(byte)i] = reader.ReadByte();
+                        }
+                    }
                 }
             }
             catch (EndOfStreamException)
@@ -896,6 +962,30 @@ namespace FF7Scarlet.ExeEditor
             foreach (var t in LimitWrong)
             {
                 output.AddRange(t.GetBytesTruncated());
+            }
+
+            //English-only stuff (for now)
+            if (Language == Language.English)
+            {
+                //write item sort list
+                var itemPositions =
+                    from item in ItemsSortedByName
+                    orderby item.Key
+                    select item.Value;
+                foreach (var p in itemPositions)
+                {
+                    output.AddRange(BitConverter.GetBytes(p));
+                }
+
+                //write materia priority list
+                var materiaPositions =
+                    from mat in MateriaPriority
+                    orderby mat.Key
+                    select mat.Value;
+                foreach (var p in materiaPositions)
+                {
+                    output.Add(p);
+                }
             }
 
             return output.ToArray();
@@ -1012,6 +1102,48 @@ namespace FF7Scarlet.ExeEditor
                                     writer.Write($"{x:X2} ");
                                 }
                                 writer.WriteLine();
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
+                        }
+
+                        //compare materia priority list
+                        var p1 =
+                            (from p in MateriaPriority
+                            orderby p.Key
+                            select p.Value).ToArray();
+                        var p2 =
+                            (from p in original.MateriaPriority
+                            orderby p.Key
+                            select p.Value).ToArray();
+                        diff = false;
+                        for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
+                        {
+                            if (p1[i] != p2[i])
+                            {
+                                if (!checker)
+                                {
+                                    writer.WriteLine("# Materia priority");
+                                    checker = true;
+                                }
+                                if (!diff)
+                                {
+                                    pos = MATERIA_PRIORITY_POS + HEXT_OFFSET_2 + i;
+                                    writer.Write($"{pos:X2} = ");
+                                    diff = true;
+                                }
+                                writer.Write($"{p1[i]:X2} ");
+                            }
+                            else
+                            {
+                                if (checker && diff)
+                                {
+                                    writer.WriteLine();
+                                    diff = false;
+                                }
                             }
                         }
                         if (checker)
@@ -1145,6 +1277,52 @@ namespace FF7Scarlet.ExeEditor
                                 writer.WriteLine();
                             }
                             j++;
+                        }
+
+                        //compare materia priority list
+                        var items1 =
+                            (from item in ItemsSortedByName
+                             orderby item.Key
+                             select item.Value).ToArray();
+                        var items2 =
+                            (from item in original.ItemsSortedByName
+                             orderby item.Key
+                             select item.Value).ToArray();
+                        diff = false;
+                        for (i = 0; i < DataParser.MATERIA_START; ++i)
+                        {
+                            if (items1[i] != items2[i])
+                            {
+                                if (!checker)
+                                {
+                                    writer.WriteLine("# Item sort order");
+                                    checker = true;
+                                }
+                                if (!diff)
+                                {
+                                    pos = ITEM_SORT_POS + HEXT_OFFSET_2 + (i * 2);
+                                    writer.Write($"{pos:X2} = ");
+                                    diff = true;
+                                }
+                                var temp = BitConverter.GetBytes(items1[i]);
+                                foreach (var b in temp)
+                                {
+                                    writer.Write($"{b:X2} ");
+                                }
+                            }
+                            else
+                            {
+                                if (checker && diff)
+                                {
+                                    writer.WriteLine();
+                                    diff = false;
+                                }
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
                         }
 
                         //compare names
