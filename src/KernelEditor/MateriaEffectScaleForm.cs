@@ -29,8 +29,8 @@ namespace FF7Scarlet.KernelEditor
 
             //check if should enable PS3 tweaks
             var type = Materia.GetMateriaType(materia.MateriaTypeByte);
-            if (type == MateriaType.Support && materia.Attributes[0] == (byte)SupportMateriaTypes.MorphAsWell &&
-                !DataManager.PS3TweaksEnabled)
+            if (type == MateriaType.Support && (materia.Attributes[0] == (byte)SupportMateriaTypes.MorphAsWell
+                || materia.Attributes[0] == (byte)SupportMateriaTypes.APPlus) && !DataManager.PS3TweaksEnabled)
             {
                 var result = MessageBox.Show("This appears to be a custom materia type! Would you like to enable Postscriptthree Tweaks?",
                                 "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -46,7 +46,7 @@ namespace FF7Scarlet.KernelEditor
             supportTypes = new List<SupportMateriaTypes>();
             foreach (var t in Enum.GetValues<SupportMateriaTypes>())
             {
-                if (t != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
+                if ((t != SupportMateriaTypes.MorphAsWell && t != SupportMateriaTypes.APPlus) || DataManager.PS3TweaksEnabled)
                 {
                     //comboBoxStatAffected.Items.Add(StringParser.AddSpaces(type.ToString()));
                     supportTypes.Add(t);
@@ -99,7 +99,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 foreach (var t in supportTypes)
                 {
-                    if (t != SupportMateriaTypes.MorphAsWell || DataManager.PS3TweaksEnabled)
+                    if ((t != SupportMateriaTypes.MorphAsWell && t != SupportMateriaTypes.APPlus) || DataManager.PS3TweaksEnabled)
                     {
                         comboBoxStatAffected.Items.Add(StringParser.AddSpaces(t.ToString()));
                     }

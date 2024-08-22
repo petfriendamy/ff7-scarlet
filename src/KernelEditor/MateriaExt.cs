@@ -51,6 +51,7 @@ namespace FF7Scarlet.KernelEditor
         Elemental = 0x5E,
         AddedEffect = 0x5F,
         MorphAsWell = 0x60,
+        APPlus = 0x61,
         QuadraMagic = 0x63
     };
 
