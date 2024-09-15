@@ -3,6 +3,7 @@ using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Inventory;
+using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Materias;
 using System.Buffers.Text;
 using System.Collections;
@@ -271,6 +272,31 @@ namespace FF7Scarlet.Shared
                 default:
                     return HexParser.NULL_OFFSET_16_BIT;
             }
+        }
+
+        public static ushort GetCombinedItemIndex(Item item)
+        {
+            return GetCombinedItemIndex(ItemType.Item, (byte)item.Index);
+        }
+
+        public static ushort GetCombinedItemIndex(Weapon wpn)
+        {
+            return GetCombinedItemIndex(ItemType.Weapon, (byte)wpn.Index);
+        }
+
+        public static ushort GetCombinedItemIndex(Armor armor)
+        {
+            return GetCombinedItemIndex(ItemType.Armor, (byte)armor.Index);
+        }
+
+        public static ushort GetCombinedItemIndex(Accessory acc)
+        {
+            return GetCombinedItemIndex(ItemType.Accessory, (byte)acc.Index);
+        }
+
+        public static ushort GetCombinedItemIndex(Materia mat)
+        {
+            return GetCombinedItemIndex(ItemType.Materia, (byte)mat.Index);
         }
 
         public static ItemType GetItemType(ushort value)

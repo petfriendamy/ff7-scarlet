@@ -179,6 +179,10 @@ namespace FF7Scarlet.ExeEditor
             labelMainMenuText = new Label();
             textBoxMainMenuText = new TextBox();
             listBoxMainMenu = new ListBox();
+            tabPageMateriaMenu = new TabPage();
+            labelMateriaMenuText = new Label();
+            textBoxMateriaMenuText = new TextBox();
+            listBoxMateriaMenu = new ListBox();
             tabPageConfigMenu = new TabPage();
             labelConfigMenuText = new Label();
             textBoxConfigMenuText = new TextBox();
@@ -206,6 +210,16 @@ namespace FF7Scarlet.ExeEditor
             labelShopNameText = new Label();
             textBoxShopNameText = new TextBox();
             listBoxShopNames = new ListBox();
+            tabPageChocoboRacing = new TabPage();
+            groupBoxChocoboRacePrizes = new GroupBox();
+            comboBoxChocoboRacePrizes = new ComboBox();
+            labelChocoboRacePrizes = new Label();
+            listBoxChocoboRacePrizes = new ListBox();
+            labelPrizeNote = new Label();
+            groupBoxChocoboNames = new GroupBox();
+            labelChocoboName = new Label();
+            textBoxChocoboName = new TextBox();
+            listBoxChocoboNames = new ListBox();
             buttonHext = new Button();
             panelButtons = new Panel();
             tabControlMain.SuspendLayout();
@@ -256,6 +270,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageOtherText.SuspendLayout();
             tabControlOtherText.SuspendLayout();
             tabPageMainMenu.SuspendLayout();
+            tabPageMateriaMenu.SuspendLayout();
             tabPageConfigMenu.SuspendLayout();
             tabPageStatusEffects.SuspendLayout();
             tabPageL4Limits.SuspendLayout();
@@ -264,6 +279,9 @@ namespace FF7Scarlet.ExeEditor
             tabPageShopText.SuspendLayout();
             groupBoxShopText.SuspendLayout();
             groupBoxShopNames.SuspendLayout();
+            tabPageChocoboRacing.SuspendLayout();
+            groupBoxChocoboRacePrizes.SuspendLayout();
+            groupBoxChocoboNames.SuspendLayout();
             panelButtons.SuspendLayout();
             SuspendLayout();
             // 
@@ -1836,10 +1854,12 @@ namespace FF7Scarlet.ExeEditor
             // tabControlOtherText
             // 
             tabControlOtherText.Controls.Add(tabPageMainMenu);
+            tabControlOtherText.Controls.Add(tabPageMateriaMenu);
             tabControlOtherText.Controls.Add(tabPageConfigMenu);
             tabControlOtherText.Controls.Add(tabPageStatusEffects);
             tabControlOtherText.Controls.Add(tabPageL4Limits);
             tabControlOtherText.Controls.Add(tabPageShopText);
+            tabControlOtherText.Controls.Add(tabPageChocoboRacing);
             tabControlOtherText.Dock = DockStyle.Fill;
             tabControlOtherText.Location = new Point(0, 0);
             tabControlOtherText.Name = "tabControlOtherText";
@@ -1889,6 +1909,48 @@ namespace FF7Scarlet.ExeEditor
             listBoxMainMenu.Size = new Size(174, 349);
             listBoxMainMenu.TabIndex = 0;
             listBoxMainMenu.SelectedIndexChanged += listBoxMainMenu_SelectedIndexChanged;
+            // 
+            // tabPageMateriaMenu
+            // 
+            tabPageMateriaMenu.Controls.Add(labelMateriaMenuText);
+            tabPageMateriaMenu.Controls.Add(textBoxMateriaMenuText);
+            tabPageMateriaMenu.Controls.Add(listBoxMateriaMenu);
+            tabPageMateriaMenu.Location = new Point(4, 24);
+            tabPageMateriaMenu.Name = "tabPageMateriaMenu";
+            tabPageMateriaMenu.Size = new Size(768, 499);
+            tabPageMateriaMenu.TabIndex = 6;
+            tabPageMateriaMenu.Text = "Materia menu";
+            tabPageMateriaMenu.UseVisualStyleBackColor = true;
+            // 
+            // labelMateriaMenuText
+            // 
+            labelMateriaMenuText.AutoSize = true;
+            labelMateriaMenuText.Location = new Point(186, 6);
+            labelMateriaMenuText.Name = "labelMateriaMenuText";
+            labelMateriaMenuText.Size = new Size(31, 15);
+            labelMateriaMenuText.TabIndex = 5;
+            labelMateriaMenuText.Text = "Text:";
+            // 
+            // textBoxMateriaMenuText
+            // 
+            textBoxMateriaMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxMateriaMenuText.Enabled = false;
+            textBoxMateriaMenuText.Location = new Point(186, 24);
+            textBoxMateriaMenuText.Name = "textBoxMateriaMenuText";
+            textBoxMateriaMenuText.Size = new Size(576, 23);
+            textBoxMateriaMenuText.TabIndex = 4;
+            textBoxMateriaMenuText.TextChanged += textBoxMateriaMenuText_TextChanged;
+            // 
+            // listBoxMateriaMenu
+            // 
+            listBoxMateriaMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxMateriaMenu.FormattingEnabled = true;
+            listBoxMateriaMenu.ItemHeight = 15;
+            listBoxMateriaMenu.Location = new Point(6, 6);
+            listBoxMateriaMenu.Name = "listBoxMateriaMenu";
+            listBoxMateriaMenu.Size = new Size(174, 484);
+            listBoxMateriaMenu.TabIndex = 3;
+            listBoxMateriaMenu.SelectedIndexChanged += listBoxMateriaMenu_SelectedIndexChanged;
             // 
             // tabPageConfigMenu
             // 
@@ -2173,6 +2235,115 @@ namespace FF7Scarlet.ExeEditor
             listBoxShopNames.TabIndex = 0;
             listBoxShopNames.SelectedIndexChanged += listBoxShopNames_SelectedIndexChanged;
             // 
+            // tabPageChocoboRacing
+            // 
+            tabPageChocoboRacing.Controls.Add(groupBoxChocoboRacePrizes);
+            tabPageChocoboRacing.Controls.Add(groupBoxChocoboNames);
+            tabPageChocoboRacing.Location = new Point(4, 24);
+            tabPageChocoboRacing.Name = "tabPageChocoboRacing";
+            tabPageChocoboRacing.Size = new Size(768, 499);
+            tabPageChocoboRacing.TabIndex = 6;
+            tabPageChocoboRacing.Text = "Chocobo racing";
+            tabPageChocoboRacing.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxChocoboRacePrizes
+            // 
+            groupBoxChocoboRacePrizes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxChocoboRacePrizes.Controls.Add(comboBoxChocoboRacePrizes);
+            groupBoxChocoboRacePrizes.Controls.Add(labelChocoboRacePrizes);
+            groupBoxChocoboRacePrizes.Controls.Add(listBoxChocoboRacePrizes);
+            groupBoxChocoboRacePrizes.Controls.Add(labelPrizeNote);
+            groupBoxChocoboRacePrizes.Location = new Point(374, 3);
+            groupBoxChocoboRacePrizes.Name = "groupBoxChocoboRacePrizes";
+            groupBoxChocoboRacePrizes.Size = new Size(389, 493);
+            groupBoxChocoboRacePrizes.TabIndex = 42;
+            groupBoxChocoboRacePrizes.TabStop = false;
+            groupBoxChocoboRacePrizes.Text = "Prize list";
+            // 
+            // comboBoxChocoboPrizes
+            // 
+            comboBoxChocoboRacePrizes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxChocoboRacePrizes.Enabled = false;
+            comboBoxChocoboRacePrizes.FormattingEnabled = true;
+            comboBoxChocoboRacePrizes.Location = new Point(200, 40);
+            comboBoxChocoboRacePrizes.Name = "comboBoxChocoboPrizes";
+            comboBoxChocoboRacePrizes.Size = new Size(183, 23);
+            comboBoxChocoboRacePrizes.TabIndex = 43;
+            comboBoxChocoboRacePrizes.TextChanged += comboBoxChocoboPrizes_TextChanged;
+            // 
+            // labelChocoboRacePrizes
+            // 
+            labelChocoboRacePrizes.AutoSize = true;
+            labelChocoboRacePrizes.Location = new Point(200, 22);
+            labelChocoboRacePrizes.Name = "labelChocoboRacePrizes";
+            labelChocoboRacePrizes.Size = new Size(34, 15);
+            labelChocoboRacePrizes.TabIndex = 42;
+            labelChocoboRacePrizes.Text = "Item:";
+            // 
+            // listBoxChocoboRacePrizes
+            // 
+            listBoxChocoboRacePrizes.FormattingEnabled = true;
+            listBoxChocoboRacePrizes.ItemHeight = 15;
+            listBoxChocoboRacePrizes.Location = new Point(7, 22);
+            listBoxChocoboRacePrizes.Margin = new Padding(4, 3, 4, 3);
+            listBoxChocoboRacePrizes.Name = "listBoxChocoboRacePrizes";
+            listBoxChocoboRacePrizes.Size = new Size(186, 364);
+            listBoxChocoboRacePrizes.TabIndex = 41;
+            listBoxChocoboRacePrizes.SelectedIndexChanged += listBoxChocoboRacePrizes_SelectedIndexChanged;
+            // 
+            // labelPrizeNote
+            // 
+            labelPrizeNote.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelPrizeNote.Location = new Point(6, 389);
+            labelPrizeNote.Name = "labelPrizeNote";
+            labelPrizeNote.Size = new Size(376, 38);
+            labelPrizeNote.TabIndex = 24;
+            labelPrizeNote.Text = "*Note: These affect the names only. Actual prize giving is handled in flevel.";
+            // 
+            // groupBoxChocoboNames
+            // 
+            groupBoxChocoboNames.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBoxChocoboNames.Controls.Add(labelChocoboName);
+            groupBoxChocoboNames.Controls.Add(textBoxChocoboName);
+            groupBoxChocoboNames.Controls.Add(listBoxChocoboNames);
+            groupBoxChocoboNames.Location = new Point(8, 3);
+            groupBoxChocoboNames.Name = "groupBoxChocoboNames";
+            groupBoxChocoboNames.Size = new Size(360, 493);
+            groupBoxChocoboNames.TabIndex = 41;
+            groupBoxChocoboNames.TabStop = false;
+            groupBoxChocoboNames.Text = "Chocobo names";
+            // 
+            // labelChocoboName
+            // 
+            labelChocoboName.AutoSize = true;
+            labelChocoboName.Location = new Point(200, 22);
+            labelChocoboName.Name = "labelChocoboName";
+            labelChocoboName.Size = new Size(42, 15);
+            labelChocoboName.TabIndex = 42;
+            labelChocoboName.Text = "Name:";
+            // 
+            // textBoxChocoboName
+            // 
+            textBoxChocoboName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxChocoboName.Enabled = false;
+            textBoxChocoboName.Location = new Point(200, 40);
+            textBoxChocoboName.Name = "textBoxChocoboName";
+            textBoxChocoboName.Size = new Size(154, 23);
+            textBoxChocoboName.TabIndex = 41;
+            textBoxChocoboName.TextChanged += textBoxChocoboName_TextChanged;
+            // 
+            // listBoxChocoboNames
+            // 
+            listBoxChocoboNames.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxChocoboNames.FormattingEnabled = true;
+            listBoxChocoboNames.ItemHeight = 15;
+            listBoxChocoboNames.Location = new Point(7, 22);
+            listBoxChocoboNames.Margin = new Padding(4, 3, 4, 3);
+            listBoxChocoboNames.Name = "listBoxChocoboNames";
+            listBoxChocoboNames.Size = new Size(186, 454);
+            listBoxChocoboNames.TabIndex = 40;
+            listBoxChocoboNames.SelectedIndexChanged += listBoxChocoboNames_SelectedIndexChanged;
+            // 
             // buttonHext
             // 
             buttonHext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -2267,6 +2438,8 @@ namespace FF7Scarlet.ExeEditor
             tabControlOtherText.ResumeLayout(false);
             tabPageMainMenu.ResumeLayout(false);
             tabPageMainMenu.PerformLayout();
+            tabPageMateriaMenu.ResumeLayout(false);
+            tabPageMateriaMenu.PerformLayout();
             tabPageConfigMenu.ResumeLayout(false);
             tabPageConfigMenu.PerformLayout();
             tabPageStatusEffects.ResumeLayout(false);
@@ -2280,6 +2453,11 @@ namespace FF7Scarlet.ExeEditor
             groupBoxShopText.PerformLayout();
             groupBoxShopNames.ResumeLayout(false);
             groupBoxShopNames.PerformLayout();
+            tabPageChocoboRacing.ResumeLayout(false);
+            groupBoxChocoboRacePrizes.ResumeLayout(false);
+            groupBoxChocoboRacePrizes.PerformLayout();
+            groupBoxChocoboNames.ResumeLayout(false);
+            groupBoxChocoboNames.PerformLayout();
             panelButtons.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -2461,6 +2639,20 @@ namespace FF7Scarlet.ExeEditor
         private ListBox listBoxMateriaPriority;
         private Button buttonMateriaMoveDown;
         private Button buttonMateriaMoveUp;
+        private TabPage tabPageChocoboRacing;
+        private ListBox listBoxChocoboNames;
+        private GroupBox groupBoxChocoboNames;
+        private TextBox textBoxChocoboName;
+        private Label labelChocoboName;
+        private TabPage tabPageMateriaMenu;
+        private Label labelMateriaMenuText;
+        private TextBox textBoxMateriaMenuText;
+        private ListBox listBoxMateriaMenu;
+        private GroupBox groupBoxChocoboRacePrizes;
+        private Label labelPrizeNote;
+        private Label labelChocoboRacePrizes;
+        private ListBox listBoxChocoboRacePrizes;
+        private ComboBox comboBoxChocoboRacePrizes;
     }
 }
 

@@ -7,7 +7,6 @@ using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Materias;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -87,6 +86,7 @@ namespace FF7Scarlet.ExeEditor
             numericItemPrice.Maximum = uint.MaxValue;
             numericMateriaPrice.Maximum = uint.MaxValue;
             textBoxMainMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
+            textBoxMateriaMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
             textBoxConfigMenuText.MaxLength = editor.GetConfigTextLength() - 1;
             textBoxStatusEffectText.MaxLength = editor.GetStatusEffectLength() - 1;
             textBoxL4Success.MaxLength = editor.GetLimitTextLength() - 1;
@@ -94,6 +94,7 @@ namespace FF7Scarlet.ExeEditor
             textBoxL4Wrong.MaxLength = editor.GetLimitTextLength() - 1;
             textBoxShopNameText.MaxLength = editor.GetShopNameLength() - 1;
             textBoxShopText.MaxLength = ExeData.SHOP_TEXT_LENGTH - 1;
+            textBoxChocoboName.MaxLength = ExeData.CHOCOBO_NAME_LENGTH;
 
             //add limit breaks
             listBoxLimits.BeginUpdate();
@@ -151,6 +152,23 @@ namespace FF7Scarlet.ExeEditor
                 }
             }
 
+            //English-only stuff
+            if (editor.Language != Language.English)
+            {
+                foreach (Control c in tabPageMateriaMenu.Controls)
+                {
+                    c.Enabled = false;
+                }
+                foreach (Control c in tabPageSortOrder.Controls)
+                {
+                    c.Enabled = false;
+                }
+                foreach (Control c in tabPageChocoboRacing.Controls)
+                {
+                    c.Enabled = false;
+                }
+            }
+
             //kernel-synced data
             if (DataManager.Kernel != null)
             {
@@ -161,58 +179,61 @@ namespace FF7Scarlet.ExeEditor
                 //items
                 foreach (var item in DataManager.Kernel.ItemData.Items)
                 {
-                    foreach (var InventoryItem in ShopItemList)
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(item));
+                    foreach (var shop in ShopItemList)
                     {
-                        InventoryItem.Items.Add(item.Name);
-                        InventoryItem.SelectedIndex = 0;
+                        shop.Items.Add(name);
+                        shop.SelectedIndex = 0;
                     }
+                    comboBoxChocoboRacePrizes.Items.Add(name);
                 }
 
                 //weapons
                 foreach (var weapon in DataManager.Kernel.WeaponData.Weapons)
                 {
-                    comboBoxCharacterWeapon.Items.Add(weapon.Name);
-                    foreach (var InventoryItem in ShopItemList)
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(weapon));
+                    comboBoxCharacterWeapon.Items.Add(name);
+                    foreach (var shop in ShopItemList)
                     {
-                        InventoryItem.Items.Add(weapon.Name);
+                        shop.Items.Add(name);
                     }
+                    comboBoxChocoboRacePrizes.Items.Add(name);
                 }
 
                 //armors
                 foreach (var armor in DataManager.Kernel.ArmorData.Armors)
                 {
-                    comboBoxCharacterArmor.Items.Add(armor.Name);
-                    foreach (var InventoryItem in ShopItemList)
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(armor));
+                    comboBoxCharacterArmor.Items.Add(name);
+                    foreach (var shop in ShopItemList)
                     {
-                        InventoryItem.Items.Add(armor.Name);
+                        shop.Items.Add(name);
                     }
+                    comboBoxChocoboRacePrizes.Items.Add(name);
                 }
 
                 //accessories
                 comboBoxCharacterAccessory.Items.Add("None");
                 foreach (var accessory in DataManager.Kernel.AccessoryData.Accessories)
                 {
-                    comboBoxCharacterAccessory.Items.Add(accessory.Name);
-                    foreach (var InventoryItem in ShopItemList)
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(accessory));
+                    comboBoxCharacterAccessory.Items.Add(name);
+                    foreach (var shop in ShopItemList)
                     {
-                        InventoryItem.Items.Add(accessory.Name);
+                        shop.Items.Add(name);
                     }
+                    comboBoxChocoboRacePrizes.Items.Add(name);
                 }
 
                 //materia
                 foreach (var materia in DataManager.Kernel.MateriaData.Materias)
                 {
-                    //check if name is empty
-                    string name = materia.Name;
-                    if (string.IsNullOrEmpty(name))
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(materia));
+                    foreach (var shop in ShopItemList)
                     {
-                        name = $"(Materia ID {materia.Index})";
+                        shop.Items.Add(name);
                     }
-
-                    foreach (var InventoryItem in ShopItemList)
-                    {
-                        InventoryItem.Items.Add(name);
-                    }
+                    comboBoxChocoboRacePrizes.Items.Add(name);
                 }
             }
             else //no kernel loaded
@@ -268,6 +289,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxItemPrices.SuspendLayout();
             listBoxMateriaPrices.SuspendLayout();
             comboBoxShopType.SuspendLayout();
+            listBoxChocoboNames.SuspendLayout();
             listBoxSortItemName.SuspendLayout();
 
             //clear items
@@ -275,6 +297,7 @@ namespace FF7Scarlet.ExeEditor
             if (shopType < 0) { shopType = 0; }
             comboBoxShopType.Items.Clear();
             listBoxMainMenu.Items.Clear();
+            listBoxMateriaMenu.Items.Clear();
             listBoxConfigMenu.Items.Clear();
             listBoxStatusEffects.Items.Clear();
             listBoxItemPrices.Items.Clear();
@@ -282,6 +305,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxShopNames.Items.Clear();
             listBoxShopText.Items.Clear();
             listBoxSortItemName.Items.Clear();
+            listBoxChocoboNames.Items.Clear();
 
             //set AP price multiplier
             numericMateriaAPPriceMultiplier.Value = editor.APPriceMultiplier;
@@ -316,64 +340,71 @@ namespace FF7Scarlet.ExeEditor
                 //set item prices
                 for (i = 0; i < DataParser.ITEM_COUNT; ++i)
                 {
-                    var name = DataManager.Kernel.ItemData.Items[i].Name;
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        name = $"(Item ID {i})";
-                    }
+                    var item = DataManager.Kernel.ItemData.Items[i];
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(item));
                     listBoxItemPrices.Items.Add($"{name} - {editor.ItemPrices[i]}");
                 }
                 for (i = 0; i < DataParser.WEAPON_COUNT; ++i)
                 {
-                    var name = DataManager.Kernel.WeaponData.Weapons[i].Name;
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        name = $"(Weapon ID {i})";
-                    }
+                    var wpn = DataManager.Kernel.WeaponData.Weapons[i];
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(wpn));
                     listBoxItemPrices.Items.Add($"{name} - {editor.WeaponPrices[i]}");
                 }
                 for (i = 0; i < DataParser.ARMOR_COUNT; ++i)
                 {
-                    var name = DataManager.Kernel.ArmorData.Armors[i].Name;
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        name = $"(Armor ID {i})";
-                    }
+                    var armor = DataManager.Kernel.ArmorData.Armors[i];
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(armor));
                     listBoxItemPrices.Items.Add($"{name} - {editor.ArmorPrices[i]}");
                 }
                 for (i = 0; i < DataParser.ACCESSORY_COUNT; ++i)
                 {
-                    var name = DataManager.Kernel.AccessoryData.Accessories[i].Name;
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        name = $"(Accessory ID {i})";
-                    }
+                    var acc = DataManager.Kernel.AccessoryData.Accessories[i];
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(acc));
                     listBoxItemPrices.Items.Add($"{name} - {editor.AccessoryPrices[i]}");
                 }
 
                 //set materia prices
                 for (i = 0; i < DataManager.Kernel.MateriaData.Materias.Length; ++i)
                 {
-                    var name = DataManager.Kernel.MateriaData.Materias[i].Name;
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        name = $"(Materia ID {i})";
-                    }
+                    var mat = DataManager.Kernel.MateriaData.Materias[i];
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(mat));
                     listBoxMateriaPrices.Items.Add($"{name} - {editor.MateriaPrices[i]}");
                 }
 
-                //sorted items
-                var sortedItems =
-                    from item in editor.ItemsSortedByName
-                    orderby item.Value
-                    select item;
-                foreach (var item in sortedItems)
+                //English-only stuff
+                if (editor.Language == Language.English)
                 {
-                    listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(item.Key));
-                }
+                    //set materia menu text
+                    for (i = 0; i < ExeData.NUM_MATERIA_TEXTS; ++i)
+                    {
+                        listBoxMateriaMenu.Items.Add(editor.MateriaMenuTexts[i].ToString());
+                    }
 
-                //materia priority list
-                LoadMateriaPriorityList();
+                    //set chocobo names
+                    for (i = 0; i <= ExeData.NUM_CHOCOBO_NAMES; ++i)
+                    {
+                        listBoxChocoboNames.Items.Add(editor.ChocoboNames[i].ToString());
+                    }
+
+                    //set chocobo race prizes
+                    for (i = 0; i < ExeData.NUM_CHOCOBO_RACE_ITEMS; ++i)
+                    {
+                        listBoxChocoboRacePrizes.Items.Add(editor.ChocoboRacePrizes[i].ToString());
+                    }
+
+                    //sorted items
+                    var sortedItems =
+                        from item in editor.ItemsSortedByName
+                        orderby item.Value
+                        select item;
+                    foreach (var item in sortedItems)
+                    {
+                        listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(item.Key));
+                    }
+
+                    //materia priority list
+                    LoadMateriaPriorityList();
+                }
             }
 
             //set shop names
@@ -399,6 +430,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxMateriaPrices.ResumeLayout();
             comboBoxShopType.ResumeLayout();
             listBoxSortItemName.ResumeLayout();
+            listBoxChocoboNames.ResumeLayout();
             loading = false;
         }
 
@@ -1338,182 +1370,6 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        private void listBoxMainMenu_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxMainMenu.SelectedIndex;
-                if (i >= 0 && i < ExeData.NUM_MENU_TEXTS)
-                {
-                    textBoxMainMenuText.Enabled = true;
-                    textBoxMainMenuText.Text = editor.MainMenuTexts[i].ToString();
-                }
-                loading = false;
-            }
-        }
-
-        private void listBoxConfigMenu_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxConfigMenu.SelectedIndex;
-                if (i >= 0 && i < ExeData.NUM_CONFIG_TEXTS)
-                {
-                    textBoxConfigMenuText.Enabled = true;
-                    textBoxConfigMenuText.Text = editor.ConfigMenuTexts[i].ToString();
-                }
-                loading = false;
-            }
-        }
-
-        private void listBoxStatusEffects_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxStatusEffects.SelectedIndex;
-                if (i >= 0 && i < ExeData.NUM_STATUS_EFFECTS)
-                {
-                    textBoxStatusEffectText.Enabled = true;
-                    textBoxStatusEffectText.Text = editor.StatusEffects[i].ToString();
-                }
-                loading = false;
-            }
-        }
-
-        private void comboBoxL4Char_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetLimitText();
-        }
-
-        private void listBoxShopNames_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxShopNames.SelectedIndex;
-                if (i >= 0 && i < ExeData.NUM_SHOP_NAMES)
-                {
-                    textBoxShopNameText.Enabled = true;
-                    textBoxShopNameText.Text = editor.ShopNames[i].ToString();
-                }
-                loading = false;
-            }
-        }
-
-        private void listBoxShopText_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxShopText.SelectedIndex;
-                if (i >= 0 && i < ExeData.NUM_SHOP_TEXTS)
-                {
-                    textBoxShopText.Enabled = true;
-                    textBoxShopText.Text = editor.ShopText[i].ToString();
-                }
-                loading = false;
-            }
-        }
-
-        private void textBoxMainMenuText_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxMainMenu.SelectedIndex;
-                editor.MainMenuTexts[i] = new FFText(textBoxMainMenuText.Text);
-                listBoxMainMenu.Items[i] = textBoxMainMenuText.Text;
-                SetUnsaved(true);
-                loading = false;
-            }
-        }
-
-        private void textBoxConfigMenuText_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxConfigMenu.SelectedIndex;
-                editor.ConfigMenuTexts[i] = new FFText(textBoxConfigMenuText.Text);
-                listBoxConfigMenu.Items[i] = textBoxConfigMenuText.Text;
-                SetUnsaved(true);
-                loading = false;
-            }
-        }
-
-        private void textBoxStatusEffectText_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxStatusEffects.SelectedIndex;
-                editor.StatusEffects[i] = new FFText(textBoxStatusEffectText.Text);
-                listBoxStatusEffects.Items[i] = textBoxStatusEffectText.Text;
-                SetUnsaved(true);
-                loading = false;
-            }
-        }
-
-        private void textBoxL4Success_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                int i = comboBoxL4Char.SelectedIndex;
-                editor.LimitSuccess[i] = new FFText(textBoxL4Success.Text);
-                SetUnsaved(true);
-            }
-        }
-
-        private void textBoxL4Fail_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                int i = comboBoxL4Char.SelectedIndex;
-                editor.LimitFail[i] = new FFText(textBoxL4Fail.Text);
-                SetUnsaved(true);
-            }
-        }
-
-        private void textBoxL4Wrong_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                int i = comboBoxL4Char.SelectedIndex;
-                editor.LimitWrong[i] = new FFText(textBoxL4Wrong.Text);
-                SetUnsaved(true);
-            }
-        }
-
-        private void textBoxShopNameText_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxShopNames.SelectedIndex;
-                editor.ShopNames[i] = new FFText(textBoxShopNameText.Text);
-                listBoxShopNames.Items[i] = textBoxShopNameText.Text;
-                comboBoxShopType.Items[i] = textBoxShopNameText.Text;
-                SetUnsaved(true);
-                loading = false;
-            }
-        }
-
-        private void textBoxShopText_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxShopText.SelectedIndex;
-                editor.ShopText[i] = new FFText(textBoxShopText.Text);
-                listBoxShopText.Items[i] = textBoxShopText.Text;
-                SetUnsaved(true);
-                loading = false;
-            }
-        }
-
         private void listBoxSortItemName_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = listBoxSortItemName.SelectedIndex;
@@ -1690,6 +1546,260 @@ namespace FF7Scarlet.ExeEditor
                     listBoxMateriaPriority.SelectedIndex = i + 1;
                 }
                 SetUnsaved(true);
+            }
+        }
+
+        private void listBoxMainMenu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxMainMenu.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_MENU_TEXTS)
+                {
+                    textBoxMainMenuText.Enabled = true;
+                    textBoxMainMenuText.Text = editor.MainMenuTexts[i].ToString();
+                }
+                loading = false;
+            }
+        }
+
+        private void listBoxMateriaMenu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxMateriaMenu.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_MATERIA_TEXTS)
+                {
+                    textBoxMateriaMenuText.Enabled = true;
+                    textBoxMateriaMenuText.Text = editor.MateriaMenuTexts[i].ToString();
+                }
+                loading = false;
+            }
+        }
+
+        private void listBoxConfigMenu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxConfigMenu.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_CONFIG_TEXTS)
+                {
+                    textBoxConfigMenuText.Enabled = true;
+                    textBoxConfigMenuText.Text = editor.ConfigMenuTexts[i].ToString();
+                }
+                loading = false;
+            }
+        }
+
+        private void listBoxStatusEffects_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxStatusEffects.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_STATUS_EFFECTS)
+                {
+                    textBoxStatusEffectText.Enabled = true;
+                    textBoxStatusEffectText.Text = editor.StatusEffects[i].ToString();
+                }
+                loading = false;
+            }
+        }
+
+        private void comboBoxL4Char_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetLimitText();
+        }
+
+        private void listBoxShopNames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxShopNames.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_SHOP_NAMES)
+                {
+                    textBoxShopNameText.Enabled = true;
+                    textBoxShopNameText.Text = editor.ShopNames[i].ToString();
+                }
+                loading = false;
+            }
+        }
+
+        private void listBoxShopText_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxShopText.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_SHOP_TEXTS)
+                {
+                    textBoxShopText.Enabled = true;
+                    textBoxShopText.Text = editor.ShopText[i].ToString();
+                }
+                loading = false;
+            }
+        }
+
+        private void listBoxChocoboNames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = listBoxChocoboNames.SelectedIndex;
+            if (i >= 0 && i <= ExeData.NUM_CHOCOBO_NAMES)
+            {
+                loading = true;
+                textBoxChocoboName.Enabled = true;
+                textBoxChocoboName.Text = editor.ChocoboNames[i].ToString();
+                loading = false;
+            }
+        }
+
+        private void listBoxChocoboRacePrizes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = listBoxChocoboRacePrizes.SelectedIndex;
+            if (i >= 0 && i <= ExeData.NUM_CHOCOBO_NAMES)
+            {
+                loading = true;
+                comboBoxChocoboRacePrizes.Enabled = true;
+                comboBoxChocoboRacePrizes.Text = editor.ChocoboRacePrizes[i].ToString();
+                loading = false;
+            }
+        }
+
+        private void textBoxMainMenuText_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxMainMenu.SelectedIndex;
+                editor.MainMenuTexts[i] = new FFText(textBoxMainMenuText.Text);
+                listBoxMainMenu.Items[i] = textBoxMainMenuText.Text;
+                SetUnsaved(true);
+                loading = false;
+            }
+        }
+
+        private void textBoxMateriaMenuText_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxMateriaMenu.SelectedIndex;
+                editor.MateriaMenuTexts[i] = new FFText(textBoxMateriaMenuText.Text);
+                listBoxMateriaMenu.Items[i] = textBoxMateriaMenuText.Text;
+                SetUnsaved(true);
+                loading = false;
+            }
+        }
+
+        private void textBoxConfigMenuText_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxConfigMenu.SelectedIndex;
+                editor.ConfigMenuTexts[i] = new FFText(textBoxConfigMenuText.Text);
+                listBoxConfigMenu.Items[i] = textBoxConfigMenuText.Text;
+                SetUnsaved(true);
+                loading = false;
+            }
+        }
+
+        private void textBoxStatusEffectText_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxStatusEffects.SelectedIndex;
+                editor.StatusEffects[i] = new FFText(textBoxStatusEffectText.Text);
+                listBoxStatusEffects.Items[i] = textBoxStatusEffectText.Text;
+                SetUnsaved(true);
+                loading = false;
+            }
+        }
+
+        private void textBoxL4Success_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = comboBoxL4Char.SelectedIndex;
+                editor.LimitSuccess[i] = new FFText(textBoxL4Success.Text);
+                SetUnsaved(true);
+            }
+        }
+
+        private void textBoxL4Fail_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = comboBoxL4Char.SelectedIndex;
+                editor.LimitFail[i] = new FFText(textBoxL4Fail.Text);
+                SetUnsaved(true);
+            }
+        }
+
+        private void textBoxL4Wrong_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = comboBoxL4Char.SelectedIndex;
+                editor.LimitWrong[i] = new FFText(textBoxL4Wrong.Text);
+                SetUnsaved(true);
+            }
+        }
+
+        private void textBoxShopNameText_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxShopNames.SelectedIndex;
+                editor.ShopNames[i] = new FFText(textBoxShopNameText.Text);
+                listBoxShopNames.Items[i] = textBoxShopNameText.Text;
+                comboBoxShopType.Items[i] = textBoxShopNameText.Text;
+                SetUnsaved(true);
+                loading = false;
+            }
+        }
+
+        private void textBoxShopText_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxShopText.SelectedIndex;
+                editor.ShopText[i] = new FFText(textBoxShopText.Text);
+                listBoxShopText.Items[i] = textBoxShopText.Text;
+                SetUnsaved(true);
+                loading = false;
+            }
+        }
+
+        private void textBoxChocoboName_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxChocoboNames.SelectedIndex;
+                editor.ChocoboNames[i] = new FFText(textBoxChocoboName.Text);
+                listBoxChocoboNames.Items[i] = textBoxChocoboName.Text;
+                SetUnsaved(true);
+                loading = false;
+            }
+        }
+
+        private void comboBoxChocoboPrizes_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                loading = true;
+                int i = listBoxChocoboRacePrizes.SelectedIndex;
+                editor.ChocoboRacePrizes[i] = new FFText(comboBoxChocoboRacePrizes.Text);
+                listBoxChocoboRacePrizes.Items[i] = comboBoxChocoboRacePrizes.Text;
+                SetUnsaved(true);
+                loading = false;
             }
         }
 

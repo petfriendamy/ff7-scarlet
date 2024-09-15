@@ -25,8 +25,6 @@ namespace FF7Scarlet
             ' ', 'Ò', 'Ù', 'Û'
         }.AsReadOnly();
 
-        //private const byte MAP_OFFSET = 0x60, CHAR_OFFSET = 0x20;
-
 
         private readonly byte[] data;
 
@@ -227,11 +225,17 @@ namespace FF7Scarlet
             }
         }
 
-        public byte[] GetBytes(int length)
+        public byte[] GetBytes(int length, bool terminatedWithZero = false)
         {
             var bytes = new byte[length];
-            bytes[length - 1] = 0xFF; //last byte must always be null terminator
-            Array.Copy(data, bytes, Math.Min(length, data.Length));
+            if (!terminatedWithZero) //pad with null terminators
+            {
+                for (int i = 0; i < length; ++i)
+                {
+                    bytes[i] = 0xFF;
+                }
+            }
+            Array.Copy(data, bytes, Math.Min(length - 1, data.Length - 1));
             return bytes;
         }
 

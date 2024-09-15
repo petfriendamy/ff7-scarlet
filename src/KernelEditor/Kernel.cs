@@ -1150,7 +1150,7 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 if (c == null)
                                 {
-                                    writer.Write(HexParser.GetNullBlock(MenuCommand.DATA_LENGTH));
+                                    writer.Write(HexParser.GetNullBlock(8));
                                 }
                                 else
                                 {

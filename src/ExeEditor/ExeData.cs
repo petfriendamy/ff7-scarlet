@@ -2,8 +2,6 @@
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
-using Shojy.FF7.Elena.Inventory;
-using System.IO;
 using System.Security.Cryptography;
 
 namespace FF7Scarlet.ExeEditor
@@ -17,16 +15,21 @@ namespace FF7Scarlet.ExeEditor
         public const string CONFIG_KEY = "VanillaExePath";
         public const int
             NUM_MENU_TEXTS = 23,
+            NUM_MATERIA_TEXTS = 42,
             NUM_CONFIG_TEXTS = 51,
             NUM_STATUS_EFFECTS = 27,
             NUM_LIMITS = 71,
-            NUM_NAMES = 10,
+            NUM_CHARACTER_NAMES = 10,
             NUM_SHOPS = 80,
             NUM_SHOP_NAMES = 9,
             NUM_SHOP_TEXTS = 18,
+            NUM_CHOCOBO_NAMES = 46,
+            NUM_CHOCOBO_RACE_ITEMS = 24,
             
             MENU_TEXT_LENGTH = 20,
-            SHOP_TEXT_LENGTH = 46;
+            SHOP_TEXT_LENGTH = 46,
+            CHOCOBO_NAME_LENGTH = 7,
+            ITEM_NAME_LENGTH = 16;
 
         private const long
             HEXT_OFFSET_1 = 0x400C00,
@@ -40,6 +43,7 @@ namespace FF7Scarlet.ExeEditor
             MATERIA_PRIORITY_POS = 0x519498,
             STATUS_EFFECT_POS = 0x51D228,
             LIMIT_BREAK_POS = 0x51E0D4,
+            MATERIA_MENU_TEXT_POS = 0x51F5A8,
             LIMIT_TEXT_POS = 0x51FBF0,
             ITEM_SORT_POS = 0x51FF48,
             NAME_DATA_POS = 0x5206B8,
@@ -48,7 +52,10 @@ namespace FF7Scarlet.ExeEditor
             SHOP_TEXT_POS = 0x521A80,
             SHOP_INVENTORY_POS = 0x521E18,
             ITEM_PRICE_DATA_POS = 0x523858,
-            MATERIA_PRICE_DATA_POS = 0x523E58;
+            MATERIA_PRICE_DATA_POS = 0x523E58,
+            TEIOH_POS = 0x57B2A8,
+            CHOCOBO_RACE_ITEMS_POS = 0x57B3D0,
+            CHOCOBO_NAMES_POS = 0x57B658;
 
         //properties
         public string FilePath { get; private set; } = string.Empty;
@@ -58,9 +65,12 @@ namespace FF7Scarlet.ExeEditor
         public FFText[] LimitFail { get; } = new FFText[Kernel.PLAYABLE_CHARACTER_COUNT - 1];
         public FFText[] LimitWrong { get; } = new FFText[Kernel.PLAYABLE_CHARACTER_COUNT];
         public FFText[] MainMenuTexts { get; } = new FFText[NUM_MENU_TEXTS];
+        public FFText[] MateriaMenuTexts { get; } = new FFText[NUM_MATERIA_TEXTS];
         public FFText[] ConfigMenuTexts { get; } = new FFText[NUM_CONFIG_TEXTS];
         public FFText[] StatusEffects { get; } = new FFText[NUM_STATUS_EFFECTS];
-        public FFText[] CharacterNames { get; } = new FFText[NUM_NAMES];
+        public FFText[] CharacterNames { get; } = new FFText[NUM_CHARACTER_NAMES];
+        public FFText[] ChocoboNames { get; } = new FFText[NUM_CHOCOBO_NAMES + 1]; //extra slot for Teioh
+        public FFText[] ChocoboRacePrizes { get; } = new FFText[NUM_CHOCOBO_RACE_ITEMS];
         public Character? CaitSith { get; private set; }
         public Character? Vincent { get; private set; }
         public FFText[] ShopNames { get; } = new FFText[NUM_SHOP_NAMES];
@@ -446,6 +456,31 @@ namespace FF7Scarlet.ExeEditor
                             {
                                 ItemsSortedByName.Add((ushort)i, reader.ReadUInt16());
                             }
+
+                            //get materia menu text
+                            stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_MATERIA_TEXTS; ++i)
+                            {
+                                MateriaMenuTexts[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
+                            }
+
+                            //get chocobo race prizes
+                            stream.Seek(CHOCOBO_RACE_ITEMS_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_CHOCOBO_RACE_ITEMS; ++i)
+                            {
+                                ChocoboRacePrizes[i] = new FFText(reader.ReadBytes(ITEM_NAME_LENGTH));
+                            }
+
+                            //get Teioh's name
+                            stream.Seek(TEIOH_POS, SeekOrigin.Begin);
+                            ChocoboNames[NUM_CHOCOBO_NAMES] = new FFText(reader.ReadBytes(CHOCOBO_NAME_LENGTH));
+
+                            //get other chocobo names
+                            stream.Seek(CHOCOBO_NAMES_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_CHOCOBO_NAMES; ++i)
+                            {
+                                ChocoboNames[i] = new FFText(reader.ReadBytes(CHOCOBO_NAME_LENGTH));
+                            }
                         }
 
                         //get AP multiplier
@@ -493,7 +528,7 @@ namespace FF7Scarlet.ExeEditor
 
                         //get character names
                         stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_NAMES; ++i)
+                        for (i = 0; i < NUM_CHARACTER_NAMES; ++i)
                         {
                             CharacterNames[i] = new FFText(reader.ReadBytes(DataParser.CHARACTER_NAME_LENGTH));
                         }
@@ -587,6 +622,13 @@ namespace FF7Scarlet.ExeEditor
                                 writer.Write(p);
                             }
 
+                            //write config menu text
+                            stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in MateriaMenuTexts)
+                            {
+                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                            }
+
                             //write item sort list
                             stream.Seek(ITEM_SORT_POS, SeekOrigin.Begin);
                             var itemPositions =
@@ -596,6 +638,24 @@ namespace FF7Scarlet.ExeEditor
                             foreach (var p in itemPositions)
                             {
                                 writer.Write(p);
+                            }
+
+                            //write Teioh's name
+                            stream.Seek(TEIOH_POS, SeekOrigin.Begin);
+                            writer.Write(ChocoboNames[NUM_CHOCOBO_NAMES].GetBytes(CHOCOBO_NAME_LENGTH));
+
+                            //write chocobo race prizes
+                            stream.Seek(CHOCOBO_RACE_ITEMS_POS, SeekOrigin.Begin);
+                            foreach (var t in ChocoboRacePrizes)
+                            {
+                                writer.Write(t.GetBytes(ITEM_NAME_LENGTH));
+                            }
+
+                            //write chocobo names (besides Teioh)
+                            stream.Seek(CHOCOBO_NAMES_POS, SeekOrigin.Begin);
+                            for (int i = 0; i < NUM_CHOCOBO_NAMES - 1; ++i)
+                            {
+                                writer.Write(ChocoboNames[i].GetBytes(CHOCOBO_NAME_LENGTH, true));
                             }
                         }
 
@@ -732,7 +792,7 @@ namespace FF7Scarlet.ExeEditor
                     stream.Seek(0, SeekOrigin.Begin);
 
                     //read character names
-                    for (i = 0; i < NUM_NAMES; ++i)
+                    for (i = 0; i < NUM_CHARACTER_NAMES; ++i)
                     {
                         CharacterNames[i] = new FFText(reader.ReadBytes(DataParser.CHARACTER_NAME_LENGTH));
                     }
@@ -849,6 +909,22 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
                         {
                             MateriaPriority[(byte)i] = reader.ReadByte();
+                        }
+
+                        //read chocobo names
+                        for (i = 0; i < NUM_CHOCOBO_NAMES; ++i)
+                        {
+                            ChocoboNames[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                CHOCOBO_NAME_LENGTH);
+                            stream.Seek(ChocoboNames[i].ToString().Length + 1, SeekOrigin.Current);
+                        }
+
+                        //read item names
+                        for (i = 0; i < NUM_CHOCOBO_RACE_ITEMS; ++i)
+                        {
+                            ChocoboRacePrizes[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                ITEM_NAME_LENGTH);
+                            stream.Seek(ChocoboRacePrizes[i].ToString().Length + 1, SeekOrigin.Current);
                         }
                     }
                 }
@@ -986,6 +1062,24 @@ namespace FF7Scarlet.ExeEditor
                 {
                     output.Add(p);
                 }
+
+                //write materia menu text
+                foreach (var m in MateriaMenuTexts)
+                {
+                    output.AddRange(m.GetBytesTruncated());
+                }
+
+                //write chocobo racer names
+                foreach (var n in ChocoboNames)
+                {
+                    output.AddRange(n.GetBytes(CHOCOBO_NAME_LENGTH));
+                }
+
+                //write chocobo race prizes
+                foreach (var p in ChocoboRacePrizes)
+                {
+                    output.AddRange(p.GetBytes(ITEM_NAME_LENGTH));
+                }
             }
 
             return output.ToArray();
@@ -1036,238 +1130,243 @@ namespace FF7Scarlet.ExeEditor
                 }
 
                 using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                using (var writer = new StreamWriter(stream))
                 {
-                    using (var writer = new StreamWriter(stream))
+                    writer.WriteLine(@"..\ff7.exe");
+                    writer.WriteLine($"# {Enum.GetName(Language)} version");
+                    writer.WriteLine();
+
+                    long pos;
+                    bool checker = false, diff;
+                    int i, j;
+
+                    //compare AP price multiplier
+                    if (APPriceMultiplier != original.APPriceMultiplier)
                     {
-                        writer.WriteLine(@"..\ff7.exe");
-                        writer.WriteLine($"# {Enum.GetName(Language)} version");
+                        writer.WriteLine("# AP price multiplier");
+                        pos = AP_MULTIPLIER_POS + HEXT_OFFSET_1;
+                        writer.WriteLine($"{pos:X2} = {APPriceMultiplier:X2}");
+                        pos += AP_MASTER_OFFSET;
+                        writer.WriteLine($"{pos:X2} = {APPriceMultiplier:X2}");
                         writer.WriteLine();
+                    }
 
-                        long pos;
-                        bool checker = false, diff;
-                        int i, j;
+                    //compare config menu text
+                    for (i = 0; i < NUM_CONFIG_TEXTS; ++i)
+                    {
+                        string text1 = ConfigMenuTexts[i].ToString(),
+                            text2 = original.ConfigMenuTexts[i].ToString();
 
-                        //compare AP price multiplier
-                        if (APPriceMultiplier != original.APPriceMultiplier)
+                        if (text1 != text2)
                         {
-                            writer.WriteLine("# AP price multiplier");
-                            pos = AP_MULTIPLIER_POS + HEXT_OFFSET_1;
-                            writer.WriteLine($"{pos:X2} = {APPriceMultiplier:X2}");
-                            pos += AP_MASTER_OFFSET;
-                            writer.WriteLine($"{pos:X2} = {APPriceMultiplier:X2}");
+                            checker = true;
+                            writer.WriteLine($"# {text2} -> {text1}");
+                            var temp = ConfigMenuTexts[i].GetBytes();
+                            pos = CONFIG_MENU_TEXT_POS + HEXT_OFFSET_2 + (GetConfigTextLength() * i);
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
+                            {
+                                writer.Write($"{x:X2} ");
+                            }
                             writer.WriteLine();
                         }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
 
-                        //compare config menu text
-                        for (i = 0; i < NUM_CONFIG_TEXTS; ++i)
+                    //compare main menu text
+                    for (i = 0; i < NUM_MENU_TEXTS; ++i)
+                    {
+                        string text1 = MainMenuTexts[i].ToString(),
+                            text2 = original.MainMenuTexts[i].ToString();
+
+                        if (text1 != text2)
                         {
-                            string text1 = ConfigMenuTexts[i].ToString(),
-                                text2 = original.ConfigMenuTexts[i].ToString();
-
-                            if (text1 != text2)
+                            checker = true;
+                            writer.WriteLine($"# {text2} -> {text1}");
+                            var temp = MainMenuTexts[i].GetBytes();
+                            pos = MAIN_MENU_TEXT_POS + HEXT_OFFSET_2 + (MENU_TEXT_LENGTH * i);
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
                             {
+                                writer.Write($"{x:X2} ");
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
+
+                    //compare materia priority list
+                    var p1 =
+                        (from p in MateriaPriority
+                        orderby p.Key
+                        select p.Value).ToArray();
+                    var p2 =
+                        (from p in original.MateriaPriority
+                        orderby p.Key
+                        select p.Value).ToArray();
+                    diff = false;
+                    for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
+                    {
+                        if (p1[i] != p2[i])
+                        {
+                            if (!checker)
+                            {
+                                writer.WriteLine("# Materia priority");
                                 checker = true;
-                                writer.WriteLine($"# {text2} -> {text1}");
-                                var temp = ConfigMenuTexts[i].GetBytes();
-                                pos = CONFIG_MENU_TEXT_POS + HEXT_OFFSET_2 + (GetConfigTextLength() * i);
+                            }
+                            if (!diff)
+                            {
+                                pos = MATERIA_PRIORITY_POS + HEXT_OFFSET_2 + i;
                                 writer.Write($"{pos:X2} = ");
-                                foreach (var x in temp)
-                                {
-                                    writer.Write($"{x:X2} ");
-                                }
+                                diff = true;
+                            }
+                            writer.Write($"{p1[i]:X2} ");
+                        }
+                        else
+                        {
+                            if (checker && diff)
+                            {
                                 writer.WriteLine();
-                            }
-                        }
-                        if (checker)
-                        {
-                            writer.WriteLine();
-                            checker = false;
-                        }
-
-                        //compare main menu text
-                        for (i = 0; i < NUM_MENU_TEXTS; ++i)
-                        {
-                            string text1 = MainMenuTexts[i].ToString(),
-                                text2 = original.MainMenuTexts[i].ToString();
-
-                            if (text1 != text2)
-                            {
-                                checker = true;
-                                writer.WriteLine($"# {text2} -> {text1}");
-                                var temp = MainMenuTexts[i].GetBytes();
-                                pos = MAIN_MENU_TEXT_POS + HEXT_OFFSET_2 + (MENU_TEXT_LENGTH * i);
-                                writer.Write($"{pos:X2} = ");
-                                foreach (var x in temp)
-                                {
-                                    writer.Write($"{x:X2} ");
-                                }
-                                writer.WriteLine();
-                            }
-                        }
-                        if (checker)
-                        {
-                            writer.WriteLine();
-                            checker = false;
-                        }
-
-                        //compare materia priority list
-                        var p1 =
-                            (from p in MateriaPriority
-                            orderby p.Key
-                            select p.Value).ToArray();
-                        var p2 =
-                            (from p in original.MateriaPriority
-                            orderby p.Key
-                            select p.Value).ToArray();
-                        diff = false;
-                        for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
-                        {
-                            if (p1[i] != p2[i])
-                            {
-                                if (!checker)
-                                {
-                                    writer.WriteLine("# Materia priority");
-                                    checker = true;
-                                }
-                                if (!diff)
-                                {
-                                    pos = MATERIA_PRIORITY_POS + HEXT_OFFSET_2 + i;
-                                    writer.Write($"{pos:X2} = ");
-                                    diff = true;
-                                }
-                                writer.Write($"{p1[i]:X2} ");
-                            }
-                            else
-                            {
-                                if (checker && diff)
-                                {
-                                    writer.WriteLine();
-                                    diff = false;
-                                }
-                            }
-                        }
-                        if (checker)
-                        {
-                            writer.WriteLine();
-                            checker = false;
-                        }
-
-                        //compare status effects
-                        for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
-                        {
-                            string text1 = StatusEffects[i].ToString(),
-                                text2 = original.StatusEffects[i].ToString();
-
-                            if (text1 != text2)
-                            {
-                                checker = true;
-                                writer.WriteLine($"# {text2} -> {text1}");
-                                var temp = StatusEffects[i].GetBytes();
-                                pos = STATUS_EFFECT_POS + HEXT_OFFSET_2 + (GetStatusEffectLength() * i);
-                                writer.Write($"{pos:X2} = ");
-                                foreach (var x in temp)
-                                {
-                                    writer.Write($"{x:X2} ");
-                                }
-                                writer.WriteLine();
-                            }
-                        }
-                        if (checker)
-                        {
-                            writer.WriteLine();
-                            checker = false;
-                        }
-
-                        //compare limits
-                        for (i = 0; i < NUM_LIMITS; ++i)
-                        {
-                            if (!DataParser.AttacksAreIdentical(Limits[i], original.Limits[i]))
-                            {
-                                byte[] temp1 = DataParser.GetAttackBytes(Limits[i]),
-                                    temp2 = DataParser.GetAttackBytes(original.Limits[i]);
                                 diff = false;
-
-                                writer.WriteLine($"# {original.Limits[i].Name}");
-                                for (i = 0; i < DataParser.ATTACK_BLOCK_SIZE; ++i)
-                                {
-                                    if (temp1[i] != temp2[i])
-                                    {
-                                        if (!diff)
-                                        {
-                                            pos = LIMIT_BREAK_POS + HEXT_OFFSET_2 + i;
-                                            writer.Write($"{pos:X2} = ");
-                                            diff = true;
-                                        }
-                                        writer.Write($"{temp1[i]:X2} ");
-                                    }
-                                    else
-                                    {
-                                        if (diff)
-                                        {
-                                            writer.WriteLine();
-                                            diff = false;
-                                        }
-                                    }
-                                }
-                                writer.WriteLine();
                             }
                         }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
 
-                        //compare limit text
-                        j = 0;
-                        for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
+                    //compare status effects
+                    for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
+                    {
+                        string text1 = StatusEffects[i].ToString(),
+                            text2 = original.StatusEffects[i].ToString();
+
+                        if (text1 != text2)
                         {
-                            string text1, text2;
-                            if (i < Kernel.PLAYABLE_CHARACTER_COUNT - 1)
+                            checker = true;
+                            writer.WriteLine($"# {text2} -> {text1}");
+                            var temp = StatusEffects[i].GetBytes();
+                            pos = STATUS_EFFECT_POS + HEXT_OFFSET_2 + (GetStatusEffectLength() * i);
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
                             {
-                                //limit success
-                                text1 = LimitSuccess[i].ToString();
-                                text2 = original.LimitSuccess[i].ToString();
-
-                                if (text1 != text2)
-                                {
-                                    checker = true;
-                                    writer.WriteLine($"# {text2} -> {text1}");
-                                    var temp = LimitSuccess[i].GetBytes();
-                                    pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
-                                    writer.Write($"{pos:X2} = ");
-                                    foreach (var x in temp)
-                                    {
-                                        writer.Write($"{x:X2} ");
-                                    }
-                                    writer.WriteLine();
-                                }
-                                j++;
-
-                                //limit fail
-                                text1 = LimitFail[i].ToString();
-                                text2 = original.LimitFail[i].ToString();
-
-                                if (text1 != text2)
-                                {
-                                    checker = true;
-                                    writer.WriteLine($"# {text2} -> {text1}");
-                                    var temp = LimitFail[i].GetBytes();
-                                    pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
-                                    writer.Write($"{pos:X2} = ");
-                                    foreach (var x in temp)
-                                    {
-                                        writer.Write($"{x:X2} ");
-                                    }
-                                    writer.WriteLine();
-                                }
-                                j++;
+                                writer.Write($"{x:X2} ");
                             }
+                            writer.WriteLine();
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
 
-                            //limit wrong
-                            text1 = LimitWrong[i].ToString();
-                            text2 = original.LimitWrong[i].ToString();
+                    //compare limits
+                    for (i = 0; i < NUM_LIMITS; ++i)
+                    {
+                        if (!DataParser.AttacksAreIdentical(Limits[i], original.Limits[i]))
+                        {
+                            byte[] temp1 = DataParser.GetAttackBytes(Limits[i]),
+                                temp2 = DataParser.GetAttackBytes(original.Limits[i]);
+                            diff = false;
+
+                            writer.WriteLine($"# {original.Limits[i].Name}");
+                            for (i = 0; i < DataParser.ATTACK_BLOCK_SIZE; ++i)
+                            {
+                                if (temp1[i] != temp2[i])
+                                {
+                                    if (!diff)
+                                    {
+                                        pos = LIMIT_BREAK_POS + HEXT_OFFSET_2 + i;
+                                        writer.Write($"{pos:X2} = ");
+                                        diff = true;
+                                    }
+                                    writer.Write($"{temp1[i]:X2} ");
+                                }
+                                else
+                                {
+                                    if (diff)
+                                    {
+                                        writer.WriteLine();
+                                        diff = false;
+                                    }
+                                }
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+
+                    //compare materia menu text
+                    for (i = 0; i < NUM_MATERIA_TEXTS; ++i)
+                    {
+                        string text1 = MateriaMenuTexts[i].ToString(),
+                            text2 = original.MateriaMenuTexts[i].ToString();
+
+                        if (text1 != text2)
+                        {
+                            checker = true;
+                            writer.WriteLine($"# {text2} -> {text1}");
+                            var temp = MateriaMenuTexts[i].GetBytes();
+                            pos = MATERIA_MENU_TEXT_POS + HEXT_OFFSET_2 + (MENU_TEXT_LENGTH * i);
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
+                            {
+                                writer.Write($"{x:X2} ");
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
+
+                    //compare limit text
+                    j = 0;
+                    for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
+                    {
+                        string text1, text2;
+                        if (i < Kernel.PLAYABLE_CHARACTER_COUNT - 1)
+                        {
+                            //limit success
+                            text1 = LimitSuccess[i].ToString();
+                            text2 = original.LimitSuccess[i].ToString();
 
                             if (text1 != text2)
                             {
                                 checker = true;
                                 writer.WriteLine($"# {text2} -> {text1}");
-                                var temp = LimitWrong[i].GetBytes();
+                                var temp = LimitSuccess[i].GetBytes();
+                                pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var x in temp)
+                                {
+                                    writer.Write($"{x:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                            j++;
+
+                            //limit fail
+                            text1 = LimitFail[i].ToString();
+                            text2 = original.LimitFail[i].ToString();
+
+                            if (text1 != text2)
+                            {
+                                checker = true;
+                                writer.WriteLine($"# {text2} -> {text1}");
+                                var temp = LimitFail[i].GetBytes();
                                 pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var x in temp)
@@ -1279,186 +1378,373 @@ namespace FF7Scarlet.ExeEditor
                             j++;
                         }
 
-                        //compare materia priority list
-                        var items1 =
-                            (from item in ItemsSortedByName
-                             orderby item.Key
-                             select item.Value).ToArray();
-                        var items2 =
-                            (from item in original.ItemsSortedByName
-                             orderby item.Key
-                             select item.Value).ToArray();
-                        diff = false;
-                        for (i = 0; i < DataParser.MATERIA_START; ++i)
+                        //limit wrong
+                        text1 = LimitWrong[i].ToString();
+                        text2 = original.LimitWrong[i].ToString();
+
+                        if (text1 != text2)
                         {
-                            if (items1[i] != items2[i])
+                            checker = true;
+                            writer.WriteLine($"# {text2} -> {text1}");
+                            var temp = LimitWrong[i].GetBytes();
+                            pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
                             {
-                                if (!checker)
+                                writer.Write($"{x:X2} ");
+                            }
+                            writer.WriteLine();
+                        }
+                        j++;
+                    }
+
+                    //compare item sort order
+                    var items1 =
+                        (from item in ItemsSortedByName
+                            orderby item.Key
+                            select item.Value).ToArray();
+                    var items2 =
+                        (from item in original.ItemsSortedByName
+                            orderby item.Key
+                            select item.Value).ToArray();
+                    diff = false;
+                    for (i = 0; i < DataParser.MATERIA_START; ++i)
+                    {
+                        if (items1[i] != items2[i])
+                        {
+                            if (!checker)
+                            {
+                                writer.WriteLine("# Item sort order");
+                                checker = true;
+                            }
+                            if (!diff)
+                            {
+                                pos = ITEM_SORT_POS + HEXT_OFFSET_2 + (i * 2);
+                                writer.Write($"{pos:X2} = ");
+                                diff = true;
+                            }
+                            var temp = BitConverter.GetBytes(items1[i]);
+                            foreach (var b in temp)
+                            {
+                                writer.Write($"{b:X2} ");
+                            }
+                        }
+                        else
+                        {
+                            if (checker && diff)
+                            {
+                                writer.WriteLine();
+                                diff = false;
+                            }
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
+
+                    //compare character names
+                    for (i = 0; i < NUM_CHARACTER_NAMES; ++i)
+                    {
+                        string name1 = CharacterNames[i].ToString(),
+                            name2 = original.CharacterNames[i].ToString();
+
+                        if (name1 != name2)
+                        {
+                            checker = true;
+                            writer.WriteLine($"# {name2} -> {name1}");
+                            var temp = CharacterNames[i].GetBytes();
+                            pos = NAME_DATA_POS + HEXT_OFFSET_2 + (DataParser.CHARACTER_NAME_LENGTH * i);
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
+                            {
+                                writer.Write($"{x:X2} ");
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
+
+                    //compare Cait Sith's data
+                    if (CaitSith != null && original.CaitSith != null)
+                    {
+                        if (!DataParser.CharacterDataIsIdentical(CaitSith, original.CaitSith))
+                        {
+                            byte[] temp1 = DataParser.GetCharacterInitialDataBytes(CaitSith),
+                                temp2 = DataParser.GetCharacterInitialDataBytes(original.CaitSith);
+                            diff = false;
+
+                            writer.WriteLine("# Cait Sith's initial data");
+                            for (i = 0; i < DataParser.CHARACTER_RECORD_LENGTH; ++i)
+                            {
+                                if (temp1[i] != temp2[i])
                                 {
-                                    writer.WriteLine("# Item sort order");
-                                    checker = true;
+                                    if (!diff)
+                                    {
+                                        pos = CAIT_SITH_DATA_POS + HEXT_OFFSET_2 + i;
+                                        writer.Write($"{pos:X2} = ");
+                                        diff = true;
+                                    }
+                                    writer.Write($"{temp1[i]:X2} ");
                                 }
-                                if (!diff)
+                                else
                                 {
-                                    pos = ITEM_SORT_POS + HEXT_OFFSET_2 + (i * 2);
-                                    writer.Write($"{pos:X2} = ");
-                                    diff = true;
+                                    if (diff)
+                                    {
+                                        writer.WriteLine();
+                                        diff = false;
+                                    }
                                 }
-                                var temp = BitConverter.GetBytes(items1[i]);
-                                foreach (var b in temp)
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+
+                    //compare Vincent's data
+                    if (Vincent != null && original.Vincent != null)
+                    {
+                        if (!DataParser.CharacterDataIsIdentical(Vincent, original.Vincent))
+                        {
+                            byte[] temp1 = DataParser.GetCharacterInitialDataBytes(Vincent),
+                                temp2 = DataParser.GetCharacterInitialDataBytes(original.Vincent);
+                            diff = false;
+
+                            writer.WriteLine("# Vincent's initial data");
+                            for (i = 0; i < DataParser.CHARACTER_RECORD_LENGTH; ++i)
+                            {
+                                if (temp1[i] != temp2[i])
+                                {
+                                    if (!diff)
+                                    {
+                                        pos = CAIT_SITH_DATA_POS + HEXT_OFFSET_2 + DataParser.CHARACTER_RECORD_LENGTH + i;
+                                        writer.Write($"{pos:X2} = ");
+                                        diff = true;
+                                    }
+                                    writer.Write($"{temp1[i]:X2} ");
+                                }
+                                else
+                                {
+                                    if (diff)
+                                    {
+                                        writer.WriteLine();
+                                        diff = false;
+                                    }
+                                }
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+
+                    //compare shop names
+                    for (i = 0; i < NUM_SHOP_NAMES; ++i)
+                    {
+                        string name1 = ShopNames[i].ToString(),
+                            name2 = original.ShopNames[i].ToString();
+
+                        if (name1 != name2)
+                        {
+                            checker = true;
+                            writer.WriteLine($"# {name2} -> {name1}");
+                            var temp = ShopNames[i].GetBytes();
+                            pos = SHOP_NAME_POS + HEXT_OFFSET_2 + (GetShopNameLength() * i);
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
+                            {
+                                writer.Write($"{x:X2} ");
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
+
+                    //compare shop text
+                    for (i = 0; i < NUM_SHOP_TEXTS; ++i)
+                    {
+                        string text1 = ShopText[i].ToString(),
+                            text2 = original.ShopText[i].ToString();
+
+                        if (text1 != text2)
+                        {
+                            checker = true;
+                            writer.WriteLine($"# {text2} -> {text1}");
+                            var temp = ShopText[i].GetBytes();
+                            pos = SHOP_TEXT_POS + HEXT_OFFSET_2 + (SHOP_TEXT_LENGTH * i);
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
+                            {
+                                writer.Write($"{x:X2} ");
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
+
+                    //compare shop inventories
+                    if (DataManager.Kernel != null)
+                    {
+                        for (i = 0; i < NUM_SHOPS; ++i)
+                        {
+                            if (Shops[i].HasDifferences(original.Shops[i]))
+                            {
+                                writer.WriteLine($"# {ShopData.SHOP_NAMES[i]}");
+                                var temp1 = Shops[i].GetByteArray();
+                                var temp2 = original.Shops[i].GetByteArray();
+                                diff = false;
+
+                                for (j = 0; j < ShopInventory.SHOP_DATA_LENGTH; ++j)
+                                {
+                                    if (temp1[j] != temp2[j])
+                                    {
+                                        checker = true;
+                                        if (!diff)
+                                        {
+                                            pos = SHOP_INVENTORY_POS + HEXT_OFFSET_2 + (ShopInventory.SHOP_DATA_LENGTH * i) + j;
+                                            writer.Write($"{pos:X2} = ");
+                                            diff = true;
+                                        }
+                                        writer.Write($"{temp1[j]:X2} ");
+                                    }
+                                    else
+                                    {
+                                        if (diff)
+                                        {
+                                            writer.WriteLine();
+                                            diff = false;
+                                        }
+                                    }
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+
+                        //compare item prices
+                        for (i = 0; i < DataParser.ITEM_COUNT; ++i)
+                        {
+                            if (ItemPrices[i] != original.ItemPrices[i])
+                            {
+                                writer.WriteLine($"# {DataManager.Kernel.ItemData.Items[i].Name} price");
+                                pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (i * 4);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var b in BitConverter.GetBytes(ItemPrices[i]))
                                 {
                                     writer.Write($"{b:X2} ");
                                 }
-                            }
-                            else
-                            {
-                                if (checker && diff)
-                                {
-                                    writer.WriteLine();
-                                    diff = false;
-                                }
+                                writer.WriteLine();
+                                writer.WriteLine();
                             }
                         }
-                        if (checker)
-                        {
-                            writer.WriteLine();
-                            checker = false;
-                        }
 
-                        //compare names
-                        for (i = 0; i < NUM_NAMES; ++i)
+                        //compare weapon prices
+                        for (i = 0; i < DataParser.WEAPON_COUNT; ++i)
                         {
-                            string name1 = CharacterNames[i].ToString(),
-                                name2 = original.CharacterNames[i].ToString();
-
-                            if (name1 != name2)
+                            if (WeaponPrices[i] != original.WeaponPrices[i])
                             {
-                                checker = true;
-                                writer.WriteLine($"# {name2} -> {name1}");
-                                var temp = CharacterNames[i].GetBytes();
-                                pos = NAME_DATA_POS + HEXT_OFFSET_2 + (DataParser.CHARACTER_NAME_LENGTH * i);
+                                writer.WriteLine($"# {DataManager.Kernel.WeaponData.Weapons[i].Name} price");
+                                pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.WEAPON_START * 4) + (i * 4);
                                 writer.Write($"{pos:X2} = ");
-                                foreach (var x in temp)
+                                foreach (var b in BitConverter.GetBytes(WeaponPrices[i]))
                                 {
-                                    writer.Write($"{x:X2} ");
+                                    writer.Write($"{b:X2} ");
                                 }
                                 writer.WriteLine();
-                            }
-                        }
-                        if (checker)
-                        {
-                            writer.WriteLine();
-                            checker = false;
-                        }
-
-                        //compare Cait Sith's data
-                        if (CaitSith != null && original.CaitSith != null)
-                        {
-                            if (!DataParser.CharacterDataIsIdentical(CaitSith, original.CaitSith))
-                            {
-                                byte[] temp1 = DataParser.GetCharacterInitialDataBytes(CaitSith),
-                                    temp2 = DataParser.GetCharacterInitialDataBytes(original.CaitSith);
-                                diff = false;
-
-                                writer.WriteLine("# Cait Sith's initial data");
-                                for (i = 0; i < DataParser.CHARACTER_RECORD_LENGTH; ++i)
-                                {
-                                    if (temp1[i] != temp2[i])
-                                    {
-                                        if (!diff)
-                                        {
-                                            pos = CAIT_SITH_DATA_POS + HEXT_OFFSET_2 + i;
-                                            writer.Write($"{pos:X2} = ");
-                                            diff = true;
-                                        }
-                                        writer.Write($"{temp1[i]:X2} ");
-                                    }
-                                    else
-                                    {
-                                        if (diff)
-                                        {
-                                            writer.WriteLine();
-                                            diff = false;
-                                        }
-                                    }
-                                }
                                 writer.WriteLine();
                             }
                         }
 
-                        //compare Vincent's data
-                        if (Vincent != null && original.Vincent != null)
+                        //compare armor prices
+                        for (i = 0; i < DataParser.ARMOR_COUNT; ++i)
                         {
-                            if (!DataParser.CharacterDataIsIdentical(Vincent, original.Vincent))
+                            if (ArmorPrices[i] != original.ArmorPrices[i])
                             {
-                                byte[] temp1 = DataParser.GetCharacterInitialDataBytes(Vincent),
-                                    temp2 = DataParser.GetCharacterInitialDataBytes(original.Vincent);
-                                diff = false;
-
-                                writer.WriteLine("# Vincent's initial data");
-                                for (i = 0; i < DataParser.CHARACTER_RECORD_LENGTH; ++i)
-                                {
-                                    if (temp1[i] != temp2[i])
-                                    {
-                                        if (!diff)
-                                        {
-                                            pos = CAIT_SITH_DATA_POS + HEXT_OFFSET_2 + DataParser.CHARACTER_RECORD_LENGTH + i;
-                                            writer.Write($"{pos:X2} = ");
-                                            diff = true;
-                                        }
-                                        writer.Write($"{temp1[i]:X2} ");
-                                    }
-                                    else
-                                    {
-                                        if (diff)
-                                        {
-                                            writer.WriteLine();
-                                            diff = false;
-                                        }
-                                    }
-                                }
-                                writer.WriteLine();
-                            }
-                        }
-
-                        //compare shop names
-                        for (i = 0; i < NUM_SHOP_NAMES; ++i)
-                        {
-                            string name1 = ShopNames[i].ToString(),
-                                name2 = original.ShopNames[i].ToString();
-
-                            if (name1 != name2)
-                            {
-                                checker = true;
-                                writer.WriteLine($"# {name2} -> {name1}");
-                                var temp = ShopNames[i].GetBytes();
-                                pos = SHOP_NAME_POS + HEXT_OFFSET_2 + (GetShopNameLength() * i);
+                                writer.WriteLine($"# {DataManager.Kernel.ArmorData.Armors[i].Name} price");
+                                pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.ARMOR_START * 4) + (i * 4);
                                 writer.Write($"{pos:X2} = ");
-                                foreach (var x in temp)
+                                foreach (var b in BitConverter.GetBytes(ArmorPrices[i]))
                                 {
-                                    writer.Write($"{x:X2} ");
+                                    writer.Write($"{b:X2} ");
                                 }
+                                writer.WriteLine();
                                 writer.WriteLine();
                             }
                         }
-                        if (checker)
+
+                        //compare accessory prices
+                        for (i = 0; i < DataParser.ACCESSORY_COUNT; ++i)
                         {
-                            writer.WriteLine();
-                            checker = false;
+                            if (AccessoryPrices[i] != original.AccessoryPrices[i])
+                            {
+                                writer.WriteLine($"# {DataManager.Kernel.AccessoryData.Accessories[i].Name} price");
+                                pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.ACCESSORY_START * 4) + (i * 4);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var b in BitConverter.GetBytes(AccessoryPrices[i]))
+                                {
+                                    writer.Write($"{b:X2} ");
+                                }
+                                writer.WriteLine();
+                                writer.WriteLine();
+                            }
                         }
 
-                        //compare shop text
-                        for (i = 0; i < NUM_SHOP_TEXTS; ++i)
+                        //compare materia prices
+                        for (i = 0; i < DataManager.Kernel.MateriaData.Materias.Length; ++i)
                         {
-                            string text1 = ShopText[i].ToString(),
-                                text2 = original.ShopText[i].ToString();
+                            if (MateriaPrices[i] != original.MateriaPrices[i])
+                            {
+                                writer.WriteLine($"# {DataManager.Kernel.MateriaData.Materias[i].Name} price");
+                                pos = MATERIA_PRICE_DATA_POS + HEXT_OFFSET_2 + (i * 4);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var b in BitConverter.GetBytes(MateriaPrices[i]))
+                                {
+                                    writer.Write($"{b:X2} ");
+                                }
+                                writer.WriteLine();
+                                writer.WriteLine();
+                            }
+                        }
+
+                        //compare Teioh's name
+                        string name1 = ChocoboNames[NUM_CHOCOBO_NAMES].ToString(),
+                            name2 = original.ChocoboNames[NUM_CHOCOBO_NAMES].ToString();
+
+                        if (name1 != name2)
+                        {
+                            checker = true;
+                            writer.WriteLine($"# {name2} -> {name1}");
+                            var temp = ChocoboNames[NUM_CHOCOBO_NAMES].GetBytes();
+                            pos = TEIOH_POS + HEXT_OFFSET_2;
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var x in temp)
+                            {
+                                writer.Write($"{x:X2} ");
+                            }
+                            writer.WriteLine();
+                        }
+
+                        //compare chocobo race prizes
+                        for (i = 0; i < NUM_CHOCOBO_RACE_ITEMS; ++i)
+                        {
+                            string text1 = ChocoboRacePrizes[i].ToString(),
+                                text2 = original.ChocoboRacePrizes[i].ToString();
 
                             if (text1 != text2)
                             {
                                 checker = true;
                                 writer.WriteLine($"# {text2} -> {text1}");
-                                var temp = ShopText[i].GetBytes();
-                                pos = SHOP_TEXT_POS + HEXT_OFFSET_2 + (SHOP_TEXT_LENGTH * i);
+                                var temp = ChocoboRacePrizes[i].GetBytes();
+                                pos = CHOCOBO_RACE_ITEMS_POS + HEXT_OFFSET_2 + (ITEM_NAME_LENGTH * i);
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var x in temp)
                                 {
@@ -1473,128 +1759,30 @@ namespace FF7Scarlet.ExeEditor
                             checker = false;
                         }
 
-                        //compare shop inventories
-                        if (DataManager.Kernel != null)
+                        //compare chocobo racer names (besides Teioh)
+                        for (i = 0; i < NUM_CHOCOBO_NAMES - 1; ++i)
                         {
-                            for (i = 0; i < NUM_SHOPS; ++i)
-                            {
-                                if (Shops[i].HasDifferences(original.Shops[i]))
-                                {
-                                    writer.WriteLine($"# {ShopData.SHOP_NAMES[i]}");
-                                    var temp1 = Shops[i].GetByteArray();
-                                    var temp2 = original.Shops[i].GetByteArray();
-                                    diff = false;
+                            string text1 = ChocoboNames[i].ToString(),
+                                text2 = original.ChocoboNames[i].ToString();
 
-                                    for (j = 0; j < ShopInventory.SHOP_DATA_LENGTH; ++j)
-                                    {
-                                        if (temp1[j] != temp2[j])
-                                        {
-                                            checker = true;
-                                            if (!diff)
-                                            {
-                                                pos = SHOP_INVENTORY_POS + HEXT_OFFSET_2 + (ShopInventory.SHOP_DATA_LENGTH * i) + j;
-                                                writer.Write($"{pos:X2} = ");
-                                                diff = true;
-                                            }
-                                            writer.Write($"{temp1[j]:X2} ");
-                                        }
-                                        else
-                                        {
-                                            if (diff)
-                                            {
-                                                writer.WriteLine();
-                                                diff = false;
-                                            }
-                                        }
-                                    }
-                                    writer.WriteLine();
-                                }
-                            }
-
-                            //compare item prices
-                            for (i = 0; i < DataParser.ITEM_COUNT; ++i)
+                            if (text1 != text2)
                             {
-                                if (ItemPrices[i] != original.ItemPrices[i])
+                                checker = true;
+                                writer.WriteLine($"# {text2} -> {text1}");
+                                var temp = ChocoboNames[i].GetBytes(CHOCOBO_NAME_LENGTH, true);
+                                pos = CHOCOBO_NAMES_POS + HEXT_OFFSET_2 + (CHOCOBO_NAME_LENGTH * i);
+                                writer.Write($"{pos:X2} = ");
+                                foreach (var x in temp)
                                 {
-                                    writer.WriteLine($"# {DataManager.Kernel.ItemData.Items[i].Name} price");
-                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (i * 4);
-                                    writer.Write($"{pos:X2} = ");
-                                    foreach (var b in BitConverter.GetBytes(ItemPrices[i]))
-                                    {
-                                        writer.Write($"{b:X2} ");
-                                    }
-                                    writer.WriteLine();
-                                    writer.WriteLine();
+                                    writer.Write($"{x:X2} ");
                                 }
+                                writer.WriteLine();
                             }
-
-                            //compare weapon prices
-                            for (i = 0; i < DataParser.WEAPON_COUNT; ++i)
-                            {
-                                if (WeaponPrices[i] != original.WeaponPrices[i])
-                                {
-                                    writer.WriteLine($"# {DataManager.Kernel.WeaponData.Weapons[i].Name} price");
-                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.WEAPON_START * 4) + (i * 4);
-                                    writer.Write($"{pos:X2} = ");
-                                    foreach (var b in BitConverter.GetBytes(WeaponPrices[i]))
-                                    {
-                                        writer.Write($"{b:X2} ");
-                                    }
-                                    writer.WriteLine();
-                                    writer.WriteLine();
-                                }
-                            }
-
-                            //compare armor prices
-                            for (i = 0; i < DataParser.ARMOR_COUNT; ++i)
-                            {
-                                if (ArmorPrices[i] != original.ArmorPrices[i])
-                                {
-                                    writer.WriteLine($"# {DataManager.Kernel.ArmorData.Armors[i].Name} price");
-                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.ARMOR_START * 4) + (i * 4);
-                                    writer.Write($"{pos:X2} = ");
-                                    foreach (var b in BitConverter.GetBytes(ArmorPrices[i]))
-                                    {
-                                        writer.Write($"{b:X2} ");
-                                    }
-                                    writer.WriteLine();
-                                    writer.WriteLine();
-                                }
-                            }
-
-                            //compare accessory prices
-                            for (i = 0; i < DataParser.ACCESSORY_COUNT; ++i)
-                            {
-                                if (AccessoryPrices[i] != original.AccessoryPrices[i])
-                                {
-                                    writer.WriteLine($"# {DataManager.Kernel.AccessoryData.Accessories[i].Name} price");
-                                    pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.ACCESSORY_START * 4) + (i * 4);
-                                    writer.Write($"{pos:X2} = ");
-                                    foreach (var b in BitConverter.GetBytes(AccessoryPrices[i]))
-                                    {
-                                        writer.Write($"{b:X2} ");
-                                    }
-                                    writer.WriteLine();
-                                    writer.WriteLine();
-                                }
-                            }
-
-                            //compare materia prices
-                            for (i = 0; i < DataManager.Kernel.MateriaData.Materias.Length; ++i)
-                            {
-                                if (MateriaPrices[i] != original.MateriaPrices[i])
-                                {
-                                    writer.WriteLine($"# {DataManager.Kernel.MateriaData.Materias[i].Name} price");
-                                    pos = MATERIA_PRICE_DATA_POS + HEXT_OFFSET_2 + (i * 4);
-                                    writer.Write($"{pos:X2} = ");
-                                    foreach (var b in BitConverter.GetBytes(MateriaPrices[i]))
-                                    {
-                                        writer.Write($"{b:X2} ");
-                                    }
-                                    writer.WriteLine();
-                                    writer.WriteLine();
-                                }
-                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
                         }
                     }
                 }
