@@ -130,6 +130,12 @@ namespace FF7Scarlet.SceneEditor
             numericEnemyHP.Maximum = uint.MaxValue;
             numericEnemyEXP.Maximum = uint.MaxValue;
             numericEnemyGil.Maximum = uint.MaxValue;
+            numericFormationEnemyX.Minimum = short.MinValue;
+            numericFormationEnemyX.Maximum = short.MaxValue;
+            numericFormationEnemyY.Minimum = short.MinValue;
+            numericFormationEnemyY.Maximum = short.MaxValue;
+            numericFormationEnemyZ.Minimum = short.MinValue;
+            numericFormationEnemyZ.Maximum = short.MaxValue;
 
             //populate combo boxes
             comboBoxEnemyResistElement.BeginUpdate();
@@ -903,6 +909,8 @@ namespace FF7Scarlet.SceneEditor
                 formation.CameraPlacementData.CameraDirections[1]);
             cameraPositionControlExtra2.SetPosition(formation.CameraPlacementData.CameraPositions[2],
                 formation.CameraPlacementData.CameraDirections[2]);
+            cameraPositionControlExtra3.SetPosition(formation.CameraPlacementData.CameraPositions[3],
+                formation.CameraPlacementData.CameraDirections[3]);
 
             //A.I. scripts
             scriptControlFormations.AIContainer = formation;
@@ -951,14 +959,16 @@ namespace FF7Scarlet.SceneEditor
             formation.CameraPlacementData.CameraDirections[1] = cameraPositionControlExtra1.GetAngle();
             formation.CameraPlacementData.CameraPositions[2] = cameraPositionControlExtra2.GetPosition();
             formation.CameraPlacementData.CameraDirections[2] = cameraPositionControlExtra2.GetAngle();
+            formation.CameraPlacementData.CameraPositions[3] = cameraPositionControlExtra3.GetPosition();
+            formation.CameraPlacementData.CameraDirections[3] = cameraPositionControlExtra3.GetAngle();
 
             formationNeedsSync = false;
         }
 
         private void SyncFormationEnemyData(EnemyLocation enemy)
         {
-            enemy.Location = new Point3D((ushort)numericFormationEnemyX.Value, (ushort)numericFormationEnemyY.Value,
-                (ushort)numericFormationEnemyZ.Value);
+            enemy.Location = new Point3D((short)numericFormationEnemyX.Value, (short)numericFormationEnemyY.Value,
+                (short)numericFormationEnemyZ.Value);
             enemy.Row = (ushort)numericFormationEnemyRow.Value;
             enemy.InitialConditionFlags = initialConditionControlEnemy.GetFlags();
             Array.Copy(coverFlagsControlFormationEnemy.GetFlags(), enemy.CoverFlags, enemy.CoverFlags.Length);

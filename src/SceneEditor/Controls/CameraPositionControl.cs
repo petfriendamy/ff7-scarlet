@@ -29,14 +29,14 @@ namespace FF7Scarlet.SceneEditor.Controls
 
         public Point3D GetPosition()
         {
-            return new Point3D((ushort)numericPositionX.Value, (ushort)numericPositionY.Value,
-                (ushort)numericPositionZ.Value);
+            return new Point3D((short)numericPositionX.Value, (short)numericPositionY.Value,
+                (short)numericPositionZ.Value);
         }
 
         public Point3D GetAngle()
         {
-            return new Point3D((ushort)numericAngleX.Value, (ushort)numericAngleY.Value,
-                (ushort)numericUpAngleZ.Value);
+            return new Point3D((short)numericAngleX.Value, (short)numericAngleY.Value,
+                (short)numericUpAngleZ.Value);
         }
 
         private void NumericValueChanged(object? sender, EventArgs e)

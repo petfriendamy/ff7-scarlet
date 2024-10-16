@@ -2,11 +2,11 @@
 {
     public class Point3D
     {
-        public ushort X { get; }
-        public ushort Y { get; }
-        public ushort Z { get; }
+        public short X { get; }
+        public short Y { get; }
+        public short Z { get; }
 
-        public Point3D(ushort x, ushort y, ushort z)
+        public Point3D(short x, short y, short z)
         {
             X = x;
             Y = y;

@@ -10,6 +10,7 @@ namespace FF7Scarlet
     public static class HexParser
     {
         public const ushort NULL_OFFSET_16_BIT = 0xFFFF;
+        public const short NULL_OFFSET_16_BIT_SIGNED = -1;
         public const uint NULL_OFFSET_32_BIT = 0xFFFFFFFF;
         public static CultureInfo CultureInfo { get; } = new CultureInfo("en-US");
 

@@ -167,6 +167,7 @@
             labelFormationSelectedEnemy = new Label();
             listBoxFormationEnemies = new ListBox();
             tabPageCameraData = new TabPage();
+            cameraPositionControlExtra3 = new Controls.CameraPositionControl();
             cameraPositionControlExtra2 = new Controls.CameraPositionControl();
             cameraPositionControlExtra1 = new Controls.CameraPositionControl();
             cameraPositionControlMain = new Controls.CameraPositionControl();
@@ -1735,6 +1736,7 @@
             // 
             // tabPageCameraData
             // 
+            tabPageCameraData.Controls.Add(cameraPositionControlExtra3);
             tabPageCameraData.Controls.Add(cameraPositionControlExtra2);
             tabPageCameraData.Controls.Add(cameraPositionControlExtra1);
             tabPageCameraData.Controls.Add(cameraPositionControlMain);
@@ -1747,21 +1749,30 @@
             tabPageCameraData.Text = "Camera Data";
             tabPageCameraData.UseVisualStyleBackColor = true;
             // 
+            // cameraPositionControlExtra3
+            // 
+            cameraPositionControlExtra3.GroupBoxText = "Position 4";
+            cameraPositionControlExtra3.Location = new Point(243, 184);
+            cameraPositionControlExtra3.Name = "cameraPositionControlExtra3";
+            cameraPositionControlExtra3.Size = new Size(230, 172);
+            cameraPositionControlExtra3.TabIndex = 14;
+            cameraPositionControlExtra3.DataChanged += FormationDataChanged;
+            // 
             // cameraPositionControlExtra2
             // 
             cameraPositionControlExtra2.GroupBoxText = "Position 3";
-            cameraPositionControlExtra2.Location = new Point(6, 250);
+            cameraPositionControlExtra2.Location = new Point(7, 184);
             cameraPositionControlExtra2.Name = "cameraPositionControlExtra2";
-            cameraPositionControlExtra2.Size = new Size(239, 116);
+            cameraPositionControlExtra2.Size = new Size(230, 172);
             cameraPositionControlExtra2.TabIndex = 13;
             cameraPositionControlExtra2.DataChanged += FormationDataChanged;
             // 
             // cameraPositionControlExtra1
             // 
-            cameraPositionControlExtra1.GroupBoxText = "Position 2:";
-            cameraPositionControlExtra1.Location = new Point(6, 128);
+            cameraPositionControlExtra1.GroupBoxText = "Position 2";
+            cameraPositionControlExtra1.Location = new Point(243, 6);
             cameraPositionControlExtra1.Name = "cameraPositionControlExtra1";
-            cameraPositionControlExtra1.Size = new Size(239, 116);
+            cameraPositionControlExtra1.Size = new Size(230, 172);
             cameraPositionControlExtra1.TabIndex = 12;
             cameraPositionControlExtra1.DataChanged += FormationDataChanged;
             // 
@@ -1770,14 +1781,13 @@
             cameraPositionControlMain.GroupBoxText = "Main position";
             cameraPositionControlMain.Location = new Point(6, 6);
             cameraPositionControlMain.Name = "cameraPositionControlMain";
-            cameraPositionControlMain.Size = new Size(239, 116);
+            cameraPositionControlMain.Size = new Size(230, 172);
             cameraPositionControlMain.TabIndex = 11;
             cameraPositionControlMain.DataChanged += FormationDataChanged;
             // 
             // numericFormationPreBattleCamPosition
             // 
-            numericFormationPreBattleCamPosition.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            numericFormationPreBattleCamPosition.Location = new Point(251, 24);
+            numericFormationPreBattleCamPosition.Location = new Point(479, 24);
             numericFormationPreBattleCamPosition.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             numericFormationPreBattleCamPosition.Name = "numericFormationPreBattleCamPosition";
             numericFormationPreBattleCamPosition.Size = new Size(108, 23);
@@ -1786,9 +1796,8 @@
             // 
             // labelFormationCamPreBattlePosition
             // 
-            labelFormationCamPreBattlePosition.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelFormationCamPreBattlePosition.AutoSize = true;
-            labelFormationCamPreBattlePosition.Location = new Point(251, 6);
+            labelFormationCamPreBattlePosition.Location = new Point(479, 6);
             labelFormationCamPreBattlePosition.Name = "labelFormationCamPreBattlePosition";
             labelFormationCamPreBattlePosition.Size = new Size(108, 15);
             labelFormationCamPreBattlePosition.TabIndex = 9;
@@ -2404,5 +2413,6 @@
         private ToolStripMenuItem formationCopyToolStripMenuItem;
         private ToolStripMenuItem formationPasteToolStripMenuItem;
         private ToolStripMenuItem formationClearToolStripMenuItem;
+        private Controls.CameraPositionControl cameraPositionControlExtra3;
     }
 }

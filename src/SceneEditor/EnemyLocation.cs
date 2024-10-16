@@ -18,20 +18,20 @@ namespace FF7Scarlet.SceneEditor
 
         public EnemyLocation()
         {
-            Location = new Point3D(HexParser.NULL_OFFSET_16_BIT, HexParser.NULL_OFFSET_16_BIT,
-                HexParser.NULL_OFFSET_16_BIT);
+            Location = new Point3D((HexParser.NULL_OFFSET_16_BIT_SIGNED), HexParser.NULL_OFFSET_16_BIT_SIGNED,
+                HexParser.NULL_OFFSET_16_BIT_SIGNED);
         }
 
         public EnemyLocation(byte[] data)
         {
-            ushort x, y, z;
+            short x, y, z;
             using (var ms = new MemoryStream(data, false))
             using (var reader = new BinaryReader(ms))
             {
                 EnemyID = reader.ReadUInt16();
-                x = reader.ReadUInt16();
-                y = reader.ReadUInt16();
-                z = reader.ReadUInt16();
+                x = reader.ReadInt16();
+                y = reader.ReadInt16();
+                z = reader.ReadInt16();
                 Location = new Point3D(x, y, z);
                 Row = reader.ReadUInt16();
                 var temp = reader.ReadBytes(2);
