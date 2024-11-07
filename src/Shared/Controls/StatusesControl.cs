@@ -7,7 +7,7 @@ namespace FF7Scarlet.KernelEditor.Controls
     {
         private CheckBox[] checkBoxes;
         private Statuses[] statusList;
-        private const int FULL_LIST_LENGTH = 31, PARTIAL_LIST_LENGTH = 24;
+        private const int FULL_LIST_LENGTH = 32, PARTIAL_LIST_LENGTH = 24;
         private bool fullList = true, loading = false;
 
         [Description("The text for the GroupBox.")]
@@ -43,8 +43,8 @@ namespace FF7Scarlet.KernelEditor.Controls
                 checkBoxStop, checkBoxFrog, checkBoxSmall, checkBoxSlowNumb, checkBoxPetrify,
                 checkBoxRegen, checkBoxBarrier, checkBoxMBarrier, checkBoxReflect, checkBoxDual,
                 checkBoxShield, checkBoxDeathSentence, checkBoxManipulate, checkBoxBerserk,
-                checkBoxPeerless, checkBoxDarkness, checkBoxDualDrain, checkBoxDeathForce,
-                checkBoxResist, checkBoxLuckyGirl, checkBoxImprisoned
+                checkBoxPeerless, checkBoxParalysis, checkBoxDarkness, checkBoxDualDrain,
+                checkBoxDeathForce, checkBoxResist, checkBoxLuckyGirl, checkBoxImprisoned
             };
             statusList = Enum.GetValues<Statuses>();
         }

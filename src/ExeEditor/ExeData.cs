@@ -40,12 +40,12 @@ namespace FF7Scarlet.ExeEditor
             AP_MASTER_OFFSET = 0x4F,
             CONFIG_MENU_TEXT_POS = 0x5188A8,
             MAIN_MENU_TEXT_POS = 0x5192C0,
-            MATERIA_PRIORITY_POS = 0x519498,
             STATUS_EFFECT_POS = 0x51D228,
             LIMIT_BREAK_POS = 0x51E0D4,
             MATERIA_MENU_TEXT_POS = 0x51F5A8,
             LIMIT_TEXT_POS = 0x51FBF0,
             ITEM_SORT_POS = 0x51FF48,
+            MATERIA_PRIORITY_POS = 0x5201C8,
             NAME_DATA_POS = 0x5206B8,
             CAIT_SITH_DATA_POS = 0x520C10,
             SHOP_NAME_POS = 0x5219C8,
@@ -1203,48 +1203,6 @@ namespace FF7Scarlet.ExeEditor
                         checker = false;
                     }
 
-                    //compare materia priority list
-                    var p1 =
-                        (from p in MateriaPriority
-                        orderby p.Key
-                        select p.Value).ToArray();
-                    var p2 =
-                        (from p in original.MateriaPriority
-                        orderby p.Key
-                        select p.Value).ToArray();
-                    diff = false;
-                    for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
-                    {
-                        if (p1[i] != p2[i])
-                        {
-                            if (!checker)
-                            {
-                                writer.WriteLine("# Materia priority");
-                                checker = true;
-                            }
-                            if (!diff)
-                            {
-                                pos = MATERIA_PRIORITY_POS + HEXT_OFFSET_2 + i;
-                                writer.Write($"{pos:X2} = ");
-                                diff = true;
-                            }
-                            writer.Write($"{p1[i]:X2} ");
-                        }
-                        else
-                        {
-                            if (checker && diff)
-                            {
-                                writer.WriteLine();
-                                diff = false;
-                            }
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
-
                     //compare status effects
                     for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
                     {
@@ -1462,6 +1420,48 @@ namespace FF7Scarlet.ExeEditor
                                 writer.Write($"{x:X2} ");
                             }
                             writer.WriteLine();
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
+                    }
+
+                    //compare materia priority list
+                    var p1 =
+                        (from p in MateriaPriority
+                         orderby p.Key
+                         select p.Value).ToArray();
+                    var p2 =
+                        (from p in original.MateriaPriority
+                         orderby p.Key
+                         select p.Value).ToArray();
+                    diff = false;
+                    for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
+                    {
+                        if (p1[i] != p2[i])
+                        {
+                            if (!checker)
+                            {
+                                writer.WriteLine("# Materia priority");
+                                checker = true;
+                            }
+                            if (!diff)
+                            {
+                                pos = MATERIA_PRIORITY_POS + HEXT_OFFSET_2 + i;
+                                writer.Write($"{pos:X2} = ");
+                                diff = true;
+                            }
+                            writer.Write($"{p1[i]:X2} ");
+                        }
+                        else
+                        {
+                            if (checker && diff)
+                            {
+                                writer.WriteLine();
+                                diff = false;
+                            }
                         }
                     }
                     if (checker)

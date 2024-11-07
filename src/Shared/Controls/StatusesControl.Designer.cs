@@ -175,7 +175,7 @@
             // checkBoxParalysis
             // 
             checkBoxParalysis.AutoSize = true;
-            checkBoxParalysis.Location = new Point(279, 97);
+            checkBoxParalysis.Location = new Point(279, 122);
             checkBoxParalysis.Name = "checkBoxParalysis";
             checkBoxParalysis.Size = new Size(71, 19);
             checkBoxParalysis.TabIndex = 25;
@@ -186,7 +186,7 @@
             // checkBoxPeerless
             // 
             checkBoxPeerless.AutoSize = true;
-            checkBoxPeerless.Location = new Point(279, 122);
+            checkBoxPeerless.Location = new Point(279, 97);
             checkBoxPeerless.Name = "checkBoxPeerless";
             checkBoxPeerless.Size = new Size(68, 19);
             checkBoxPeerless.TabIndex = 24;
