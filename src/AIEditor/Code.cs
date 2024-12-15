@@ -17,6 +17,7 @@
         {
             return Parent.Parent.Parent;
         }
+        public abstract bool HasOpcode(Opcodes op);
 
         public Code(Script parent)
         {

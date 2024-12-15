@@ -76,6 +76,18 @@ namespace FF7Scarlet.AIEditor
             headersAreCorrect = other.headersAreCorrect;
         }
 
+        public bool HasOpcode(Opcodes op)
+        {
+            foreach (var c in code)
+            {
+                if (c.HasOpcode(op))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void ParseScript(ref byte[] data, int offset, int length)
         {
             //run through the script and idenify all the opcodes
@@ -401,11 +413,6 @@ namespace FF7Scarlet.AIEditor
                     //output the disassembled code
                     output.Add($"{new string(indent)}{c.Disassemble(true)}");
                 }
-
-                /*foreach (var c in code)
-                {
-                    output.Add(c.Disassemble(true));
-                }*/
             }
             return output.ToArray();
         }

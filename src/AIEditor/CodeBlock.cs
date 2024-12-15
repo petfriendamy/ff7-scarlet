@@ -40,6 +40,18 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
+        public override bool HasOpcode(Opcodes op)
+        {
+            foreach (var c in block)
+            {
+                if (c.HasOpcode(op))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void AddToTop(Code code)
         {
             block.Insert(0, code);

@@ -60,6 +60,11 @@ namespace FF7Scarlet.AIEditor
             return Convert.ToUInt16(GetDataLength() + value);
         }
 
+        public override bool HasOpcode(Opcodes op)
+        {
+            return (byte)op == Opcode;
+        }
+
         public override string Disassemble(bool verbose)
         {
             string output = "";
