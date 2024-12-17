@@ -1337,7 +1337,7 @@ namespace FF7Scarlet.ExeEditor
                     checker = true;
                     output.Append($"# {text2} -> {text1}");
                     output.AppendLine();
-                    var temp = MainMenuTexts[i].GetBytes();
+                    var temp = strings[i].GetBytes();
                     pos = position + HEXT_OFFSET_2 + (length * i);
                     output.Append($"{pos:X2} = ");
                     foreach (var x in temp)
@@ -1392,8 +1392,8 @@ namespace FF7Scarlet.ExeEditor
                         CONFIG_MENU_TEXT_POS, GetConfigTextLength(), NUM_CONFIG_MENU_TEXTS));
 
                     //write main menu text
-                    writer.Write(WriteHextStrings(MainMenuTexts, original.MainMenuTexts, MAIN_MENU_TEXT_POS,
-                        MENU_TEXT_LENGTH, NUM_MENU_TEXTS));
+                    writer.Write(WriteHextStrings(MainMenuTexts, original.MainMenuTexts,
+                        MAIN_MENU_TEXT_POS, MENU_TEXT_LENGTH, NUM_MENU_TEXTS));
 
                     //write status effects (battle)
                     writer.Write(WriteHextStrings(StatusEffectsBattle, original.StatusEffectsBattle,
