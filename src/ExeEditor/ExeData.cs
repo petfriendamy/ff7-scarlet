@@ -4,6 +4,7 @@ using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -16,9 +17,11 @@ namespace FF7Scarlet.ExeEditor
         public const string CONFIG_KEY = "VanillaExePath";
         public const int
             NUM_MENU_TEXTS = 23,
-            NUM_EQUIP_TEXTS = 23,
-            NUM_MATERIA_TEXTS = 42,
-            NUM_CONFIG_TEXTS = 51,
+            NUM_ITEM_MENU_TEXTS = 11,
+            NUM_MAGIC_MENU_TEXTS = 14,
+            NUM_EQUIP_MENU_TEXTS = 23,
+            NUM_MATERIA_MENU_TEXTS = 42,
+            NUM_CONFIG_MENU_TEXTS = 51,
             NUM_ELEMENTS = 9,
             NUM_STATUS_EFFECTS = 27,
             NUM_STATUS_MENU_TEXTS = 27,
@@ -31,9 +34,9 @@ namespace FF7Scarlet.ExeEditor
             NUM_CHOCOBO_RACE_ITEMS = 24,
             
             MENU_TEXT_LENGTH = 20,
-            EQUIP_TEXT_LENGTH = 12,
+            ITEM_MENU_TEXT_LENGTH = 12,
+            EQUIP_MENU_TEXT_LENGTH = 12,
             ELEMENT_NAME_LENGTH = 10,
-            STATUS_MENU_NAME_LENGTH = 20,
             STATUS_MENU_TEXT_LENGTH = 15,
             SHOP_TEXT_LENGTH = 46,
             CHOCOBO_NAME_LENGTH = 7,
@@ -55,6 +58,8 @@ namespace FF7Scarlet.ExeEditor
             STATUS_MENU_TEXT_POS = 0x51F1C0,
             EQUIP_MENU_TEXT_POS = 0x51F3A8,
             MATERIA_MENU_TEXT_POS = 0x51F5A8,
+            MAGIC_MENU_TEXT_POS = 0x51F9E8,
+            ITEM_MENU_TEXT_POS = 0x51FB68,
             LIMIT_TEXT_POS = 0x51FBF0,
             ITEM_SORT_POS = 0x51FF48,
             MATERIA_PRIORITY_POS = 0x5201C8,
@@ -77,13 +82,15 @@ namespace FF7Scarlet.ExeEditor
         public FFText[] LimitFail { get; } = new FFText[Kernel.PLAYABLE_CHARACTER_COUNT - 1];
         public FFText[] LimitWrong { get; } = new FFText[Kernel.PLAYABLE_CHARACTER_COUNT];
         public FFText[] MainMenuTexts { get; } = new FFText[NUM_MENU_TEXTS];
-        public FFText[] MateriaMenuTexts { get; } = new FFText[NUM_MATERIA_TEXTS];
-        public FFText[] EquipMenuTexts { get; } = new FFText[NUM_EQUIP_TEXTS];
+        public FFText[] ItemMenuTexts { get; } = new FFText[NUM_ITEM_MENU_TEXTS];
+        public FFText[] MagicMenuTexts { get; } = new FFText[NUM_MAGIC_MENU_TEXTS];
+        public FFText[] MateriaMenuTexts { get; } = new FFText[NUM_MATERIA_MENU_TEXTS];
+        public FFText[] EquipMenuTexts { get; } = new FFText[NUM_EQUIP_MENU_TEXTS];
         public FFText[] ElementNames { get; } = new FFText[NUM_ELEMENTS];
         public FFText[] StatusEffectsBattle { get; } = new FFText[NUM_STATUS_EFFECTS];
         public FFText[] StatusEffectsMenu { get; } = new FFText[NUM_STATUS_EFFECTS];
         public FFText[] StatusMenuTexts { get; } = new FFText[NUM_STATUS_MENU_TEXTS];
-        public FFText[] ConfigMenuTexts { get; } = new FFText[NUM_CONFIG_TEXTS];
+        public FFText[] ConfigMenuTexts { get; } = new FFText[NUM_CONFIG_MENU_TEXTS];
         public FFText[] CharacterNames { get; } = new FFText[NUM_CHARACTER_NAMES];
         public FFText[] ChocoboNames { get; } = new FFText[NUM_CHOCOBO_NAMES + 1]; //extra slot for Teioh
         public FFText[] ChocoboRacePrizes { get; } = new FFText[NUM_CHOCOBO_RACE_ITEMS];
@@ -288,7 +295,7 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        public int GetStatusEffectLength()
+        public int GetStatusEffectBattleLength()
         {
             switch (Language)
             {
@@ -459,13 +466,6 @@ namespace FF7Scarlet.ExeEditor
                         //English only stuff (for now)
                         if (Language == Language.English)
                         {
-                            //get materia priority values
-                            stream.Seek(MATERIA_PRIORITY_POS, SeekOrigin.Begin);
-                            for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
-                            {
-                                MateriaPriority.Add((byte)i, reader.ReadByte());
-                            }
-
                             //get element names
                             stream.Seek(STATUS_MENU_ELEMENT_POS, SeekOrigin.Begin);
                             for (i = 0; i < NUM_ELEMENTS; ++i)
@@ -477,7 +477,7 @@ namespace FF7Scarlet.ExeEditor
                             stream.Seek(STATUS_MENU_EFFECTS_POS, SeekOrigin.Begin);
                             for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
                             {
-                                StatusEffectsMenu[i] = new FFText(reader.ReadBytes(STATUS_MENU_NAME_LENGTH));
+                                StatusEffectsMenu[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
                             }
 
                             //get status menu text
@@ -489,16 +489,30 @@ namespace FF7Scarlet.ExeEditor
 
                             //get equip menu text
                             stream.Seek(EQUIP_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_EQUIP_TEXTS; ++i)
+                            for (i = 0; i < NUM_EQUIP_MENU_TEXTS; ++i)
                             {
-                                EquipMenuTexts[i] = new FFText(reader.ReadBytes(EQUIP_TEXT_LENGTH));
+                                EquipMenuTexts[i] = new FFText(reader.ReadBytes(EQUIP_MENU_TEXT_LENGTH));
                             }
 
                             //get materia menu text
                             stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_MATERIA_TEXTS; ++i)
+                            for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
                             {
                                 MateriaMenuTexts[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
+                            }
+
+                            //get magic menu text
+                            stream.Seek(MAGIC_MENU_TEXT_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_MAGIC_MENU_TEXTS; ++i)
+                            {
+                                MagicMenuTexts[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
+                            }
+
+                            //get item menu text
+                            stream.Seek(ITEM_MENU_TEXT_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_ITEM_MENU_TEXTS; ++i)
+                            {
+                                ItemMenuTexts[i] = new FFText(reader.ReadBytes(ITEM_MENU_TEXT_LENGTH));
                             }
 
                             //get item sort values
@@ -506,6 +520,13 @@ namespace FF7Scarlet.ExeEditor
                             for (i = 0; i < DataParser.MATERIA_START; ++i)
                             {
                                 ItemsSortedByName.Add((ushort)i, reader.ReadUInt16());
+                            }
+
+                            //get materia priority values
+                            stream.Seek(MATERIA_PRIORITY_POS, SeekOrigin.Begin);
+                            for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
+                            {
+                                MateriaPriority.Add((byte)i, reader.ReadByte());
                             }
 
                             //get chocobo race prizes
@@ -533,7 +554,7 @@ namespace FF7Scarlet.ExeEditor
 
                         //get config menu text
                         stream.Seek(CONFIG_MENU_TEXT_POS + GetConfigOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_CONFIG_TEXTS; ++i)
+                        for (i = 0; i < NUM_CONFIG_MENU_TEXTS; ++i)
                         {
                             ConfigMenuTexts[i] = new FFText(reader.ReadBytes(GetConfigTextLength()));
                         }
@@ -549,7 +570,7 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(STATUS_EFFECT_BATTLE_POS + GetStatusOffset(), SeekOrigin.Begin);
                         for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
                         {
-                            StatusEffectsBattle[i] = new FFText(reader.ReadBytes(GetStatusEffectLength()));
+                            StatusEffectsBattle[i] = new FFText(reader.ReadBytes(GetStatusEffectBattleLength()));
                         }
 
                         //get limit breaks
@@ -655,15 +676,53 @@ namespace FF7Scarlet.ExeEditor
                         //English-only stuff (for now)
                         if (Language == Language.English)
                         {
-                            //write materia priority list
-                            stream.Seek(MATERIA_PRIORITY_POS, SeekOrigin.Begin);
-                            var materiaPositions =
-                                from mat in MateriaPriority
-                                orderby mat.Key
-                                select mat.Value;
-                            foreach (var p in materiaPositions)
+                            //write element names
+                            stream.Seek(STATUS_MENU_ELEMENT_POS, SeekOrigin.Begin);
+                            foreach (var n in ElementNames)
                             {
-                                writer.Write(p);
+                                writer.Write(n.GetBytes(ELEMENT_NAME_LENGTH));
+                            }
+
+                            //write status effects (menu)
+                            stream.Seek(STATUS_MENU_EFFECTS_POS, SeekOrigin.Begin);
+                            foreach (var t in StatusEffectsMenu)
+                            {
+                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                            }
+
+                            //write status menu text
+                            stream.Seek(STATUS_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in StatusMenuTexts)
+                            {
+                                writer.Write(t.GetBytes(STATUS_MENU_TEXT_LENGTH));
+                            }
+
+                            //write equip menu text
+                            stream.Seek(EQUIP_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in EquipMenuTexts)
+                            {
+                                writer.Write(t.GetBytes(EQUIP_MENU_TEXT_LENGTH));
+                            }
+
+                            //write materia menu text
+                            stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in MateriaMenuTexts)
+                            {
+                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                            }
+
+                            //write magic menu text
+                            stream.Seek(MAGIC_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in EquipMenuTexts)
+                            {
+                                writer.Write(t.GetBytes(EQUIP_MENU_TEXT_LENGTH));
+                            }
+
+                            //write item menu text
+                            stream.Seek(ITEM_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in ItemMenuTexts)
+                            {
+                                writer.Write(t.GetBytes(ITEM_MENU_TEXT_LENGTH));
                             }
 
                             //write item sort values
@@ -684,46 +743,15 @@ namespace FF7Scarlet.ExeEditor
                                 writer.Write(p);
                             }
 
-                            //write element names
-                            stream.Seek(STATUS_MENU_ELEMENT_POS, SeekOrigin.Begin);
-                            foreach (var n in ElementNames)
+                            //write materia priority list
+                            stream.Seek(MATERIA_PRIORITY_POS, SeekOrigin.Begin);
+                            var materiaPositions =
+                                from mat in MateriaPriority
+                                orderby mat.Key
+                                select mat.Value;
+                            foreach (var p in materiaPositions)
                             {
-                                writer.Write(n.GetBytes(ELEMENT_NAME_LENGTH));
-                            }
-
-                            //write status effects (menu)
-                            stream.Seek(STATUS_MENU_EFFECTS_POS, SeekOrigin.Begin);
-                            foreach (var t in StatusEffectsMenu)
-                            {
-                                writer.Write(t.GetBytes(STATUS_MENU_NAME_LENGTH));
-                            }
-
-                            //write status menu text
-                            stream.Seek(STATUS_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in StatusMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(STATUS_MENU_TEXT_LENGTH));
-                            }
-
-                            //write equip menu text
-                            stream.Seek(EQUIP_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in EquipMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(EQUIP_TEXT_LENGTH));
-                            }
-
-                            //write materia menu text
-                            stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in MateriaMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
-                            }
-
-                            //write config menu text
-                            stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in MateriaMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                                writer.Write(p);
                             }
 
                             //write Teioh's name
@@ -770,7 +798,7 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(STATUS_EFFECT_BATTLE_POS + GetStatusOffset(), SeekOrigin.Begin);
                         foreach (var s in StatusEffectsBattle)
                         {
-                            writer.Write(s.GetBytes(GetStatusEffectLength()));
+                            writer.Write(s.GetBytes(GetStatusEffectBattleLength()));
                         }
 
                         //write limit breaks
@@ -929,7 +957,7 @@ namespace FF7Scarlet.ExeEditor
                     }
 
                     //read config menu text
-                    for (i = 0; i < NUM_CONFIG_TEXTS; ++i)
+                    for (i = 0; i < NUM_CONFIG_MENU_TEXTS; ++i)
                     {
                         ConfigMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetConfigTextLength());
@@ -940,7 +968,7 @@ namespace FF7Scarlet.ExeEditor
                     for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
                     {
                         StatusEffectsBattle[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                            GetStatusEffectLength());
+                            GetStatusEffectBattleLength());
                         stream.Seek(StatusEffectsBattle[i].ToString().Length + 1, SeekOrigin.Current);
                     }
 
@@ -998,7 +1026,7 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //read materia menu text
-                        for (i = 0; i < NUM_MATERIA_TEXTS; ++i)
+                        for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
                         {
                             MateriaMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                                 MENU_TEXT_LENGTH);
@@ -1006,10 +1034,10 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //read equip menu text
-                        for (i = 0; i < NUM_MATERIA_TEXTS; ++i)
+                        for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
                         {
                             EquipMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                EQUIP_TEXT_LENGTH);
+                                EQUIP_MENU_TEXT_LENGTH);
                             stream.Seek(EquipMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1025,7 +1053,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
                         {
                             StatusEffectsMenu[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                STATUS_MENU_NAME_LENGTH);
+                                MENU_TEXT_LENGTH);
                             stream.Seek(StatusEffectsMenu[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1051,6 +1079,22 @@ namespace FF7Scarlet.ExeEditor
                             ChocoboRacePrizes[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                                 ITEM_NAME_LENGTH);
                             stream.Seek(ChocoboRacePrizes[i].ToString().Length + 1, SeekOrigin.Current);
+                        }
+
+                        //read item menu text
+                        for (i = 0; i < NUM_ITEM_MENU_TEXTS; ++i)
+                        {
+                            ItemMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                ITEM_MENU_TEXT_LENGTH);
+                            stream.Seek(MateriaMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                        }
+
+                        //read magic menu text
+                        for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
+                        {
+                            MagicMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                MENU_TEXT_LENGTH);
+                            stream.Seek(MagicMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
                     }
                 }
@@ -1230,6 +1274,18 @@ namespace FF7Scarlet.ExeEditor
                 {
                     output.AddRange(p.GetBytes(ITEM_NAME_LENGTH));
                 }
+
+                //write item menu text
+                foreach (var i in ItemMenuTexts)
+                {
+                    output.AddRange(i.GetBytesTruncated());
+                }
+
+                //write magic menu text
+                foreach (var m in MagicMenuTexts)
+                {
+                    output.AddRange(m.GetBytesTruncated());
+                }
             }
 
             return output.ToArray();
@@ -1263,6 +1319,36 @@ namespace FF7Scarlet.ExeEditor
             {
                 throw new IOException("There was a problem writing the file.", ex);
             }
+        }
+
+        //private function to write text for a Hext file
+        private string WriteHextStrings(FFText[] strings, FFText[] original, long position, int length, int count)
+        {
+            var output = new StringBuilder();
+            bool checker = false;
+            long pos;
+
+            for (int i = 0; i < count; ++i)
+            {
+                string? text1 = strings[i].ToString(), text2 = original[i].ToString();
+
+                if (text1 != text2)
+                {
+                    checker = true;
+                    output.Append($"# {text2} -> {text1}");
+                    output.AppendLine();
+                    var temp = MainMenuTexts[i].GetBytes();
+                    pos = position + HEXT_OFFSET_2 + (length * i);
+                    output.Append($"{pos:X2} = ");
+                    foreach (var x in temp)
+                    {
+                        output.Append($"{x:X2} ");
+                    }
+                    output.AppendLine();
+                }
+            }
+            if (checker) { output.AppendLine(); }
+            return output.ToString();
         }
 
         //creates a Hext file
@@ -1301,83 +1387,17 @@ namespace FF7Scarlet.ExeEditor
                         writer.WriteLine();
                     }
 
-                    //compare config menu text
-                    for (i = 0; i < NUM_CONFIG_TEXTS; ++i)
-                    {
-                        string text1 = ConfigMenuTexts[i].ToString(),
-                            text2 = original.ConfigMenuTexts[i].ToString();
+                    //write config menu text
+                    writer.Write(WriteHextStrings(ConfigMenuTexts, original.ConfigMenuTexts,
+                        CONFIG_MENU_TEXT_POS, GetConfigTextLength(), NUM_CONFIG_MENU_TEXTS));
 
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = ConfigMenuTexts[i].GetBytes();
-                            pos = CONFIG_MENU_TEXT_POS + HEXT_OFFSET_2 + (GetConfigTextLength() * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    //write main menu text
+                    writer.Write(WriteHextStrings(MainMenuTexts, original.MainMenuTexts, MAIN_MENU_TEXT_POS,
+                        MENU_TEXT_LENGTH, NUM_MENU_TEXTS));
 
-                    //compare main menu text
-                    for (i = 0; i < NUM_MENU_TEXTS; ++i)
-                    {
-                        string text1 = MainMenuTexts[i].ToString(),
-                            text2 = original.MainMenuTexts[i].ToString();
-
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = MainMenuTexts[i].GetBytes();
-                            pos = MAIN_MENU_TEXT_POS + HEXT_OFFSET_2 + (MENU_TEXT_LENGTH * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
-
-                    //compare status effects (battle)
-                    for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
-                    {
-                        string text1 = StatusEffectsBattle[i].ToString(),
-                            text2 = original.StatusEffectsBattle[i].ToString();
-
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = StatusEffectsBattle[i].GetBytes();
-                            pos = STATUS_EFFECT_BATTLE_POS + HEXT_OFFSET_2 + (GetStatusEffectLength() * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    //write status effects (battle)
+                    writer.Write(WriteHextStrings(StatusEffectsBattle, original.StatusEffectsBattle,
+                        STATUS_EFFECT_BATTLE_POS, GetStatusEffectBattleLength(), NUM_STATUS_EFFECTS));
 
                     //compare limits
                     for (i = 0; i < NUM_LIMITS; ++i)
@@ -1414,135 +1434,33 @@ namespace FF7Scarlet.ExeEditor
                         }
                     }
 
-                    //compare element names
-                    for (i = 0; i < NUM_ELEMENTS; ++i)
-                    {
-                        string text1 = ElementNames[i].ToString(),
-                            text2 = original.ElementNames[i].ToString();
+                    //write element names
+                    writer.Write(WriteHextStrings(ElementNames, original.ElementNames,
+                        STATUS_MENU_ELEMENT_POS, ELEMENT_NAME_LENGTH, NUM_ELEMENTS));
 
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = ElementNames[i].GetBytes();
-                            pos = STATUS_MENU_ELEMENT_POS + HEXT_OFFSET_2 + (ELEMENT_NAME_LENGTH * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    //write status effects (menu)
+                    writer.Write(WriteHextStrings(StatusEffectsMenu, original.StatusEffectsMenu,
+                        STATUS_MENU_EFFECTS_POS, MENU_TEXT_LENGTH, NUM_STATUS_EFFECTS));
 
-                    //compare status effects (menu)
-                    for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
-                    {
-                        string text1 = StatusEffectsMenu[i].ToString(),
-                            text2 = original.StatusEffectsMenu[i].ToString();
+                    //write status menu text
+                    writer.Write(WriteHextStrings(StatusMenuTexts, original.StatusMenuTexts,
+                        STATUS_MENU_TEXT_POS, STATUS_MENU_TEXT_LENGTH, NUM_STATUS_MENU_TEXTS));
 
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = StatusEffectsMenu[i].GetBytes();
-                            pos = STATUS_MENU_EFFECTS_POS + HEXT_OFFSET_2 + (STATUS_MENU_NAME_LENGTH * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    //write equip menu text
+                    writer.Write(WriteHextStrings(EquipMenuTexts, original.EquipMenuTexts,
+                        EQUIP_MENU_TEXT_POS, EQUIP_MENU_TEXT_LENGTH, NUM_EQUIP_MENU_TEXTS));
 
-                    //compare status menu text
-                    for (i = 0; i < NUM_STATUS_MENU_TEXTS; ++i)
-                    {
-                        string text1 = StatusMenuTexts[i].ToString(),
-                            text2 = original.StatusMenuTexts[i].ToString();
+                    //write materia menu text
+                    writer.Write(WriteHextStrings(MateriaMenuTexts, original.MateriaMenuTexts,
+                        MATERIA_MENU_TEXT_POS, MENU_TEXT_LENGTH, NUM_MATERIA_MENU_TEXTS));
 
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = StatusMenuTexts[i].GetBytes();
-                            pos = STATUS_MENU_TEXT_POS + HEXT_OFFSET_2 + (STATUS_MENU_TEXT_LENGTH * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    //write magic menu text
+                    writer.Write(WriteHextStrings(MagicMenuTexts, original.MagicMenuTexts,
+                        MAGIC_MENU_TEXT_POS, MENU_TEXT_LENGTH, NUM_MAGIC_MENU_TEXTS));
 
-                    //compare equip menu text
-                    for (i = 0; i < NUM_EQUIP_TEXTS; ++i)
-                    {
-                        string text1 = EquipMenuTexts[i].ToString(),
-                            text2 = original.EquipMenuTexts[i].ToString();
-
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = EquipMenuTexts[i].GetBytes();
-                            pos = EQUIP_MENU_TEXT_POS + HEXT_OFFSET_2 + (EQUIP_TEXT_LENGTH * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
-
-                    //compare materia menu text
-                    for (i = 0; i < NUM_MATERIA_TEXTS; ++i)
-                    {
-                        string text1 = MateriaMenuTexts[i].ToString(),
-                            text2 = original.MateriaMenuTexts[i].ToString();
-
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = MateriaMenuTexts[i].GetBytes();
-                            pos = MATERIA_MENU_TEXT_POS + HEXT_OFFSET_2 + (MENU_TEXT_LENGTH * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    //write item menu text
+                    writer.Write(WriteHextStrings(ItemMenuTexts, original.ItemMenuTexts,
+                        ITEM_MENU_TEXT_POS, ITEM_MENU_TEXT_LENGTH, NUM_ITEM_MENU_TEXTS));
 
                     //compare limit text
                     j = 0;
@@ -1656,31 +1574,9 @@ namespace FF7Scarlet.ExeEditor
                         checker = false;
                     }
 
-                    //compare character names
-                    for (i = 0; i < NUM_CHARACTER_NAMES; ++i)
-                    {
-                        string name1 = CharacterNames[i].ToString(),
-                            name2 = original.CharacterNames[i].ToString();
-
-                        if (name1 != name2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {name2} -> {name1}");
-                            var temp = CharacterNames[i].GetBytes();
-                            pos = NAME_DATA_POS + HEXT_OFFSET_2 + (DataParser.CHARACTER_NAME_LENGTH * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    //write character names
+                    writer.Write(WriteHextStrings(CharacterNames, original.CharacterNames,
+                        NAME_DATA_POS, DataParser.CHARACTER_NAME_LENGTH, NUM_CHARACTER_NAMES));
 
                     //compare materia priority list
                     var p1 =
@@ -1794,57 +1690,13 @@ namespace FF7Scarlet.ExeEditor
                         }
                     }
 
-                    //compare shop names
-                    for (i = 0; i < NUM_SHOP_NAMES; ++i)
-                    {
-                        string name1 = ShopNames[i].ToString(),
-                            name2 = original.ShopNames[i].ToString();
-
-                        if (name1 != name2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {name2} -> {name1}");
-                            var temp = ShopNames[i].GetBytes();
-                            pos = SHOP_NAME_POS + HEXT_OFFSET_2 + (GetShopNameLength() * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    //write shop names
+                    writer.Write(WriteHextStrings(ShopNames, original.ShopNames,
+                        SHOP_NAME_POS, GetShopNameLength(), NUM_SHOP_NAMES));
 
                     //compare shop text
-                    for (i = 0; i < NUM_SHOP_TEXTS; ++i)
-                    {
-                        string text1 = ShopText[i].ToString(),
-                            text2 = original.ShopText[i].ToString();
-
-                        if (text1 != text2)
-                        {
-                            checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
-                            var temp = ShopText[i].GetBytes();
-                            pos = SHOP_TEXT_POS + HEXT_OFFSET_2 + (SHOP_TEXT_LENGTH * i);
-                            writer.Write($"{pos:X2} = ");
-                            foreach (var x in temp)
-                            {
-                                writer.Write($"{x:X2} ");
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    if (checker)
-                    {
-                        writer.WriteLine();
-                        checker = false;
-                    }
+                    writer.Write(WriteHextStrings(ShopText, original.ShopText,
+                        SHOP_TEXT_POS, SHOP_TEXT_LENGTH, NUM_SHOP_TEXTS));
 
                     //compare shop inventories
                     if (DataManager.Kernel != null)
@@ -1987,57 +1839,13 @@ namespace FF7Scarlet.ExeEditor
                             writer.WriteLine();
                         }
 
-                        //compare chocobo race prizes
-                        for (i = 0; i < NUM_CHOCOBO_RACE_ITEMS; ++i)
-                        {
-                            string text1 = ChocoboRacePrizes[i].ToString(),
-                                text2 = original.ChocoboRacePrizes[i].ToString();
+                        //write chocobo race prizes
+                        writer.Write(WriteHextStrings(ChocoboRacePrizes, original.ChocoboRacePrizes,
+                            CHOCOBO_RACE_ITEMS_POS, ITEM_NAME_LENGTH, NUM_CHOCOBO_RACE_ITEMS));
 
-                            if (text1 != text2)
-                            {
-                                checker = true;
-                                writer.WriteLine($"# {text2} -> {text1}");
-                                var temp = ChocoboRacePrizes[i].GetBytes();
-                                pos = CHOCOBO_RACE_ITEMS_POS + HEXT_OFFSET_2 + (ITEM_NAME_LENGTH * i);
-                                writer.Write($"{pos:X2} = ");
-                                foreach (var x in temp)
-                                {
-                                    writer.Write($"{x:X2} ");
-                                }
-                                writer.WriteLine();
-                            }
-                        }
-                        if (checker)
-                        {
-                            writer.WriteLine();
-                            checker = false;
-                        }
-
-                        //compare chocobo racer names (besides Teioh)
-                        for (i = 0; i < NUM_CHOCOBO_NAMES - 1; ++i)
-                        {
-                            string text1 = ChocoboNames[i].ToString(),
-                                text2 = original.ChocoboNames[i].ToString();
-
-                            if (text1 != text2)
-                            {
-                                checker = true;
-                                writer.WriteLine($"# {text2} -> {text1}");
-                                var temp = ChocoboNames[i].GetBytes(CHOCOBO_NAME_LENGTH, true);
-                                pos = CHOCOBO_NAMES_POS + HEXT_OFFSET_2 + (CHOCOBO_NAME_LENGTH * i);
-                                writer.Write($"{pos:X2} = ");
-                                foreach (var x in temp)
-                                {
-                                    writer.Write($"{x:X2} ");
-                                }
-                                writer.WriteLine();
-                            }
-                        }
-                        if (checker)
-                        {
-                            writer.WriteLine();
-                            checker = false;
-                        }
+                        //write chocobo racer names (besides Teioh)
+                        writer.Write(WriteHextStrings(ChocoboNames, original.ChocoboNames,
+                            CHOCOBO_NAMES_POS, CHOCOBO_NAME_LENGTH, NUM_CHOCOBO_NAMES));
                     }
                 }
             }
