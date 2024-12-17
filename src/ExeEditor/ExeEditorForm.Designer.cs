@@ -180,16 +180,23 @@ namespace FF7Scarlet.ExeEditor
             textBoxMainMenuText = new TextBox();
             listBoxMainMenu = new ListBox();
             tabPageItemMagicMenu = new TabPage();
-            labelItemMenuText = new Label();
-            textBoxItemMenuText = new TextBox();
-            listBoxItemMenu = new ListBox();
+            groupBoxMagicMenu = new GroupBox();
+            listBoxMagicMenu = new ListBox();
             labelMagicMenuText = new Label();
             textBoxMagicMenuText = new TextBox();
-            listBoxMagicMenu = new ListBox();
+            groupBoxItemMenu = new GroupBox();
+            listBoxItemMenu = new ListBox();
+            labelItemMenuText = new Label();
+            textBoxItemMenuText = new TextBox();
             tabPageMateriaMenu = new TabPage();
+            groupBoxUnequipText = new GroupBox();
+            listBoxUnequipText = new ListBox();
+            labelUnequipText = new Label();
+            textBoxUnequipText = new TextBox();
+            groupBoxMateriaText = new GroupBox();
+            listBoxMateriaMenu = new ListBox();
             labelMateriaMenuText = new Label();
             textBoxMateriaMenuText = new TextBox();
-            listBoxMateriaMenu = new ListBox();
             tabPageEquipMenu = new TabPage();
             labelEquipMenu = new Label();
             textBoxEquipMenuText = new TextBox();
@@ -203,10 +210,18 @@ namespace FF7Scarlet.ExeEditor
             labelElements = new Label();
             textBoxElements = new TextBox();
             listBoxElements = new ListBox();
+            tabPageLimitMenu = new TabPage();
+            labelLimitMenuText = new Label();
+            textBoxLimitMenuText = new TextBox();
+            listBoxLimitMenu = new ListBox();
             tabPageConfigMenu = new TabPage();
             labelConfigMenuText = new Label();
             textBoxConfigMenuText = new TextBox();
             listBoxConfigMenu = new ListBox();
+            tabPageSaveMenu = new TabPage();
+            labelSaveMenuText = new Label();
+            textBoxSaveMenuText = new TextBox();
+            listBoxSaveMenu = new ListBox();
             tabPageOtherText = new TabPage();
             tabControlOtherText = new TabControl();
             tabPageStatusEffects = new TabPage();
@@ -246,8 +261,6 @@ namespace FF7Scarlet.ExeEditor
             listBoxChocoboNames = new ListBox();
             buttonHext = new Button();
             panelButtons = new Panel();
-            groupBoxItemMenu = new GroupBox();
-            groupBoxMagicMenu = new GroupBox();
             tabControlMain.SuspendLayout();
             tabPageInitialData.SuspendLayout();
             groupBoxCharacterMP.SuspendLayout();
@@ -297,12 +310,18 @@ namespace FF7Scarlet.ExeEditor
             tabControlMenus.SuspendLayout();
             tabPageMainMenu.SuspendLayout();
             tabPageItemMagicMenu.SuspendLayout();
+            groupBoxMagicMenu.SuspendLayout();
+            groupBoxItemMenu.SuspendLayout();
             tabPageMateriaMenu.SuspendLayout();
+            groupBoxUnequipText.SuspendLayout();
+            groupBoxMateriaText.SuspendLayout();
             tabPageEquipMenu.SuspendLayout();
             tabPageStatusMenu.SuspendLayout();
             groupBoxStatusMenu.SuspendLayout();
             groupBoxElements.SuspendLayout();
+            tabPageLimitMenu.SuspendLayout();
             tabPageConfigMenu.SuspendLayout();
+            tabPageSaveMenu.SuspendLayout();
             tabPageOtherText.SuspendLayout();
             tabControlOtherText.SuspendLayout();
             tabPageStatusEffects.SuspendLayout();
@@ -316,8 +335,6 @@ namespace FF7Scarlet.ExeEditor
             groupBoxChocoboRacePrizes.SuspendLayout();
             groupBoxChocoboNames.SuspendLayout();
             panelButtons.SuspendLayout();
-            groupBoxItemMenu.SuspendLayout();
-            groupBoxMagicMenu.SuspendLayout();
             SuspendLayout();
             // 
             // buttonSaveEXE
@@ -1894,7 +1911,9 @@ namespace FF7Scarlet.ExeEditor
             tabControlMenus.Controls.Add(tabPageMateriaMenu);
             tabControlMenus.Controls.Add(tabPageEquipMenu);
             tabControlMenus.Controls.Add(tabPageStatusMenu);
+            tabControlMenus.Controls.Add(tabPageLimitMenu);
             tabControlMenus.Controls.Add(tabPageConfigMenu);
+            tabControlMenus.Controls.Add(tabPageSaveMenu);
             tabControlMenus.Dock = DockStyle.Fill;
             tabControlMenus.Location = new Point(0, 0);
             tabControlMenus.Name = "tabControlMenus";
@@ -1918,7 +1937,7 @@ namespace FF7Scarlet.ExeEditor
             // labelMainMenuText
             // 
             labelMainMenuText.AutoSize = true;
-            labelMainMenuText.Location = new Point(186, 6);
+            labelMainMenuText.Location = new Point(261, 6);
             labelMainMenuText.Name = "labelMainMenuText";
             labelMainMenuText.Size = new Size(31, 15);
             labelMainMenuText.TabIndex = 2;
@@ -1928,9 +1947,9 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxMainMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxMainMenuText.Enabled = false;
-            textBoxMainMenuText.Location = new Point(186, 24);
+            textBoxMainMenuText.Location = new Point(261, 24);
             textBoxMainMenuText.Name = "textBoxMainMenuText";
-            textBoxMainMenuText.Size = new Size(576, 23);
+            textBoxMainMenuText.Size = new Size(501, 23);
             textBoxMainMenuText.TabIndex = 1;
             textBoxMainMenuText.TextChanged += textBoxMainMenuText_TextChanged;
             // 
@@ -1939,9 +1958,8 @@ namespace FF7Scarlet.ExeEditor
             listBoxMainMenu.FormattingEnabled = true;
             listBoxMainMenu.ItemHeight = 15;
             listBoxMainMenu.Location = new Point(6, 6);
-            listBoxMainMenu.MaximumSize = new Size(174, 349);
             listBoxMainMenu.Name = "listBoxMainMenu";
-            listBoxMainMenu.Size = new Size(174, 349);
+            listBoxMainMenu.Size = new Size(249, 349);
             listBoxMainMenu.TabIndex = 0;
             listBoxMainMenu.SelectedIndexChanged += listBoxMainMenu_SelectedIndexChanged;
             // 
@@ -1956,39 +1974,33 @@ namespace FF7Scarlet.ExeEditor
             tabPageItemMagicMenu.Text = "Item/Magic menu";
             tabPageItemMagicMenu.UseVisualStyleBackColor = true;
             // 
-            // labelItemMenuText
+            // groupBoxMagicMenu
             // 
-            labelItemMenuText.AutoSize = true;
-            labelItemMenuText.Location = new Point(186, 22);
-            labelItemMenuText.Name = "labelItemMenuText";
-            labelItemMenuText.Size = new Size(31, 15);
-            labelItemMenuText.TabIndex = 8;
-            labelItemMenuText.Text = "Text:";
+            groupBoxMagicMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxMagicMenu.Controls.Add(listBoxMagicMenu);
+            groupBoxMagicMenu.Controls.Add(labelMagicMenuText);
+            groupBoxMagicMenu.Controls.Add(textBoxMagicMenuText);
+            groupBoxMagicMenu.Location = new Point(5, 210);
+            groupBoxMagicMenu.Name = "groupBoxMagicMenu";
+            groupBoxMagicMenu.Size = new Size(756, 286);
+            groupBoxMagicMenu.TabIndex = 10;
+            groupBoxMagicMenu.TabStop = false;
+            groupBoxMagicMenu.Text = "Magic menu";
             // 
-            // textBoxItemMenuText
+            // listBoxMagicMenu
             // 
-            textBoxItemMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxItemMenuText.Enabled = false;
-            textBoxItemMenuText.Location = new Point(186, 40);
-            textBoxItemMenuText.Name = "textBoxItemMenuText";
-            textBoxItemMenuText.Size = new Size(564, 23);
-            textBoxItemMenuText.TabIndex = 7;
-            textBoxItemMenuText.TextChanged += textBoxItemMenuText_TextChanged;
-            // 
-            // listBoxItemMenu
-            // 
-            listBoxItemMenu.FormattingEnabled = true;
-            listBoxItemMenu.ItemHeight = 15;
-            listBoxItemMenu.Location = new Point(6, 22);
-            listBoxItemMenu.Name = "listBoxItemMenu";
-            listBoxItemMenu.Size = new Size(174, 169);
-            listBoxItemMenu.TabIndex = 6;
-            listBoxItemMenu.SelectedIndexChanged += listBoxItemMenu_SelectedIndexChanged;
+            listBoxMagicMenu.FormattingEnabled = true;
+            listBoxMagicMenu.ItemHeight = 15;
+            listBoxMagicMenu.Location = new Point(6, 22);
+            listBoxMagicMenu.Name = "listBoxMagicMenu";
+            listBoxMagicMenu.Size = new Size(242, 214);
+            listBoxMagicMenu.TabIndex = 6;
+            listBoxMagicMenu.SelectedIndexChanged += listBoxMagicMenu_SelectedIndexChanged;
             // 
             // labelMagicMenuText
             // 
             labelMagicMenuText.AutoSize = true;
-            labelMagicMenuText.Location = new Point(186, 22);
+            labelMagicMenuText.Location = new Point(254, 22);
             labelMagicMenuText.Name = "labelMagicMenuText";
             labelMagicMenuText.Size = new Size(31, 15);
             labelMagicMenuText.TabIndex = 8;
@@ -1998,27 +2010,58 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxMagicMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxMagicMenuText.Enabled = false;
-            textBoxMagicMenuText.Location = new Point(186, 40);
+            textBoxMagicMenuText.Location = new Point(254, 40);
             textBoxMagicMenuText.Name = "textBoxMagicMenuText";
-            textBoxMagicMenuText.Size = new Size(564, 23);
+            textBoxMagicMenuText.Size = new Size(496, 23);
             textBoxMagicMenuText.TabIndex = 7;
             textBoxMagicMenuText.TextChanged += textBoxMagicMenuText_TextChanged;
             // 
-            // listBoxMagicMenu
+            // groupBoxItemMenu
             // 
-            listBoxMagicMenu.FormattingEnabled = true;
-            listBoxMagicMenu.ItemHeight = 15;
-            listBoxMagicMenu.Location = new Point(6, 22);
-            listBoxMagicMenu.Name = "listBoxMagicMenu";
-            listBoxMagicMenu.Size = new Size(174, 214);
-            listBoxMagicMenu.TabIndex = 6;
-            listBoxMagicMenu.SelectedIndexChanged += listBoxMagicMenu_SelectedIndexChanged;
+            groupBoxItemMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxItemMenu.Controls.Add(listBoxItemMenu);
+            groupBoxItemMenu.Controls.Add(labelItemMenuText);
+            groupBoxItemMenu.Controls.Add(textBoxItemMenuText);
+            groupBoxItemMenu.Location = new Point(5, 3);
+            groupBoxItemMenu.Name = "groupBoxItemMenu";
+            groupBoxItemMenu.Size = new Size(756, 201);
+            groupBoxItemMenu.TabIndex = 9;
+            groupBoxItemMenu.TabStop = false;
+            groupBoxItemMenu.Text = "Item menu";
+            // 
+            // listBoxItemMenu
+            // 
+            listBoxItemMenu.FormattingEnabled = true;
+            listBoxItemMenu.ItemHeight = 15;
+            listBoxItemMenu.Location = new Point(6, 22);
+            listBoxItemMenu.Name = "listBoxItemMenu";
+            listBoxItemMenu.Size = new Size(242, 169);
+            listBoxItemMenu.TabIndex = 6;
+            listBoxItemMenu.SelectedIndexChanged += listBoxItemMenu_SelectedIndexChanged;
+            // 
+            // labelItemMenuText
+            // 
+            labelItemMenuText.AutoSize = true;
+            labelItemMenuText.Location = new Point(254, 19);
+            labelItemMenuText.Name = "labelItemMenuText";
+            labelItemMenuText.Size = new Size(31, 15);
+            labelItemMenuText.TabIndex = 8;
+            labelItemMenuText.Text = "Text:";
+            // 
+            // textBoxItemMenuText
+            // 
+            textBoxItemMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxItemMenuText.Enabled = false;
+            textBoxItemMenuText.Location = new Point(254, 40);
+            textBoxItemMenuText.Name = "textBoxItemMenuText";
+            textBoxItemMenuText.Size = new Size(496, 23);
+            textBoxItemMenuText.TabIndex = 7;
+            textBoxItemMenuText.TextChanged += textBoxItemMenuText_TextChanged;
             // 
             // tabPageMateriaMenu
             // 
-            tabPageMateriaMenu.Controls.Add(labelMateriaMenuText);
-            tabPageMateriaMenu.Controls.Add(textBoxMateriaMenuText);
-            tabPageMateriaMenu.Controls.Add(listBoxMateriaMenu);
+            tabPageMateriaMenu.Controls.Add(groupBoxUnequipText);
+            tabPageMateriaMenu.Controls.Add(groupBoxMateriaText);
             tabPageMateriaMenu.Location = new Point(4, 24);
             tabPageMateriaMenu.Name = "tabPageMateriaMenu";
             tabPageMateriaMenu.Size = new Size(768, 499);
@@ -2026,10 +2069,76 @@ namespace FF7Scarlet.ExeEditor
             tabPageMateriaMenu.Text = "Materia menu";
             tabPageMateriaMenu.UseVisualStyleBackColor = true;
             // 
+            // groupBoxUnequipText
+            // 
+            groupBoxUnequipText.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxUnequipText.Controls.Add(listBoxUnequipText);
+            groupBoxUnequipText.Controls.Add(labelUnequipText);
+            groupBoxUnequipText.Controls.Add(textBoxUnequipText);
+            groupBoxUnequipText.Location = new Point(4, 393);
+            groupBoxUnequipText.Name = "groupBoxUnequipText";
+            groupBoxUnequipText.Size = new Size(756, 103);
+            groupBoxUnequipText.TabIndex = 7;
+            groupBoxUnequipText.TabStop = false;
+            groupBoxUnequipText.Text = "Unequip text";
+            // 
+            // listBoxUnequipText
+            // 
+            listBoxUnequipText.FormattingEnabled = true;
+            listBoxUnequipText.ItemHeight = 15;
+            listBoxUnequipText.Location = new Point(6, 22);
+            listBoxUnequipText.Name = "listBoxUnequipText";
+            listBoxUnequipText.Size = new Size(245, 64);
+            listBoxUnequipText.TabIndex = 6;
+            listBoxUnequipText.SelectedIndexChanged += listBoxUnequipText_SelectedIndexChanged;
+            // 
+            // labelUnequipText
+            // 
+            labelUnequipText.AutoSize = true;
+            labelUnequipText.Location = new Point(257, 22);
+            labelUnequipText.Name = "labelUnequipText";
+            labelUnequipText.Size = new Size(31, 15);
+            labelUnequipText.TabIndex = 8;
+            labelUnequipText.Text = "Text:";
+            // 
+            // textBoxUnequipText
+            // 
+            textBoxUnequipText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxUnequipText.Enabled = false;
+            textBoxUnequipText.Location = new Point(257, 40);
+            textBoxUnequipText.Name = "textBoxUnequipText";
+            textBoxUnequipText.Size = new Size(493, 23);
+            textBoxUnequipText.TabIndex = 7;
+            textBoxUnequipText.TextChanged += textBoxUnequipText_TextChanged;
+            // 
+            // groupBoxMateriaText
+            // 
+            groupBoxMateriaText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxMateriaText.Controls.Add(listBoxMateriaMenu);
+            groupBoxMateriaText.Controls.Add(labelMateriaMenuText);
+            groupBoxMateriaText.Controls.Add(textBoxMateriaMenuText);
+            groupBoxMateriaText.Location = new Point(4, 3);
+            groupBoxMateriaText.Name = "groupBoxMateriaText";
+            groupBoxMateriaText.Size = new Size(756, 384);
+            groupBoxMateriaText.TabIndex = 6;
+            groupBoxMateriaText.TabStop = false;
+            groupBoxMateriaText.Text = "Main text";
+            // 
+            // listBoxMateriaMenu
+            // 
+            listBoxMateriaMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxMateriaMenu.FormattingEnabled = true;
+            listBoxMateriaMenu.ItemHeight = 15;
+            listBoxMateriaMenu.Location = new Point(6, 22);
+            listBoxMateriaMenu.Name = "listBoxMateriaMenu";
+            listBoxMateriaMenu.Size = new Size(245, 349);
+            listBoxMateriaMenu.TabIndex = 3;
+            listBoxMateriaMenu.SelectedIndexChanged += listBoxMateriaMenu_SelectedIndexChanged;
+            // 
             // labelMateriaMenuText
             // 
             labelMateriaMenuText.AutoSize = true;
-            labelMateriaMenuText.Location = new Point(186, 6);
+            labelMateriaMenuText.Location = new Point(257, 22);
             labelMateriaMenuText.Name = "labelMateriaMenuText";
             labelMateriaMenuText.Size = new Size(31, 15);
             labelMateriaMenuText.TabIndex = 5;
@@ -2039,22 +2148,11 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxMateriaMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxMateriaMenuText.Enabled = false;
-            textBoxMateriaMenuText.Location = new Point(186, 24);
+            textBoxMateriaMenuText.Location = new Point(257, 40);
             textBoxMateriaMenuText.Name = "textBoxMateriaMenuText";
-            textBoxMateriaMenuText.Size = new Size(576, 23);
+            textBoxMateriaMenuText.Size = new Size(493, 23);
             textBoxMateriaMenuText.TabIndex = 4;
             textBoxMateriaMenuText.TextChanged += textBoxMateriaMenuText_TextChanged;
-            // 
-            // listBoxMateriaMenu
-            // 
-            listBoxMateriaMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            listBoxMateriaMenu.FormattingEnabled = true;
-            listBoxMateriaMenu.ItemHeight = 15;
-            listBoxMateriaMenu.Location = new Point(6, 6);
-            listBoxMateriaMenu.Name = "listBoxMateriaMenu";
-            listBoxMateriaMenu.Size = new Size(174, 484);
-            listBoxMateriaMenu.TabIndex = 3;
-            listBoxMateriaMenu.SelectedIndexChanged += listBoxMateriaMenu_SelectedIndexChanged;
             // 
             // tabPageEquipMenu
             // 
@@ -2071,19 +2169,19 @@ namespace FF7Scarlet.ExeEditor
             // labelEquipMenu
             // 
             labelEquipMenu.AutoSize = true;
-            labelEquipMenu.Location = new Point(186, 6);
+            labelEquipMenu.Location = new Point(261, 6);
             labelEquipMenu.Name = "labelEquipMenu";
             labelEquipMenu.Size = new Size(31, 15);
             labelEquipMenu.TabIndex = 8;
             labelEquipMenu.Text = "Text:";
             // 
-            // textBoxEquipMenu
+            // textBoxEquipMenuText
             // 
             textBoxEquipMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxEquipMenuText.Enabled = false;
-            textBoxEquipMenuText.Location = new Point(186, 24);
-            textBoxEquipMenuText.Name = "textBoxEquipMenu";
-            textBoxEquipMenuText.Size = new Size(576, 23);
+            textBoxEquipMenuText.Location = new Point(261, 24);
+            textBoxEquipMenuText.Name = "textBoxEquipMenuText";
+            textBoxEquipMenuText.Size = new Size(501, 23);
             textBoxEquipMenuText.TabIndex = 7;
             textBoxEquipMenuText.TextChanged += textBoxEquipMenu_TextChanged;
             // 
@@ -2093,7 +2191,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxEquipMenu.ItemHeight = 15;
             listBoxEquipMenu.Location = new Point(6, 6);
             listBoxEquipMenu.Name = "listBoxEquipMenu";
-            listBoxEquipMenu.Size = new Size(174, 349);
+            listBoxEquipMenu.Size = new Size(249, 349);
             listBoxEquipMenu.TabIndex = 6;
             listBoxEquipMenu.SelectedIndexChanged += listBoxEquipMenu_SelectedIndexChanged;
             // 
@@ -2124,7 +2222,7 @@ namespace FF7Scarlet.ExeEditor
             // labelStatusText
             // 
             labelStatusText.AutoSize = true;
-            labelStatusText.Location = new Point(186, 22);
+            labelStatusText.Location = new Point(254, 22);
             labelStatusText.Name = "labelStatusText";
             labelStatusText.Size = new Size(31, 15);
             labelStatusText.TabIndex = 4;
@@ -2134,9 +2232,9 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxStatusMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxStatusMenuText.Enabled = false;
-            textBoxStatusMenuText.Location = new Point(186, 40);
+            textBoxStatusMenuText.Location = new Point(254, 40);
             textBoxStatusMenuText.Name = "textBoxStatusMenuText";
-            textBoxStatusMenuText.Size = new Size(566, 23);
+            textBoxStatusMenuText.Size = new Size(498, 23);
             textBoxStatusMenuText.TabIndex = 3;
             textBoxStatusMenuText.TextChanged += textBoxStatusMenuText_TextChanged;
             // 
@@ -2147,7 +2245,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxStatusMenuText.ItemHeight = 15;
             listBoxStatusMenuText.Location = new Point(6, 22);
             listBoxStatusMenuText.Name = "listBoxStatusMenuText";
-            listBoxStatusMenuText.Size = new Size(174, 274);
+            listBoxStatusMenuText.Size = new Size(242, 274);
             listBoxStatusMenuText.TabIndex = 0;
             listBoxStatusMenuText.SelectedIndexChanged += listBoxStatusMenuText_SelectedIndexChanged;
             // 
@@ -2167,7 +2265,7 @@ namespace FF7Scarlet.ExeEditor
             // labelElements
             // 
             labelElements.AutoSize = true;
-            labelElements.Location = new Point(186, 22);
+            labelElements.Location = new Point(254, 22);
             labelElements.Name = "labelElements";
             labelElements.Size = new Size(31, 15);
             labelElements.TabIndex = 4;
@@ -2177,9 +2275,9 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxElements.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxElements.Enabled = false;
-            textBoxElements.Location = new Point(186, 40);
+            textBoxElements.Location = new Point(254, 40);
             textBoxElements.Name = "textBoxElements";
-            textBoxElements.Size = new Size(566, 23);
+            textBoxElements.Size = new Size(498, 23);
             textBoxElements.TabIndex = 3;
             textBoxElements.TextChanged += textBoxElements_TextChanged;
             // 
@@ -2189,9 +2287,50 @@ namespace FF7Scarlet.ExeEditor
             listBoxElements.ItemHeight = 15;
             listBoxElements.Location = new Point(6, 22);
             listBoxElements.Name = "listBoxElements";
-            listBoxElements.Size = new Size(174, 139);
+            listBoxElements.Size = new Size(242, 139);
             listBoxElements.TabIndex = 0;
             listBoxElements.SelectedIndexChanged += listBoxElements_SelectedIndexChanged;
+            // 
+            // tabPageLimitMenu
+            // 
+            tabPageLimitMenu.Controls.Add(labelLimitMenuText);
+            tabPageLimitMenu.Controls.Add(textBoxLimitMenuText);
+            tabPageLimitMenu.Controls.Add(listBoxLimitMenu);
+            tabPageLimitMenu.Location = new Point(4, 24);
+            tabPageLimitMenu.Name = "tabPageLimitMenu";
+            tabPageLimitMenu.Size = new Size(768, 499);
+            tabPageLimitMenu.TabIndex = 10;
+            tabPageLimitMenu.Text = "Limit menu";
+            tabPageLimitMenu.UseVisualStyleBackColor = true;
+            // 
+            // labelLimitMenuText
+            // 
+            labelLimitMenuText.AutoSize = true;
+            labelLimitMenuText.Location = new Point(261, 6);
+            labelLimitMenuText.Name = "labelLimitMenuText";
+            labelLimitMenuText.Size = new Size(31, 15);
+            labelLimitMenuText.TabIndex = 7;
+            labelLimitMenuText.Text = "Text:";
+            // 
+            // textBoxLimitMenuText
+            // 
+            textBoxLimitMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxLimitMenuText.Enabled = false;
+            textBoxLimitMenuText.Location = new Point(261, 24);
+            textBoxLimitMenuText.Name = "textBoxLimitMenuText";
+            textBoxLimitMenuText.Size = new Size(501, 23);
+            textBoxLimitMenuText.TabIndex = 6;
+            textBoxLimitMenuText.TextChanged += textBoxLimitMenuText_TextChanged;
+            // 
+            // listBoxLimitMenu
+            // 
+            listBoxLimitMenu.FormattingEnabled = true;
+            listBoxLimitMenu.ItemHeight = 15;
+            listBoxLimitMenu.Location = new Point(6, 6);
+            listBoxLimitMenu.Name = "listBoxLimitMenu";
+            listBoxLimitMenu.Size = new Size(249, 214);
+            listBoxLimitMenu.TabIndex = 5;
+            listBoxLimitMenu.SelectedIndexChanged += listBoxLimitMenu_SelectedIndexChanged;
             // 
             // tabPageConfigMenu
             // 
@@ -2209,7 +2348,7 @@ namespace FF7Scarlet.ExeEditor
             // labelConfigMenuText
             // 
             labelConfigMenuText.AutoSize = true;
-            labelConfigMenuText.Location = new Point(186, 6);
+            labelConfigMenuText.Location = new Point(261, 6);
             labelConfigMenuText.Name = "labelConfigMenuText";
             labelConfigMenuText.Size = new Size(31, 15);
             labelConfigMenuText.TabIndex = 4;
@@ -2219,9 +2358,9 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxConfigMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxConfigMenuText.Enabled = false;
-            textBoxConfigMenuText.Location = new Point(186, 24);
+            textBoxConfigMenuText.Location = new Point(261, 24);
             textBoxConfigMenuText.Name = "textBoxConfigMenuText";
-            textBoxConfigMenuText.Size = new Size(576, 23);
+            textBoxConfigMenuText.Size = new Size(501, 23);
             textBoxConfigMenuText.TabIndex = 3;
             textBoxConfigMenuText.TextChanged += textBoxConfigMenuText_TextChanged;
             // 
@@ -2232,9 +2371,51 @@ namespace FF7Scarlet.ExeEditor
             listBoxConfigMenu.ItemHeight = 15;
             listBoxConfigMenu.Location = new Point(6, 6);
             listBoxConfigMenu.Name = "listBoxConfigMenu";
-            listBoxConfigMenu.Size = new Size(174, 484);
+            listBoxConfigMenu.Size = new Size(249, 484);
             listBoxConfigMenu.TabIndex = 1;
             listBoxConfigMenu.SelectedIndexChanged += listBoxConfigMenu_SelectedIndexChanged;
+            // 
+            // tabPageSaveMenu
+            // 
+            tabPageSaveMenu.Controls.Add(labelSaveMenuText);
+            tabPageSaveMenu.Controls.Add(textBoxSaveMenuText);
+            tabPageSaveMenu.Controls.Add(listBoxSaveMenu);
+            tabPageSaveMenu.Location = new Point(4, 24);
+            tabPageSaveMenu.Name = "tabPageSaveMenu";
+            tabPageSaveMenu.Size = new Size(768, 499);
+            tabPageSaveMenu.TabIndex = 11;
+            tabPageSaveMenu.Text = "Save menu";
+            tabPageSaveMenu.UseVisualStyleBackColor = true;
+            // 
+            // labelSaveMenuText
+            // 
+            labelSaveMenuText.AutoSize = true;
+            labelSaveMenuText.Location = new Point(261, 6);
+            labelSaveMenuText.Name = "labelSaveMenuText";
+            labelSaveMenuText.Size = new Size(31, 15);
+            labelSaveMenuText.TabIndex = 7;
+            labelSaveMenuText.Text = "Text:";
+            // 
+            // textBoxSaveMenuText
+            // 
+            textBoxSaveMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxSaveMenuText.Enabled = false;
+            textBoxSaveMenuText.Location = new Point(261, 24);
+            textBoxSaveMenuText.Name = "textBoxSaveMenuText";
+            textBoxSaveMenuText.Size = new Size(501, 23);
+            textBoxSaveMenuText.TabIndex = 6;
+            textBoxSaveMenuText.TextChanged += textBoxSaveMenuText_TextChanged;
+            // 
+            // listBoxSaveMenu
+            // 
+            listBoxSaveMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxSaveMenu.FormattingEnabled = true;
+            listBoxSaveMenu.ItemHeight = 15;
+            listBoxSaveMenu.Location = new Point(6, 6);
+            listBoxSaveMenu.Name = "listBoxSaveMenu";
+            listBoxSaveMenu.Size = new Size(249, 484);
+            listBoxSaveMenu.TabIndex = 5;
+            listBoxSaveMenu.SelectedIndexChanged += listBoxSaveMenu_SelectedIndexChanged;
             // 
             // tabPageOtherText
             // 
@@ -2276,7 +2457,7 @@ namespace FF7Scarlet.ExeEditor
             // labelStatusEffectMenu
             // 
             labelStatusEffectMenu.AutoSize = true;
-            labelStatusEffectMenu.Location = new Point(186, 6);
+            labelStatusEffectMenu.Location = new Point(261, 6);
             labelStatusEffectMenu.Name = "labelStatusEffectMenu";
             labelStatusEffectMenu.Size = new Size(99, 15);
             labelStatusEffectMenu.TabIndex = 6;
@@ -2286,16 +2467,16 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxStatusEffectMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxStatusEffectMenu.Enabled = false;
-            textBoxStatusEffectMenu.Location = new Point(186, 24);
+            textBoxStatusEffectMenu.Location = new Point(261, 24);
             textBoxStatusEffectMenu.Name = "textBoxStatusEffectMenu";
-            textBoxStatusEffectMenu.Size = new Size(576, 23);
+            textBoxStatusEffectMenu.Size = new Size(501, 23);
             textBoxStatusEffectMenu.TabIndex = 5;
             textBoxStatusEffectMenu.TextChanged += textBoxStatusEffectMenu_TextChanged;
             // 
             // labelStatusEffectTextBattle
             // 
             labelStatusEffectTextBattle.AutoSize = true;
-            labelStatusEffectTextBattle.Location = new Point(186, 50);
+            labelStatusEffectTextBattle.Location = new Point(261, 50);
             labelStatusEffectTextBattle.Name = "labelStatusEffectTextBattle";
             labelStatusEffectTextBattle.Size = new Size(78, 15);
             labelStatusEffectTextBattle.TabIndex = 4;
@@ -2305,9 +2486,9 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxStatusEffectTextBattle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxStatusEffectTextBattle.Enabled = false;
-            textBoxStatusEffectTextBattle.Location = new Point(186, 68);
+            textBoxStatusEffectTextBattle.Location = new Point(261, 68);
             textBoxStatusEffectTextBattle.Name = "textBoxStatusEffectTextBattle";
-            textBoxStatusEffectTextBattle.Size = new Size(576, 23);
+            textBoxStatusEffectTextBattle.Size = new Size(501, 23);
             textBoxStatusEffectTextBattle.TabIndex = 3;
             textBoxStatusEffectTextBattle.TextChanged += textBoxStatusEffectTextBattle_TextChanged;
             // 
@@ -2316,9 +2497,8 @@ namespace FF7Scarlet.ExeEditor
             listBoxStatusEffects.FormattingEnabled = true;
             listBoxStatusEffects.ItemHeight = 15;
             listBoxStatusEffects.Location = new Point(6, 6);
-            listBoxStatusEffects.MaximumSize = new Size(174, 409);
             listBoxStatusEffects.Name = "listBoxStatusEffects";
-            listBoxStatusEffects.Size = new Size(174, 409);
+            listBoxStatusEffects.Size = new Size(249, 409);
             listBoxStatusEffects.TabIndex = 1;
             listBoxStatusEffects.SelectedIndexChanged += listBoxStatusEffects_SelectedIndexChanged;
             // 
@@ -2450,7 +2630,7 @@ namespace FF7Scarlet.ExeEditor
             // labelShopText
             // 
             labelShopText.AutoSize = true;
-            labelShopText.Location = new Point(186, 22);
+            labelShopText.Location = new Point(256, 22);
             labelShopText.Name = "labelShopText";
             labelShopText.Size = new Size(31, 15);
             labelShopText.TabIndex = 6;
@@ -2460,9 +2640,9 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxShopText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxShopText.Enabled = false;
-            textBoxShopText.Location = new Point(186, 40);
+            textBoxShopText.Location = new Point(256, 40);
             textBoxShopText.Name = "textBoxShopText";
-            textBoxShopText.Size = new Size(566, 23);
+            textBoxShopText.Size = new Size(496, 23);
             textBoxShopText.TabIndex = 5;
             textBoxShopText.TextChanged += textBoxShopText_TextChanged;
             // 
@@ -2472,9 +2652,8 @@ namespace FF7Scarlet.ExeEditor
             listBoxShopText.FormattingEnabled = true;
             listBoxShopText.ItemHeight = 15;
             listBoxShopText.Location = new Point(6, 22);
-            listBoxShopText.MaximumSize = new Size(174, 274);
             listBoxShopText.Name = "listBoxShopText";
-            listBoxShopText.Size = new Size(174, 274);
+            listBoxShopText.Size = new Size(244, 274);
             listBoxShopText.TabIndex = 0;
             listBoxShopText.SelectedIndexChanged += listBoxShopText_SelectedIndexChanged;
             // 
@@ -2494,7 +2673,7 @@ namespace FF7Scarlet.ExeEditor
             // labelShopNameText
             // 
             labelShopNameText.AutoSize = true;
-            labelShopNameText.Location = new Point(186, 22);
+            labelShopNameText.Location = new Point(256, 22);
             labelShopNameText.Name = "labelShopNameText";
             labelShopNameText.Size = new Size(31, 15);
             labelShopNameText.TabIndex = 4;
@@ -2504,9 +2683,9 @@ namespace FF7Scarlet.ExeEditor
             // 
             textBoxShopNameText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxShopNameText.Enabled = false;
-            textBoxShopNameText.Location = new Point(186, 40);
+            textBoxShopNameText.Location = new Point(256, 40);
             textBoxShopNameText.Name = "textBoxShopNameText";
-            textBoxShopNameText.Size = new Size(566, 23);
+            textBoxShopNameText.Size = new Size(496, 23);
             textBoxShopNameText.TabIndex = 3;
             textBoxShopNameText.TextChanged += textBoxShopNameText_TextChanged;
             // 
@@ -2516,7 +2695,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxShopNames.ItemHeight = 15;
             listBoxShopNames.Location = new Point(6, 22);
             listBoxShopNames.Name = "listBoxShopNames";
-            listBoxShopNames.Size = new Size(174, 139);
+            listBoxShopNames.Size = new Size(244, 139);
             listBoxShopNames.TabIndex = 0;
             listBoxShopNames.SelectedIndexChanged += listBoxShopNames_SelectedIndexChanged;
             // 
@@ -2653,32 +2832,6 @@ namespace FF7Scarlet.ExeEditor
             panelButtons.Size = new Size(784, 46);
             panelButtons.TabIndex = 6;
             // 
-            // groupBoxItemMenu
-            // 
-            groupBoxItemMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBoxItemMenu.Controls.Add(listBoxItemMenu);
-            groupBoxItemMenu.Controls.Add(labelItemMenuText);
-            groupBoxItemMenu.Controls.Add(textBoxItemMenuText);
-            groupBoxItemMenu.Location = new Point(5, 3);
-            groupBoxItemMenu.Name = "groupBoxItemMenu";
-            groupBoxItemMenu.Size = new Size(756, 201);
-            groupBoxItemMenu.TabIndex = 9;
-            groupBoxItemMenu.TabStop = false;
-            groupBoxItemMenu.Text = "Item menu";
-            // 
-            // groupBoxMagicMenu
-            // 
-            groupBoxMagicMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBoxMagicMenu.Controls.Add(listBoxMagicMenu);
-            groupBoxMagicMenu.Controls.Add(labelMagicMenuText);
-            groupBoxMagicMenu.Controls.Add(textBoxMagicMenuText);
-            groupBoxMagicMenu.Location = new Point(5, 210);
-            groupBoxMagicMenu.Name = "groupBoxMagicMenu";
-            groupBoxMagicMenu.Size = new Size(756, 286);
-            groupBoxMagicMenu.TabIndex = 10;
-            groupBoxMagicMenu.TabStop = false;
-            groupBoxMagicMenu.Text = "Magic menu";
-            // 
             // ExeEditorForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2750,8 +2903,15 @@ namespace FF7Scarlet.ExeEditor
             tabPageMainMenu.ResumeLayout(false);
             tabPageMainMenu.PerformLayout();
             tabPageItemMagicMenu.ResumeLayout(false);
+            groupBoxMagicMenu.ResumeLayout(false);
+            groupBoxMagicMenu.PerformLayout();
+            groupBoxItemMenu.ResumeLayout(false);
+            groupBoxItemMenu.PerformLayout();
             tabPageMateriaMenu.ResumeLayout(false);
-            tabPageMateriaMenu.PerformLayout();
+            groupBoxUnequipText.ResumeLayout(false);
+            groupBoxUnequipText.PerformLayout();
+            groupBoxMateriaText.ResumeLayout(false);
+            groupBoxMateriaText.PerformLayout();
             tabPageEquipMenu.ResumeLayout(false);
             tabPageEquipMenu.PerformLayout();
             tabPageStatusMenu.ResumeLayout(false);
@@ -2759,8 +2919,12 @@ namespace FF7Scarlet.ExeEditor
             groupBoxStatusMenu.PerformLayout();
             groupBoxElements.ResumeLayout(false);
             groupBoxElements.PerformLayout();
+            tabPageLimitMenu.ResumeLayout(false);
+            tabPageLimitMenu.PerformLayout();
             tabPageConfigMenu.ResumeLayout(false);
             tabPageConfigMenu.PerformLayout();
+            tabPageSaveMenu.ResumeLayout(false);
+            tabPageSaveMenu.PerformLayout();
             tabPageOtherText.ResumeLayout(false);
             tabControlOtherText.ResumeLayout(false);
             tabPageStatusEffects.ResumeLayout(false);
@@ -2780,10 +2944,6 @@ namespace FF7Scarlet.ExeEditor
             groupBoxChocoboNames.ResumeLayout(false);
             groupBoxChocoboNames.PerformLayout();
             panelButtons.ResumeLayout(false);
-            groupBoxItemMenu.ResumeLayout(false);
-            groupBoxItemMenu.PerformLayout();
-            groupBoxMagicMenu.ResumeLayout(false);
-            groupBoxMagicMenu.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -3004,6 +3164,19 @@ namespace FF7Scarlet.ExeEditor
         private ListBox listBoxMagicMenu;
         private GroupBox groupBoxItemMenu;
         private GroupBox groupBoxMagicMenu;
+        private GroupBox groupBoxMateriaText;
+        private GroupBox groupBoxUnequipText;
+        private ListBox listBoxUnequipText;
+        private Label labelUnequipText;
+        private TextBox textBoxUnequipText;
+        private TabPage tabPageLimitMenu;
+        private Label labelLimitMenuText;
+        private TextBox textBoxLimitMenuText;
+        private ListBox listBoxLimitMenu;
+        private TabPage tabPageSaveMenu;
+        private Label labelSaveMenuText;
+        private TextBox textBoxSaveMenuText;
+        private ListBox listBoxSaveMenu;
     }
 }
 

@@ -90,7 +90,9 @@ namespace FF7Scarlet.ExeEditor
             textBoxItemMenuText.MaxLength = ExeData.ITEM_MENU_TEXT_LENGTH - 1;
             textBoxMagicMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
             textBoxMateriaMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
+            textBoxUnequipText.MaxLength = ExeData.UNEQUIP_TEXT_LENGTH - 1;
             textBoxEquipMenuText.MaxLength = ExeData.EQUIP_MENU_TEXT_LENGTH - 1;
+            textBoxStatusMenuText.MaxLength = ExeData.STATUS_MENU_TEXT_LENGTH - 1;
             textBoxConfigMenuText.MaxLength = editor.GetConfigTextLength() - 1;
 
             textBoxElements.MaxLength = ExeData.ELEMENT_NAME_LENGTH - 1;
@@ -162,11 +164,19 @@ namespace FF7Scarlet.ExeEditor
             //English-only stuff
             if (editor.Language != Language.English)
             {
+                foreach (Control c in tabPageItemMagicMenu.Controls)
+                {
+                    c.Enabled = false;
+                }
                 foreach (Control c in tabPageMateriaMenu.Controls)
                 {
                     c.Enabled = false;
                 }
                 foreach (Control c in tabPageEquipMenu.Controls)
+                {
+                    c.Enabled = false;
+                }
+                foreach (Control c in tabPageStatusMenu.Controls)
                 {
                     c.Enabled = false;
                 }
@@ -420,6 +430,12 @@ namespace FF7Scarlet.ExeEditor
                         listBoxMateriaMenu.Items.Add(editor.MateriaMenuTexts[i].ToString());
                     }
 
+                    //set unequip text
+                    for (i = 0; i < ExeData.NUM_UNEQUIP_TEXTS; ++i)
+                    {
+                        listBoxUnequipText.Items.Add(editor.UnequipTexts[i].ToString());
+                    }
+
                     //set equip menu text
                     for (i = 0; i < ExeData.NUM_EQUIP_MENU_TEXTS; ++i)
                     {
@@ -436,6 +452,18 @@ namespace FF7Scarlet.ExeEditor
                     for (i = 0; i < ExeData.NUM_ELEMENTS; ++i)
                     {
                         listBoxElements.Items.Add(editor.ElementNames[i].ToString());
+                    }
+
+                    //set status menu text
+                    for (i = 0; i < ExeData.NUM_LIMIT_MENU_TEXTS; ++i)
+                    {
+                        listBoxLimitMenu.Items.Add(editor.LimitMenuTexts[i].ToString());
+                    }
+
+                    //set save menu text
+                    for (i = 0; i < ExeData.NUM_SAVE_MENU_TEXTS; ++i)
+                    {
+                        listBoxSaveMenu.Items.Add(editor.SaveMenuTexts[i].ToString());
                     }
 
                     //set chocobo names
@@ -1649,32 +1677,44 @@ namespace FF7Scarlet.ExeEditor
         //listboxes
         private void listBoxMainMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxMainMenu, textBoxMainMenuText, editor.MainMenuTexts, ExeData.NUM_MENU_TEXTS);
+            ListBoxIndexChanged(listBoxMainMenu, textBoxMainMenuText, editor.MainMenuTexts,
+                ExeData.NUM_MENU_TEXTS);
         }
 
         private void listBoxItemMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxItemMenu, textBoxItemMenuText, editor.ItemMenuTexts, ExeData.NUM_ITEM_MENU_TEXTS);
+            ListBoxIndexChanged(listBoxItemMenu, textBoxItemMenuText, editor.ItemMenuTexts,
+                ExeData.NUM_ITEM_MENU_TEXTS);
         }
 
         private void listBoxMagicMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxMagicMenu, textBoxMagicMenuText, editor.MagicMenuTexts, ExeData.NUM_MAGIC_MENU_TEXTS);
+            ListBoxIndexChanged(listBoxMagicMenu, textBoxMagicMenuText, editor.MagicMenuTexts,
+                ExeData.NUM_MAGIC_MENU_TEXTS);
         }
 
         private void listBoxMateriaMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxMateriaMenu, textBoxMateriaMenuText, editor.MateriaMenuTexts, ExeData.NUM_MATERIA_MENU_TEXTS);
+            ListBoxIndexChanged(listBoxMateriaMenu, textBoxMateriaMenuText, editor.MateriaMenuTexts,
+                ExeData.NUM_MATERIA_MENU_TEXTS);
+        }
+
+        private void listBoxUnequipText_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListBoxIndexChanged(listBoxUnequipText, textBoxUnequipText, editor.UnequipTexts,
+                ExeData.NUM_UNEQUIP_TEXTS);
         }
 
         private void listBoxEquipMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxEquipMenu, textBoxEquipMenuText, editor.EquipMenuTexts, ExeData.NUM_EQUIP_MENU_TEXTS);
+            ListBoxIndexChanged(listBoxEquipMenu, textBoxEquipMenuText, editor.EquipMenuTexts,
+                ExeData.NUM_EQUIP_MENU_TEXTS);
         }
 
         private void listBoxStatusMenuText_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxStatusMenuText, textBoxStatusMenuText, editor.StatusMenuTexts, ExeData.NUM_STATUS_MENU_TEXTS);
+            ListBoxIndexChanged(listBoxStatusMenuText, textBoxStatusMenuText, editor.StatusMenuTexts,
+                ExeData.NUM_STATUS_MENU_TEXTS);
         }
 
         private void listBoxElements_SelectedIndexChanged(object sender, EventArgs e)
@@ -1682,9 +1722,22 @@ namespace FF7Scarlet.ExeEditor
             ListBoxIndexChanged(listBoxElements, textBoxElements, editor.ElementNames, ExeData.NUM_ELEMENTS);
         }
 
+        private void listBoxLimitMenu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListBoxIndexChanged(listBoxLimitMenu, textBoxLimitMenuText, editor.LimitMenuTexts,
+                ExeData.NUM_LIMIT_MENU_TEXTS);
+        }
+
         private void listBoxConfigMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxConfigMenu, textBoxConfigMenuText, editor.ConfigMenuTexts, ExeData.NUM_CONFIG_MENU_TEXTS);
+            ListBoxIndexChanged(listBoxConfigMenu, textBoxConfigMenuText, editor.ConfigMenuTexts,
+                ExeData.NUM_CONFIG_MENU_TEXTS);
+        }
+
+        private void listBoxSaveMenu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListBoxIndexChanged(listBoxSaveMenu, textBoxSaveMenuText, editor.SaveMenuTexts,
+                ExeData.NUM_SAVE_MENU_TEXTS);
         }
 
         private void listBoxStatusEffects_SelectedIndexChanged(object sender, EventArgs e)
@@ -1724,7 +1777,8 @@ namespace FF7Scarlet.ExeEditor
 
         private void listBoxChocoboNames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxChocoboNames, textBoxChocoboName, editor.ChocoboNames, ExeData.NUM_CHOCOBO_NAMES);
+            ListBoxIndexChanged(listBoxChocoboNames, textBoxChocoboName, editor.ChocoboNames,
+                ExeData.NUM_CHOCOBO_NAMES);
         }
 
         private void listBoxChocoboRacePrizes_SelectedIndexChanged(object sender, EventArgs e)
@@ -1760,6 +1814,11 @@ namespace FF7Scarlet.ExeEditor
             TextBoxTextChanged(listBoxMateriaMenu, textBoxMateriaMenuText, editor.MateriaMenuTexts);
         }
 
+        private void textBoxUnequipText_TextChanged(object sender, EventArgs e)
+        {
+            TextBoxTextChanged(listBoxUnequipText, textBoxUnequipText, editor.UnequipTexts);
+        }
+
         private void textBoxEquipMenu_TextChanged(object sender, EventArgs e)
         {
             TextBoxTextChanged(listBoxEquipMenu, textBoxEquipMenuText, editor.EquipMenuTexts);
@@ -1775,9 +1834,19 @@ namespace FF7Scarlet.ExeEditor
             TextBoxTextChanged(listBoxElements, textBoxElements, editor.ElementNames);
         }
 
+        private void textBoxLimitMenuText_TextChanged(object sender, EventArgs e)
+        {
+            TextBoxTextChanged(listBoxLimitMenu, textBoxLimitMenuText, editor.LimitMenuTexts);
+        }
+
         private void textBoxConfigMenuText_TextChanged(object sender, EventArgs e)
         {
             TextBoxTextChanged(listBoxConfigMenu, textBoxConfigMenuText, editor.ConfigMenuTexts);
+        }
+
+        private void textBoxSaveMenuText_TextChanged(object sender, EventArgs e)
+        {
+            TextBoxTextChanged(listBoxSaveMenu, textBoxSaveMenuText, editor.SaveMenuTexts);
         }
 
         private void textBoxStatusEffectMenu_TextChanged(object sender, EventArgs e)

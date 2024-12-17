@@ -21,10 +21,13 @@ namespace FF7Scarlet.ExeEditor
             NUM_MAGIC_MENU_TEXTS = 14,
             NUM_EQUIP_MENU_TEXTS = 23,
             NUM_MATERIA_MENU_TEXTS = 42,
+            NUM_UNEQUIP_TEXTS = 4,
             NUM_CONFIG_MENU_TEXTS = 51,
             NUM_ELEMENTS = 9,
             NUM_STATUS_EFFECTS = 27,
             NUM_STATUS_MENU_TEXTS = 27,
+            NUM_LIMIT_MENU_TEXTS = 14,
+            NUM_SAVE_MENU_TEXTS = 36,
             NUM_LIMITS = 71,
             NUM_CHARACTER_NAMES = 10,
             NUM_SHOPS = 80,
@@ -36,8 +39,11 @@ namespace FF7Scarlet.ExeEditor
             MENU_TEXT_LENGTH = 20,
             ITEM_MENU_TEXT_LENGTH = 12,
             EQUIP_MENU_TEXT_LENGTH = 12,
+            UNEQUIP_TEXT_LENGTH = 36,
             ELEMENT_NAME_LENGTH = 10,
             STATUS_MENU_TEXT_LENGTH = 15,
+            LIMIT_MENU_TEXT_LENGTH = 36,
+            SAVE_MENU_TEXT_LENGTH = 36,
             SHOP_TEXT_LENGTH = 46,
             CHOCOBO_NAME_LENGTH = 7,
             ITEM_NAME_LENGTH = 16;
@@ -52,11 +58,13 @@ namespace FF7Scarlet.ExeEditor
             CONFIG_MENU_TEXT_POS = 0x5188A8,
             MAIN_MENU_TEXT_POS = 0x5192C0,
             STATUS_EFFECT_BATTLE_POS = 0x51D228,
+            LIMIT_MENU_TEXT_POS = 0x51DED8,
             LIMIT_BREAK_POS = 0x51E0D4,
             STATUS_MENU_ELEMENT_POS = 0x51EF40,
             STATUS_MENU_EFFECTS_POS = 0x51EFA0,
             STATUS_MENU_TEXT_POS = 0x51F1C0,
             EQUIP_MENU_TEXT_POS = 0x51F3A8,
+            UNEQUIP_TEXT_POS = 0x51F518,
             MATERIA_MENU_TEXT_POS = 0x51F5A8,
             MAGIC_MENU_TEXT_POS = 0x51F9E8,
             ITEM_MENU_TEXT_POS = 0x51FB68,
@@ -70,6 +78,7 @@ namespace FF7Scarlet.ExeEditor
             SHOP_INVENTORY_POS = 0x521E18,
             ITEM_PRICE_DATA_POS = 0x523858,
             MATERIA_PRICE_DATA_POS = 0x523E58,
+            SAVE_MENU_TEXT_POS = 0x524160,
             TEIOH_POS = 0x57B2A8,
             CHOCOBO_RACE_ITEMS_POS = 0x57B3D0,
             CHOCOBO_NAMES_POS = 0x57B658;
@@ -85,12 +94,15 @@ namespace FF7Scarlet.ExeEditor
         public FFText[] ItemMenuTexts { get; } = new FFText[NUM_ITEM_MENU_TEXTS];
         public FFText[] MagicMenuTexts { get; } = new FFText[NUM_MAGIC_MENU_TEXTS];
         public FFText[] MateriaMenuTexts { get; } = new FFText[NUM_MATERIA_MENU_TEXTS];
+        public FFText[] UnequipTexts { get; } = new FFText[NUM_UNEQUIP_TEXTS];
         public FFText[] EquipMenuTexts { get; } = new FFText[NUM_EQUIP_MENU_TEXTS];
         public FFText[] ElementNames { get; } = new FFText[NUM_ELEMENTS];
         public FFText[] StatusEffectsBattle { get; } = new FFText[NUM_STATUS_EFFECTS];
         public FFText[] StatusEffectsMenu { get; } = new FFText[NUM_STATUS_EFFECTS];
         public FFText[] StatusMenuTexts { get; } = new FFText[NUM_STATUS_MENU_TEXTS];
+        public FFText[] LimitMenuTexts { get; } = new FFText[NUM_LIMIT_MENU_TEXTS];
         public FFText[] ConfigMenuTexts { get; } = new FFText[NUM_CONFIG_MENU_TEXTS];
+        public FFText[] SaveMenuTexts { get; } = new FFText[NUM_SAVE_MENU_TEXTS];
         public FFText[] CharacterNames { get; } = new FFText[NUM_CHARACTER_NAMES];
         public FFText[] ChocoboNames { get; } = new FFText[NUM_CHOCOBO_NAMES + 1]; //extra slot for Teioh
         public FFText[] ChocoboRacePrizes { get; } = new FFText[NUM_CHOCOBO_RACE_ITEMS];
@@ -480,6 +492,13 @@ namespace FF7Scarlet.ExeEditor
                                 StatusEffectsMenu[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
                             }
 
+                            //get limit menu text
+                            stream.Seek(LIMIT_MENU_TEXT_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_LIMIT_MENU_TEXTS; ++i)
+                            {
+                                LimitMenuTexts[i] = new FFText(reader.ReadBytes(LIMIT_MENU_TEXT_LENGTH));
+                            }
+
                             //get status menu text
                             stream.Seek(STATUS_MENU_TEXT_POS, SeekOrigin.Begin);
                             for (i = 0; i < NUM_STATUS_MENU_TEXTS; ++i)
@@ -492,6 +511,13 @@ namespace FF7Scarlet.ExeEditor
                             for (i = 0; i < NUM_EQUIP_MENU_TEXTS; ++i)
                             {
                                 EquipMenuTexts[i] = new FFText(reader.ReadBytes(EQUIP_MENU_TEXT_LENGTH));
+                            }
+
+                            //get unequip text
+                            stream.Seek(UNEQUIP_TEXT_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_UNEQUIP_TEXTS; ++i)
+                            {
+                                UnequipTexts[i] = new FFText(reader.ReadBytes(UNEQUIP_TEXT_LENGTH));
                             }
 
                             //get materia menu text
@@ -527,6 +553,13 @@ namespace FF7Scarlet.ExeEditor
                             for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
                             {
                                 MateriaPriority.Add((byte)i, reader.ReadByte());
+                            }
+
+                            //get save menu text
+                            stream.Seek(SAVE_MENU_TEXT_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_SAVE_MENU_TEXTS; ++i)
+                            {
+                                SaveMenuTexts[i] = new FFText(reader.ReadBytes(SAVE_MENU_TEXT_LENGTH));
                             }
 
                             //get chocobo race prizes
@@ -690,6 +723,13 @@ namespace FF7Scarlet.ExeEditor
                                 writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
                             }
 
+                            //write limit menu text
+                            stream.Seek(LIMIT_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in LimitMenuTexts)
+                            {
+                                writer.Write(t.GetBytes(LIMIT_MENU_TEXT_LENGTH));
+                            }
+
                             //write status menu text
                             stream.Seek(STATUS_MENU_TEXT_POS, SeekOrigin.Begin);
                             foreach (var t in StatusMenuTexts)
@@ -702,6 +742,13 @@ namespace FF7Scarlet.ExeEditor
                             foreach (var t in EquipMenuTexts)
                             {
                                 writer.Write(t.GetBytes(EQUIP_MENU_TEXT_LENGTH));
+                            }
+
+                            //write unequip text
+                            stream.Seek(UNEQUIP_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in UnequipTexts)
+                            {
+                                writer.Write(t.GetBytes(UNEQUIP_TEXT_LENGTH));
                             }
 
                             //write materia menu text
@@ -752,6 +799,13 @@ namespace FF7Scarlet.ExeEditor
                             foreach (var p in materiaPositions)
                             {
                                 writer.Write(p);
+                            }
+
+                            //write save menu text
+                            stream.Seek(SAVE_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var s in SaveMenuTexts)
+                            {
+                                writer.Write(s.GetBytes(SAVE_MENU_TEXT_LENGTH));
                             }
 
                             //write Teioh's name
@@ -1096,6 +1150,30 @@ namespace FF7Scarlet.ExeEditor
                                 MENU_TEXT_LENGTH);
                             stream.Seek(MagicMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
+
+                        //read unequip text
+                        for (i = 0; i < NUM_UNEQUIP_TEXTS; ++i)
+                        {
+                            UnequipTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                UNEQUIP_TEXT_LENGTH);
+                            stream.Seek(UnequipTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                        }
+
+                        //read limit menu text
+                        for (i = 0; i < NUM_LIMIT_MENU_TEXTS; ++i)
+                        {
+                            LimitMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                LIMIT_MENU_TEXT_LENGTH);
+                            stream.Seek(LimitMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                        }
+
+                        //read save menu text
+                        for (i = 0; i < NUM_SAVE_MENU_TEXTS; ++i)
+                        {
+                            SaveMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                SAVE_MENU_TEXT_LENGTH);
+                            stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                        }
                     }
                 }
             }
@@ -1286,6 +1364,24 @@ namespace FF7Scarlet.ExeEditor
                 {
                     output.AddRange(m.GetBytesTruncated());
                 }
+
+                //write unequip text
+                foreach (var u in UnequipTexts)
+                {
+                    output.AddRange(u.GetBytesTruncated());
+                }
+
+                //write limit menu text
+                foreach (var l in LimitMenuTexts)
+                {
+                    output.AddRange(l.GetBytesTruncated());
+                }
+
+                //write save menu text
+                foreach (var s in SaveMenuTexts)
+                {
+                    output.AddRange(s.GetBytesTruncated());
+                }
             }
 
             return output.ToArray();
@@ -1399,6 +1495,10 @@ namespace FF7Scarlet.ExeEditor
                     writer.Write(WriteHextStrings(StatusEffectsBattle, original.StatusEffectsBattle,
                         STATUS_EFFECT_BATTLE_POS, GetStatusEffectBattleLength(), NUM_STATUS_EFFECTS));
 
+                    //write limit menu text
+                    writer.Write(WriteHextStrings(LimitMenuTexts, original.LimitMenuTexts,
+                        LIMIT_MENU_TEXT_POS, LIMIT_MENU_TEXT_LENGTH, NUM_LIMIT_MENU_TEXTS));
+
                     //compare limits
                     for (i = 0; i < NUM_LIMITS; ++i)
                     {
@@ -1449,6 +1549,10 @@ namespace FF7Scarlet.ExeEditor
                     //write equip menu text
                     writer.Write(WriteHextStrings(EquipMenuTexts, original.EquipMenuTexts,
                         EQUIP_MENU_TEXT_POS, EQUIP_MENU_TEXT_LENGTH, NUM_EQUIP_MENU_TEXTS));
+
+                    //write unequip text
+                    writer.Write(WriteHextStrings(UnequipTexts, original.UnequipTexts,
+                        UNEQUIP_TEXT_POS, UNEQUIP_TEXT_LENGTH, NUM_UNEQUIP_TEXTS));
 
                     //write materia menu text
                     writer.Write(WriteHextStrings(MateriaMenuTexts, original.MateriaMenuTexts,
@@ -1694,7 +1798,7 @@ namespace FF7Scarlet.ExeEditor
                     writer.Write(WriteHextStrings(ShopNames, original.ShopNames,
                         SHOP_NAME_POS, GetShopNameLength(), NUM_SHOP_NAMES));
 
-                    //compare shop text
+                    //write shop text
                     writer.Write(WriteHextStrings(ShopText, original.ShopText,
                         SHOP_TEXT_POS, SHOP_TEXT_LENGTH, NUM_SHOP_TEXTS));
 
@@ -1820,6 +1924,10 @@ namespace FF7Scarlet.ExeEditor
                                 writer.WriteLine();
                             }
                         }
+
+                        //write save menu text
+                        writer.Write(WriteHextStrings(SaveMenuTexts, original.SaveMenuTexts,
+                            SAVE_MENU_TEXT_POS, SAVE_MENU_TEXT_LENGTH, NUM_SAVE_MENU_TEXTS));
 
                         //compare Teioh's name
                         string name1 = ChocoboNames[NUM_CHOCOBO_NAMES].ToString(),
