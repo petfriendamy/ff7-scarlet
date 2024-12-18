@@ -10,7 +10,7 @@ namespace FF7Scarlet.AIEditor
     {
         public enum Globals
         {
-            CommandIndex = 0x2000, ActionIndex = 0x2008, GlobalVar = 0x2010, Dummy = 0x2018,
+            CommandIndex = 0x2000, ActionIndex = 0x2008, TempGlobal = 0x2010, Dummy = 0x2018,
             BattleFormation = 0x2020, LimitLevel = 0x2038, ActiveActors = 0x2050, Self = 0x2060,
             Target = 0x2070, Allies = 0x2080, ActiveAllies = 0x2090, Enemies = 0x20A0,
             ActiveEnemies = 0x20B0, ActiveCharacters = 0x20C0, Actors = 0x20E0,
