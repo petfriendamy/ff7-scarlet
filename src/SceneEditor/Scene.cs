@@ -457,7 +457,7 @@ namespace FF7Scarlet.SceneEditor
                         {
                             atk = AttackList[i];
                             if (atk == null) { writer.Write(HexParser.NULL_OFFSET_16_BIT); }
-                            else { writer.Write(atk.Index); }
+                            else { writer.Write((ushort)atk.Index); }
                         }
                         for (i = 0; i < ATTACK_COUNT; ++i)
                         {
@@ -465,7 +465,7 @@ namespace FF7Scarlet.SceneEditor
                             if (atk == null) { writer.Write(HexParser.GetNullBlock(NAME_LENGTH)); }
                             else
                             {
-                                writer.Write(new FFText(atk.Name, NAME_LENGTH).GetBytes());
+                                writer.Write(new FFText(atk.Name).GetBytes(NAME_LENGTH));
                             }
                         }
                     }
@@ -535,8 +535,8 @@ namespace FF7Scarlet.SceneEditor
                 }
 
                 //return a copy of the newly updated data
-                var copy = new byte[rawData.Length];
-                Array.Copy(rawData, copy, rawData.Length);
+                var copy = new byte[UNCOMPRESSED_BLOCK_SIZE];
+                Array.Copy(rawData, copy, UNCOMPRESSED_BLOCK_SIZE);
                 return copy;
             }
             catch (Exception ex)

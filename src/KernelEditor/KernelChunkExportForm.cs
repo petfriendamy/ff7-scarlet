@@ -11,8 +11,8 @@ namespace FF7Scarlet.KernelEditor
         {
             InitializeComponent();
             this.kernel = kernel;
-            checkBoxes = new CheckBox[Kernel.SECTION_COUNT]
-            {
+            checkBoxes =
+            [
                 checkBoxChunk1, checkBoxChunk2, checkBoxChunk3, checkBoxChunk4,
                 checkBoxChunk5, checkBoxChunk6, checkBoxChunk7, checkBoxChunk8,
                 checkBoxChunk9, checkBoxChunk10, checkBoxChunk11, checkBoxChunk12,
@@ -21,7 +21,7 @@ namespace FF7Scarlet.KernelEditor
                 checkBoxChunk21, checkBoxChunk22, checkBoxChunk23, checkBoxChunk24,
                 checkBoxChunk25, checkBoxChunk26, checkBoxChunk27
 
-            };
+            ];
         }
 
         private void KernelChunkExportForm_Load(object sender, EventArgs e)

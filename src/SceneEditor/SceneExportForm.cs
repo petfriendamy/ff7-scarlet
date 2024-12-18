@@ -77,6 +77,7 @@
                         {
                             groupBoxExport.Enabled = false;
                             buttonExport.Enabled = false;
+                            processing = true;
                             await ExportScene(selectedScene, path);
                             progressBarSaving.Value = 100;
                             success = true;
@@ -122,6 +123,8 @@
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    groupBoxExport.Enabled = true;
+                    buttonExport.Enabled = true;
                     progressBarSaving.Value = 0;
                     processing = false;
                 }
