@@ -8,10 +8,10 @@ namespace FF7Scarlet.AIEditor
 {
     public class CommandInfo
     {
-        public static readonly CommandInfo[] COMMAND_LIST = new CommandInfo[]
+        public static readonly CommandInfo[] COMMAND_LIST =
         {
             new CommandInfo(Opcodes.Assign, "Set x to y", "Variable", ParameterTypes.Other, "Assignment", ParameterTypes.Other),
-            new CommandInfo(Opcodes.AssignGlobal, "Set global variable to x", "Variable", ParameterTypes.Other, "Assignment", ParameterTypes.Other),
+            new CommandInfo(Opcodes.Savemap, "Read/write a value on the savemap", "Action", ParameterTypes.ReadWrite, "Position", ParameterTypes.Other),
             new CommandInfo(Opcodes.JumpEqual, "Conditional", "Condition", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.JumpNotEqual, "If 1st in stack != x", "Value", ParameterTypes.Other, "Label ID", ParameterTypes.Label),
             new CommandInfo(Opcodes.Label, "Create new label", "Label ID", ParameterTypes.Label),

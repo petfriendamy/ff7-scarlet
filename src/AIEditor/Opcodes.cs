@@ -19,7 +19,7 @@ namespace FF7Scarlet.AIEditor
         JumpNotEqual = 0x71, Jump = 0x72, End = 0x73, PopUnused = 0x74, ShareScripts = 0x75,
         Mask = 0x80, RandomWord = 0x81, RandomByte = 0x82, CountBits = 0x83,
         MaskGreatest = 0x84, MaskLeast = 0x85, MPCost = 0x86, TopBit = 0x87, Assign = 0x90,
-        Pop = 0x91, Attack = 0x92, ShowMessage = 0x93, CopyStats = 0x94, AssignGlobal = 0x95,
+        Pop = 0x91, Attack = 0x92, ShowMessage = 0x93, CopyStats = 0x94, Savemap = 0x95,
         ElementalDef = 0x96, DebugMessage = 0xA0, Pop2 = 0xA1, Label = 0xFE
     }
 }

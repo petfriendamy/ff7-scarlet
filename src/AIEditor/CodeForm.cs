@@ -143,6 +143,16 @@ namespace FF7Scarlet.AIEditor
                         case ParameterTypes.String:
                             textbox.Text = strText?.ToString();
                             break;
+                        case ParameterTypes.ReadWrite:
+                            if (currParam?.Disassemble(false) == "01")
+                            {
+                                textbox.Text = "Write";
+                            }
+                            else
+                            {
+                                textbox.Text = "Read";
+                            }
+                            break;
                         case ParameterTypes.Label:
                             if (label == -1) { textbox.Text = "(New label)"; }
                             else { textbox.Text = label.ToString(); }
@@ -230,6 +240,11 @@ namespace FF7Scarlet.AIEditor
         private void EditParameter(int pos)
         {
             Code? param = null;
+            var textBox = textBoxParameter1;
+            if (pos == 1)
+            {
+                textBox = textBoxParameter2;
+            }
 
             //check if parameter is a string or a label
             ParameterTypes type = ParameterTypes.Other;
@@ -249,7 +264,6 @@ namespace FF7Scarlet.AIEditor
             else if (command != null)
             {
                 Code? currP;
-
                 if (pos == 0)
                 {
                     currP = param1;
@@ -260,7 +274,25 @@ namespace FF7Scarlet.AIEditor
                     currP = param2;
                     type = command.ParameterType2;
                 }
-                if (type == ParameterTypes.String)
+                if (type == ParameterTypes.ReadWrite) //just flip the bit if it's a boolean
+                {
+                    var p = currP as CodeLine;
+                    if (p != null)
+                    {
+                        if (p.Parameter?.ToInt() == 1)
+                        {
+                            p.Parameter = new FFText("00");
+                            textBox.Text = "Read";
+                        }
+                        else
+                        {
+                            p.Parameter = new FFText("01");
+                            textBox.Text = "Write";
+                        }
+                    }
+                    return;
+                }
+                else if (type == ParameterTypes.String)
                 {
                     param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, strText);
                 }
@@ -295,16 +327,8 @@ namespace FF7Scarlet.AIEditor
                             var p = paramForm.Code[0].GetParameter();
                             if (p != null)
                             {
-                                if (pos == 0)
-                                {
-                                    textBoxParameter1.Text = p.ToString();
-                                    comboBoxManualParameter.Text = textBoxParameter1.Text;
-                                }
-                                else
-                                {
-                                    textBoxParameter2.Text = p.ToString();
-                                    comboBoxManualParameter.Text = textBoxParameter2.Text;
-                                }
+                                textBox.Text = p.ToString();
+                                comboBoxManualParameter.Text = textBox.Text;
                                 strText = p;
                             }
 
@@ -315,29 +339,14 @@ namespace FF7Scarlet.AIEditor
                             if (p == null) //new label
                             {
                                 string text = "(New label)";
-                                if (pos == 0)
-                                {
-                                    textBoxParameter1.Text = text;
-                                }
-                                else
-                                {
-                                    textBoxParameter2.Text = text;
-                                }
+                                textBox.Text = text;
                                 label = -1;
                             }
                             else //existing label
                             {
                                 int pint = p.ToInt();
-                                if (pos == 0)
-                                {
-                                    textBoxParameter1.Text = pint.ToString();
-                                    comboBoxManualParameter.Text = textBoxParameter1.Text;
-                                }
-                                else
-                                {
-                                    textBoxParameter2.Text = pint.ToString();
-                                    comboBoxManualParameter.Text = textBoxParameter2.Text;
-                                }
+                                textBox.Text = pint.ToString();
+                                comboBoxManualParameter.Text = textBox.Text;
                                 label = pint;
                             }
                         }

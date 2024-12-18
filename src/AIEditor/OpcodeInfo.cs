@@ -64,7 +64,7 @@
             new OpcodeInfo(Opcodes.Attack, OpcodeGroups.Command, ParameterTypes.None, 2),
             new OpcodeInfo(Opcodes.ShowMessage, OpcodeGroups.Command, ParameterTypes.String, 0),
             new OpcodeInfo(Opcodes.CopyStats, OpcodeGroups.Command, ParameterTypes.None, 2),
-            new OpcodeInfo(Opcodes.AssignGlobal, OpcodeGroups.Command, ParameterTypes.None, 2),
+            new OpcodeInfo(Opcodes.Savemap, OpcodeGroups.Command, ParameterTypes.None, 2),
             new OpcodeInfo(Opcodes.ElementalDef, OpcodeGroups.Command, ParameterTypes.None, 2),
             new OpcodeInfo(Opcodes.DebugMessage, OpcodeGroups.Command, ParameterTypes.Debug, 1),
             new OpcodeInfo(Opcodes.Pop2, OpcodeGroups.Command, ParameterTypes.None, 0),

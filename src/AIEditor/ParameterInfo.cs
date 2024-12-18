@@ -8,7 +8,7 @@ namespace FF7Scarlet.AIEditor
 {
     public enum ParameterTypes
     {
-        None, OneByte, TwoByte, ThreeByte, String, Debug, Label, Other
+        None, OneByte, TwoByte, ThreeByte, String, Debug, ReadWrite, Label, Other
     }
 
     public enum ParameterValidData
@@ -26,6 +26,7 @@ namespace FF7Scarlet.AIEditor
             new ParameterInfo(ParameterTypes.ThreeByte, ParameterValidData.Hex, 3),
             new ParameterInfo(ParameterTypes.String, ParameterValidData.String, 0),
             new ParameterInfo(ParameterTypes.Debug, ParameterValidData.String, 0),
+            new ParameterInfo(ParameterTypes.ReadWrite, ParameterValidData.Hex, 2),
             new ParameterInfo(ParameterTypes.Label, ParameterValidData.Hex, 2),
             new ParameterInfo(ParameterTypes.Other, ParameterValidData.Hex, 0)
         };
@@ -63,7 +64,8 @@ namespace FF7Scarlet.AIEditor
                     }
                     break;
             }
-            if (MaxLength > 0 && data?.Length > MaxLength * 2) { return false; }
+            int? temp = data?.Length;
+            if (MaxLength > 0 && data?.Length > ((MaxLength * 2) + 1)) { return false; }
             return true;
         }
 

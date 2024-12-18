@@ -218,8 +218,19 @@ namespace FF7Scarlet.AIEditor
                             }
                         }
                         break;
-                    case Opcodes.AssignGlobal:
-                        output += $"GlobalVar:{block[0].Disassemble(false)} = {block[1].Disassemble(false)}";
+                    case Opcodes.Savemap:
+                        pop1 = block[0] as CodeLine;
+                        if (pop1 != null)
+                        {
+                            if (pop1.Parameter?.ToInt() == 1)
+                            {
+                                output += $"WriteSavemap({block[1].Disassemble(false)})";
+                            }
+                            else
+                            {
+                                output += $"ReadSavemap({block[1].Disassemble(false)})";
+                            }
+                        }
                         break;
                     case Opcodes.ElementalDef:
                         var parameter = block[1].GetParameter();
