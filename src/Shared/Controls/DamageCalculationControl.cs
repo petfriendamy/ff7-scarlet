@@ -6,7 +6,6 @@ namespace FF7Scarlet.KernelEditor.Controls
     public partial class DamageCalculationControl : UserControl
     {
         private DamageCalculationInfo info;
-        private byte attackPower;
         private int mainCaller = -1;
         private bool loaded = false, editingTextBox = false;
         public event EventHandler? DataChanged;
@@ -38,10 +37,9 @@ namespace FF7Scarlet.KernelEditor.Controls
         }
         public byte AttackPower
         {
-            get { return attackPower; }
+            get { return (byte)numericAttackPower.Value; }
             set
             {
-                attackPower = value;
                 numericAttackPower.Value = value;
             }
         }

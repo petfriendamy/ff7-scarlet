@@ -1687,6 +1687,7 @@ namespace FF7Scarlet.KernelEditor
                 weapon.Status = (EquipmentStatus)(s - 1);
             }
             weapon.DamageCalculationId = damageCalculationControlWeapon.ActualValue;
+            weapon.AttackStrength = damageCalculationControlWeapon.AttackPower;
             weapon.Targets = targetDataControlWeapon.GetTargetData();
             weapon.EquipableBy = equipableListWeapon.GetEquipableFlags();
             weapon.Restrictions = itemRestrictionsWeapon.GetItemRestrictions();

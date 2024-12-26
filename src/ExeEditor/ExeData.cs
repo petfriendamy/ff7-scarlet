@@ -610,7 +610,7 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(LIMIT_BREAK_POS + GetLimitOffset(), SeekOrigin.Begin);
                         for (i = 0; i < NUM_LIMITS; ++i)
                         {
-                            DataParser.ReadAttack((ushort)i, $"(Limit #{i})", reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
+                            Limits[i] = DataParser.ReadAttack((ushort)i, $"(Limit #{i})", reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
                         }
 
                         //get L4 limit text
@@ -1508,7 +1508,14 @@ namespace FF7Scarlet.ExeEditor
                                 temp2 = DataParser.GetAttackBytes(original.Limits[i]);
                             diff = false;
 
-                            writer.WriteLine($"# {original.Limits[i].Name}");
+                            if (DataManager.Kernel != null && DataManager.BothKernelFilePathsExist)
+                            {
+                                writer.WriteLine($"# {DataManager.Kernel.GetLimitName(i)}");
+                            }
+                            else
+                            {
+                                writer.WriteLine($"# {original.Limits[i].Name}");
+                            }
                             for (i = 0; i < DataParser.ATTACK_BLOCK_SIZE; ++i)
                             {
                                 if (temp1[i] != temp2[i])
@@ -1630,6 +1637,11 @@ namespace FF7Scarlet.ExeEditor
                             writer.WriteLine();
                         }
                         j++;
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
                     }
 
                     //compare item sort order

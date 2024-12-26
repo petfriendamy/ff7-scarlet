@@ -36,14 +36,14 @@ namespace FF7Scarlet.KernelEditor.Controls
         public StatIncreaseControl()
         {
             InitializeComponent();
-            comboBoxes = new ComboBox[MAX_STAT_COUNT]
-            {
+            comboBoxes =
+            [
                 comboBoxStat1, comboBoxStat2, comboBoxStat3, comboBoxStat4
-            };
-            numerics = new NumericUpDown[MAX_STAT_COUNT]
-            {
+            ];
+            numerics =
+            [
                 numericStat1, numericStat2, numericStat3, numericStat4
-            };
+            ];
             loading = true;
             for (int i = 0; i < MAX_STAT_COUNT; ++i)
             {

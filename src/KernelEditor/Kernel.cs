@@ -1,4 +1,5 @@
 ﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.ExeEditor;
 using FF7Scarlet.Shared;
 
 using Shojy.FF7.Elena;
@@ -257,6 +258,15 @@ namespace FF7Scarlet.KernelEditor
                 return DataParser.GetAttackNameString(atk);
             }
             return $"Unknown ({id:X4})";
+        }
+
+        public string GetLimitName(int index)
+        {
+            if (index > 0 && index < ExeData.NUM_LIMITS)
+            {
+                return MagicNames.Strings[index + ATTACK_COUNT];
+            }
+            return string.Empty;
         }
 
         public Item? GetItemByID(int id)
@@ -975,7 +985,7 @@ namespace FF7Scarlet.KernelEditor
         }
 
 
-        public bool ImportChunk (KernelSection section, string filePath)
+        public bool ImportChunk(KernelSection section, string filePath)
         {
             if (File.Exists(filePath))
             {
@@ -1330,19 +1340,21 @@ namespace FF7Scarlet.KernelEditor
                                 else
                                 {
                                     writer.Write((byte)w.Targets);
-                                    writer.Seek(1, SeekOrigin.Current); //attack effect ID
+                                    writer.Write((byte)0xFF); //attack effect ID
                                     writer.Write(w.DamageCalculationId);
-                                    writer.Seek(1, SeekOrigin.Current); //unused
+                                    writer.Write((byte)0xFF); //unused
                                     writer.Write(w.AttackStrength);
                                     writer.Write((byte)w.Status);
                                     writer.Write((byte)w.GrowthRate);
                                     writer.Write(w.CriticalRate);
                                     writer.Write(w.AccuracyRate);
                                     writer.Write(w.WeaponModelId);
+                                    writer.Write((byte)0xFF); //padding
                                     writer.Write(w.HighSoundIDMask);
+                                    writer.Write((ushort)0xFFFF); //camera movement ID
                                     writer.Write((ushort)w.EquipableBy);
                                     writer.Write((ushort)w.AttackElements);
-                                    writer.Seek(2, SeekOrigin.Current); //padding
+                                    writer.Write((ushort)0xFFFF); //padding
                                     writer.Write((byte)w.BoostedStat1);
                                     writer.Write((byte)w.BoostedStat2);
                                     writer.Write((byte)w.BoostedStat3);
@@ -1359,6 +1371,7 @@ namespace FF7Scarlet.KernelEditor
                                     writer.Write(w.CriticalHitSoundID);
                                     writer.Write(w.MissedAttackSoundID);
                                     writer.Write(w.ImpactEffectID);
+                                    writer.Write((ushort)0xFFFF); //special attack flags
                                     writer.Write((ushort)~w.Restrictions);
                                 }
                             }

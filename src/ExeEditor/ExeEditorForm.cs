@@ -112,7 +112,7 @@ namespace FF7Scarlet.ExeEditor
                 string name = $"(Limit break #{i + 1})";
                 if (DataManager.BothKernelFilePathsExist && DataManager.Kernel != null)
                 {
-                    name = DataManager.Kernel.MagicNames.Strings[i + Kernel.ATTACK_COUNT];
+                    name = DataManager.Kernel.GetLimitName(i);
                 }
                 listBoxLimits.Items.Add(name);
             }
@@ -1109,43 +1109,46 @@ namespace FF7Scarlet.ExeEditor
                 if (i >= 0 && i < ExeData.NUM_LIMITS)
                 {
                     var attack = editor.Limits[i];
-                    tabControlLimits.Enabled = true;
+                    if (attack != null)
+                    {
+                        tabControlLimits.Enabled = true;
 
-                    //page 1
-                    numericLimitAttackPercent.Value = attack.AccuracyRate;
-                    numericLimitMPCost.Value = attack.MPCost;
-                    comboBoxLimitAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
-                    comboBoxLimitImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
-                    elementsControlLimit.SetElements(attack.Elements);
-                    comboBoxLimitCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
-                    comboBoxLimitCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
-                    comboBoxLimitHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
-                    damageCalculationControlLimit.AttackPower = attack.AttackStrength;
-                    damageCalculationControlLimit.ActualValue = attack.DamageCalculationID;
+                        //page 1
+                        numericLimitAttackPercent.Value = attack.AccuracyRate;
+                        numericLimitMPCost.Value = attack.MPCost;
+                        comboBoxLimitAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
+                        comboBoxLimitImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
+                        elementsControlLimit.SetElements(attack.Elements);
+                        comboBoxLimitCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
+                        comboBoxLimitCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
+                        comboBoxLimitHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
+                        damageCalculationControlLimit.AttackPower = attack.AttackStrength;
+                        damageCalculationControlLimit.ActualValue = attack.DamageCalculationID;
 
-                    //page 2
-                    specialAttackFlagsControlLimit.SetFlags(attack.SpecialAttackFlags);
-                    statusesControlLimit.SetStatuses(attack.Statuses);
-                    if (attack.ConditionSubmenu == ConditionSubmenu.None)
-                    {
-                        comboBoxLimitConditionSubMenu.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
-                    }
-                    numericLimitStatusChangeChance.Value = attack.StatusChange.Amount;
-                    if (attack.StatusChange.Type == StatusChangeType.None)
-                    {
-                        comboBoxLimitStatusChange.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        comboBoxLimitStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
-                    }
+                        //page 2
+                        specialAttackFlagsControlLimit.SetFlags(attack.SpecialAttackFlags);
+                        statusesControlLimit.SetStatuses(attack.Statuses);
+                        if (attack.ConditionSubmenu == ConditionSubmenu.None)
+                        {
+                            comboBoxLimitConditionSubMenu.SelectedIndex = 0;
+                        }
+                        else
+                        {
+                            comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
+                        }
+                        numericLimitStatusChangeChance.Value = attack.StatusChange.Amount;
+                        if (attack.StatusChange.Type == StatusChangeType.None)
+                        {
+                            comboBoxLimitStatusChange.SelectedIndex = 0;
+                        }
+                        else
+                        {
+                            comboBoxLimitStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
+                        }
 
-                    //page 3
-                    targetDataControlLimit.SetTargetData(attack.TargetFlags);
+                        //page 3
+                        targetDataControlLimit.SetTargetData(attack.TargetFlags);
+                    }
                 }
                 prevLimit = i;
                 loading = false;
@@ -1495,6 +1498,16 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        //change AP price multiplier
+        private void numericMateriaAPPriceMultiplier_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading && editor != null)
+            {
+                editor.APPriceMultiplier = (byte)numericMateriaAPPriceMultiplier.Value;
+                SetUnsaved(true);
+            }
+        }
+
         private void listBoxSortItemName_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = listBoxSortItemName.SelectedIndex;
@@ -1778,13 +1791,13 @@ namespace FF7Scarlet.ExeEditor
         private void listBoxChocoboNames_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListBoxIndexChanged(listBoxChocoboNames, textBoxChocoboName, editor.ChocoboNames,
-                ExeData.NUM_CHOCOBO_NAMES);
+                ExeData.NUM_CHOCOBO_NAMES + 1);
         }
 
         private void listBoxChocoboRacePrizes_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = listBoxChocoboRacePrizes.SelectedIndex;
-            if (i >= 0 && i <= ExeData.NUM_CHOCOBO_NAMES)
+            if (i >= 0 && i < ExeData.NUM_CHOCOBO_RACE_ITEMS)
             {
                 loading = true;
                 comboBoxChocoboRacePrizes.Enabled = true;

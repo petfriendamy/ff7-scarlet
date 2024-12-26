@@ -1724,6 +1724,7 @@ namespace FF7Scarlet.ExeEditor
             numericMateriaAPPriceMultiplier.Name = "numericMateriaAPPriceMultiplier";
             numericMateriaAPPriceMultiplier.Size = new Size(120, 23);
             numericMateriaAPPriceMultiplier.TabIndex = 5;
+            numericMateriaAPPriceMultiplier.ValueChanged += numericMateriaAPPriceMultiplier_ValueChanged;
             // 
             // labelMateriaAPPriceMultiplier
             // 
