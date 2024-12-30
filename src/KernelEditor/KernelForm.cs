@@ -3199,10 +3199,11 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading)
             {
-                int i = listBoxLimitBreaks.SelectedIndex + Kernel.ATTACK_COUNT;
-                if (i >= Kernel.ATTACK_COUNT && i < kernel.MagicNames.Strings.Length)
+                int i = listBoxLimitBreaks.SelectedIndex,
+                    j = i + Kernel.ATTACK_COUNT;
+                if (j >= Kernel.ATTACK_COUNT && j < kernel.MagicNames.Strings.Length)
                 {
-                    kernel.MagicNames.Strings[i] = textBoxLimitName.Text;
+                    kernel.MagicNames.Strings[j] = textBoxLimitName.Text;
                     listBoxLimitBreaks.Items[i] = textBoxLimitName.Text;
                     SetUnsaved(true);
                 }
