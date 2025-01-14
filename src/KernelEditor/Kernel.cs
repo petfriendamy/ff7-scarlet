@@ -1196,8 +1196,8 @@ namespace FF7Scarlet.KernelEditor
                                 writer.Write(c.HPCurveIndex);
                                 writer.Write(c.MPCurveIndex);
                                 writer.Write(c.EXPCurveIndex);
-                                writer.Write((byte)0xFF);
-                                if (c == CharacterData.Yuffie)
+                                writer.Write((byte)0xFF); //padding
+                                if (c.ID == (byte)CharacterNames.Yuffie)
                                 {
                                     writer.Write((byte)1);
                                 }
@@ -1205,19 +1205,26 @@ namespace FF7Scarlet.KernelEditor
                                 {
                                     writer.Write((sbyte)(c.RecruitLevelOffset * 2));
                                 }
-                                writer.Write((byte)0xFF);
+                                writer.Write((byte)0xFF); //padding
                                 writer.Write(c.Limit1_1Index);
                                 writer.Write(c.Limit1_2Index);
+                                writer.Write((byte)0xFF); //limit 1-3
                                 writer.Write(c.Limit2_1Index);
                                 writer.Write(c.Limit2_2Index);
+                                writer.Write((byte)0xFF); //limit 2-3
                                 writer.Write(c.Limit3_1Index);
                                 writer.Write(c.Limit3_2Index);
+                                writer.Write((byte)0xFF); //limit 3-3
                                 writer.Write(c.Limit4Index);
+                                writer.Write((ushort)0xFFFF); //limits 4-2 and 4-3
                                 writer.Write(c.KillsForLimitLv2);
                                 writer.Write(c.KillsForLimitLv3);
                                 writer.Write(c.UsesForLimit1_2);
+                                writer.Write((ushort)0xFFFF); //limit 1-3
                                 writer.Write(c.UsesForLimit2_2);
+                                writer.Write((ushort)0xFFFF); //limit 2-3
                                 writer.Write(c.UsesForLimit3_2);
+                                writer.Write((ushort)0xFFFF); //limit 3-3
                                 writer.Write(c.LimitLv1HPDivisor);
                                 writer.Write(c.LimitLv2HPDivisor);
                                 writer.Write(c.LimitLv3HPDivisor);
@@ -1257,7 +1264,7 @@ namespace FF7Scarlet.KernelEditor
                                 {
                                     writer.Write(BitConverter.GetBytes(o));
                                 }
-                                writer.Write(CharacterData.CharacterAIBlock);
+                                writer.Write(CharacterData.CharacterAIBlock, AI_BLOCK_COUNT * 2, AI_BLOCK_SIZE);
                             }
                             catch (ScriptTooLongException)
                             {

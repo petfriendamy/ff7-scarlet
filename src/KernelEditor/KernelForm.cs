@@ -509,9 +509,9 @@ namespace FF7Scarlet.KernelEditor
             {
                 SpellIndexes[i] =
                     (from s in kernel.BattleAndGrowthData.SpellIndexes
-                    where (int)s.SpellType == i
-                    orderby s.SectionIndex
-                    select s).ToList();
+                     where (int)s.SpellType == i
+                     orderby s.SectionIndex
+                     select s).ToList();
             }
 
             //materia info
@@ -1147,7 +1147,7 @@ namespace FF7Scarlet.KernelEditor
                 numericCharacterCurrentEXP.Value = character.CurrentEXP;
                 numericCharacterEXPtoNext.Value = character.EXPtoNextLevel;
                 numericCharacterLevelOffset.Value = character.RecruitLevelOffset;
-                numericCharacterLevelOffset.Enabled = character == kernel.CharacterData.Yuffie;
+                numericCharacterLevelOffset.Enabled = character.ID != (byte)CharacterNames.Yuffie;
 
                 numericCharacterCurrHP.Value = character.CurrentHP;
                 numericCharacterBaseHP.Value = character.BaseHP;
@@ -1600,7 +1600,6 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="chara">The selected character</param>
         private void SyncInitialStats(Character chara)
         {
-            chara.ID = (byte)numericCharacterID.Value;
             chara.Name = textBoxCharacterName.Text;
             chara.Level = (byte)numericCharacterLevel.Value;
             chara.CurrentEXP = (uint)numericCharacterCurrentEXP.Value;
@@ -2670,6 +2669,16 @@ namespace FF7Scarlet.KernelEditor
         #endregion
 
         #region Character Controls
+
+        private void numericCharacterID_ValueChanged(object sender, EventArgs e)
+        {
+            if (SelectedCharacter != null && !loading)
+            {
+                SelectedCharacter.ID = (byte)numericCharacterID.Value;
+                numericCharacterLevelOffset.Enabled = SelectedCharacter.ID != (byte)CharacterNames.Yuffie;
+                SetUnsaved(true);
+            }
+        }
 
         private void comboBoxCharacterWeapon_SelectedIndexChanged(object sender, EventArgs e)
         {
