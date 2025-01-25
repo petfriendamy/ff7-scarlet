@@ -56,7 +56,7 @@ namespace FF7Scarlet
             int i, j;
             if (str == null) //string is null
             {
-                if (length == -1) { data = new byte[1] { 0xFF }; }
+                if (length == -1) { data = [0xFF]; }
                 else
                 {
                     data = new byte[length];
@@ -104,7 +104,7 @@ namespace FF7Scarlet
                             int pos = TEXT_MAP.IndexOf(str[i]);
                             if (pos >= 0)
                             {
-                                text.Add((byte)(pos)); // + MAP_OFFSET));
+                                text.Add((byte)pos);
                             }
                         }
                     }
@@ -226,17 +226,23 @@ namespace FF7Scarlet
             }
         }
 
-        public byte[] GetBytes(int length, bool terminatedWithZero = false)
+        public byte[] GetBytes(int length, bool terminatedWithZero = false, bool padWithZero = false)
         {
             var bytes = new byte[length];
-            if (!terminatedWithZero) //pad with null terminators
+            if (!terminatedWithZero && !padWithZero) //pad with null terminators
             {
                 for (int i = 0; i < length; ++i)
                 {
                     bytes[i] = 0xFF;
                 }
             }
-            Array.Copy(data, bytes, Math.Min(length - 1, data.Length - 1));
+            var temp = GetBytesTruncated();
+            int maxLength = Math.Min(length - 1, temp.Length - 1);
+            Array.Copy(temp, bytes, maxLength);
+            if (!terminatedWithZero)
+            {
+                bytes[maxLength] = 0xFF;
+            }
             return bytes;
         }
 

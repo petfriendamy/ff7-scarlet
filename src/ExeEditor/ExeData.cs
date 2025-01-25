@@ -713,63 +713,63 @@ namespace FF7Scarlet.ExeEditor
                             stream.Seek(STATUS_MENU_ELEMENT_POS, SeekOrigin.Begin);
                             foreach (var n in ElementNames)
                             {
-                                writer.Write(n.GetBytes(ELEMENT_NAME_LENGTH));
+                                writer.Write(n.GetBytes(ELEMENT_NAME_LENGTH, false, true));
                             }
 
                             //write status effects (menu)
                             stream.Seek(STATUS_MENU_EFFECTS_POS, SeekOrigin.Begin);
                             foreach (var t in StatusEffectsMenu)
                             {
-                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write limit menu text
                             stream.Seek(LIMIT_MENU_TEXT_POS, SeekOrigin.Begin);
                             foreach (var t in LimitMenuTexts)
                             {
-                                writer.Write(t.GetBytes(LIMIT_MENU_TEXT_LENGTH));
+                                writer.Write(t.GetBytes(LIMIT_MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write status menu text
                             stream.Seek(STATUS_MENU_TEXT_POS, SeekOrigin.Begin);
                             foreach (var t in StatusMenuTexts)
                             {
-                                writer.Write(t.GetBytes(STATUS_MENU_TEXT_LENGTH));
+                                writer.Write(t.GetBytes(STATUS_MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write equip menu text
                             stream.Seek(EQUIP_MENU_TEXT_POS, SeekOrigin.Begin);
                             foreach (var t in EquipMenuTexts)
                             {
-                                writer.Write(t.GetBytes(EQUIP_MENU_TEXT_LENGTH));
+                                writer.Write(t.GetBytes(EQUIP_MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write unequip text
                             stream.Seek(UNEQUIP_TEXT_POS, SeekOrigin.Begin);
                             foreach (var t in UnequipTexts)
                             {
-                                writer.Write(t.GetBytes(UNEQUIP_TEXT_LENGTH));
+                                writer.Write(t.GetBytes(UNEQUIP_TEXT_LENGTH, false, true));
                             }
 
                             //write materia menu text
                             stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
                             foreach (var t in MateriaMenuTexts)
                             {
-                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write magic menu text
                             stream.Seek(MAGIC_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in EquipMenuTexts)
+                            foreach (var t in MagicMenuTexts)
                             {
-                                writer.Write(t.GetBytes(EQUIP_MENU_TEXT_LENGTH));
+                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write item menu text
                             stream.Seek(ITEM_MENU_TEXT_POS, SeekOrigin.Begin);
                             foreach (var t in ItemMenuTexts)
                             {
-                                writer.Write(t.GetBytes(ITEM_MENU_TEXT_LENGTH));
+                                writer.Write(t.GetBytes(ITEM_MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write item sort values
@@ -805,7 +805,7 @@ namespace FF7Scarlet.ExeEditor
                             stream.Seek(SAVE_MENU_TEXT_POS, SeekOrigin.Begin);
                             foreach (var s in SaveMenuTexts)
                             {
-                                writer.Write(s.GetBytes(SAVE_MENU_TEXT_LENGTH));
+                                writer.Write(s.GetBytes(SAVE_MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write Teioh's name
@@ -838,21 +838,21 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(CONFIG_MENU_TEXT_POS + GetConfigOffset(), SeekOrigin.Begin);
                         foreach (var t in ConfigMenuTexts)
                         {
-                            writer.Write(t.GetBytes(GetConfigTextLength()));
+                            writer.Write(t.GetBytes(GetConfigTextLength(), false, true));
                         }
 
                         //write main menu text
                         stream.Seek(MAIN_MENU_TEXT_POS + GetMainMenuOffset(), SeekOrigin.Begin);
                         foreach (var t in MainMenuTexts)
                         {
-                            writer.Write(t.GetBytes(MENU_TEXT_LENGTH));
+                            writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
                         }
 
                         //write status effects
                         stream.Seek(STATUS_EFFECT_BATTLE_POS + GetStatusOffset(), SeekOrigin.Begin);
                         foreach (var s in StatusEffectsBattle)
                         {
-                            writer.Write(s.GetBytes(GetStatusEffectBattleLength()));
+                            writer.Write(s.GetBytes(GetStatusEffectBattleLength(), false, true));
                         }
 
                         //write limit breaks
@@ -868,17 +868,17 @@ namespace FF7Scarlet.ExeEditor
                         {
                             if (i < Kernel.PLAYABLE_CHARACTER_COUNT - 1)
                             {
-                                writer.Write(LimitSuccess[i].GetBytes(GetLimitTextLength()));
-                                writer.Write(LimitFail[i].GetBytes(GetLimitTextLength()));
+                                writer.Write(LimitSuccess[i].GetBytes(GetLimitTextLength(), false, true));
+                                writer.Write(LimitFail[i].GetBytes(GetLimitTextLength(), false, true));
                             }
-                            writer.Write(LimitWrong[i].GetBytes(GetLimitTextLength()));
+                            writer.Write(LimitWrong[i].GetBytes(GetLimitTextLength(), false, true));
                         }
 
                         //write character names
                         stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
                         foreach (var n in CharacterNames)
                         {
-                            writer.Write(n.GetBytes(DataParser.CHARACTER_NAME_LENGTH));
+                            writer.Write(n.GetBytes(DataParser.CHARACTER_NAME_LENGTH, false, true));
                         }
 
                         //write Cait Sith/Vincent data
@@ -893,25 +893,25 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(SHOP_NAME_POS + GetShopNameOffset(), SeekOrigin.Begin);
                         foreach (var n in ShopNames)
                         {
-                            writer.Write(n.GetBytes(GetShopNameLength()));
+                            writer.Write(n.GetBytes(GetShopNameLength(), false, true));
                         }
 
                         //write shop text
                         stream.Seek(SHOP_TEXT_POS + GetShopTextOffset(), SeekOrigin.Begin);
                         foreach (var t in ShopText)
                         {
-                            writer.Write(t.GetBytes(SHOP_TEXT_LENGTH));
-                        }
-
-                        //write shop inventories
-                        stream.Seek(SHOP_INVENTORY_POS + GetShopOffset(), SeekOrigin.Begin);
-                        foreach (var s in Shops)
-                        {
-                            writer.Write(s.GetByteArray());
+                            writer.Write(t.GetBytes(SHOP_TEXT_LENGTH, false, true));
                         }
 
                         if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
                         {
+                            //write shop inventories
+                            stream.Seek(SHOP_INVENTORY_POS + GetShopOffset(), SeekOrigin.Begin);
+                            foreach (var s in Shops)
+                            {
+                                writer.Write(s.GetByteArray());
+                            }
+
                             //write item prices
                             stream.Seek(ITEM_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
                             foreach (var i in ItemPrices)
@@ -1088,7 +1088,7 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //read equip menu text
-                        for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
+                        for (i = 0; i < NUM_EQUIP_MENU_TEXTS; ++i)
                         {
                             EquipMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                                 EQUIP_MENU_TEXT_LENGTH);
@@ -1111,7 +1111,7 @@ namespace FF7Scarlet.ExeEditor
                             stream.Seek(StatusEffectsMenu[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
-                        //write status menu text
+                        //read status menu text
                         for (i = 0; i < NUM_STATUS_MENU_TEXTS; ++i)
                         {
                             StatusMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
@@ -1144,7 +1144,7 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //read magic menu text
-                        for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
+                        for (i = 0; i < NUM_MAGIC_MENU_TEXTS; ++i)
                         {
                             MagicMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                                 MENU_TEXT_LENGTH);
