@@ -466,6 +466,12 @@ namespace FF7Scarlet.ExeEditor
                         listBoxSaveMenu.Items.Add(editor.SaveMenuTexts[i].ToString());
                     }
 
+                    //set quit menu text
+                    for (i = 0; i < ExeData.NUM_QUIT_TEXTS_1 + ExeData.NUM_QUIT_TEXTS_2; ++i)
+                    {
+                        listBoxQuitTexts.Items.Add(editor.QuitMenuTexts[i].ToString());
+                    }
+
                     //set chocobo names
                     for (i = 0; i <= ExeData.NUM_CHOCOBO_NAMES; ++i)
                     {
@@ -781,6 +787,8 @@ namespace FF7Scarlet.ExeEditor
 
         #region Event Methods
 
+        #region Character Data
+
         //populate controls with character data
         private void comboBoxSelectedCharacter_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1089,6 +1097,10 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        #endregion
+
+        #region Limit Data
+
         //populate controls with limit data
         private void listBoxLimits_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1283,6 +1295,10 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        #endregion
+
+        #region Character Names
+
         //update character names
         private void textBoxCloud_TextChanged(object sender, EventArgs e)
         {
@@ -1333,6 +1349,10 @@ namespace FF7Scarlet.ExeEditor
         {
             ChangeName(textBoxChocobo, 9);
         }
+
+        #endregion
+
+        #region Shop/Item Data
 
         private void listBoxItemPrices_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1687,11 +1707,30 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        //listboxes
+        #endregion
+
+        #region Menu Text Listboxes
+
         private void listBoxMainMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListBoxIndexChanged(listBoxMainMenu, textBoxMainMenuText, editor.MainMenuTexts,
                 ExeData.NUM_MENU_TEXTS);
+        }
+
+        private void listBoxQuitTexts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListBoxIndexChanged(listBoxQuitTexts, textBoxQuitText, editor.QuitMenuTexts,
+                ExeData.NUM_QUIT_TEXTS_1 + ExeData.NUM_QUIT_TEXTS_2);
+
+            //special handling for quit text length
+            if (listBoxQuitTexts.SelectedIndex < ExeData.NUM_QUIT_TEXTS_1)
+            {
+                textBoxQuitText.MaxLength = ExeData.QUIT_TEXT_LENGTH_1 - 1;
+            }
+            else
+            {
+                textBoxQuitText.MaxLength = ExeData.QUIT_TEXT_LENGTH_2 - 1;
+            }
         }
 
         private void listBoxItemMenu_SelectedIndexChanged(object sender, EventArgs e)
@@ -1806,10 +1845,19 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        #endregion
+
+        #region Menu Text Textboxes
+
         //textboxes
         private void textBoxMainMenuText_TextChanged(object sender, EventArgs e)
         {
             TextBoxTextChanged(listBoxMainMenu, textBoxMainMenuText, editor.MainMenuTexts);
+        }
+
+        private void textBoxQuitText_TextChanged(object sender, EventArgs e)
+        {
+            TextBoxTextChanged(listBoxQuitTexts, textBoxQuitText, editor.QuitMenuTexts);
         }
 
         private void textBoxItemMenuText_TextChanged(object sender, EventArgs e)
@@ -1964,6 +2012,10 @@ namespace FF7Scarlet.ExeEditor
                 loading = false;
             }
         }
+
+        #endregion
+
+        #region Loading and Saving
 
         //load data from a file
         private void buttonLoadFile_Click(object sender, EventArgs e)
@@ -2128,39 +2180,45 @@ namespace FF7Scarlet.ExeEditor
         //update EXE
         private void buttonSaveEXE_Click(object sender, EventArgs e)
         {
-            if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
-            if (limitNeedsSync && SelectedLimit != null)
+            if (MessageBox.Show("A modified EXE may break compatability with 7th Heaven or other mods. Proceed anyway?",
+                "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                SyncLimitData(SelectedLimit);
-            }
+                if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
+                if (limitNeedsSync && SelectedLimit != null)
+                {
+                    SyncLimitData(SelectedLimit);
+                }
 
-            try
-            {
-                string backupPath = editor.FilePath + ".bak";
-                if (editor.IsUnedited && !File.Exists(backupPath)) //ask to make a backup
+                try
                 {
-                    var result = MessageBox.Show("Make a backup of the EXE before saving?", "Make backup?",
-                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                    if (result == DialogResult.Cancel) { return; }
-                    else if (result == DialogResult.Yes)
+                    string backupPath = editor.FilePath + ".bak";
+                    if (editor.IsUnedited && !File.Exists(backupPath)) //ask to make a backup
                     {
-                        File.Copy(editor.FilePath, backupPath);
-                        DataManager.SetFilePath(FileClass.EXE, backupPath, true);
+                        var result = MessageBox.Show("Make a backup of the EXE before saving?", "Make backup?",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                        if (result == DialogResult.Cancel) { return; }
+                        else if (result == DialogResult.Yes)
+                        {
+                            File.Copy(editor.FilePath, backupPath);
+                            DataManager.SetFilePath(FileClass.EXE, backupPath, true);
+                        }
                     }
+                    editor.WriteEXE();
+                    if (DataManager.ExeData != null) //sync with DataManager
+                    {
+                        DataManager.ExeData.ReadBytes(editor.GetBytes());
+                    }
+                    SetUnsaved(false);
                 }
-                editor.WriteEXE();
-                if (DataManager.ExeData != null) //sync with DataManager
+                catch (IOException ex)
                 {
-                    DataManager.ExeData.ReadBytes(editor.GetBytes());
+                    MessageBox.Show($"{ex.Message} ({ex.InnerException?.Message})", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                SetUnsaved(false);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"{ex.Message} ({ex.InnerException?.Message})", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        #endregion
 
         private void ExeEditorForm_FormClosing(object sender, FormClosingEventArgs e)
         {

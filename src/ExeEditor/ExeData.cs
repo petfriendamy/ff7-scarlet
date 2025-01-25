@@ -23,6 +23,8 @@ namespace FF7Scarlet.ExeEditor
             NUM_MATERIA_MENU_TEXTS = 42,
             NUM_UNEQUIP_TEXTS = 4,
             NUM_CONFIG_MENU_TEXTS = 51,
+            NUM_QUIT_TEXTS_1 = 3,
+            NUM_QUIT_TEXTS_2 = 2,
             NUM_ELEMENTS = 9,
             NUM_STATUS_EFFECTS = 27,
             NUM_STATUS_MENU_TEXTS = 27,
@@ -44,6 +46,8 @@ namespace FF7Scarlet.ExeEditor
             STATUS_MENU_TEXT_LENGTH = 15,
             LIMIT_MENU_TEXT_LENGTH = 36,
             SAVE_MENU_TEXT_LENGTH = 36,
+            QUIT_TEXT_LENGTH_1 = 30,
+            QUIT_TEXT_LENGTH_2 = 4,
             SHOP_TEXT_LENGTH = 46,
             CHOCOBO_NAME_LENGTH = 7,
             ITEM_NAME_LENGTH = 16;
@@ -55,6 +59,8 @@ namespace FF7Scarlet.ExeEditor
             TEST_BYTE_POS = 0x94,
             AP_MULTIPLIER_POS = 0x31F14F,
             AP_MASTER_OFFSET = 0x4F,
+            QUIT_TEXT_POS_1 = 0x518370,
+            QUIT_TEXT_POS_2 = 0x5183D0,
             CONFIG_MENU_TEXT_POS = 0x5188A8,
             MAIN_MENU_TEXT_POS = 0x5192C0,
             STATUS_EFFECT_BATTLE_POS = 0x51D228,
@@ -103,6 +109,7 @@ namespace FF7Scarlet.ExeEditor
         public FFText[] LimitMenuTexts { get; } = new FFText[NUM_LIMIT_MENU_TEXTS];
         public FFText[] ConfigMenuTexts { get; } = new FFText[NUM_CONFIG_MENU_TEXTS];
         public FFText[] SaveMenuTexts { get; } = new FFText[NUM_SAVE_MENU_TEXTS];
+        public FFText[] QuitMenuTexts { get; } = new FFText[NUM_QUIT_TEXTS_1 + NUM_QUIT_TEXTS_2];
         public FFText[] CharacterNames { get; } = new FFText[NUM_CHARACTER_NAMES];
         public FFText[] ChocoboNames { get; } = new FFText[NUM_CHOCOBO_NAMES + 1]; //extra slot for Teioh
         public FFText[] ChocoboRacePrizes { get; } = new FFText[NUM_CHOCOBO_RACE_ITEMS];
@@ -478,6 +485,18 @@ namespace FF7Scarlet.ExeEditor
                         //English only stuff (for now)
                         if (Language == Language.English)
                         {
+                            //get quit menu text
+                            stream.Seek(QUIT_TEXT_POS_1, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_QUIT_TEXTS_1; ++i)
+                            {
+                                QuitMenuTexts[i] = new FFText(reader.ReadBytes(QUIT_TEXT_LENGTH_1));
+                            }
+                            stream.Seek(QUIT_TEXT_POS_2, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_QUIT_TEXTS_2; ++i)
+                            {
+                                QuitMenuTexts[i + NUM_QUIT_TEXTS_1] = new FFText(reader.ReadBytes(QUIT_TEXT_LENGTH_2));
+                            }
+
                             //get element names
                             stream.Seek(STATUS_MENU_ELEMENT_POS, SeekOrigin.Begin);
                             for (i = 0; i < NUM_ELEMENTS; ++i)
@@ -709,6 +728,19 @@ namespace FF7Scarlet.ExeEditor
                         //English-only stuff (for now)
                         if (Language == Language.English)
                         {
+                            //write quit text
+                            stream.Seek(QUIT_TEXT_POS_1, SeekOrigin.Begin);
+                            for (int i = 0; i < NUM_QUIT_TEXTS_1; ++i)
+                            {
+                                writer.Write(QuitMenuTexts[i].GetBytes(QUIT_TEXT_LENGTH_1, false, true));
+                            }
+                            stream.Seek(QUIT_TEXT_POS_2, SeekOrigin.Begin);
+                            for (int i = 0; i < NUM_QUIT_TEXTS_2; ++i)
+                            {
+                                writer.Write(QuitMenuTexts[i + NUM_QUIT_TEXTS_1].GetBytes(QUIT_TEXT_LENGTH_2,
+                                    false, true));
+                            }
+
                             //write element names
                             stream.Seek(STATUS_MENU_ELEMENT_POS, SeekOrigin.Begin);
                             foreach (var n in ElementNames)
@@ -1174,6 +1206,14 @@ namespace FF7Scarlet.ExeEditor
                                 SAVE_MENU_TEXT_LENGTH);
                             stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
+
+                        //read quit text
+                        for (i = 0; i < NUM_QUIT_TEXTS_1 + NUM_QUIT_TEXTS_2; ++i)
+                        {
+                            SaveMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                SAVE_MENU_TEXT_LENGTH);
+                            stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                        }
                     }
                 }
             }
@@ -1382,6 +1422,12 @@ namespace FF7Scarlet.ExeEditor
                 {
                     output.AddRange(s.GetBytesTruncated());
                 }
+
+                //write quit text
+                foreach (var q in QuitMenuTexts)
+                {
+                    output.AddRange(q.GetBytesTruncated());
+                }
             }
 
             return output.ToArray();
@@ -1418,7 +1464,8 @@ namespace FF7Scarlet.ExeEditor
         }
 
         //private function to write text for a Hext file
-        private string WriteHextStrings(FFText[] strings, FFText[] original, long position, int length, int count)
+        private string WriteHextStrings(FFText[] strings, FFText[] original, long position, int length, int count,
+            int offset = 0)
         {
             var output = new StringBuilder();
             bool checker = false;
@@ -1426,14 +1473,14 @@ namespace FF7Scarlet.ExeEditor
 
             for (int i = 0; i < count; ++i)
             {
-                string? text1 = strings[i].ToString(), text2 = original[i].ToString();
+                string? text1 = strings[i + offset].ToString(), text2 = original[i + offset].ToString();
 
                 if (text1 != text2)
                 {
                     checker = true;
                     output.Append($"# {text2} -> {text1}");
                     output.AppendLine();
-                    var temp = strings[i].GetBytes();
+                    var temp = strings[i + offset].GetBytes();
                     pos = position + HEXT_OFFSET_2 + (length * i);
                     output.Append($"{pos:X2} = ");
                     foreach (var x in temp)
@@ -1482,6 +1529,13 @@ namespace FF7Scarlet.ExeEditor
                         writer.WriteLine($"{pos:X2} = {APPriceMultiplier:X2}");
                         writer.WriteLine();
                     }
+
+                    //write quit menu text
+                    writer.Write(WriteHextStrings(QuitMenuTexts, original.QuitMenuTexts,
+                        QUIT_TEXT_POS_1, QUIT_TEXT_LENGTH_1, NUM_QUIT_TEXTS_1));
+
+                    writer.Write(WriteHextStrings(QuitMenuTexts, original.QuitMenuTexts,
+                        QUIT_TEXT_POS_2, QUIT_TEXT_LENGTH_2, NUM_QUIT_TEXTS_2, NUM_QUIT_TEXTS_1));
 
                     //write config menu text
                     writer.Write(WriteHextStrings(ConfigMenuTexts, original.ConfigMenuTexts,

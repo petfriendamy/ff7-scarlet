@@ -176,9 +176,14 @@ namespace FF7Scarlet.ExeEditor
             tabPageMenus = new TabPage();
             tabControlMenus = new TabControl();
             tabPageMainMenu = new TabPage();
-            labelMainMenuText = new Label();
-            textBoxMainMenuText = new TextBox();
+            groupBox2 = new GroupBox();
+            listBoxQuitTexts = new ListBox();
+            textBoxQuitText = new TextBox();
+            labelQuitText = new Label();
+            groupBox1 = new GroupBox();
             listBoxMainMenu = new ListBox();
+            textBoxMainMenuText = new TextBox();
+            labelMainMenuText = new Label();
             tabPageItemMagicMenu = new TabPage();
             groupBoxMagicMenu = new GroupBox();
             listBoxMagicMenu = new ListBox();
@@ -309,6 +314,8 @@ namespace FF7Scarlet.ExeEditor
             tabPageMenus.SuspendLayout();
             tabControlMenus.SuspendLayout();
             tabPageMainMenu.SuspendLayout();
+            groupBox2.SuspendLayout();
+            groupBox1.SuspendLayout();
             tabPageItemMagicMenu.SuspendLayout();
             groupBoxMagicMenu.SuspendLayout();
             groupBoxItemMenu.SuspendLayout();
@@ -1924,9 +1931,8 @@ namespace FF7Scarlet.ExeEditor
             // 
             // tabPageMainMenu
             // 
-            tabPageMainMenu.Controls.Add(labelMainMenuText);
-            tabPageMainMenu.Controls.Add(textBoxMainMenuText);
-            tabPageMainMenu.Controls.Add(listBoxMainMenu);
+            tabPageMainMenu.Controls.Add(groupBox2);
+            tabPageMainMenu.Controls.Add(groupBox1);
             tabPageMainMenu.Location = new Point(4, 24);
             tabPageMainMenu.Name = "tabPageMainMenu";
             tabPageMainMenu.Padding = new Padding(3);
@@ -1935,34 +1941,89 @@ namespace FF7Scarlet.ExeEditor
             tabPageMainMenu.Text = "Main menu";
             tabPageMainMenu.UseVisualStyleBackColor = true;
             // 
-            // labelMainMenuText
+            // groupBox2
             // 
-            labelMainMenuText.AutoSize = true;
-            labelMainMenuText.Location = new Point(261, 6);
-            labelMainMenuText.Name = "labelMainMenuText";
-            labelMainMenuText.Size = new Size(31, 15);
-            labelMainMenuText.TabIndex = 2;
-            labelMainMenuText.Text = "Text:";
+            groupBox2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox2.Controls.Add(listBoxQuitTexts);
+            groupBox2.Controls.Add(textBoxQuitText);
+            groupBox2.Controls.Add(labelQuitText);
+            groupBox2.Location = new Point(5, 376);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(758, 117);
+            groupBox2.TabIndex = 7;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Quit Menu";
             // 
-            // textBoxMainMenuText
+            // listBoxQuitTexts
             // 
-            textBoxMainMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxMainMenuText.Enabled = false;
-            textBoxMainMenuText.Location = new Point(261, 24);
-            textBoxMainMenuText.Name = "textBoxMainMenuText";
-            textBoxMainMenuText.Size = new Size(501, 23);
-            textBoxMainMenuText.TabIndex = 1;
-            textBoxMainMenuText.TextChanged += textBoxMainMenuText_TextChanged;
+            listBoxQuitTexts.FormattingEnabled = true;
+            listBoxQuitTexts.ItemHeight = 15;
+            listBoxQuitTexts.Location = new Point(6, 22);
+            listBoxQuitTexts.Name = "listBoxQuitTexts";
+            listBoxQuitTexts.Size = new Size(242, 79);
+            listBoxQuitTexts.TabIndex = 3;
+            listBoxQuitTexts.SelectedIndexChanged += listBoxQuitTexts_SelectedIndexChanged;
+            // 
+            // textBoxQuitText
+            // 
+            textBoxQuitText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxQuitText.Enabled = false;
+            textBoxQuitText.Location = new Point(254, 40);
+            textBoxQuitText.Name = "textBoxQuitText";
+            textBoxQuitText.Size = new Size(496, 23);
+            textBoxQuitText.TabIndex = 4;
+            textBoxQuitText.TextChanged += textBoxQuitText_TextChanged;
+            // 
+            // labelQuitText
+            // 
+            labelQuitText.AutoSize = true;
+            labelQuitText.Location = new Point(254, 22);
+            labelQuitText.Name = "labelQuitText";
+            labelQuitText.Size = new Size(31, 15);
+            labelQuitText.TabIndex = 5;
+            labelQuitText.Text = "Text:";
+            // 
+            // groupBox1
+            // 
+            groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(listBoxMainMenu);
+            groupBox1.Controls.Add(textBoxMainMenuText);
+            groupBox1.Controls.Add(labelMainMenuText);
+            groupBox1.Location = new Point(5, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(758, 367);
+            groupBox1.TabIndex = 6;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Main Menu";
             // 
             // listBoxMainMenu
             // 
             listBoxMainMenu.FormattingEnabled = true;
             listBoxMainMenu.ItemHeight = 15;
-            listBoxMainMenu.Location = new Point(6, 6);
+            listBoxMainMenu.Location = new Point(6, 22);
             listBoxMainMenu.Name = "listBoxMainMenu";
-            listBoxMainMenu.Size = new Size(249, 349);
+            listBoxMainMenu.Size = new Size(242, 334);
             listBoxMainMenu.TabIndex = 0;
             listBoxMainMenu.SelectedIndexChanged += listBoxMainMenu_SelectedIndexChanged;
+            // 
+            // textBoxMainMenuText
+            // 
+            textBoxMainMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxMainMenuText.Enabled = false;
+            textBoxMainMenuText.Location = new Point(254, 40);
+            textBoxMainMenuText.Name = "textBoxMainMenuText";
+            textBoxMainMenuText.Size = new Size(498, 23);
+            textBoxMainMenuText.TabIndex = 1;
+            textBoxMainMenuText.TextChanged += textBoxMainMenuText_TextChanged;
+            // 
+            // labelMainMenuText
+            // 
+            labelMainMenuText.AutoSize = true;
+            labelMainMenuText.Location = new Point(254, 22);
+            labelMainMenuText.Name = "labelMainMenuText";
+            labelMainMenuText.Size = new Size(31, 15);
+            labelMainMenuText.TabIndex = 2;
+            labelMainMenuText.Text = "Text:";
             // 
             // tabPageItemMagicMenu
             // 
@@ -2902,7 +2963,10 @@ namespace FF7Scarlet.ExeEditor
             tabPageMenus.ResumeLayout(false);
             tabControlMenus.ResumeLayout(false);
             tabPageMainMenu.ResumeLayout(false);
-            tabPageMainMenu.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             tabPageItemMagicMenu.ResumeLayout(false);
             groupBoxMagicMenu.ResumeLayout(false);
             groupBoxMagicMenu.PerformLayout();
@@ -3178,6 +3242,11 @@ namespace FF7Scarlet.ExeEditor
         private Label labelSaveMenuText;
         private TextBox textBoxSaveMenuText;
         private ListBox listBoxSaveMenu;
+        private Label labelQuitText;
+        private TextBox textBoxQuitText;
+        private ListBox listBoxQuitTexts;
+        private GroupBox groupBox1;
+        private GroupBox groupBox2;
     }
 }
 
