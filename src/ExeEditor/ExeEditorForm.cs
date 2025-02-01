@@ -320,9 +320,20 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopType.Items.Clear();
             foreach (TabPage p in tabControlMenus.TabPages)
             {
-                foreach (var c in p.Controls)
+                foreach (Control c in p.Controls)
                 {
-                    if (c is ListBox)
+                    if (c is GroupBox)
+                    {
+                        foreach (Control c2 in c.Controls)
+                        {
+                            if (c2 is ListBox)
+                            {
+                                var lb = c2 as ListBox;
+                                if (lb != null) { lb.Items.Clear(); }
+                            }
+                        }
+                    }
+                    else if (c is ListBox)
                     {
                         var lb = c as ListBox;
                         if (lb != null) { lb.Items.Clear(); }
