@@ -300,6 +300,8 @@ namespace FF7Scarlet.KernelEditor
         public KernelForm()
         {
             InitializeComponent();
+            this.Text = $"{Application.ProductName} v{Application.ProductVersion} - Kernel Editor";
+
             kernel = DataManager.CopyKernel();
             foreach (var a in kernel.AttackData.Attacks)
             {

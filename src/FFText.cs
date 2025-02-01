@@ -8,7 +8,17 @@ namespace FF7Scarlet
 {
     public class FFText : IComparable
     {
-        private ReadOnlyCollection<char> TEXT_MAP = new char[] {
+        private ReadOnlyCollection<char> TEXT_MAP = list.AsReadOnly();
+
+
+        private readonly byte[] data;
+
+        public int Length
+        {
+            get { return data.Length; }
+        }
+
+        private static readonly char[] list = [
             ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
             '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
@@ -23,15 +33,7 @@ namespace FF7Scarlet
             '–', '—', '“', '”', '‘', '’', '÷', '◊', 'ÿ', 'Ÿ', '⁄', '¤', '‹', '›', 'ﬁ', 'ﬂ',
             '■', '▪', '‚', '„', '‰', 'Â', 'Ê', 'Ë', 'Á', 'È', 'Í', 'Î', 'Ï', 'Ì', 'Ó', 'Ô',
             ' ', 'Ò', 'Ù', 'Û'
-        }.AsReadOnly();
-
-
-        private readonly byte[] data;
-
-        public int Length
-        {
-            get { return data.Length; }
-        }
+        ];
 
         public FFText(byte[] data)
         {

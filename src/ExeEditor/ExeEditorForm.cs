@@ -64,6 +64,7 @@ namespace FF7Scarlet.ExeEditor
         public ExeEditorForm()
         {
             InitializeComponent();
+            this.Text = $"{Application.ProductName} v{Application.ProductVersion} - EXE Editor";
 
             editor = new ExeData(DataManager.ExePath);
             int i;
@@ -409,81 +410,9 @@ namespace FF7Scarlet.ExeEditor
                     listBoxMateriaPrices.Items.Add($"{name} - {editor.MateriaPrices[i]}");
                 }
 
-                //English-only stuff
+                //English-only stuff (kernel-specific)
                 if (editor.Language == Language.English)
                 {
-                    //set item menu text
-                    for (i = 0; i < ExeData.NUM_ITEM_MENU_TEXTS; ++i)
-                    {
-                        listBoxItemMenu.Items.Add(editor.ItemMenuTexts[i].ToString());
-                    }
-
-                    //set magic menu text
-                    for (i = 0; i < ExeData.NUM_MAGIC_MENU_TEXTS; ++i)
-                    {
-                        listBoxMagicMenu.Items.Add(editor.MagicMenuTexts[i].ToString());
-                    }
-
-                    //set materia menu text
-                    for (i = 0; i < ExeData.NUM_MATERIA_MENU_TEXTS; ++i)
-                    {
-                        listBoxMateriaMenu.Items.Add(editor.MateriaMenuTexts[i].ToString());
-                    }
-
-                    //set unequip text
-                    for (i = 0; i < ExeData.NUM_UNEQUIP_TEXTS; ++i)
-                    {
-                        listBoxUnequipText.Items.Add(editor.UnequipTexts[i].ToString());
-                    }
-
-                    //set equip menu text
-                    for (i = 0; i < ExeData.NUM_EQUIP_MENU_TEXTS; ++i)
-                    {
-                        listBoxEquipMenu.Items.Add(editor.EquipMenuTexts[i].ToString());
-                    }
-
-                    //set status menu text
-                    for (i = 0; i < ExeData.NUM_STATUS_MENU_TEXTS; ++i)
-                    {
-                        listBoxStatusMenuText.Items.Add(editor.StatusMenuTexts[i].ToString());
-                    }
-
-                    //set element names
-                    for (i = 0; i < ExeData.NUM_ELEMENTS; ++i)
-                    {
-                        listBoxElements.Items.Add(editor.ElementNames[i].ToString());
-                    }
-
-                    //set status menu text
-                    for (i = 0; i < ExeData.NUM_LIMIT_MENU_TEXTS; ++i)
-                    {
-                        listBoxLimitMenu.Items.Add(editor.LimitMenuTexts[i].ToString());
-                    }
-
-                    //set save menu text
-                    for (i = 0; i < ExeData.NUM_SAVE_MENU_TEXTS; ++i)
-                    {
-                        listBoxSaveMenu.Items.Add(editor.SaveMenuTexts[i].ToString());
-                    }
-
-                    //set quit menu text
-                    for (i = 0; i < ExeData.NUM_QUIT_TEXTS_1 + ExeData.NUM_QUIT_TEXTS_2; ++i)
-                    {
-                        listBoxQuitTexts.Items.Add(editor.QuitMenuTexts[i].ToString());
-                    }
-
-                    //set chocobo names
-                    for (i = 0; i <= ExeData.NUM_CHOCOBO_NAMES; ++i)
-                    {
-                        listBoxChocoboNames.Items.Add(editor.ChocoboNames[i].ToString());
-                    }
-
-                    //set chocobo race prizes
-                    for (i = 0; i < ExeData.NUM_CHOCOBO_RACE_ITEMS; ++i)
-                    {
-                        listBoxChocoboRacePrizes.Items.Add(editor.ChocoboRacePrizes[i].ToString());
-                    }
-
                     //sorted items
                     var sortedItems =
                         from item in editor.ItemsSortedByName
@@ -496,6 +425,82 @@ namespace FF7Scarlet.ExeEditor
 
                     //materia priority list
                     LoadMateriaPriorityList();
+                }
+            }
+
+            //English-only stuff (not kernel-specific)
+            if (editor.Language == Language.English)
+            {
+                //set item menu text
+                for (i = 0; i < ExeData.NUM_ITEM_MENU_TEXTS; ++i)
+                {
+                    listBoxItemMenu.Items.Add(editor.ItemMenuTexts[i].ToString());
+                }
+
+                //set magic menu text
+                for (i = 0; i < ExeData.NUM_MAGIC_MENU_TEXTS; ++i)
+                {
+                    listBoxMagicMenu.Items.Add(editor.MagicMenuTexts[i].ToString());
+                }
+
+                //set materia menu text
+                for (i = 0; i < ExeData.NUM_MATERIA_MENU_TEXTS; ++i)
+                {
+                    listBoxMateriaMenu.Items.Add(editor.MateriaMenuTexts[i].ToString());
+                }
+
+                //set unequip text
+                for (i = 0; i < ExeData.NUM_UNEQUIP_TEXTS; ++i)
+                {
+                    listBoxUnequipText.Items.Add(editor.UnequipTexts[i].ToString());
+                }
+
+                //set equip menu text
+                for (i = 0; i < ExeData.NUM_EQUIP_MENU_TEXTS; ++i)
+                {
+                    listBoxEquipMenu.Items.Add(editor.EquipMenuTexts[i].ToString());
+                }
+
+                //set status menu text
+                for (i = 0; i < ExeData.NUM_STATUS_MENU_TEXTS; ++i)
+                {
+                    listBoxStatusMenuText.Items.Add(editor.StatusMenuTexts[i].ToString());
+                }
+
+                //set element names
+                for (i = 0; i < ExeData.NUM_ELEMENTS; ++i)
+                {
+                    listBoxElements.Items.Add(editor.ElementNames[i].ToString());
+                }
+
+                //set status menu text
+                for (i = 0; i < ExeData.NUM_LIMIT_MENU_TEXTS; ++i)
+                {
+                    listBoxLimitMenu.Items.Add(editor.LimitMenuTexts[i].ToString());
+                }
+
+                //set save menu text
+                for (i = 0; i < ExeData.NUM_SAVE_MENU_TEXTS; ++i)
+                {
+                    listBoxSaveMenu.Items.Add(editor.SaveMenuTexts[i].ToString());
+                }
+
+                //set quit menu text
+                for (i = 0; i < ExeData.NUM_QUIT_TEXTS_1 + ExeData.NUM_QUIT_TEXTS_2; ++i)
+                {
+                    listBoxQuitTexts.Items.Add(editor.QuitMenuTexts[i].ToString());
+                }
+
+                //set chocobo names
+                for (i = 0; i <= ExeData.NUM_CHOCOBO_NAMES; ++i)
+                {
+                    listBoxChocoboNames.Items.Add(editor.ChocoboNames[i].ToString());
+                }
+
+                //set chocobo race prizes
+                for (i = 0; i < ExeData.NUM_CHOCOBO_RACE_ITEMS; ++i)
+                {
+                    listBoxChocoboRacePrizes.Items.Add(editor.ChocoboRacePrizes[i].ToString());
                 }
             }
 

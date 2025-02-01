@@ -123,6 +123,7 @@ namespace FF7Scarlet.SceneEditor
         public SceneEditorForm(Dictionary<ushort, Attack> syncedAttacks)
         {
             InitializeComponent();
+            this.Text = $"{Application.ProductName} v{Application.ProductVersion} - Scene Editor";
 
             //set max values for various controls
             textBoxEnemyName.MaxLength = Scene.NAME_LENGTH - 1;
