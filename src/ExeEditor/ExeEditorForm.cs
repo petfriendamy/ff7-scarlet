@@ -102,6 +102,7 @@ namespace FF7Scarlet.ExeEditor
             textBoxL4Success.MaxLength = editor.GetLimitTextLength() - 1;
             textBoxL4Fail.MaxLength = editor.GetLimitTextLength() - 1;
             textBoxL4Wrong.MaxLength = editor.GetLimitTextLength() - 1;
+            textBoxBizarroMenu.MaxLength = ExeData.BIZARRO_MENU_TEXT_LENGTH - 1;
             textBoxShopNameText.MaxLength = editor.GetShopNameLength() - 1;
             textBoxShopText.MaxLength = ExeData.SHOP_TEXT_LENGTH - 1;
             textBoxChocoboName.MaxLength = ExeData.CHOCOBO_NAME_LENGTH - 1;
@@ -484,7 +485,7 @@ namespace FF7Scarlet.ExeEditor
                     listBoxElements.Items.Add(editor.ElementNames[i].ToString());
                 }
 
-                //set status menu text
+                //set limit menu text
                 for (i = 0; i < ExeData.NUM_LIMIT_MENU_TEXTS; ++i)
                 {
                     listBoxLimitMenu.Items.Add(editor.LimitMenuTexts[i].ToString());
@@ -500,6 +501,18 @@ namespace FF7Scarlet.ExeEditor
                 for (i = 0; i < ExeData.NUM_QUIT_TEXTS_1 + ExeData.NUM_QUIT_TEXTS_2; ++i)
                 {
                     listBoxQuitTexts.Items.Add(editor.QuitMenuTexts[i].ToString());
+                }
+
+                //set battle arena text
+                for (i = 0; i < ExeData.GetNumBattleArenaTexts(); ++i)
+                {
+                    listBoxBattleArena.Items.Add(editor.BattleArenaTexts[i].ToString());
+                }
+
+                //set Bizarro menu text
+                for (i = 0; i < ExeData.NUM_BIZARRO_MENU_TEXTS; ++i)
+                {
+                    listBoxBizarroMenu.Items.Add(editor.BizarroMenuTexts[i].ToString());
                 }
 
                 //set chocobo names
@@ -577,7 +590,18 @@ namespace FF7Scarlet.ExeEditor
             {
                 foreach (Control c in t.Controls)
                 {
-                    if (c is ListBox)
+                    if (c is GroupBox)
+                    {
+                        foreach (Control c2 in c.Controls)
+                        {
+                            if (c2 is ListBox)
+                            {
+                                if (resume) { c2.ResumeLayout(); }
+                                else { c2.SuspendLayout(); }
+                            }
+                        }
+                    }
+                    else if (c is ListBox)
                     {
                         if (resume) { c.ResumeLayout(); }
                         else { c.SuspendLayout(); }
@@ -588,7 +612,18 @@ namespace FF7Scarlet.ExeEditor
             {
                 foreach (Control c in t.Controls)
                 {
-                    if (c is ListBox)
+                    if (c is GroupBox)
+                    {
+                        foreach (Control c2 in c.Controls)
+                        {
+                            if (c2 is ListBox)
+                            {
+                                if (resume) { c2.ResumeLayout(); }
+                                else { c2.SuspendLayout(); }
+                            }
+                        }
+                    }
+                    else if (c is ListBox)
                     {
                         if (resume) { c.ResumeLayout(); }
                         else { c.SuspendLayout(); }
@@ -1725,7 +1760,7 @@ namespace FF7Scarlet.ExeEditor
 
         #endregion
 
-        #region Menu Text Listboxes
+        #region EXE Text Listboxes
 
         private void listBoxMainMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1831,6 +1866,32 @@ namespace FF7Scarlet.ExeEditor
         private void comboBoxL4Char_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetLimitText();
+        }
+
+        private void listBoxBattleArena_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListBoxIndexChanged(listBoxBattleArena, textBoxBattleArena, editor.BattleArenaTexts,
+                ExeData.GetNumBattleArenaTexts());
+
+            //special handling for battle arena text length
+            int i = listBoxBattleArena.SelectedIndex;
+            if (i < ExeData.GetNumBattleArenaTexts())
+            {
+                int pos = 0;
+                int count = ExeData.BATTLE_ARENA_TEXT_LENGTHS[pos].Count;
+                while (i >= count)
+                {
+                    pos++;
+                    count += ExeData.BATTLE_ARENA_TEXT_LENGTHS[pos].Count;
+                }
+                textBoxBattleArena.MaxLength = ExeData.BATTLE_ARENA_TEXT_LENGTHS[pos].Length - 1;
+            }
+        }
+
+        private void listBoxBizarroMenu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListBoxIndexChanged(listBoxBizarroMenu, textBoxBizarroMenu, editor.BizarroMenuTexts,
+                ExeData.NUM_BIZARRO_MENU_TEXTS);
         }
 
         private void listBoxShopNames_SelectedIndexChanged(object sender, EventArgs e)
@@ -1990,6 +2051,16 @@ namespace FF7Scarlet.ExeEditor
                 editor.LimitWrong[i] = new FFText(textBoxL4Wrong.Text);
                 SetUnsaved(true);
             }
+        }
+
+        private void textBoxBattleArena_TextChanged(object sender, EventArgs e)
+        {
+            TextBoxTextChanged(listBoxBattleArena, textBoxBattleArena, editor.BattleArenaTexts);
+        }
+
+        private void textBoxBizarroMenu_TextChanged(object sender, EventArgs e)
+        {
+            TextBoxTextChanged(listBoxBizarroMenu, textBoxBizarroMenu, editor.BizarroMenuTexts);
         }
 
         private void textBoxShopNameText_TextChanged(object sender, EventArgs e)

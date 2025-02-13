@@ -2,7 +2,6 @@
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,11 +9,32 @@ namespace FF7Scarlet.ExeEditor
 {
     public enum Language { English, Spanish, French, German }
 
+    public struct MultiStringLength
+    {
+        public readonly int Length;
+        public readonly int Count;
+
+        public MultiStringLength(int length, int count)
+        {
+            Length = length;
+            Count = count;
+        }
+    }
+
     public class ExeData
     {
         //constants
         private static readonly int[] EXE_HEADER = { 0x4D, 0x5A, 0x90 };
         public const string CONFIG_KEY = "VanillaExePath";
+
+        public static readonly MultiStringLength[] BATTLE_ARENA_TEXT_LENGTHS =
+        {
+            new MultiStringLength(16, 1),
+            new MultiStringLength(24, 1),
+            new MultiStringLength(22, 4),
+            new MultiStringLength(32, 25),
+            new MultiStringLength(34, 3)
+        };
         public const int
             NUM_MENU_TEXTS = 23,
             NUM_ITEM_MENU_TEXTS = 11,
@@ -31,6 +51,7 @@ namespace FF7Scarlet.ExeEditor
             NUM_LIMIT_MENU_TEXTS = 14,
             NUM_SAVE_MENU_TEXTS = 36,
             NUM_LIMITS = 71,
+            NUM_BIZARRO_MENU_TEXTS = 6,
             NUM_CHARACTER_NAMES = 10,
             NUM_SHOPS = 80,
             NUM_SHOP_NAMES = 9,
@@ -49,6 +70,7 @@ namespace FF7Scarlet.ExeEditor
             QUIT_TEXT_LENGTH_1 = 30,
             QUIT_TEXT_LENGTH_2 = 4,
             SHOP_TEXT_LENGTH = 46,
+            BIZARRO_MENU_TEXT_LENGTH = 38,
             CHOCOBO_NAME_LENGTH = 7,
             ITEM_NAME_LENGTH = 16;
 
@@ -64,6 +86,8 @@ namespace FF7Scarlet.ExeEditor
             CONFIG_MENU_TEXT_POS = 0x5188A8,
             MAIN_MENU_TEXT_POS = 0x5192C0,
             STATUS_EFFECT_BATTLE_POS = 0x51D228,
+            BATTLE_ARENA_TEXT_POS = 0x51D588,
+            BIZARRO_MENU_TEXT_POS = 0x51DB40,
             LIMIT_MENU_TEXT_POS = 0x51DED8,
             LIMIT_BREAK_POS = 0x51E0D4,
             STATUS_MENU_ELEMENT_POS = 0x51EF40,
@@ -110,6 +134,8 @@ namespace FF7Scarlet.ExeEditor
         public FFText[] ConfigMenuTexts { get; } = new FFText[NUM_CONFIG_MENU_TEXTS];
         public FFText[] SaveMenuTexts { get; } = new FFText[NUM_SAVE_MENU_TEXTS];
         public FFText[] QuitMenuTexts { get; } = new FFText[NUM_QUIT_TEXTS_1 + NUM_QUIT_TEXTS_2];
+        public FFText[] BattleArenaTexts { get; }
+        public FFText[] BizarroMenuTexts { get; } = new FFText[NUM_BIZARRO_MENU_TEXTS];
         public FFText[] CharacterNames { get; } = new FFText[NUM_CHARACTER_NAMES];
         public FFText[] ChocoboNames { get; } = new FFText[NUM_CHOCOBO_NAMES + 1]; //extra slot for Teioh
         public FFText[] ChocoboRacePrizes { get; } = new FFText[NUM_CHOCOBO_RACE_ITEMS];
@@ -131,6 +157,7 @@ namespace FF7Scarlet.ExeEditor
 
         public ExeData(string path)
         {
+            BattleArenaTexts = new FFText[GetNumBattleArenaTexts()];
             ReadEXE(path);
         }
 
@@ -343,6 +370,16 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        public static int GetNumBattleArenaTexts()
+        {
+            int temp = 0;
+            foreach (var l in BATTLE_ARENA_TEXT_LENGTHS)
+            {
+                temp += l.Count;
+            }
+            return temp;
+        }
+
         public int GetShopNameLength()
         {
             int length = ShopData.SHOP_NAME_LENGTH;
@@ -509,6 +546,25 @@ namespace FF7Scarlet.ExeEditor
                             for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
                             {
                                 StatusEffectsMenu[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
+                            }
+
+                            //get battle arena text
+                            stream.Seek(BATTLE_ARENA_TEXT_POS, SeekOrigin.Begin);
+                            int curr = 0;
+                            for (i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
+                            {
+                                for (int j = 0; j < BATTLE_ARENA_TEXT_LENGTHS[i].Count; ++j)
+                                {
+                                    BattleArenaTexts[curr] = new FFText(reader.ReadBytes(BATTLE_ARENA_TEXT_LENGTHS[i].Length));
+                                    curr++;
+                                }
+                            }
+
+                            //get Bizarro menu text
+                            stream.Seek(BIZARRO_MENU_TEXT_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_BIZARRO_MENU_TEXTS; ++i)
+                            {
+                                BizarroMenuTexts[i] = new FFText(reader.ReadBytes(BIZARRO_MENU_TEXT_LENGTH));
                             }
 
                             //get limit menu text
@@ -753,6 +809,26 @@ namespace FF7Scarlet.ExeEditor
                             foreach (var t in StatusEffectsMenu)
                             {
                                 writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
+                            }
+
+                            //write battle arena text
+                            stream.Seek(BATTLE_ARENA_TEXT_POS, SeekOrigin.Begin);
+                            int curr = 0;
+                            for (int i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
+                            {
+                                for (int j = 0; j < BATTLE_ARENA_TEXT_LENGTHS[i].Count; ++j)
+                                {
+                                    writer.Write(BattleArenaTexts[curr].GetBytes(BATTLE_ARENA_TEXT_LENGTHS[i].Length,
+                                        false, true));
+                                    curr++;
+                                }
+                            }
+
+                            //write Bizarro menu text
+                            stream.Seek(BIZARRO_MENU_TEXT_POS, SeekOrigin.Begin);
+                            foreach (var t in BizarroMenuTexts)
+                            {
+                                writer.Write(t.GetBytes(BIZARRO_MENU_TEXT_LENGTH, false, true));
                             }
 
                             //write limit menu text
@@ -1214,6 +1290,27 @@ namespace FF7Scarlet.ExeEditor
                                 SAVE_MENU_TEXT_LENGTH);
                             stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
+
+                        //read battle arena text
+                        int curr = 0;
+                        for (i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
+                        {
+                            for (int j = 0; j < BATTLE_ARENA_TEXT_LENGTHS[i].Count; ++j)
+                            {
+                                BattleArenaTexts[curr] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                    BATTLE_ARENA_TEXT_LENGTHS[i].Length);
+                                curr++;
+                                stream.Seek(BattleArenaTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                            }
+                        }
+
+                        //read Bizarro menu text
+                        for (i = 0; i < NUM_BIZARRO_MENU_TEXTS; ++i)
+                        {
+                            BizarroMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                                BIZARRO_MENU_TEXT_LENGTH);
+                            stream.Seek(BizarroMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                        }
                     }
                 }
             }
@@ -1428,6 +1525,18 @@ namespace FF7Scarlet.ExeEditor
                 {
                     output.AddRange(q.GetBytesTruncated());
                 }
+
+                //write battle arena text
+                foreach (var b in BattleArenaTexts)
+                {
+                    output.AddRange(b.GetBytesTruncated());
+                }
+
+                //write Bizarro menu text
+                foreach (var b in BizarroMenuTexts)
+                {
+                    output.AddRange(b.GetBytesTruncated());
+                }
             }
 
             return output.ToArray();
@@ -1548,6 +1657,21 @@ namespace FF7Scarlet.ExeEditor
                     //write status effects (battle)
                     writer.Write(WriteHextStrings(StatusEffectsBattle, original.StatusEffectsBattle,
                         STATUS_EFFECT_BATTLE_POS, GetStatusEffectBattleLength(), NUM_STATUS_EFFECTS));
+
+                    //write battle arena text
+                    int offset = 0;
+                    pos = BATTLE_ARENA_TEXT_POS;
+                    for (i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
+                    {
+                        writer.Write(WriteHextStrings(BattleArenaTexts, original.BattleArenaTexts,
+                            pos, BATTLE_ARENA_TEXT_LENGTHS[i].Length, BATTLE_ARENA_TEXT_LENGTHS[i].Count, offset));
+                        offset += BATTLE_ARENA_TEXT_LENGTHS[i].Count;
+                        pos += (BATTLE_ARENA_TEXT_LENGTHS[i].Length * BATTLE_ARENA_TEXT_LENGTHS[i].Count);
+                    }
+
+                    //write Bizarro menu text
+                    writer.Write(WriteHextStrings(BizarroMenuTexts, original.BizarroMenuTexts,
+                        BIZARRO_MENU_TEXT_POS, BIZARRO_MENU_TEXT_LENGTH, NUM_BIZARRO_MENU_TEXTS));
 
                     //write limit menu text
                     writer.Write(WriteHextStrings(LimitMenuTexts, original.LimitMenuTexts,

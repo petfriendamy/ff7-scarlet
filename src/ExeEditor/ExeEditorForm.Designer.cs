@@ -245,6 +245,15 @@ namespace FF7Scarlet.ExeEditor
             labelL4Success = new Label();
             comboBoxL4Char = new ComboBox();
             pictureBoxL4Char = new PictureBox();
+            tabPageBattleArena = new TabPage();
+            groupBoxBattleArenaMenu = new GroupBox();
+            listBoxBizarroMenu = new ListBox();
+            labelBizarroMenu = new Label();
+            textBoxBizarroMenu = new TextBox();
+            groupBoxBattleArenaBattle = new GroupBox();
+            listBoxBattleArena = new ListBox();
+            labelBattleArena = new Label();
+            textBoxBattleArena = new TextBox();
             tabPageShopText = new TabPage();
             groupBoxShopText = new GroupBox();
             labelShopText = new Label();
@@ -335,6 +344,9 @@ namespace FF7Scarlet.ExeEditor
             tabPageL4Limits.SuspendLayout();
             groupBoxL4Limit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxL4Char).BeginInit();
+            tabPageBattleArena.SuspendLayout();
+            groupBoxBattleArenaMenu.SuspendLayout();
+            groupBoxBattleArenaBattle.SuspendLayout();
             tabPageShopText.SuspendLayout();
             groupBoxShopText.SuspendLayout();
             groupBoxShopNames.SuspendLayout();
@@ -2493,6 +2505,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             tabControlOtherText.Controls.Add(tabPageStatusEffects);
             tabControlOtherText.Controls.Add(tabPageL4Limits);
+            tabControlOtherText.Controls.Add(tabPageBattleArena);
             tabControlOtherText.Controls.Add(tabPageShopText);
             tabControlOtherText.Controls.Add(tabPageChocoboRacing);
             tabControlOtherText.Dock = DockStyle.Fill;
@@ -2664,6 +2677,102 @@ namespace FF7Scarlet.ExeEditor
             pictureBoxL4Char.Size = new Size(84, 96);
             pictureBoxL4Char.TabIndex = 0;
             pictureBoxL4Char.TabStop = false;
+            // 
+            // tabPageBattleArena
+            // 
+            tabPageBattleArena.Controls.Add(groupBoxBattleArenaMenu);
+            tabPageBattleArena.Controls.Add(groupBoxBattleArenaBattle);
+            tabPageBattleArena.Location = new Point(4, 24);
+            tabPageBattleArena.Name = "tabPageBattleArena";
+            tabPageBattleArena.Size = new Size(768, 499);
+            tabPageBattleArena.TabIndex = 7;
+            tabPageBattleArena.Text = "Battle arena + Bizarro";
+            tabPageBattleArena.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxBattleArenaMenu
+            // 
+            groupBoxBattleArenaMenu.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxBattleArenaMenu.Controls.Add(listBoxBizarroMenu);
+            groupBoxBattleArenaMenu.Controls.Add(labelBizarroMenu);
+            groupBoxBattleArenaMenu.Controls.Add(textBoxBizarroMenu);
+            groupBoxBattleArenaMenu.Location = new Point(5, 367);
+            groupBoxBattleArenaMenu.Name = "groupBoxBattleArenaMenu";
+            groupBoxBattleArenaMenu.Size = new Size(758, 129);
+            groupBoxBattleArenaMenu.TabIndex = 9;
+            groupBoxBattleArenaMenu.TabStop = false;
+            groupBoxBattleArenaMenu.Text = "Menu text";
+            // 
+            // listBoxBizarroMenu
+            // 
+            listBoxBizarroMenu.FormattingEnabled = true;
+            listBoxBizarroMenu.ItemHeight = 15;
+            listBoxBizarroMenu.Location = new Point(6, 22);
+            listBoxBizarroMenu.Name = "listBoxBizarroMenu";
+            listBoxBizarroMenu.Size = new Size(244, 94);
+            listBoxBizarroMenu.TabIndex = 5;
+            listBoxBizarroMenu.SelectedIndexChanged += listBoxBizarroMenu_SelectedIndexChanged;
+            // 
+            // labelBizarroMenu
+            // 
+            labelBizarroMenu.AutoSize = true;
+            labelBizarroMenu.Location = new Point(256, 22);
+            labelBizarroMenu.Name = "labelBizarroMenu";
+            labelBizarroMenu.Size = new Size(31, 15);
+            labelBizarroMenu.TabIndex = 7;
+            labelBizarroMenu.Text = "Text:";
+            // 
+            // textBoxBizarroMenu
+            // 
+            textBoxBizarroMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxBizarroMenu.Enabled = false;
+            textBoxBizarroMenu.Location = new Point(256, 40);
+            textBoxBizarroMenu.Name = "textBoxBizarroMenu";
+            textBoxBizarroMenu.Size = new Size(496, 23);
+            textBoxBizarroMenu.TabIndex = 6;
+            textBoxBizarroMenu.TextChanged += textBoxBizarroMenu_TextChanged;
+            // 
+            // groupBoxBattleArenaBattle
+            // 
+            groupBoxBattleArenaBattle.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxBattleArenaBattle.Controls.Add(listBoxBattleArena);
+            groupBoxBattleArenaBattle.Controls.Add(labelBattleArena);
+            groupBoxBattleArenaBattle.Controls.Add(textBoxBattleArena);
+            groupBoxBattleArenaBattle.Location = new Point(5, 3);
+            groupBoxBattleArenaBattle.Name = "groupBoxBattleArenaBattle";
+            groupBoxBattleArenaBattle.Size = new Size(758, 358);
+            groupBoxBattleArenaBattle.TabIndex = 8;
+            groupBoxBattleArenaBattle.TabStop = false;
+            groupBoxBattleArenaBattle.Text = "Battle text";
+            // 
+            // listBoxBattleArena
+            // 
+            listBoxBattleArena.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxBattleArena.FormattingEnabled = true;
+            listBoxBattleArena.ItemHeight = 15;
+            listBoxBattleArena.Location = new Point(6, 22);
+            listBoxBattleArena.Name = "listBoxBattleArena";
+            listBoxBattleArena.Size = new Size(244, 319);
+            listBoxBattleArena.TabIndex = 5;
+            listBoxBattleArena.SelectedIndexChanged += listBoxBattleArena_SelectedIndexChanged;
+            // 
+            // labelBattleArena
+            // 
+            labelBattleArena.AutoSize = true;
+            labelBattleArena.Location = new Point(256, 22);
+            labelBattleArena.Name = "labelBattleArena";
+            labelBattleArena.Size = new Size(31, 15);
+            labelBattleArena.TabIndex = 7;
+            labelBattleArena.Text = "Text:";
+            // 
+            // textBoxBattleArena
+            // 
+            textBoxBattleArena.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxBattleArena.Enabled = false;
+            textBoxBattleArena.Location = new Point(256, 40);
+            textBoxBattleArena.Name = "textBoxBattleArena";
+            textBoxBattleArena.Size = new Size(496, 23);
+            textBoxBattleArena.TabIndex = 6;
+            textBoxBattleArena.TextChanged += textBoxBattleArena_TextChanged;
             // 
             // tabPageShopText
             // 
@@ -2998,6 +3107,11 @@ namespace FF7Scarlet.ExeEditor
             groupBoxL4Limit.ResumeLayout(false);
             groupBoxL4Limit.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxL4Char).EndInit();
+            tabPageBattleArena.ResumeLayout(false);
+            groupBoxBattleArenaMenu.ResumeLayout(false);
+            groupBoxBattleArenaMenu.PerformLayout();
+            groupBoxBattleArenaBattle.ResumeLayout(false);
+            groupBoxBattleArenaBattle.PerformLayout();
             tabPageShopText.ResumeLayout(false);
             groupBoxShopText.ResumeLayout(false);
             groupBoxShopText.PerformLayout();
@@ -3247,6 +3361,15 @@ namespace FF7Scarlet.ExeEditor
         private ListBox listBoxQuitTexts;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
+        private TabPage tabPageBattleArena;
+        private Label labelBattleArena;
+        private TextBox textBoxBattleArena;
+        private ListBox listBoxBattleArena;
+        private GroupBox groupBoxBattleArenaBattle;
+        private GroupBox groupBoxBattleArenaMenu;
+        private ListBox listBoxBizarroMenu;
+        private Label labelBizarroMenu;
+        private TextBox textBoxBizarroMenu;
     }
 }
 
