@@ -19,8 +19,8 @@ namespace FF7Scarlet
         private static KernelForm? kernelForm = null;
         private static SceneEditorForm? sceneEditorForm = null;
         private static ExeEditorForm? exeEditorForm = null;
-        private static readonly Scene[] sceneList = new Scene[Scene.SCENE_COUNT];
-        private static readonly byte[] sceneLookupTable = new byte[64];
+        private static Scene[] sceneList = new Scene[Scene.SCENE_COUNT];
+        private static byte[] sceneLookupTable = new byte[64];
         private static Dictionary<ushort, Attack> syncedAttacks = new();
 
         public static string ExePath { get; private set; } = string.Empty;
@@ -472,7 +472,6 @@ namespace FF7Scarlet
         public static void CreateKernel(bool updateKernel2, Kernel? kernel = null)
         {
             bool reload = kernel != null;
-            ushort i;
             if (!reload) //load default kernel
             {
                 kernel = Kernel;
@@ -482,51 +481,7 @@ namespace FF7Scarlet
                 throw new FileNotFoundException("No kernel.bin file is loaded.");
             }
 
-            var data = new List<byte>();
-            byte[] uncompressedSection, compressedSection;
-            ushort compressedLength, uncompressedLength;
-            for (i = 0; i < Kernel.SECTION_COUNT; ++i)
-            {
-                uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1));
-                uncompressedLength = (ushort)uncompressedSection.Length;
-                compressedSection = GetCompressedData(uncompressedSection);
-                compressedLength = (ushort)compressedSection.Length;
-
-                data.AddRange(BitConverter.GetBytes(compressedLength));
-                data.AddRange(BitConverter.GetBytes(uncompressedLength));
-                if (i >= Kernel.KERNEL1_END)
-                {
-                    data.AddRange(BitConverter.GetBytes((ushort)Kernel.KERNEL1_END));
-                }
-                else { data.AddRange(BitConverter.GetBytes(i)); }
-                data.AddRange(compressedSection);
-            }
-            File.WriteAllBytes(KernelPath, data.ToArray());
-
-            if (updateKernel2 && BothKernelFilePathsExist) //create kernel2
-            {
-                data.Clear();
-                for (i = Kernel.KERNEL1_END; i < Kernel.SECTION_COUNT; ++i)
-                {
-                    uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1), true);
-                    data.AddRange(BitConverter.GetBytes(uncompressedSection.Length));
-                    data.AddRange(uncompressedSection);
-                }
-
-                //compress the data
-                using (var ms = new MemoryStream(data.ToArray()))
-                using (var compress = new MemoryStream())
-                {
-                    Lzs.Encode(ms, compress);
-                    compressedSection = compress.ToArray();
-                }
-
-                //write it to the file
-                data.Clear();
-                data.AddRange(BitConverter.GetBytes(compressedSection.Length));
-                data.AddRange(compressedSection);
-                File.WriteAllBytes(Kernel2Path, data.ToArray());
-            }
+            Gzip.CreateKernel(kernel, KernelPath, (updateKernel2 ? Kernel2Path : null));
 
             if (reload) //reload the kernel
             {
@@ -536,187 +491,19 @@ namespace FF7Scarlet
 
         private static void LoadSceneBin(string path)
         {
-            //based on code from SegaChief; thanks!
-            var fileData = File.ReadAllBytes(path);
-
-            int i, j, currScene = 0, currBlock = 0;
-            uint currHeader, nextHeader, currOffset = 0;
-            var sceneOffset = new uint[Scene.SCENE_COUNT];
-            var sceneSize = new uint[Scene.SCENE_COUNT];
-            byte[] compressedData, headerBytes = new byte[4];
-
-            //fill the scene lookup table with 0xFF
-            for (i = 0; i < 64; ++i)
-            {
-                sceneLookupTable[i] = 0xFF;
-            }
-
-            //get headers for each of the scene files
-            while (currOffset < fileData.Length)
-            {
-                sceneLookupTable[currBlock] = (byte)currScene;
-                j = 0;
-                for (i = 0; i < Scene.HEADER_COUNT; ++i)
-                {
-                    Array.Copy(fileData, currOffset + j, headerBytes, 0, 4);
-                    currHeader = BitConverter.ToUInt32(headerBytes, 0);
-                    if (currHeader != HexParser.NULL_OFFSET_32_BIT) //check if offset exists first
-                    {
-                        //determine if the next offset exists or not
-                        if (i < 15)
-                        {
-                            Array.Copy(fileData, currOffset + j + 4, headerBytes, 0, 4);
-                            nextHeader = BitConverter.ToUInt32(headerBytes, 0);
-                        }
-                        else { nextHeader = HexParser.NULL_OFFSET_32_BIT; }
-
-                        //get the offset and size of this compressed file
-                        sceneOffset[currScene] = (currHeader * 4) + currOffset;
-                        if (nextHeader == HexParser.NULL_OFFSET_32_BIT)
-                        {
-                            sceneSize[currScene] = Scene.COMPRESSED_BLOCK_SIZE - (currHeader * 4);
-                        }
-                        else
-                        {
-                            sceneSize[currScene] = (nextHeader - currHeader) * 4;
-                        }
-                        currScene++;
-                    }
-                    j += 4;
-                }
-                currOffset += Scene.COMPRESSED_BLOCK_SIZE;
-                currBlock++;
-            }
-
-            //get and decompress each of the scene files
-            int decompressedSize;
-            for (i = 0; i < Scene.SCENE_COUNT; ++i)
-            {
-                compressedData = new byte[sceneSize[i]];
-                Array.Copy(fileData, sceneOffset[i], compressedData, 0, sceneSize[i]);
-                var uncompressedData = new byte[Scene.UNCOMPRESSED_BLOCK_SIZE];
-
-                using (var inputStream = new MemoryStream(compressedData))
-                using (var outputStream = new MemoryStream())
-                using (var gzipper = new GZipStream(inputStream, CompressionMode.Decompress))
-                {
-                    while ((decompressedSize = gzipper.Read(uncompressedData, 0, Scene.UNCOMPRESSED_BLOCK_SIZE)) != 0)
-                    {
-                        outputStream.Write(uncompressedData, 0, decompressedSize);
-                    }
-                }
-                sceneList[i] = new Scene(ref uncompressedData);
-            }
+            sceneList = Gzip.GetSceneList(path, ref sceneLookupTable);
             ScenePath = path;
         }
 
         public static void CreateSceneBin()
         {
-            //again, based on code from SegaChief
-            if (!SceneFilePathExists || ScenePath == null)
-            {
-                throw new FileNotFoundException("No scene.bin file is loaded.");
-            }
-
-            var compressedScenes = new List<byte[]> { };
-            byte[] compressedData;
-            var headers = new uint[Scene.SCENE_COUNT];
-            var sceneBlock = new int[Scene.SCENE_COUNT];
-            var blockSize = new List<uint> { };
-            int i, j, n = 0, currBlock = 0, currScene = 0;
-            uint currHeader = Scene.HEADER_COUNT * 4, calculatedSize;
-
-            //fill the scene lookup table with 0xFF
-            for (i = 0; i < 64; ++i)
-            {
-                sceneLookupTable[i] = 0xFF;
-            }
-            sceneLookupTable[0] = 0; //always 0
-
-            //create the scene.bin
-            for (i = 0; i < Scene.SCENE_COUNT; ++i)
-            {
-                compressedData = GetCompressedData(sceneList[i].GetRawData());
-
-                if (compressedData.Length % 4 != 0) //must be a multiple of 4
-                {
-                    var temp = compressedData.ToList();
-                    do
-                    {
-                        temp.Add(0xFF);
-                        j = temp.Count;
-                    } while (j % 4 != 0);
-                    compressedData = temp.ToArray();
-                }
-                compressedScenes.Add(compressedData);
-
-                //calculate position of this scene
-                n++;
-                calculatedSize = currHeader + (uint)compressedData.Length;
-                if (n >= Scene.HEADER_COUNT || calculatedSize >= Scene.COMPRESSED_BLOCK_SIZE)
-                {
-                    n = 0;
-                    blockSize.Add(calculatedSize);
-                    currBlock++;
-                    currHeader = Scene.HEADER_COUNT * 4;
-                    sceneLookupTable[currBlock] = (byte)i;
-                }
-                headers[i] = currHeader / 4;
-                currHeader += (uint)compressedData.Length;
-                sceneBlock[i] = currBlock;
-            }
-            blockSize.Add(currHeader);
-
-            //write the compressed data to a file
-            using (var fs = new FileStream(ScenePath, FileMode.Create))
-            using (var writer = new BinaryWriter(fs))
-            {
-                for (i = 0; i < blockSize.Count; ++i)
-                {
-                    //write headers for this block
-                    for (j = 0; j < Scene.HEADER_COUNT; ++j)
-                    {
-                        if (currScene + j < Scene.SCENE_COUNT && sceneBlock[currScene + j] == i)
-                        {
-                            writer.Write(headers[currScene + j]);
-                        }
-                        else { writer.Write(HexParser.NULL_OFFSET_32_BIT); }
-                    }
-
-                    //write the scenes assigned to this block
-                    while (currScene < Scene.SCENE_COUNT && sceneBlock[currScene] == i)
-                    {
-                        writer.Write(compressedScenes[currScene]);
-                        currScene++;
-                    }
-
-                    //add padding until the block is full
-                    while (fs.Length % Scene.COMPRESSED_BLOCK_SIZE != 0)
-                    {
-                        writer.Write((byte)0xFF);
-                    }
-                }
-            }
+            Gzip.CreateSceneBin(sceneList, ScenePath, ref sceneLookupTable);
 
             //update the scene lookup table in the kernel
             if (!LookupTableIsCorrect())
             {
                 SyncLookupTable();
             }
-        }
-
-        private static byte[] GetCompressedData(byte[] uncompressedData)
-        {
-            byte[] compressedData;
-            using (var outputStream = new MemoryStream())
-            {
-                using (var gzipper = new GZipStream(outputStream, CompressionMode.Compress))
-                {
-                    gzipper.Write(uncompressedData, 0, uncompressedData.Length);
-                }
-                compressedData = outputStream.ToArray();
-            }
-            return compressedData;
         }
 
         private static void kernelFormClosed(object? sender, FormClosedEventArgs e)
