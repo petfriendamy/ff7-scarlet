@@ -2,6 +2,7 @@
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Materias;
+using System.ComponentModel;
 
 namespace FF7Scarlet.Shared.Controls
 {
@@ -27,6 +28,7 @@ namespace FF7Scarlet.Shared.Controls
         public event EventHandler? DataChanged;
         public event EventHandler? MultiLinkEnabled;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SlotSelectorType SlotSelectorType
         {
             get { return slotSelectorType; }
@@ -80,6 +82,7 @@ namespace FF7Scarlet.Shared.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GrowthRate GrowthRate
         {
             get { return growthRate; }
@@ -94,6 +97,7 @@ namespace FF7Scarlet.Shared.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedSlot
         {
             get { return selectedSlot; }

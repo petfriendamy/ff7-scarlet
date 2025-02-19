@@ -1,8 +1,11 @@
-﻿namespace FF7Scarlet.AIEditor
+﻿using System.ComponentModel;
+
+namespace FF7Scarlet.AIEditor
 {
     public partial class ParameterForm : Form
     {
         private readonly List<ParameterControl> paramList;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Code> Code { get; private set; }
         private readonly Script parentScript;
         private readonly Opcodes opcode;

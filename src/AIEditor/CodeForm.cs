@@ -1,11 +1,13 @@
 ﻿using System.Data;
-using System.ComponentModel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FF7Scarlet.AIEditor
 {
     public partial class CodeForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Code Code { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool CreateNewLabel { get; private set; }
 
         private OpcodeInfo opcode;
