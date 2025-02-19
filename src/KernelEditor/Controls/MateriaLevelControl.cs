@@ -1,4 +1,6 @@
-﻿namespace FF7Scarlet.KernelEditor.Controls
+﻿using System.ComponentModel;
+
+namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class MateriaLevelControl : UserControl
     {
@@ -8,26 +10,31 @@
         private bool loading = false;
         public event EventHandler? DataChanged;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Lvl2APValue
         {
             get { return GetAP(2); }
             set { SetAP(2, value); }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Lvl3APValue
         {
             get { return GetAP(3); }
             set { SetAP(3, value); }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Lvl4APValue
         {
             get { return GetAP(4); }
             set { SetAP(4, value); }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Lvl5APValue
         {
             get { return GetAP(5); }
             set { SetAP(5, value); }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int MaxLevel
         {
             get { return (int)numericMateriaMaxLevel.Value; }

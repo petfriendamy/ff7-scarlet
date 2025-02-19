@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Media;
+using System.ComponentModel;
 
 namespace FF7Scarlet.KernelEditor.Controls
 {
@@ -10,6 +11,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         private bool loaded = false, editingTextBox = false;
         public event EventHandler? DataChanged;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte ActualValue
         {
             get { return info.ActualValue; }
@@ -35,6 +37,7 @@ namespace FF7Scarlet.KernelEditor.Controls
                 TryClearCaller(0);
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte AttackPower
         {
             get { return (byte)numericAttackPower.Value; }
@@ -43,6 +46,7 @@ namespace FF7Scarlet.KernelEditor.Controls
                 numericAttackPower.Value = value;
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DamageType DamageType
         {
             get { return info.DamageType; }
@@ -52,6 +56,7 @@ namespace FF7Scarlet.KernelEditor.Controls
                 comboBoxDamageType.SelectedIndex = (int)value;
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AccuracyCalculation AccuracyCalculation
         {
             get { return info.AccuracyCalculation; }
@@ -61,6 +66,7 @@ namespace FF7Scarlet.KernelEditor.Controls
                 comboBoxAccuracyCalculation.SelectedIndex = (int)value;
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool CanCrit
         {
             get { return info.CanCrit; }
@@ -71,6 +77,7 @@ namespace FF7Scarlet.KernelEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DamageFormulas DamageFormula
         {
             get { return info.DamageFormula; }
@@ -85,6 +92,7 @@ namespace FF7Scarlet.KernelEditor.Controls
             get { return info.IsValid; }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsNull
         {
             get { return info.IsNull; }

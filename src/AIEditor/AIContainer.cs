@@ -7,7 +7,6 @@ namespace FF7Scarlet.AIEditor
         public const int SCRIPT_NUMBER = 16;
         protected readonly Script[] scripts = new Script[SCRIPT_NUMBER];
         public IAttackContainer Parent { get; protected set; }
-        bool scriptsLoaded = false;
 
         public Script[] Scripts
         {
@@ -95,7 +94,6 @@ namespace FF7Scarlet.AIEditor
                     scripts[i] = new Script(this, ref data, start, length);
                 }
             }
-            scriptsLoaded = true;
         }
 
         public byte[] GetScriptBlock()

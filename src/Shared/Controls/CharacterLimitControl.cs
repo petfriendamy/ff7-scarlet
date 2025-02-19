@@ -1,4 +1,5 @@
 ﻿using Shojy.FF7.Elena.Characters;
+using System.ComponentModel;
 
 namespace FF7Scarlet.Shared.Controls
 {
@@ -9,6 +10,7 @@ namespace FF7Scarlet.Shared.Controls
         public event EventHandler? DataChanged;
         private bool loading;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte LimitLevel
         {
             get { return limitLevel; }
@@ -20,6 +22,7 @@ namespace FF7Scarlet.Shared.Controls
                 loading = false;
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte LimitBar
         {
             get { return limitBar; }
@@ -32,6 +35,7 @@ namespace FF7Scarlet.Shared.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public LearnedLimits LearnedLimits
         {
             get { return learnedLimits; }

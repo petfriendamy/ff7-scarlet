@@ -11,6 +11,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         private bool fullList = true, loading = false;
 
         [Description("The text for the GroupBox.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string GroupBoxText
         {
             get { return groupBoxMain.Text; }
@@ -18,6 +19,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         }
 
         [Description("Show the full list of status effects.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool FullList
         {
             get { return fullList; }

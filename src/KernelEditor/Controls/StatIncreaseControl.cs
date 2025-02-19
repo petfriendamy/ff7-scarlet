@@ -1,4 +1,5 @@
 ﻿using Shojy.FF7.Elena.Equipment;
+using System.ComponentModel;
 
 namespace FF7Scarlet.KernelEditor.Controls
 {
@@ -11,6 +12,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         private const int MAX_STAT_COUNT = 4;
         private int count = 4;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Count
         {
             get { return count; }

@@ -12,6 +12,7 @@ namespace FF7Scarlet.SceneEditor
 {
     public partial class EnemySearchForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SceneSearchResult? SearchResult { get; private set; }
         private readonly SceneSearchResult[] results;
 

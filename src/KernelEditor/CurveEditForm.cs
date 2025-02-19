@@ -1,23 +1,23 @@
 ﻿using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Sections;
+using System.ComponentModel;
 
 namespace FF7Scarlet.KernelEditor
 {
     public partial class CurveEditForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Unsaved { get; private set; } = false;
         private Kernel kernel;
         private NumericUpDown[] bases, gradients;
         private StatCurve curve;
         private byte curveIndex;
-        private bool loading;
         private const int STAT_COUNT = 9, NUM_CURVES = 64;
 
         public CurveEditForm(Kernel kernel, byte curveIndex)
         {
             InitializeComponent();
-            loading = true;
 
             //get bases and gradients
             bases = [
@@ -70,8 +70,6 @@ namespace FF7Scarlet.KernelEditor
                     labelUsedBy.Text += s + Environment.NewLine;
                 }
             }
-
-            loading = false;
         }
 
         private void numericBase_ValueChanged(object sender, EventArgs e)
