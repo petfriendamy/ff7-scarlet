@@ -1,5 +1,6 @@
 ﻿using Shojy.FF7.Elena.Materias;
 using System.Windows.Forms.VisualStyles;
+using System.ComponentModel;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -9,6 +10,7 @@ namespace FF7Scarlet.KernelEditor
         private List<MateriaSpecialStats> specialStats;
         private List<SupportMateriaTypes> supportTypes;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UnsavedChanges { get; private set; }
         private NumericUpDown[] numerics;
         private Materia materia;
