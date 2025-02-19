@@ -1848,7 +1848,7 @@ namespace FF7Scarlet.SceneEditor
 
         private void listBoxFormationEnemies_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!loading && SelectedFormationEnemy != null && SelectedFormation != null && SelectedScene != null)
+            if (!loading && SelectedFormation != null && SelectedScene != null)
             {
                 loading = true;
                 if (formationEnemyNeedsSync) //sync the unsaved formation data
@@ -1856,23 +1856,27 @@ namespace FF7Scarlet.SceneEditor
                     SyncFormationEnemyData(SelectedFormation.EnemyLocations[prevFormationEnemy]);
                 }
                 prevFormationEnemy = SelectedFormationEnemyIndex;
-                var enemy = SelectedScene.GetEnemyByID(SelectedFormationEnemy.EnemyID);
-                if (enemy == null)
+
+                EnableOrDisableGroupBox(groupBoxFormationEnemies, true, false);
+                if (SelectedFormationEnemy == null)
                 {
                     comboBoxFormationSelectedEnemy.SelectedIndex = 0;
-                    EnableOrDisableGroupBox(groupBoxFormationEnemies, false, true, comboBoxFormationSelectedEnemy);
                 }
                 else
                 {
-                    comboBoxFormationSelectedEnemy.SelectedIndex = validEnemies.IndexOf(enemy) + 1;
-                    EnableOrDisableGroupBox(groupBoxFormationEnemies, true, false);
-
-                    numericFormationEnemyX.Value = SelectedFormationEnemy.Location.X;
-                    numericFormationEnemyY.Value = SelectedFormationEnemy.Location.Y;
-                    numericFormationEnemyZ.Value = SelectedFormationEnemy.Location.Z;
-                    numericFormationEnemyRow.Value = SelectedFormationEnemy.Row;
-                    coverFlagsControlFormationEnemy.SetFlags(SelectedFormationEnemy.CoverFlags);
-                    initialConditionControlEnemy.SetConditions(SelectedFormationEnemy.InitialConditionFlags);
+                    var enemy = SelectedScene.GetEnemyByID(SelectedFormationEnemy.EnemyID);
+                    if (enemy == null)
+                    {
+                        comboBoxFormationSelectedEnemy.SelectedIndex = 0;
+                    }
+                    else
+                        comboBoxFormationSelectedEnemy.SelectedIndex = validEnemies.IndexOf(enemy) + 1;
+                        numericFormationEnemyX.Value = SelectedFormationEnemy.Location.X;
+                        numericFormationEnemyY.Value = SelectedFormationEnemy.Location.Y;
+                        numericFormationEnemyZ.Value = SelectedFormationEnemy.Location.Z;
+                        numericFormationEnemyRow.Value = SelectedFormationEnemy.Row;
+                        coverFlagsControlFormationEnemy.SetFlags(SelectedFormationEnemy.CoverFlags);
+                        initialConditionControlEnemy.SetConditions(SelectedFormationEnemy.InitialConditionFlags);
                 }
                 loading = false;
             }

@@ -26,10 +26,7 @@ namespace FF7Scarlet.KernelEditor
 
         private void KernelChunkExportForm_Load(object sender, EventArgs e)
         {
-            if (!DataManager.BothKernelFilePathsExist)
-            {
-                //groupBoxKernel2Chunks.Enabled = false;
-            }
+            groupBoxKernel2Chunks.Enabled = DataManager.BothKernelFilePathsExist;
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
