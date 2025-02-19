@@ -14,7 +14,7 @@ namespace FF7Scarlet.ExeEditor
     {
         #region Properties
 
-        private const string WINDOW_TITLE = "Scarlet - EXE Editor";
+        private readonly string WINDOW_TITLE = $"{Application.ProductName} v{Application.ProductVersion} - EXE Editor";
         private ExeData editor;
         private List<StatusChangeType> statusChangeTypes = new();
         private TextBox[] nameTextBoxes;
@@ -64,7 +64,7 @@ namespace FF7Scarlet.ExeEditor
         public ExeEditorForm()
         {
             InitializeComponent();
-            this.Text = $"{Application.ProductName} v{Application.ProductVersion} - EXE Editor";
+            Text = WINDOW_TITLE;
 
             editor = new ExeData(DataManager.ExePath);
             int i;

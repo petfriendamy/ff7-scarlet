@@ -16,8 +16,6 @@ using System.Collections;
 
 namespace FF7Scarlet.KernelEditor
 {
-
-
     public class Kernel : KernelReader, IAttackContainer
     {
         public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17, NAMES_END = 25,
@@ -147,6 +145,10 @@ namespace FF7Scarlet.KernelEditor
                         {
                             bytes.Add(b);
                         }
+                    }
+                    if (bytes.Count == 0 || bytes.Last() != 0xFF) //make sure there's a null terminator
+                    {
+                        bytes.Add(0xFF);
                     }
                     strings[i] = new FFText(bytes.ToArray());
                     bytes.Clear();

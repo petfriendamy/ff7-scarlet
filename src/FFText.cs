@@ -6,10 +6,20 @@ using FF7Scarlet.Shared;
 
 namespace FF7Scarlet
 {
+    public enum TextCommands : byte
+    {
+        Character = 0xEA,
+        Item = 0xEB,
+        Number = 0xEC,
+        Target = 0xED,
+        Previous = 0xEE,
+        Attack = 0xEF,
+        Target2 = 0xF0
+    }
+
     public class FFText : IComparable
     {
         private ReadOnlyCollection<char> TEXT_MAP = list.AsReadOnly();
-
 
         private readonly byte[] data;
 
@@ -77,6 +87,8 @@ namespace FF7Scarlet
 
                 var text = new List<byte> { };
                 var nameList = Enum.GetNames<CharacterNames>();
+                var commandList = Enum.GetValues<TextCommands>();
+
                 for (i = 0; i < length; ++i)
                 {
                     if (i < str.Length)
@@ -86,20 +98,43 @@ namespace FF7Scarlet
                         if (b == (byte)'{') //variable
                         {
                             string temp = str.Substring(i);
-                            for (j = 0; j < nameList.Length; ++j)
+                            bool found = false;
+
+                            for (j = 0; j < nameList.Length; ++j) //check for character names
                             {
                                 if (temp.StartsWith(nameList[j].ToUpper()))
                                 {
-                                    text.Add(0xEA);
+                                    text.Add((byte)TextCommands.Character);
                                     text.Add(0x00);
                                     text.Add((byte)j);
                                     i += nameList[j].Length + 1;
-                                    continue;
+                                    found = true;
+                                }
+                                if (found) { break; }
+                            }
+
+                            if (!found) //no name found, so check for variables
+                            {
+                                for (j = 0; j < commandList.Length; ++j)
+                                {
+                                    var name = Enum.GetName(commandList[j]);
+                                    if (name != null && temp.StartsWith(name.ToUpper()))
+                                    {
+                                        text.Add((byte)commandList[j]);
+                                        text.Add(0xFF);
+                                        text.Add(0xFF);
+                                        i += name.Length + 1;
+                                        found = true;
+                                    }
+                                    if (found) { break; }
                                 }
                             }
 
-                            //no matching name found, so assume regular character
-                            text.Add((byte)TEXT_MAP.IndexOf('{'));
+                            //no matching variables, so assume regular character
+                            if (!found)
+                            {
+                                text.Add((byte)TEXT_MAP.IndexOf('{'));
+                            }
                         }
                         else //search text map
                         {
@@ -148,30 +183,40 @@ namespace FF7Scarlet
                     else if (data[i] == 0xEA) //names
                     {
                         int charID = data[i + 2];
-                        i += 2;
                         var name = Enum.GetName((CharacterNames)charID);
-                        if (name == null) { text.AddRange("{UNKNOWN}"); }
+                        if (name == null) { text.AddRange("{CHARACTER}"); }
                         else { text.AddRange("{" + name.ToUpper() + "}"); }
+                        i += 2;
                     }
                     else if (data[i] == 0xEB) //item
                     {
                         text.AddRange("{ITEM}");
-                        i++;
+                        i += 2;
                     }
                     else if (data[i] == 0xEC) //number
                     {
                         text.AddRange("{NUMBER}");
-                        i++;
+                        i += 2;
                     }
                     else if (data[i] == 0xED) //target
                     {
                         text.AddRange("{TARGET}");
-                        i++;
+                        i += 2;
+                    }
+                    else if (data[i] == 0xEE) //previous command
+                    {
+                        text.AddRange("{PREVIOUS}");
+                        i += 2;
                     }
                     else if (data[i] == 0xEF) //attack
                     {
                         text.AddRange("{ATTACK}");
-                        i++;
+                        i += 2;
+                    }
+                    else if (data[i] == 0xF0) //target 2
+                    {
+                        text.AddRange("{TARGET2}");
+                        i += 2;
                     }
                     else if (data[i] < TEXT_MAP.Count) //regular text
                     {

@@ -225,16 +225,15 @@ namespace FF7Scarlet.Compression
 
         private static byte[] GetCompressedData(byte[] uncompressedData)
         {
-            byte[] compressedData;
             using (var outputStream = new MemoryStream())
             {
-                using (var gzipper = new GZipStream(outputStream, CompressionMode.Compress))
+                using (var gzipper = new GZipStream(outputStream, CompressionLevel.SmallestSize))
                 {
                     gzipper.Write(uncompressedData, 0, uncompressedData.Length);
+                    gzipper.Flush();
                 }
-                compressedData = outputStream.ToArray();
+                return outputStream.ToArray();
             }
-            return compressedData;
         }
     }
 }

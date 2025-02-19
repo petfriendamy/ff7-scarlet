@@ -28,7 +28,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!DataManager.BothKernelFilePathsExist)
             {
-                groupBoxKernel2Chunks.Enabled = false;
+                //groupBoxKernel2Chunks.Enabled = false;
             }
         }
 

@@ -25,7 +25,7 @@ namespace FF7Scarlet.KernelEditor
     {
         #region Properties
 
-        private const string WINDOW_TITLE = "Scarlet - Kernel Editor";
+        private readonly string WINDOW_TITLE = $"{Application.ProductName} v{Application.ProductVersion} - Kernel Editor";
         private readonly string[] SCRIPT_LIST =
         [
             "Pre-Battle", "Main", "General Counter", "Death Counter", "Physical Counter",
@@ -300,7 +300,7 @@ namespace FF7Scarlet.KernelEditor
         public KernelForm()
         {
             InitializeComponent();
-            this.Text = $"{Application.ProductName} v{Application.ProductVersion} - Kernel Editor";
+            Text = WINDOW_TITLE;
 
             kernel = DataManager.CopyKernel();
             foreach (var a in kernel.AttackData.Attacks)
@@ -1497,13 +1497,13 @@ namespace FF7Scarlet.KernelEditor
             listBoxBattleText.SuspendLayout();
             listBoxBattleText.Items.Clear();
 
-            foreach (var t in kernel.BattleText.Strings)
+            foreach (var t in kernel.BattleTextFF)
             {
                 listBoxBattleText.Items.Add(t);
             }
 
             listBoxBattleText.SelectedIndex = i;
-            if (i >= 0 && i < kernel.BattleText.Strings.Length)
+            if (i >= 0 && i < kernel.BattleTextFF.Length)
             {
                 textBoxBattleText.Text = kernel.BattleTextFF[i].ToString();
             }
@@ -2180,7 +2180,7 @@ namespace FF7Scarlet.KernelEditor
                         labelBattleText.Enabled = true;
                         textBoxBattleText.Enabled = true;
                     }
-                    textBoxBattleText.Text = kernel.BattleText.Strings[i];
+                    textBoxBattleText.Text = kernel.BattleTextFF[i].ToString();
                     loading = false;
                 }
             }

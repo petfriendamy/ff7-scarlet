@@ -13,8 +13,8 @@ namespace FF7Scarlet.SceneEditor
     {
         #region Properties
 
-        private const string WINDOW_TITLE = "Scarlet - Scene Editor";
-        private readonly string[] SCRIPT_LIST = new string[Script.SCRIPT_COUNT]
+        private readonly string WINDOW_TITLE = $"{Application.ProductName} v{Application.ProductVersion} - Scene Editor";
+        private readonly string[] SCRIPT_LIST =
         {
             "Pre-Battle", "Main", "General Counter", "Death Counter", "Physical Counter",
             "Magic Counter", "Battle Victory", "Pre-Action Setup", "Custom Event 1",
@@ -123,7 +123,7 @@ namespace FF7Scarlet.SceneEditor
         public SceneEditorForm(Dictionary<ushort, Attack> syncedAttacks)
         {
             InitializeComponent();
-            this.Text = $"{Application.ProductName} v{Application.ProductVersion} - Scene Editor";
+            Text = WINDOW_TITLE;
 
             //set max values for various controls
             textBoxEnemyName.MaxLength = Scene.NAME_LENGTH - 1;

@@ -3640,7 +3640,7 @@
             listBoxBattleText.Location = new Point(7, 6);
             listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
             listBoxBattleText.Name = "listBoxBattleText";
-            listBoxBattleText.Size = new Size(174, 454);
+            listBoxBattleText.Size = new Size(300, 454);
             listBoxBattleText.TabIndex = 2;
             listBoxBattleText.SelectedIndexChanged += listBoxBattleText_SelectedIndexChanged;
             // 
@@ -3648,10 +3648,10 @@
             // 
             textBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxBattleText.Enabled = false;
-            textBoxBattleText.Location = new Point(189, 24);
+            textBoxBattleText.Location = new Point(315, 24);
             textBoxBattleText.Margin = new Padding(4, 3, 4, 3);
             textBoxBattleText.Name = "textBoxBattleText";
-            textBoxBattleText.Size = new Size(572, 23);
+            textBoxBattleText.Size = new Size(446, 23);
             textBoxBattleText.TabIndex = 10;
             textBoxBattleText.TextChanged += textBoxBattleText_TextChanged;
             // 
@@ -3659,7 +3659,7 @@
             // 
             labelBattleText.AutoSize = true;
             labelBattleText.Enabled = false;
-            labelBattleText.Location = new Point(189, 6);
+            labelBattleText.Location = new Point(315, 6);
             labelBattleText.Margin = new Padding(4, 0, 4, 0);
             labelBattleText.Name = "labelBattleText";
             labelBattleText.Size = new Size(31, 15);
