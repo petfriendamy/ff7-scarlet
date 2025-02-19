@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using static System.Net.Mime.MediaTypeNames;
+using System.ComponentModel;
 
 namespace FF7Scarlet.AIEditor
 {
