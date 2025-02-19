@@ -1,9 +1,11 @@
 ﻿using Shojy.FF7.Elena.Materias;
+using System.ComponentModel;
 
 namespace FF7Scarlet.KernelEditor
 {
     public partial class MateriaSpellsForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UnsavedChanges { get; private set; }
         private ComboBox[] comboBoxes;
         private Materia materia;

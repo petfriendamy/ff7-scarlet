@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -11,6 +12,7 @@ namespace FF7Scarlet.AIEditor
         private byte operand = 0xFF, modifier = 0xFF, paramType = 0xFF;
         private bool singleParameter = false, modifyAbove = false, loading = true;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte Operand
         {
             get
@@ -27,6 +29,7 @@ namespace FF7Scarlet.AIEditor
                 operand = value;
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte Modifier
         {
             get { return modifier; }
@@ -45,6 +48,7 @@ namespace FF7Scarlet.AIEditor
                 }
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte ParamType
         {
             get
@@ -64,6 +68,7 @@ namespace FF7Scarlet.AIEditor
                 paramType = value;
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FFText? Parameter
         {
             get
@@ -91,7 +96,9 @@ namespace FF7Scarlet.AIEditor
                 comboBoxParameter.Text = value?.ToString();
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsFirst { get; private set; } = false;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ModifyAbove
         {
             get { return modifyAbove; }
@@ -105,6 +112,7 @@ namespace FF7Scarlet.AIEditor
                 }
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Checked
         {
             get { return checkBoxEnabled.Checked; }

@@ -1,4 +1,5 @@
 ﻿using Shojy.FF7.Elena.Items;
+using System.ComponentModel;
 
 namespace FF7Scarlet.KernelEditor.Controls
 {
@@ -7,6 +8,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         public event EventHandler? FlagsChanged;
         private bool loading;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowThrowable
         {
             get { return checkBoxIsThrowable.Visible; }

@@ -1,4 +1,6 @@
-﻿namespace FF7Scarlet.AIEditor
+﻿using System.ComponentModel;
+
+namespace FF7Scarlet.AIEditor
 {
     public partial class ScriptControl : UserControl
     {
@@ -8,6 +10,7 @@
 
         public event EventHandler? DataChanged, ScriptAdded, ScriptRemoved;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AIContainer? AIContainer
         {
             get { return aiContainer; }
@@ -17,6 +20,7 @@
                 DisplayScript(SelectedScriptIndex);
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedScriptIndex
         {
             get { return selectedScriptIndex; }

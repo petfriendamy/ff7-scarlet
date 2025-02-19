@@ -5,6 +5,7 @@ namespace FF7Scarlet.SceneEditor.Controls
     public partial class CameraPositionControl : UserControl
     {
         [Description("The text for the GroupBox.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string GroupBoxText
         {
             get { return groupBoxMain.Text; }

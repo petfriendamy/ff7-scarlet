@@ -13,6 +13,7 @@ namespace FF7Scarlet.SceneEditor
 {
     public partial class SceneSearchForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SceneSearchResult? SearchResult { get; private set; }
         public readonly Scene[] scenes;
         private readonly Opcodes[] opcodes;
