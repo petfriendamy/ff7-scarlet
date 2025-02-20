@@ -388,7 +388,7 @@ namespace FF7Scarlet.Shared
 
         public static byte[] GetMateriaBytes(InventoryMateria? mat)
         {
-            if (mat == null) { return HexParser.GetNullBlock(4); }
+            if (mat == null || mat.Index == 0xFF) { return HexParser.GetNullBlock(4); }
             else
             {
                 var data = new byte[4];
