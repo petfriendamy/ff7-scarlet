@@ -190,6 +190,10 @@ namespace FF7Scarlet.ExeEditor
                 {
                     c.Enabled = false;
                 }
+                foreach (Control c in tabPageAudio.Controls)
+                {
+                    c.Enabled = false;
+                }
             }
 
             //kernel-synced data
@@ -314,6 +318,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopType.SuspendLayout();
             listBoxChocoboNames.SuspendLayout();
             listBoxSortItemName.SuspendLayout();
+            listBoxAudioVolume.SuspendLayout();
 
             //clear items
             int shopType = comboBoxShopType.SelectedIndex;
@@ -348,6 +353,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxShopText.Items.Clear();
             listBoxSortItemName.Items.Clear();
             listBoxChocoboNames.Items.Clear();
+            listBoxAudioVolume.Items.Clear();
 
             //set AP price multiplier
             numericMateriaAPPriceMultiplier.Value = editor.APPriceMultiplier;
@@ -525,6 +531,18 @@ namespace FF7Scarlet.ExeEditor
                 for (i = 0; i < ExeData.NUM_CHOCOBO_RACE_ITEMS; ++i)
                 {
                     listBoxChocoboRacePrizes.Items.Add(editor.ChocoboRacePrizes[i].ToString());
+                }
+
+                //set audio volume
+                for (i = 0; i < ExeData.NUM_AUDIO_VALUES; ++i)
+                {
+                    listBoxAudioVolume.Items.Add($"{i}: {editor.AudioVolume[i]}");
+                }
+
+                //set audio pan
+                for (i = 0; i < ExeData.NUM_AUDIO_VALUES; ++i)
+                {
+                    listBoxAudioPan.Items.Add($"{i}: {editor.AudioPan[i]}");
                 }
             }
 
@@ -2097,6 +2115,100 @@ namespace FF7Scarlet.ExeEditor
                 listBoxChocoboRacePrizes.Items[i] = comboBoxChocoboRacePrizes.Text;
                 SetUnsaved(true);
                 loading = false;
+            }
+        }
+
+        #endregion
+
+        #region Audio Data
+
+        private void listBoxAudioVolume_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = listBoxAudioVolume.SelectedIndex;
+            if (i >= 0 && i < ExeData.NUM_AUDIO_VALUES)
+            {
+                loading = true;
+                foreach (Control c in groupBoxAudioVolume.Controls)
+                {
+                    c.Enabled = true;
+                }
+                numericAudioVolume.Value = trackBarAudioVolume.Value = editor.AudioVolume[i];
+                loading = false;
+            }
+        }
+
+        private void listBoxAudioPan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = listBoxAudioPan.SelectedIndex;
+            if (i >= 0 && i < ExeData.NUM_AUDIO_VALUES)
+            {
+                loading = true;
+                foreach (Control c in groupBoxAudioPan.Controls)
+                {
+                    c.Enabled = true;
+                }
+                numericAudioPan.Value = trackBarAudioPan.Value = editor.AudioPan[i];
+                loading = false;
+            }
+        }
+
+        private void numericAudioVolume_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = listBoxAudioVolume.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_AUDIO_VALUES)
+                {
+                    //check who sent this
+                    loading = true;
+                    int value;
+                    if (sender is NumericUpDown)
+                    {
+                        value = (int)numericAudioVolume.Value;
+                        trackBarAudioVolume.Value = value;
+                    }
+                    else
+                    {
+                        value = trackBarAudioVolume.Value;
+                        numericAudioVolume.Value = value;
+                    }
+                    loading = false;
+
+                    //update the value internally
+                    editor.AudioVolume[i] = value;
+                    listBoxAudioVolume.Items[i] = $"{i}: {value}";
+                    SetUnsaved(true);
+                }
+            }
+        }
+
+        private void numericAudioPan_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int i = listBoxAudioPan.SelectedIndex;
+                if (i >= 0 && i < ExeData.NUM_AUDIO_VALUES)
+                {
+                    //check who sent this
+                    loading = true;
+                    int value;
+                    if (sender is NumericUpDown)
+                    {
+                        value = (int)numericAudioPan.Value;
+                        trackBarAudioPan.Value = value;
+                    }
+                    else
+                    {
+                        value = trackBarAudioPan.Value;
+                        numericAudioPan.Value = value;
+                    }
+                    loading = false;
+
+                    //update the value internally
+                    editor.AudioPan[i] = value;
+                    listBoxAudioPan.Items[i] = $"{i}: {value}";
+                    SetUnsaved(true);
+                }
             }
         }
 

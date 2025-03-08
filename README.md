@@ -1,6 +1,6 @@
-![Scarlet - FF7 Battle Data Editor](src/GUI/logo.png)
+![Scarlet - FF7 Multipurpose Editor](src/GUI/logo.png)
 
-Scarlet is a battle data editor for Final Fantasy VII. This allows you to modify the following:
+Scarlet is a multipurpose editor for Final Fantasy VII. This allows you to modify the following:
 
 * kernel.bin
   * Command data
@@ -24,6 +24,7 @@ Scarlet is a battle data editor for Final Fantasy VII. This allows you to modify
   * Character names (as seen in the naming menu)
   * Shop data
   * Assorted in-game text
+  * Audio data
 
 Special thanks:
 * NFITC1

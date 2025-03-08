@@ -2,6 +2,7 @@
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -58,6 +59,7 @@ namespace FF7Scarlet.ExeEditor
             NUM_SHOP_TEXTS = 18,
             NUM_CHOCOBO_NAMES = 46,
             NUM_CHOCOBO_RACE_ITEMS = 24,
+            NUM_AUDIO_VALUES = 128,
             
             MENU_TEXT_LENGTH = 20,
             ITEM_MENU_TEXT_LENGTH = 12,
@@ -109,6 +111,8 @@ namespace FF7Scarlet.ExeEditor
             ITEM_PRICE_DATA_POS = 0x523858,
             MATERIA_PRICE_DATA_POS = 0x523E58,
             SAVE_MENU_TEXT_POS = 0x524160,
+            AUDIO_VOLUME_POS = 0x566060,
+            AUDIO_PAN_POS = 0x566260,
             TEIOH_POS = 0x57B2A8,
             CHOCOBO_RACE_ITEMS_POS = 0x57B3D0,
             CHOCOBO_NAMES_POS = 0x57B658;
@@ -152,6 +156,8 @@ namespace FF7Scarlet.ExeEditor
         public uint[] MateriaPrices { get; } = new uint[Kernel.MATERIA_COUNT];
         public Dictionary<ushort, ushort> ItemsSortedByName { get; } = new();
         public Dictionary<byte, byte> MateriaPriority { get; } = new();
+        public int[] AudioVolume { get; } = new int[NUM_AUDIO_VALUES];
+        public int[] AudioPan { get; } = new int[NUM_AUDIO_VALUES];
         public bool IsUnedited { get; private set; }
 
 
@@ -637,16 +643,30 @@ namespace FF7Scarlet.ExeEditor
                                 SaveMenuTexts[i] = new FFText(reader.ReadBytes(SAVE_MENU_TEXT_LENGTH));
                             }
 
+                            //get audio volume
+                            stream.Seek(AUDIO_VOLUME_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_AUDIO_VALUES; ++i)
+                            {
+                                AudioVolume[i] = reader.ReadInt32();
+                            }
+
+                            //get audio pan
+                            stream.Seek(AUDIO_PAN_POS, SeekOrigin.Begin);
+                            for (i = 0; i < NUM_AUDIO_VALUES; ++i)
+                            {
+                                AudioPan[i] = reader.ReadInt32();
+                            }
+
+                            //get Teioh's name
+                            stream.Seek(TEIOH_POS, SeekOrigin.Begin);
+                            ChocoboNames[NUM_CHOCOBO_NAMES] = new FFText(reader.ReadBytes(CHOCOBO_NAME_LENGTH));
+
                             //get chocobo race prizes
                             stream.Seek(CHOCOBO_RACE_ITEMS_POS, SeekOrigin.Begin);
                             for (i = 0; i < NUM_CHOCOBO_RACE_ITEMS; ++i)
                             {
                                 ChocoboRacePrizes[i] = new FFText(reader.ReadBytes(ITEM_NAME_LENGTH));
                             }
-
-                            //get Teioh's name
-                            stream.Seek(TEIOH_POS, SeekOrigin.Begin);
-                            ChocoboNames[NUM_CHOCOBO_NAMES] = new FFText(reader.ReadBytes(CHOCOBO_NAME_LENGTH));
 
                             //get other chocobo names
                             stream.Seek(CHOCOBO_NAMES_POS, SeekOrigin.Begin);
@@ -914,6 +934,20 @@ namespace FF7Scarlet.ExeEditor
                             foreach (var s in SaveMenuTexts)
                             {
                                 writer.Write(s.GetBytes(SAVE_MENU_TEXT_LENGTH, false, true));
+                            }
+
+                            //write audio volume
+                            stream.Seek(AUDIO_VOLUME_POS, SeekOrigin.Begin);
+                            foreach (var a in AudioVolume)
+                            {
+                                writer.Write(BitConverter.GetBytes(a));
+                            }
+
+                            //write audio pan
+                            stream.Seek(AUDIO_PAN_POS, SeekOrigin.Begin);
+                            foreach (var a in AudioPan)
+                            {
+                                writer.Write(BitConverter.GetBytes(a));
                             }
 
                             //write Teioh's name
@@ -1311,6 +1345,18 @@ namespace FF7Scarlet.ExeEditor
                                 BIZARRO_MENU_TEXT_LENGTH);
                             stream.Seek(BizarroMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
+
+                        //read audio volume
+                        for (i = 0; i < NUM_AUDIO_VALUES; ++i)
+                        {
+                            AudioVolume[i] = reader.ReadInt32();
+                        }
+
+                        //read audio pan
+                        for (i = 0; i < NUM_AUDIO_VALUES; ++i)
+                        {
+                            AudioPan[i] = reader.ReadInt32();
+                        }
                     }
                 }
             }
@@ -1536,6 +1582,18 @@ namespace FF7Scarlet.ExeEditor
                 foreach (var b in BizarroMenuTexts)
                 {
                     output.AddRange(b.GetBytesTruncated());
+                }
+
+                //write audio volume
+                foreach (var a in AudioVolume)
+                {
+                    output.AddRange(BitConverter.GetBytes(a));
+                }
+
+                //get audio pan
+                foreach (var a in AudioPan)
+                {
+                    output.AddRange(BitConverter.GetBytes(a));
                 }
             }
 
@@ -2135,6 +2193,59 @@ namespace FF7Scarlet.ExeEditor
                                 writer.Write($"{x:X2} ");
                             }
                             writer.WriteLine();
+                        }
+                        checker = false;
+
+                        //compare audio volume
+                        for (i = 0; i < NUM_AUDIO_VALUES; ++i)
+                        {
+                            if (AudioVolume[i] != original.AudioVolume[i])
+                            {
+                                if (!checker)
+                                {
+                                    writer.WriteLine("# Audio volume");
+                                    checker = true;
+                                }
+                                pos = AUDIO_VOLUME_POS + HEXT_OFFSET_2 + (i * 4);
+                                writer.Write($"{pos:X2} = ");
+                                var temp = BitConverter.GetBytes(AudioVolume[i]);
+                                foreach (var b in temp)
+                                {
+                                    writer.Write($"{b:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
+                        }
+
+                        //compare audio pan
+                        for (i = 0; i < NUM_AUDIO_VALUES; ++i)
+                        {
+                            if (AudioPan[i] != original.AudioPan[i])
+                            {
+                                if (!checker)
+                                {
+                                    writer.WriteLine("# Audio pan");
+                                    checker = true;
+                                }
+                                pos = AUDIO_PAN_POS + HEXT_OFFSET_2 + (i * 4);
+                                writer.Write($"{pos:X2} = ");
+                                var temp = BitConverter.GetBytes(AudioPan[i]);
+                                foreach (var b in temp)
+                                {
+                                    writer.Write($"{b:X2} ");
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        if (checker)
+                        {
+                            writer.WriteLine();
+                            checker = false;
                         }
 
                         //write chocobo race prizes

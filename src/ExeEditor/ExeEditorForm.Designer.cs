@@ -59,18 +59,18 @@ namespace FF7Scarlet.ExeEditor
             labelCharacterKillCount = new Label();
             comboBoxCharacterFlags = new ComboBox();
             labelCharacterFlags = new Label();
-            characterLimitControl = new Shared.Controls.CharacterLimitControl();
+            characterLimitControl = new FF7Scarlet.Shared.Controls.CharacterLimitControl();
             numericCharacterCurrentEXP = new NumericUpDown();
             labelCharacterCurrentEXP = new Label();
             groupBoxCharacterArmor = new GroupBox();
             buttonCharacterArmorChangeMateria = new Button();
-            materiaSlotSelectorCharacterArmor = new Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorCharacterArmor = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             comboBoxCharacterArmor = new ComboBox();
             groupBoxCharacterWeapon = new GroupBox();
             buttonCharacterWeaponChangeMateria = new Button();
-            materiaSlotSelectorCharacterWeapon = new Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorCharacterWeapon = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             comboBoxCharacterWeapon = new ComboBox();
-            characterStatsControl = new Shared.Controls.CharacterStatsControl();
+            characterStatsControl = new FF7Scarlet.Shared.Controls.CharacterStatsControl();
             checkBoxCharacterBackRow = new CheckBox();
             numericCharacterLevel = new NumericUpDown();
             labelCharacterLevel = new Label();
@@ -103,7 +103,7 @@ namespace FF7Scarlet.ExeEditor
             labelLimitMPCost = new Label();
             numericLimitMPCost = new NumericUpDown();
             tabPageLimits2 = new TabPage();
-            specialAttackFlagsControlLimit = new Shared.SpecialAttackFlagsControl();
+            specialAttackFlagsControlLimit = new FF7Scarlet.Shared.SpecialAttackFlagsControl();
             numericLimitStatusChangeChance = new NumericUpDown();
             comboBoxLimitConditionSubMenu = new ComboBox();
             labelLimitStatusChangeChance = new Label();
@@ -273,6 +273,17 @@ namespace FF7Scarlet.ExeEditor
             labelChocoboName = new Label();
             textBoxChocoboName = new TextBox();
             listBoxChocoboNames = new ListBox();
+            tabPageAudio = new TabPage();
+            groupBoxAudioPan = new GroupBox();
+            numericAudioPan = new NumericUpDown();
+            labelAudioPan = new Label();
+            trackBarAudioPan = new TrackBar();
+            listBoxAudioPan = new ListBox();
+            groupBoxAudioVolume = new GroupBox();
+            numericAudioVolume = new NumericUpDown();
+            labelAuidioVolume = new Label();
+            trackBarAudioVolume = new TrackBar();
+            listBoxAudioVolume = new ListBox();
             buttonHext = new Button();
             panelButtons = new Panel();
             tabControlMain.SuspendLayout();
@@ -353,6 +364,13 @@ namespace FF7Scarlet.ExeEditor
             tabPageChocoboRacing.SuspendLayout();
             groupBoxChocoboRacePrizes.SuspendLayout();
             groupBoxChocoboNames.SuspendLayout();
+            tabPageAudio.SuspendLayout();
+            groupBoxAudioPan.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericAudioPan).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)trackBarAudioPan).BeginInit();
+            groupBoxAudioVolume.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericAudioVolume).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)trackBarAudioVolume).BeginInit();
             panelButtons.SuspendLayout();
             SuspendLayout();
             // 
@@ -399,6 +417,7 @@ namespace FF7Scarlet.ExeEditor
             tabControlMain.Controls.Add(tabPageSortOrder);
             tabControlMain.Controls.Add(tabPageMenus);
             tabControlMain.Controls.Add(tabPageOtherText);
+            tabControlMain.Controls.Add(tabPageAudio);
             tabControlMain.Dock = DockStyle.Fill;
             tabControlMain.Location = new Point(0, 0);
             tabControlMain.Margin = new Padding(4, 3, 4, 3);
@@ -667,8 +686,6 @@ namespace FF7Scarlet.ExeEditor
             // characterLimitControl
             // 
             characterLimitControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            characterLimitControl.LimitBar = 0;
-            characterLimitControl.LimitLevel = 0;
             characterLimitControl.Location = new Point(158, 301);
             characterLimitControl.Name = "characterLimitControl";
             characterLimitControl.Size = new Size(378, 148);
@@ -722,12 +739,9 @@ namespace FF7Scarlet.ExeEditor
             // 
             materiaSlotSelectorCharacterArmor.BackColor = Color.LightSlateGray;
             materiaSlotSelectorCharacterArmor.BorderStyle = BorderStyle.Fixed3D;
-            materiaSlotSelectorCharacterArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             materiaSlotSelectorCharacterArmor.Location = new Point(6, 58);
             materiaSlotSelectorCharacterArmor.Name = "materiaSlotSelectorCharacterArmor";
-            materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
             materiaSlotSelectorCharacterArmor.Size = new Size(211, 35);
-            materiaSlotSelectorCharacterArmor.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterArmor.TabIndex = 15;
             materiaSlotSelectorCharacterArmor.SelectedSlotChanged += materiaSlotSelectorCharacterArmor_SelectedSlotChanged;
             // 
@@ -771,12 +785,9 @@ namespace FF7Scarlet.ExeEditor
             materiaSlotSelectorCharacterWeapon.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             materiaSlotSelectorCharacterWeapon.BackColor = Color.LightSlateGray;
             materiaSlotSelectorCharacterWeapon.BorderStyle = BorderStyle.Fixed3D;
-            materiaSlotSelectorCharacterWeapon.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             materiaSlotSelectorCharacterWeapon.Location = new Point(6, 58);
             materiaSlotSelectorCharacterWeapon.Name = "materiaSlotSelectorCharacterWeapon";
-            materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
             materiaSlotSelectorCharacterWeapon.Size = new Size(211, 35);
-            materiaSlotSelectorCharacterWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterWeapon.TabIndex = 15;
             materiaSlotSelectorCharacterWeapon.SelectedSlotChanged += materiaSlotSelectorCharacterWeapon_SelectedSlotChanged;
             materiaSlotSelectorCharacterWeapon.MultiLinkEnabled += materiaSlotSelectorCharacter_MultiLinkEnabled;
@@ -905,7 +916,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxLimits.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxLimits.FormattingEnabled = true;
-            listBoxLimits.ItemHeight = 15;
             listBoxLimits.Location = new Point(4, 7);
             listBoxLimits.Margin = new Padding(4, 3, 4, 3);
             listBoxLimits.Name = "listBoxLimits";
@@ -1020,13 +1030,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             // damageCalculationControlLimit
             // 
-            damageCalculationControlLimit.AccuracyCalculation = AccuracyCalculation.NoMiss1;
-            damageCalculationControlLimit.ActualValue = 0;
             damageCalculationControlLimit.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            damageCalculationControlLimit.AttackPower = 0;
-            damageCalculationControlLimit.CanCrit = false;
-            damageCalculationControlLimit.DamageFormula = DamageFormulas.NoDamage;
-            damageCalculationControlLimit.DamageType = DamageType.Physical;
             damageCalculationControlLimit.Location = new Point(6, 189);
             damageCalculationControlLimit.Name = "damageCalculationControlLimit";
             damageCalculationControlLimit.Size = new Size(553, 140);
@@ -1212,8 +1216,6 @@ namespace FF7Scarlet.ExeEditor
             // statusesControlLimit
             // 
             statusesControlLimit.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            statusesControlLimit.FullList = true;
-            statusesControlLimit.GroupBoxText = "Statuses";
             statusesControlLimit.Location = new Point(9, 112);
             statusesControlLimit.MinimumSize = new Size(380, 200);
             statusesControlLimit.Name = "statusesControlLimit";
@@ -1728,7 +1730,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxMateriaPrices.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxMateriaPrices.FormattingEnabled = true;
-            listBoxMateriaPrices.ItemHeight = 15;
             listBoxMateriaPrices.Location = new Point(209, 23);
             listBoxMateriaPrices.Name = "listBoxMateriaPrices";
             listBoxMateriaPrices.Size = new Size(200, 454);
@@ -1788,7 +1789,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxItemPrices.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxItemPrices.FormattingEnabled = true;
-            listBoxItemPrices.ItemHeight = 15;
             listBoxItemPrices.Location = new Point(3, 23);
             listBoxItemPrices.Name = "listBoxItemPrices";
             listBoxItemPrices.Size = new Size(200, 454);
@@ -1847,7 +1847,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxMateriaPriority.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBoxMateriaPriority.FormattingEnabled = true;
-            listBoxMateriaPriority.ItemHeight = 15;
             listBoxMateriaPriority.Location = new Point(6, 22);
             listBoxMateriaPriority.Name = "listBoxMateriaPriority";
             listBoxMateriaPriority.Size = new Size(268, 454);
@@ -1907,7 +1906,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxSortItemName.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBoxSortItemName.FormattingEnabled = true;
-            listBoxSortItemName.ItemHeight = 15;
             listBoxSortItemName.Location = new Point(6, 22);
             listBoxSortItemName.Name = "listBoxSortItemName";
             listBoxSortItemName.Size = new Size(268, 454);
@@ -1969,7 +1967,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxQuitTexts
             // 
             listBoxQuitTexts.FormattingEnabled = true;
-            listBoxQuitTexts.ItemHeight = 15;
             listBoxQuitTexts.Location = new Point(6, 22);
             listBoxQuitTexts.Name = "listBoxQuitTexts";
             listBoxQuitTexts.Size = new Size(242, 79);
@@ -2011,7 +2008,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxMainMenu
             // 
             listBoxMainMenu.FormattingEnabled = true;
-            listBoxMainMenu.ItemHeight = 15;
             listBoxMainMenu.Location = new Point(6, 22);
             listBoxMainMenu.Name = "listBoxMainMenu";
             listBoxMainMenu.Size = new Size(242, 334);
@@ -2064,7 +2060,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxMagicMenu
             // 
             listBoxMagicMenu.FormattingEnabled = true;
-            listBoxMagicMenu.ItemHeight = 15;
             listBoxMagicMenu.Location = new Point(6, 22);
             listBoxMagicMenu.Name = "listBoxMagicMenu";
             listBoxMagicMenu.Size = new Size(242, 214);
@@ -2106,7 +2101,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxItemMenu
             // 
             listBoxItemMenu.FormattingEnabled = true;
-            listBoxItemMenu.ItemHeight = 15;
             listBoxItemMenu.Location = new Point(6, 22);
             listBoxItemMenu.Name = "listBoxItemMenu";
             listBoxItemMenu.Size = new Size(242, 169);
@@ -2159,7 +2153,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxUnequipText
             // 
             listBoxUnequipText.FormattingEnabled = true;
-            listBoxUnequipText.ItemHeight = 15;
             listBoxUnequipText.Location = new Point(6, 22);
             listBoxUnequipText.Name = "listBoxUnequipText";
             listBoxUnequipText.Size = new Size(245, 64);
@@ -2202,7 +2195,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxMateriaMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxMateriaMenu.FormattingEnabled = true;
-            listBoxMateriaMenu.ItemHeight = 15;
             listBoxMateriaMenu.Location = new Point(6, 22);
             listBoxMateriaMenu.Name = "listBoxMateriaMenu";
             listBoxMateriaMenu.Size = new Size(245, 349);
@@ -2262,7 +2254,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxEquipMenu
             // 
             listBoxEquipMenu.FormattingEnabled = true;
-            listBoxEquipMenu.ItemHeight = 15;
             listBoxEquipMenu.Location = new Point(6, 6);
             listBoxEquipMenu.Name = "listBoxEquipMenu";
             listBoxEquipMenu.Size = new Size(249, 349);
@@ -2316,7 +2307,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxStatusMenuText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxStatusMenuText.FormattingEnabled = true;
-            listBoxStatusMenuText.ItemHeight = 15;
             listBoxStatusMenuText.Location = new Point(6, 22);
             listBoxStatusMenuText.Name = "listBoxStatusMenuText";
             listBoxStatusMenuText.Size = new Size(242, 274);
@@ -2358,7 +2348,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxElements
             // 
             listBoxElements.FormattingEnabled = true;
-            listBoxElements.ItemHeight = 15;
             listBoxElements.Location = new Point(6, 22);
             listBoxElements.Name = "listBoxElements";
             listBoxElements.Size = new Size(242, 139);
@@ -2399,7 +2388,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxLimitMenu
             // 
             listBoxLimitMenu.FormattingEnabled = true;
-            listBoxLimitMenu.ItemHeight = 15;
             listBoxLimitMenu.Location = new Point(6, 6);
             listBoxLimitMenu.Name = "listBoxLimitMenu";
             listBoxLimitMenu.Size = new Size(249, 214);
@@ -2442,7 +2430,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxConfigMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxConfigMenu.FormattingEnabled = true;
-            listBoxConfigMenu.ItemHeight = 15;
             listBoxConfigMenu.Location = new Point(6, 6);
             listBoxConfigMenu.Name = "listBoxConfigMenu";
             listBoxConfigMenu.Size = new Size(249, 484);
@@ -2484,7 +2471,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxSaveMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxSaveMenu.FormattingEnabled = true;
-            listBoxSaveMenu.ItemHeight = 15;
             listBoxSaveMenu.Location = new Point(6, 6);
             listBoxSaveMenu.Name = "listBoxSaveMenu";
             listBoxSaveMenu.Size = new Size(249, 484);
@@ -2570,7 +2556,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxStatusEffects
             // 
             listBoxStatusEffects.FormattingEnabled = true;
-            listBoxStatusEffects.ItemHeight = 15;
             listBoxStatusEffects.Location = new Point(6, 6);
             listBoxStatusEffects.Name = "listBoxStatusEffects";
             listBoxStatusEffects.Size = new Size(249, 409);
@@ -2705,7 +2690,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxBizarroMenu
             // 
             listBoxBizarroMenu.FormattingEnabled = true;
-            listBoxBizarroMenu.ItemHeight = 15;
             listBoxBizarroMenu.Location = new Point(6, 22);
             listBoxBizarroMenu.Name = "listBoxBizarroMenu";
             listBoxBizarroMenu.Size = new Size(244, 94);
@@ -2748,7 +2732,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxBattleArena.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxBattleArena.FormattingEnabled = true;
-            listBoxBattleArena.ItemHeight = 15;
             listBoxBattleArena.Location = new Point(6, 22);
             listBoxBattleArena.Name = "listBoxBattleArena";
             listBoxBattleArena.Size = new Size(244, 319);
@@ -2821,7 +2804,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxShopText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxShopText.FormattingEnabled = true;
-            listBoxShopText.ItemHeight = 15;
             listBoxShopText.Location = new Point(6, 22);
             listBoxShopText.Name = "listBoxShopText";
             listBoxShopText.Size = new Size(244, 274);
@@ -2863,7 +2845,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxShopNames
             // 
             listBoxShopNames.FormattingEnabled = true;
-            listBoxShopNames.ItemHeight = 15;
             listBoxShopNames.Location = new Point(6, 22);
             listBoxShopNames.Name = "listBoxShopNames";
             listBoxShopNames.Size = new Size(244, 139);
@@ -2918,7 +2899,6 @@ namespace FF7Scarlet.ExeEditor
             // listBoxChocoboRacePrizes
             // 
             listBoxChocoboRacePrizes.FormattingEnabled = true;
-            listBoxChocoboRacePrizes.ItemHeight = 15;
             listBoxChocoboRacePrizes.Location = new Point(7, 22);
             listBoxChocoboRacePrizes.Margin = new Padding(4, 3, 4, 3);
             listBoxChocoboRacePrizes.Name = "listBoxChocoboRacePrizes";
@@ -2971,13 +2951,135 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxChocoboNames.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxChocoboNames.FormattingEnabled = true;
-            listBoxChocoboNames.ItemHeight = 15;
             listBoxChocoboNames.Location = new Point(7, 22);
             listBoxChocoboNames.Margin = new Padding(4, 3, 4, 3);
             listBoxChocoboNames.Name = "listBoxChocoboNames";
             listBoxChocoboNames.Size = new Size(186, 454);
             listBoxChocoboNames.TabIndex = 40;
             listBoxChocoboNames.SelectedIndexChanged += listBoxChocoboNames_SelectedIndexChanged;
+            // 
+            // tabPageAudio
+            // 
+            tabPageAudio.Controls.Add(groupBoxAudioPan);
+            tabPageAudio.Controls.Add(groupBoxAudioVolume);
+            tabPageAudio.Location = new Point(4, 24);
+            tabPageAudio.Name = "tabPageAudio";
+            tabPageAudio.Size = new Size(776, 527);
+            tabPageAudio.TabIndex = 7;
+            tabPageAudio.Text = "Audio";
+            tabPageAudio.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxAudioPan
+            // 
+            groupBoxAudioPan.Controls.Add(numericAudioPan);
+            groupBoxAudioPan.Controls.Add(labelAudioPan);
+            groupBoxAudioPan.Controls.Add(trackBarAudioPan);
+            groupBoxAudioPan.Controls.Add(listBoxAudioPan);
+            groupBoxAudioPan.Location = new Point(295, 4);
+            groupBoxAudioPan.Name = "groupBoxAudioPan";
+            groupBoxAudioPan.Size = new Size(280, 521);
+            groupBoxAudioPan.TabIndex = 1;
+            groupBoxAudioPan.TabStop = false;
+            groupBoxAudioPan.Text = "Audio pan";
+            // 
+            // numericAudioPan
+            // 
+            numericAudioPan.Enabled = false;
+            numericAudioPan.Location = new Point(94, 440);
+            numericAudioPan.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+            numericAudioPan.Minimum = new decimal(new int[] { 10000, 0, 0, int.MinValue });
+            numericAudioPan.Name = "numericAudioPan";
+            numericAudioPan.Size = new Size(180, 23);
+            numericAudioPan.TabIndex = 6;
+            numericAudioPan.ValueChanged += numericAudioPan_ValueChanged;
+            // 
+            // labelAudioPan
+            // 
+            labelAudioPan.AutoSize = true;
+            labelAudioPan.Enabled = false;
+            labelAudioPan.Location = new Point(58, 442);
+            labelAudioPan.Name = "labelAudioPan";
+            labelAudioPan.Size = new Size(30, 15);
+            labelAudioPan.TabIndex = 5;
+            labelAudioPan.Text = "Pan:";
+            // 
+            // trackBarAudioPan
+            // 
+            trackBarAudioPan.BackColor = Color.White;
+            trackBarAudioPan.Enabled = false;
+            trackBarAudioPan.LargeChange = 1000;
+            trackBarAudioPan.Location = new Point(6, 469);
+            trackBarAudioPan.Maximum = 10000;
+            trackBarAudioPan.Minimum = -10000;
+            trackBarAudioPan.Name = "trackBarAudioPan";
+            trackBarAudioPan.Size = new Size(268, 45);
+            trackBarAudioPan.TabIndex = 4;
+            trackBarAudioPan.TickFrequency = 2000;
+            // 
+            // listBoxAudioPan
+            // 
+            listBoxAudioPan.FormattingEnabled = true;
+            listBoxAudioPan.Location = new Point(6, 22);
+            listBoxAudioPan.Name = "listBoxAudioPan";
+            listBoxAudioPan.Size = new Size(268, 409);
+            listBoxAudioPan.TabIndex = 0;
+            listBoxAudioPan.SelectedIndexChanged += listBoxAudioPan_SelectedIndexChanged;
+            // 
+            // groupBoxAudioVolume
+            // 
+            groupBoxAudioVolume.Controls.Add(numericAudioVolume);
+            groupBoxAudioVolume.Controls.Add(labelAuidioVolume);
+            groupBoxAudioVolume.Controls.Add(trackBarAudioVolume);
+            groupBoxAudioVolume.Controls.Add(listBoxAudioVolume);
+            groupBoxAudioVolume.Location = new Point(9, 3);
+            groupBoxAudioVolume.Name = "groupBoxAudioVolume";
+            groupBoxAudioVolume.Size = new Size(280, 521);
+            groupBoxAudioVolume.TabIndex = 0;
+            groupBoxAudioVolume.TabStop = false;
+            groupBoxAudioVolume.Text = "Audio volume";
+            // 
+            // numericAudioVolume
+            // 
+            numericAudioVolume.Enabled = false;
+            numericAudioVolume.Location = new Point(94, 441);
+            numericAudioVolume.Maximum = new decimal(new int[] { 0, 0, 0, 0 });
+            numericAudioVolume.Minimum = new decimal(new int[] { 10000, 0, 0, int.MinValue });
+            numericAudioVolume.Name = "numericAudioVolume";
+            numericAudioVolume.Size = new Size(180, 23);
+            numericAudioVolume.TabIndex = 3;
+            numericAudioVolume.ValueChanged += numericAudioVolume_ValueChanged;
+            // 
+            // labelAuidioVolume
+            // 
+            labelAuidioVolume.AutoSize = true;
+            labelAuidioVolume.Enabled = false;
+            labelAuidioVolume.Location = new Point(38, 443);
+            labelAuidioVolume.Name = "labelAuidioVolume";
+            labelAuidioVolume.Size = new Size(50, 15);
+            labelAuidioVolume.TabIndex = 2;
+            labelAuidioVolume.Text = "Volume:";
+            // 
+            // trackBarAudioVolume
+            // 
+            trackBarAudioVolume.BackColor = Color.White;
+            trackBarAudioVolume.Enabled = false;
+            trackBarAudioVolume.LargeChange = 1000;
+            trackBarAudioVolume.Location = new Point(6, 470);
+            trackBarAudioVolume.Maximum = 0;
+            trackBarAudioVolume.Minimum = -10000;
+            trackBarAudioVolume.Name = "trackBarAudioVolume";
+            trackBarAudioVolume.Size = new Size(268, 45);
+            trackBarAudioVolume.TabIndex = 1;
+            trackBarAudioVolume.TickFrequency = 1000;
+            // 
+            // listBoxAudioVolume
+            // 
+            listBoxAudioVolume.FormattingEnabled = true;
+            listBoxAudioVolume.Location = new Point(6, 22);
+            listBoxAudioVolume.Name = "listBoxAudioVolume";
+            listBoxAudioVolume.Size = new Size(268, 409);
+            listBoxAudioVolume.TabIndex = 0;
+            listBoxAudioVolume.SelectedIndexChanged += listBoxAudioVolume_SelectedIndexChanged;
             // 
             // buttonHext
             // 
@@ -3122,6 +3224,15 @@ namespace FF7Scarlet.ExeEditor
             groupBoxChocoboRacePrizes.PerformLayout();
             groupBoxChocoboNames.ResumeLayout(false);
             groupBoxChocoboNames.PerformLayout();
+            tabPageAudio.ResumeLayout(false);
+            groupBoxAudioPan.ResumeLayout(false);
+            groupBoxAudioPan.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericAudioPan).EndInit();
+            ((System.ComponentModel.ISupportInitialize)trackBarAudioPan).EndInit();
+            groupBoxAudioVolume.ResumeLayout(false);
+            groupBoxAudioVolume.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericAudioVolume).EndInit();
+            ((System.ComponentModel.ISupportInitialize)trackBarAudioVolume).EndInit();
             panelButtons.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -3370,6 +3481,17 @@ namespace FF7Scarlet.ExeEditor
         private ListBox listBoxBizarroMenu;
         private Label labelBizarroMenu;
         private TextBox textBoxBizarroMenu;
+        private TabPage tabPageAudio;
+        private GroupBox groupBoxAudioVolume;
+        private ListBox listBoxAudioVolume;
+        private GroupBox groupBoxAudioPan;
+        private ListBox listBoxAudioPan;
+        private TrackBar trackBarAudioVolume;
+        private NumericUpDown numericAudioVolume;
+        private Label labelAuidioVolume;
+        private NumericUpDown numericAudioPan;
+        private Label labelAudioPan;
+        private TrackBar trackBarAudioPan;
     }
 }
 
