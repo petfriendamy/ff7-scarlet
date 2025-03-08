@@ -98,6 +98,35 @@ namespace FF7Scarlet.KernelEditor.Controls
             return increases;
         }
 
+        private void EnableOrDisableNumeric(int pos, object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                numerics[pos].Enabled = (comboBoxes[pos].SelectedIndex > 0);
+                InvokeDataChanged(sender, e);
+            }
+        }
+
+        private void comboBoxStat1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnableOrDisableNumeric(0, sender, e);
+        }
+
+        private void comboBoxStat2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnableOrDisableNumeric(1, sender, e);
+        }
+
+        private void comboBoxStat3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnableOrDisableNumeric(3, sender, e);
+        }
+
+        private void comboBoxStat4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnableOrDisableNumeric(4, sender, e);
+        }
+
         private void InvokeDataChanged(object? sender, EventArgs e)
         {
             DataChanged?.Invoke(sender, e);

@@ -81,7 +81,7 @@
             comboBoxStat4.Name = "comboBoxStat4";
             comboBoxStat4.Size = new Size(182, 23);
             comboBoxStat4.TabIndex = 6;
-            comboBoxStat4.SelectedIndexChanged += control_ValueChanged;
+            comboBoxStat4.SelectedIndexChanged += comboBoxStat4_SelectedIndexChanged;
             // 
             // numericStat3
             // 
@@ -102,7 +102,7 @@
             comboBoxStat3.Name = "comboBoxStat3";
             comboBoxStat3.Size = new Size(182, 23);
             comboBoxStat3.TabIndex = 4;
-            comboBoxStat3.SelectedIndexChanged += control_ValueChanged;
+            comboBoxStat3.SelectedIndexChanged += comboBoxStat3_SelectedIndexChanged;
             // 
             // numericStat2
             // 
@@ -123,7 +123,7 @@
             comboBoxStat2.Name = "comboBoxStat2";
             comboBoxStat2.Size = new Size(182, 23);
             comboBoxStat2.TabIndex = 2;
-            comboBoxStat2.SelectedIndexChanged += control_ValueChanged;
+            comboBoxStat2.SelectedIndexChanged += comboBoxStat2_SelectedIndexChanged;
             // 
             // numericStat1
             // 
@@ -144,7 +144,7 @@
             comboBoxStat1.Name = "comboBoxStat1";
             comboBoxStat1.Size = new Size(182, 23);
             comboBoxStat1.TabIndex = 0;
-            comboBoxStat1.SelectedIndexChanged += control_ValueChanged;
+            comboBoxStat1.SelectedIndexChanged += comboBoxStat1_SelectedIndexChanged;
             // 
             // StatIncreaseControl
             // 

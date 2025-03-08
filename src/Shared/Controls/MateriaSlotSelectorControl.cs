@@ -226,7 +226,7 @@ namespace FF7Scarlet.Shared.Controls
 
         public void EnableMultiLinkSlots()
         {
-            if (!multiLinkEnabled)
+            if (!multiLinkEnabled && SlotSelectorType == SlotSelectorType.Slots)
             {
                 for (int i = 0; i < SLOT_COUNT; ++i)
                 {
@@ -310,12 +310,15 @@ namespace FF7Scarlet.Shared.Controls
                     var pb = pictureBoxes[slot];
                     pb.Image = GetMatchingImage(newValue, equippedMateria[slot]);
                     slots[slot] = newValue;
-                    for (int i = 0; i < 4; ++i)
+                    if (SlotSelectorType == SlotSelectorType.Slots)
                     {
-                        var mi = menuStrips[slot].Items[i] as ToolStripMenuItem;
-                        if (mi != null)
+                        for (int i = 0; i < 4; ++i)
                         {
-                            mi.Checked = (newValue == GetMatchingSlot(rate, (MateriaSlot)i));
+                            var mi = menuStrips[slot].Items[i] as ToolStripMenuItem;
+                            if (mi != null)
+                            {
+                                mi.Checked = (newValue == GetMatchingSlot(rate, (MateriaSlot)i));
+                            }
                         }
                     }
 

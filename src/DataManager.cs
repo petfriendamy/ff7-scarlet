@@ -2,6 +2,7 @@
 using System.Configuration;
 using Shojy.FF7.Elena;
 using Shojy.FF7.Elena.Attacks;
+using Shojy.FF7.Elena.Characters;
 using FF7Scarlet.Compression;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
@@ -416,6 +417,28 @@ namespace FF7Scarlet
                     kernelForm.UpdateLookupTable(sceneLookupTable);
                 }
             }
+        }
+
+        public static void MergeCharacterData(Kernel kernel)
+        {
+            if (ExeData != null && ExeData.CaitSith != null && ExeData.Vincent != null)
+            {
+                MergeCharacters(kernel.CharacterList[6], ExeData.CaitSith);
+                MergeCharacters(kernel.CharacterList[7], ExeData.Vincent);
+            }
+        }
+
+        private static void MergeCharacters(Character source, Character dest)
+        {
+            dest.StrengthCurveIndex = source.StrengthCurveIndex;
+            dest.VitalityCurveIndex = source.VitalityCurveIndex;
+            dest.MagicCurveIndex = source.MagicCurveIndex;
+            dest.SpiritCurveIndex = source.SpiritCurveIndex;
+            dest.DexterityCurveIndex = source.DexterityCurveIndex;
+            dest.LuckCurveIndex = source.LuckCurveIndex;
+            dest.HPCurveIndex = source.HPCurveIndex;
+            dest.MPCurveIndex = source.MPCurveIndex;
+            dest.EXPCurveIndex = source.EXPCurveIndex;
         }
 
         public static int SyncAttack(Attack attack, bool syncInternal)

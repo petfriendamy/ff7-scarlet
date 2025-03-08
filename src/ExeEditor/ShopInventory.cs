@@ -1,4 +1,5 @@
-﻿using FF7Scarlet.Shared;
+﻿using FF7Scarlet.KernelEditor;
+using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Inventory;
 
 namespace FF7Scarlet.ExeEditor
@@ -100,7 +101,7 @@ namespace FF7Scarlet.ExeEditor
                             if (type == ItemType.Materia)
                             {
                                 writer.Write(1);
-                                writer.Write((int)item.Item);
+                                writer.Write((int)DataParser.GetItemIndex(item.Item));
                             }
                             else
                             {

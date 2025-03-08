@@ -303,6 +303,7 @@ namespace FF7Scarlet.KernelEditor
             Text = WINDOW_TITLE;
 
             kernel = DataManager.CopyKernel();
+            DataManager.MergeCharacterData(kernel);
             foreach (var a in kernel.AttackData.Attacks)
             {
                 if (DataManager.AttackIsSynced((ushort)a.Index)) { syncedAttackIDs.Add((ushort)a.Index); }
@@ -1205,9 +1206,25 @@ namespace FF7Scarlet.KernelEditor
 
                 //enable the controls
                 EnableOrDisableInner(groupBoxSelectedCurve, true, null);
-                labelInaccurateCurve.Visible = (chara == (int)CharacterNames.CaitSith
-                    || chara == (int)CharacterNames.Vincent) && DataManager.ExeData == null
-                    && stat != (int)CurveStats.EXP;
+
+                //check if selected character is Cait Sith or Vincent
+                bool inaccurate = false;
+                if (chara == (int)CharacterNames.CaitSith || chara == (int)CharacterNames.Vincent)
+                {
+                    if (DataManager.ExeData == null)
+                    {
+                        inaccurate = stat != (int)CurveStats.EXP;
+                    }
+                    else if (chara == (int)CharacterNames.CaitSith)
+                    {
+                        c = DataManager.ExeData.CaitSith;
+                    }
+                    else
+                    {
+                        c = DataManager.ExeData.Vincent;
+                    }
+                }
+                labelInaccurateCurve.Visible = inaccurate;
 
                 //fill out the charts
                 chartMainCurve.SuspendLayout();
@@ -1612,6 +1629,10 @@ namespace FF7Scarlet.KernelEditor
             chara.CurrentMP = (ushort)numericCharacterCurrMP.Value;
             chara.BaseMP = (ushort)numericCharacterBaseMP.Value;
             chara.MaxMP = (ushort)numericCharacterMaxMP.Value;
+            if (chara.ID != (byte)CharacterNames.Yuffie)
+            {
+                chara.RecruitLevelOffset = (sbyte)(numericCharacterLevelOffset.Value);
+            }
             characterStatsControl.CopyStatsToCharacter(chara);
             var flags = Enum.GetValues<CharacterFlags>();
             chara.CharacterFlags = flags[comboBoxCharacterFlags.SelectedIndex];
@@ -2786,6 +2807,10 @@ namespace FF7Scarlet.KernelEditor
                     stat = listBoxStatCurves.SelectedIndex;
 
                 kernel.SetCurveIndex(chara, stat, (byte)numericCurveIndex.Value);
+                if (stat != (int)CurveStats.EXP && (chara == (int)CharacterNames.CaitSith || chara == (int)CharacterNames.Vincent))
+                {
+                    DataManager.MergeCharacterData(kernel);
+                }
                 UpdateStatCurves(chara, stat);
                 SetUnsaved(true);
             }

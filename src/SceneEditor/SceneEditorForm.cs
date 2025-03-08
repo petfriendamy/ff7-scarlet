@@ -775,8 +775,11 @@ namespace FF7Scarlet.SceneEditor
             lastAttackID++;
             var newAttack = new Attack();
             newAttack.Index = lastAttackID;
+            newAttack.StatusChange = new StatusChange(0xFF);
+            newAttack.ConditionSubmenu = ConditionSubmenu.None;
             scene.AttackList[attack] = newAttack;
             var name = scene.GetAttackName(lastAttackID);
+            newAttack.Name = name;
             UpdateSelectedAttackName(scene, SelectedEnemy, attack);
             validAttacks.Add(newAttack);
             comboBoxEnemyAttackID.Items.Add(name);

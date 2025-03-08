@@ -34,6 +34,11 @@ namespace FF7Scarlet.Compression
                 else { data.AddRange(BitConverter.GetBytes(i)); }
                 data.AddRange(compressedSection);
             }
+
+            //add 0s because this helps for some reason??
+            data.Add(0);
+            data.Add(0);
+
             File.WriteAllBytes(path, data.ToArray());
 
             if (!string.IsNullOrEmpty(kernel2Path)) //create kernel2

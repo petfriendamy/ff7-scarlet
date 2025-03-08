@@ -36,7 +36,7 @@
             tabPageCommandData = new TabPage();
             comboBoxCommandInitialCursorAction = new ComboBox();
             labelCommandInitialCursorAction = new Label();
-            targetDataControlCommand = new Controls.TargetDataControl();
+            targetDataControlCommand = new FF7Scarlet.KernelEditor.Controls.TargetDataControl();
             labelCommandCameraMovementIDMulti = new Label();
             comboBoxCommandCamMovementIDMulti = new ComboBox();
             labelCommandCamMovementIDSingle = new Label();
@@ -53,12 +53,12 @@
             labelAttackHurtActionIndex = new Label();
             comboBoxAttackHurtActionIndex = new ComboBox();
             labelAttackAttackEffectID = new Label();
-            elementsControlAttack = new Controls.ElementsControl();
+            elementsControlAttack = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
             comboBoxAttackAttackEffectID = new ComboBox();
             labelAttackImpactEffectID = new Label();
             comboBoxAttackImpactEffectID = new ComboBox();
             textBoxAttackDescription = new TextBox();
-            damageCalculationControlAttack = new Controls.DamageCalculationControl();
+            damageCalculationControlAttack = new FF7Scarlet.KernelEditor.Controls.DamageCalculationControl();
             labelAttackCamMovementIDMulti = new Label();
             labelAttackName = new Label();
             comboBoxAttackCamMovementIDMulti = new ComboBox();
@@ -73,19 +73,19 @@
             labelAttackMPCost = new Label();
             numericAttackMPCost = new NumericUpDown();
             tabPageAttacks2 = new TabPage();
-            specialAttackFlagsControlAttack = new Shared.SpecialAttackFlagsControl();
+            specialAttackFlagsControlAttack = new FF7Scarlet.Shared.SpecialAttackFlagsControl();
             numericAttackStatusChangeChance = new NumericUpDown();
             comboBoxAttackConditionSubMenu = new ComboBox();
             labelAttackStatusChangeChance = new Label();
             comboBoxAttackStatusChange = new ComboBox();
             labelAttackConditionSubMenu = new Label();
             labelAttackStatusChange = new Label();
-            statusesControlAttack = new Controls.StatusesControl();
+            statusesControlAttack = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
             tabPageAttacks3 = new TabPage();
             buttonMagicOrder = new Button();
             comboBoxMagicType = new ComboBox();
             labelMagicType = new Label();
-            targetDataControlAttack = new Controls.TargetDataControl();
+            targetDataControlAttack = new FF7Scarlet.KernelEditor.Controls.TargetDataControl();
             groupBoxAttackSpecialActions = new GroupBox();
             buttonAttackSyncAll = new Button();
             checkBoxAttackSyncWithSceneBin = new CheckBox();
@@ -115,18 +115,18 @@
             labelCharacterKillCount = new Label();
             comboBoxCharacterFlags = new ComboBox();
             labelCharacterFlags = new Label();
-            characterLimitControl = new Shared.Controls.CharacterLimitControl();
+            characterLimitControl = new FF7Scarlet.Shared.Controls.CharacterLimitControl();
             numericCharacterCurrentEXP = new NumericUpDown();
             labelCharacterCurrentEXP = new Label();
             groupBoxCharacterArmor = new GroupBox();
             buttonCharacterArmorChangeMateria = new Button();
-            materiaSlotSelectorCharacterArmor = new Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorCharacterArmor = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             comboBoxCharacterArmor = new ComboBox();
             groupBoxCharacterWeapon = new GroupBox();
             buttonCharacterWeaponChangeMateria = new Button();
-            materiaSlotSelectorCharacterWeapon = new Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorCharacterWeapon = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             comboBoxCharacterWeapon = new ComboBox();
-            characterStatsControl = new Shared.Controls.CharacterStatsControl();
+            characterStatsControl = new FF7Scarlet.Shared.Controls.CharacterStatsControl();
             checkBoxCharacterBackRow = new CheckBox();
             numericCharacterLevel = new NumericUpDown();
             labelCharacterLevel = new Label();
@@ -161,7 +161,7 @@
             listBoxStatCurves = new ListBox();
             listBoxCharacterGrowth = new ListBox();
             tabPageCharacterAI = new TabPage();
-            scriptControlCharacterAI = new AIEditor.ScriptControl();
+            scriptControlCharacterAI = new FF7Scarlet.AIEditor.ScriptControl();
             groupBoxCharacterAI = new GroupBox();
             listBoxCharacterAI = new ListBox();
             groupBoxCharacterScripts = new GroupBox();
@@ -193,10 +193,10 @@
             tabControlItems = new TabControl();
             tabPageItems1 = new TabPage();
             labelItemName = new Label();
-            itemRestrictionsItem = new Controls.ItemRestrictionsControl();
-            damageCalculationControlItem = new Controls.DamageCalculationControl();
+            itemRestrictionsItem = new FF7Scarlet.KernelEditor.Controls.ItemRestrictionsControl();
+            damageCalculationControlItem = new FF7Scarlet.KernelEditor.Controls.DamageCalculationControl();
             textBoxItemName = new TextBox();
-            targetDataControlItem = new Controls.TargetDataControl();
+            targetDataControlItem = new FF7Scarlet.KernelEditor.Controls.TargetDataControl();
             labelItemDescription = new Label();
             textBoxItemDescription = new TextBox();
             comboBoxItemAttackEffectID = new ComboBox();
@@ -206,26 +206,26 @@
             tabPageItems2 = new TabPage();
             comboBoxItemStatusChange = new ComboBox();
             labelItemStatusChange = new Label();
-            statusesControlItem = new Controls.StatusesControl();
-            elementsControlItem = new Controls.ElementsControl();
+            statusesControlItem = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
+            elementsControlItem = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
             tabPageItems3 = new TabPage();
-            specialAttackFlagsControlItem = new Shared.SpecialAttackFlagsControl();
+            specialAttackFlagsControlItem = new FF7Scarlet.Shared.SpecialAttackFlagsControl();
             listBoxItems = new ListBox();
             tabPageWeaponData = new TabPage();
             tabControlWeapons = new TabControl();
             tabPageWeapon1 = new TabPage();
             numericWeaponCritChance = new NumericUpDown();
             numericWeaponHitChance = new NumericUpDown();
-            elementsControlWeapon = new Controls.ElementsControl();
+            elementsControlWeapon = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
             comboBoxWeaponStatus = new ComboBox();
-            statIncreaseControlWeapon = new Controls.StatIncreaseControl();
+            statIncreaseControlWeapon = new FF7Scarlet.KernelEditor.Controls.StatIncreaseControl();
             numericWeaponAnimationIndex = new NumericUpDown();
             labelWeaponAnimationIndex = new Label();
             labelWeaponStatus = new Label();
             numericWeaponModelIndex = new NumericUpDown();
             labelWeaponModelIndex = new Label();
             groupBoxWeaponMateriaSlots = new GroupBox();
-            materiaSlotSelectorWeapon = new Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorWeapon = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             labelWeaponMateriaGrowth = new Label();
             comboBoxWeaponMateriaGrowth = new ComboBox();
             labelWeaponCritChance = new Label();
@@ -236,10 +236,10 @@
             textBoxWeaponDescription = new TextBox();
             tabPageWeapon2 = new TabPage();
             groupBoxWeaponSoundIDs = new GroupBox();
-            targetDataControlWeapon = new Controls.TargetDataControl();
-            damageCalculationControlWeapon = new Controls.DamageCalculationControl();
-            equipableListWeapon = new Controls.EquipableListControl();
-            itemRestrictionsWeapon = new Controls.ItemRestrictionsControl();
+            targetDataControlWeapon = new FF7Scarlet.KernelEditor.Controls.TargetDataControl();
+            damageCalculationControlWeapon = new FF7Scarlet.KernelEditor.Controls.DamageCalculationControl();
+            equipableListWeapon = new FF7Scarlet.KernelEditor.Controls.EquipableListControl();
+            itemRestrictionsWeapon = new FF7Scarlet.KernelEditor.Controls.ItemRestrictionsControl();
             listBoxWeapons = new ListBox();
             tabPageArmorData = new TabPage();
             tabControlArmor = new TabControl();
@@ -252,32 +252,32 @@
             labelArmorMagicDefense = new Label();
             comboBoxArmorStatus = new ComboBox();
             numericArmorDefensePercent = new NumericUpDown();
-            elementsControlArmor = new Controls.ElementsControl();
+            elementsControlArmor = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
             labelArmorStatus = new Label();
             labelArmorDefencePercent = new Label();
             numericArmorDefense = new NumericUpDown();
             labelArmorDefense = new Label();
-            statIncreaseControlArmor = new Controls.StatIncreaseControl();
+            statIncreaseControlArmor = new FF7Scarlet.KernelEditor.Controls.StatIncreaseControl();
             labelArmorName = new Label();
             textBoxArmorName = new TextBox();
             labelArmorDescription = new Label();
             groupBoxArmorMateriaSlots = new GroupBox();
-            materiaSlotSelectorArmor = new Shared.Controls.MateriaSlotSelectorControl();
+            materiaSlotSelectorArmor = new FF7Scarlet.Shared.Controls.MateriaSlotSelectorControl();
             labelArmorMateriaGrowth = new Label();
             comboBoxArmorMateriaGrowth = new ComboBox();
             textBoxArmorDescription = new TextBox();
             tabPageArmor2 = new TabPage();
-            itemRestrictionsArmor = new Controls.ItemRestrictionsControl();
-            equipableListArmor = new Controls.EquipableListControl();
+            itemRestrictionsArmor = new FF7Scarlet.KernelEditor.Controls.ItemRestrictionsControl();
+            equipableListArmor = new FF7Scarlet.KernelEditor.Controls.EquipableListControl();
             listBoxArmor = new ListBox();
             tabPageAccessoryData = new TabPage();
             tabControlAccessories = new TabControl();
             tabPageAccessory1 = new TabPage();
             labelAccessoryElementModifier = new Label();
             comboBoxAccessoryElementModifier = new ComboBox();
-            statusesControlAccessory = new Controls.StatusesControl();
-            elementsControlAccessory = new Controls.ElementsControl();
-            statIncreaseControlAccessory = new Controls.StatIncreaseControl();
+            statusesControlAccessory = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
+            elementsControlAccessory = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
+            statIncreaseControlAccessory = new FF7Scarlet.KernelEditor.Controls.StatIncreaseControl();
             labelAccessoryName = new Label();
             textBoxAccessoryName = new TextBox();
             labelAccessoryDescription = new Label();
@@ -285,17 +285,17 @@
             tabPageAccessory2 = new TabPage();
             comboBoxAccessorySpecialEffects = new ComboBox();
             labelAccessorySpecialEffects = new Label();
-            equipableListAccessory = new Controls.EquipableListControl();
-            itemRestrictionsAccessory = new Controls.ItemRestrictionsControl();
+            equipableListAccessory = new FF7Scarlet.KernelEditor.Controls.EquipableListControl();
+            itemRestrictionsAccessory = new FF7Scarlet.KernelEditor.Controls.ItemRestrictionsControl();
             listBoxAccessories = new ListBox();
             tabPageMateriaData = new TabPage();
             buttonMateriaAttributes = new Button();
             comboBoxMateriaEquipAttributes = new ComboBox();
             labelMateriaEquipAttributes = new Label();
-            statusesControlMateria = new Controls.StatusesControl();
+            statusesControlMateria = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
             comboBoxMateriaSubtype = new ComboBox();
             labelMateriaSubtype = new Label();
-            materiaLevelControl = new Controls.MateriaLevelControl();
+            materiaLevelControl = new FF7Scarlet.KernelEditor.Controls.MateriaLevelControl();
             comboBoxMateriaElement = new ComboBox();
             labelMateriaElement = new Label();
             comboBoxMateriaType = new ComboBox();
@@ -324,7 +324,7 @@
             textBoxBattleText = new TextBox();
             labelBattleText = new Label();
             tabPageBattleRNGTable = new TabPage();
-            rngTableControl = new Controls.RNGTableControl();
+            rngTableControl = new FF7Scarlet.KernelEditor.Controls.RNGTableControl();
             buttonSave = new Button();
             buttonImport = new Button();
             buttonExport = new Button();
@@ -591,7 +591,6 @@
             // 
             listBoxCommands.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxCommands.FormattingEnabled = true;
-            listBoxCommands.ItemHeight = 15;
             listBoxCommands.Location = new Point(9, 13);
             listBoxCommands.Margin = new Padding(4, 3, 4, 3);
             listBoxCommands.Name = "listBoxCommands";
@@ -748,13 +747,7 @@
             // 
             // damageCalculationControlAttack
             // 
-            damageCalculationControlAttack.AccuracyCalculation = AccuracyCalculation.NoMiss1;
-            damageCalculationControlAttack.ActualValue = 0;
             damageCalculationControlAttack.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            damageCalculationControlAttack.AttackPower = 0;
-            damageCalculationControlAttack.CanCrit = false;
-            damageCalculationControlAttack.DamageFormula = DamageFormulas.NoDamage;
-            damageCalculationControlAttack.DamageType = DamageType.Physical;
             damageCalculationControlAttack.Location = new Point(6, 274);
             damageCalculationControlAttack.Name = "damageCalculationControlAttack";
             damageCalculationControlAttack.Size = new Size(556, 140);
@@ -973,8 +966,6 @@
             // statusesControlAttack
             // 
             statusesControlAttack.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            statusesControlAttack.FullList = true;
-            statusesControlAttack.GroupBoxText = "Statuses";
             statusesControlAttack.Location = new Point(6, 112);
             statusesControlAttack.MinimumSize = new Size(380, 200);
             statusesControlAttack.Name = "statusesControlAttack";
@@ -1075,7 +1066,6 @@
             // 
             listBoxAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxAttacks.FormattingEnabled = true;
-            listBoxAttacks.ItemHeight = 15;
             listBoxAttacks.Location = new Point(9, 13);
             listBoxAttacks.Margin = new Padding(4, 3, 4, 3);
             listBoxAttacks.Name = "listBoxAttacks";
@@ -1150,6 +1140,7 @@
             numericCharacterLevelOffset.Name = "numericCharacterLevelOffset";
             numericCharacterLevelOffset.Size = new Size(120, 23);
             numericCharacterLevelOffset.TabIndex = 4;
+            numericCharacterLevelOffset.ValueChanged += InitCharacterDataChanged;
             // 
             // labelCharacterLevelOffset
             // 
@@ -1360,8 +1351,6 @@
             // characterLimitControl
             // 
             characterLimitControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            characterLimitControl.LimitBar = 0;
-            characterLimitControl.LimitLevel = 0;
             characterLimitControl.Location = new Point(158, 298);
             characterLimitControl.Name = "characterLimitControl";
             characterLimitControl.Size = new Size(373, 130);
@@ -1413,12 +1402,9 @@
             // 
             materiaSlotSelectorCharacterArmor.BackColor = Color.LightSlateGray;
             materiaSlotSelectorCharacterArmor.BorderStyle = BorderStyle.Fixed3D;
-            materiaSlotSelectorCharacterArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             materiaSlotSelectorCharacterArmor.Location = new Point(6, 58);
             materiaSlotSelectorCharacterArmor.Name = "materiaSlotSelectorCharacterArmor";
-            materiaSlotSelectorCharacterArmor.SelectedSlot = -1;
             materiaSlotSelectorCharacterArmor.Size = new Size(211, 35);
-            materiaSlotSelectorCharacterArmor.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterArmor.TabIndex = 15;
             materiaSlotSelectorCharacterArmor.SelectedSlotChanged += materiaSlotSelectorCharacterArmor_SelectedSlotChanged;
             // 
@@ -1461,12 +1447,9 @@
             materiaSlotSelectorCharacterWeapon.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             materiaSlotSelectorCharacterWeapon.BackColor = Color.LightSlateGray;
             materiaSlotSelectorCharacterWeapon.BorderStyle = BorderStyle.Fixed3D;
-            materiaSlotSelectorCharacterWeapon.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             materiaSlotSelectorCharacterWeapon.Location = new Point(6, 58);
             materiaSlotSelectorCharacterWeapon.Name = "materiaSlotSelectorCharacterWeapon";
-            materiaSlotSelectorCharacterWeapon.SelectedSlot = -1;
             materiaSlotSelectorCharacterWeapon.Size = new Size(211, 35);
-            materiaSlotSelectorCharacterWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorCharacterWeapon.TabIndex = 15;
             materiaSlotSelectorCharacterWeapon.SelectedSlotChanged += materiaSlotSelectorCharacterWeapon_SelectedSlotChanged;
             // 
@@ -1579,7 +1562,6 @@
             // listBoxInitCharacters
             // 
             listBoxInitCharacters.FormattingEnabled = true;
-            listBoxInitCharacters.ItemHeight = 15;
             listBoxInitCharacters.Location = new Point(6, 6);
             listBoxInitCharacters.Name = "listBoxInitCharacters";
             listBoxInitCharacters.Size = new Size(146, 139);
@@ -1829,7 +1811,6 @@
             // listBoxStatCurves
             // 
             listBoxStatCurves.FormattingEnabled = true;
-            listBoxStatCurves.ItemHeight = 15;
             listBoxStatCurves.Items.AddRange(new object[] { "Strength", "Vitality", "Magic", "Spirit", "Dexterity", "Luck", "HP", "MP", "EXP" });
             listBoxStatCurves.Location = new Point(6, 151);
             listBoxStatCurves.Name = "listBoxStatCurves";
@@ -1840,7 +1821,6 @@
             // listBoxCharacterGrowth
             // 
             listBoxCharacterGrowth.FormattingEnabled = true;
-            listBoxCharacterGrowth.ItemHeight = 15;
             listBoxCharacterGrowth.Location = new Point(6, 6);
             listBoxCharacterGrowth.Name = "listBoxCharacterGrowth";
             listBoxCharacterGrowth.Size = new Size(146, 139);
@@ -1862,12 +1842,10 @@
             // 
             // scriptControlCharacterAI
             // 
-            scriptControlCharacterAI.AIContainer = null;
             scriptControlCharacterAI.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             scriptControlCharacterAI.Enabled = false;
             scriptControlCharacterAI.Location = new Point(187, 6);
             scriptControlCharacterAI.Name = "scriptControlCharacterAI";
-            scriptControlCharacterAI.SelectedScriptIndex = -1;
             scriptControlCharacterAI.Size = new Size(575, 424);
             scriptControlCharacterAI.TabIndex = 5;
             scriptControlCharacterAI.DataChanged += scriptControlCharacterAI_DataChanged;
@@ -1888,7 +1866,6 @@
             // 
             listBoxCharacterAI.Dock = DockStyle.Fill;
             listBoxCharacterAI.FormattingEnabled = true;
-            listBoxCharacterAI.ItemHeight = 15;
             listBoxCharacterAI.Location = new Point(3, 19);
             listBoxCharacterAI.Name = "listBoxCharacterAI";
             listBoxCharacterAI.Size = new Size(166, 189);
@@ -1911,7 +1888,6 @@
             listBoxCharacterScripts.Dock = DockStyle.Fill;
             listBoxCharacterScripts.Font = new Font("Segoe UI", 8F);
             listBoxCharacterScripts.FormattingEnabled = true;
-            listBoxCharacterScripts.ItemHeight = 13;
             listBoxCharacterScripts.Items.AddRange(new object[] { "Pre-Battle", "Main", "General Counter", "Death Counter", "Physical Counter", "Magic Counter", "Ally Death", "Post-Attack", "Custom Event 1", "Custom Event 2", "Custom Event 3", "Custom Event 4", "Custom Event 5", "Custom Event 6", "Custom Event 7", "Post-Battle" });
             listBoxCharacterScripts.Location = new Point(3, 19);
             listBoxCharacterScripts.Name = "listBoxCharacterScripts";
@@ -2012,7 +1988,6 @@
             // 
             listBoxInitMateriaStolen.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBoxInitMateriaStolen.FormattingEnabled = true;
-            listBoxInitMateriaStolen.ItemHeight = 15;
             listBoxInitMateriaStolen.Location = new Point(6, 22);
             listBoxInitMateriaStolen.Name = "listBoxInitMateriaStolen";
             listBoxInitMateriaStolen.Size = new Size(239, 274);
@@ -2105,7 +2080,6 @@
             // 
             listBoxInitMateria.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBoxInitMateria.FormattingEnabled = true;
-            listBoxInitMateria.ItemHeight = 15;
             listBoxInitMateria.Location = new Point(6, 22);
             listBoxInitMateria.Name = "listBoxInitMateria";
             listBoxInitMateria.Size = new Size(239, 274);
@@ -2174,7 +2148,6 @@
             // 
             listBoxInitInventory.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBoxInitInventory.FormattingEnabled = true;
-            listBoxInitInventory.ItemHeight = 15;
             listBoxInitInventory.Location = new Point(6, 22);
             listBoxInitInventory.Name = "listBoxInitInventory";
             listBoxInitInventory.Size = new Size(239, 274);
@@ -2241,20 +2214,13 @@
             itemRestrictionsItem.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             itemRestrictionsItem.Location = new Point(352, 291);
             itemRestrictionsItem.Name = "itemRestrictionsItem";
-            itemRestrictionsItem.ShowThrowable = false;
             itemRestrictionsItem.Size = new Size(211, 125);
             itemRestrictionsItem.TabIndex = 31;
             itemRestrictionsItem.FlagsChanged += ItemDataChanged;
             // 
             // damageCalculationControlItem
             // 
-            damageCalculationControlItem.AccuracyCalculation = AccuracyCalculation.NoMiss1;
-            damageCalculationControlItem.ActualValue = 0;
             damageCalculationControlItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            damageCalculationControlItem.AttackPower = 0;
-            damageCalculationControlItem.CanCrit = false;
-            damageCalculationControlItem.DamageFormula = DamageFormulas.NoDamage;
-            damageCalculationControlItem.DamageType = DamageType.Physical;
             damageCalculationControlItem.Location = new Point(7, 138);
             damageCalculationControlItem.Name = "damageCalculationControlItem";
             damageCalculationControlItem.Size = new Size(553, 147);
@@ -2370,8 +2336,6 @@
             // statusesControlItem
             // 
             statusesControlItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            statusesControlItem.FullList = true;
-            statusesControlItem.GroupBoxText = "Inflicts/cures status...";
             statusesControlItem.Location = new Point(6, 142);
             statusesControlItem.MinimumSize = new Size(500, 200);
             statusesControlItem.Name = "statusesControlItem";
@@ -2412,7 +2376,6 @@
             // 
             listBoxItems.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxItems.FormattingEnabled = true;
-            listBoxItems.ItemHeight = 15;
             listBoxItems.Location = new Point(9, 13);
             listBoxItems.Margin = new Padding(4, 3, 4, 3);
             listBoxItems.Name = "listBoxItems";
@@ -2513,7 +2476,6 @@
             // statIncreaseControlWeapon
             // 
             statIncreaseControlWeapon.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            statIncreaseControlWeapon.Count = 4;
             statIncreaseControlWeapon.Location = new Point(7, 157);
             statIncreaseControlWeapon.MinimumSize = new Size(250, 142);
             statIncreaseControlWeapon.Name = "statIncreaseControlWeapon";
@@ -2584,12 +2546,9 @@
             // 
             materiaSlotSelectorWeapon.BackColor = Color.LightSlateGray;
             materiaSlotSelectorWeapon.BorderStyle = BorderStyle.Fixed3D;
-            materiaSlotSelectorWeapon.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             materiaSlotSelectorWeapon.Location = new Point(6, 22);
             materiaSlotSelectorWeapon.Name = "materiaSlotSelectorWeapon";
-            materiaSlotSelectorWeapon.SelectedSlot = -1;
             materiaSlotSelectorWeapon.Size = new Size(211, 35);
-            materiaSlotSelectorWeapon.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorWeapon.TabIndex = 3;
             materiaSlotSelectorWeapon.DataChanged += WeaponDataChanged;
             materiaSlotSelectorWeapon.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
@@ -2707,13 +2666,7 @@
             // 
             // damageCalculationControlWeapon
             // 
-            damageCalculationControlWeapon.AccuracyCalculation = AccuracyCalculation.NoMiss1;
-            damageCalculationControlWeapon.ActualValue = 0;
             damageCalculationControlWeapon.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            damageCalculationControlWeapon.AttackPower = 0;
-            damageCalculationControlWeapon.CanCrit = false;
-            damageCalculationControlWeapon.DamageFormula = DamageFormulas.NoDamage;
-            damageCalculationControlWeapon.DamageType = DamageType.Physical;
             damageCalculationControlWeapon.Location = new Point(6, 3);
             damageCalculationControlWeapon.Name = "damageCalculationControlWeapon";
             damageCalculationControlWeapon.Size = new Size(558, 147);
@@ -2735,7 +2688,6 @@
             itemRestrictionsWeapon.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             itemRestrictionsWeapon.Location = new Point(340, 300);
             itemRestrictionsWeapon.Name = "itemRestrictionsWeapon";
-            itemRestrictionsWeapon.ShowThrowable = false;
             itemRestrictionsWeapon.Size = new Size(224, 125);
             itemRestrictionsWeapon.TabIndex = 25;
             itemRestrictionsWeapon.FlagsChanged += WeaponDataChanged;
@@ -2744,7 +2696,6 @@
             // 
             listBoxWeapons.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxWeapons.FormattingEnabled = true;
-            listBoxWeapons.ItemHeight = 15;
             listBoxWeapons.Location = new Point(9, 13);
             listBoxWeapons.Margin = new Padding(4, 3, 4, 3);
             listBoxWeapons.Name = "listBoxWeapons";
@@ -2931,7 +2882,6 @@
             // statIncreaseControlArmor
             // 
             statIncreaseControlArmor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            statIncreaseControlArmor.Count = 4;
             statIncreaseControlArmor.Location = new Point(7, 157);
             statIncreaseControlArmor.MinimumSize = new Size(250, 142);
             statIncreaseControlArmor.Name = "statIncreaseControlArmor";
@@ -2985,12 +2935,9 @@
             // 
             materiaSlotSelectorArmor.BackColor = Color.LightSlateGray;
             materiaSlotSelectorArmor.BorderStyle = BorderStyle.Fixed3D;
-            materiaSlotSelectorArmor.GrowthRate = Shojy.FF7.Elena.Equipment.GrowthRate.None;
             materiaSlotSelectorArmor.Location = new Point(6, 22);
             materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
-            materiaSlotSelectorArmor.SelectedSlot = -1;
             materiaSlotSelectorArmor.Size = new Size(211, 35);
-            materiaSlotSelectorArmor.SlotSelectorType = Shared.Controls.SlotSelectorType.Slots;
             materiaSlotSelectorArmor.TabIndex = 4;
             materiaSlotSelectorArmor.DataChanged += ArmorDataChanged;
             materiaSlotSelectorArmor.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
@@ -3042,7 +2989,6 @@
             itemRestrictionsArmor.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             itemRestrictionsArmor.Location = new Point(339, 6);
             itemRestrictionsArmor.Name = "itemRestrictionsArmor";
-            itemRestrictionsArmor.ShowThrowable = false;
             itemRestrictionsArmor.Size = new Size(224, 125);
             itemRestrictionsArmor.TabIndex = 32;
             itemRestrictionsArmor.FlagsChanged += ArmorDataChanged;
@@ -3061,7 +3007,6 @@
             // 
             listBoxArmor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxArmor.FormattingEnabled = true;
-            listBoxArmor.ItemHeight = 15;
             listBoxArmor.Location = new Point(9, 13);
             listBoxArmor.Margin = new Padding(4, 3, 4, 3);
             listBoxArmor.Name = "listBoxArmor";
@@ -3135,8 +3080,6 @@
             // statusesControlAccessory
             // 
             statusesControlAccessory.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            statusesControlAccessory.FullList = true;
-            statusesControlAccessory.GroupBoxText = "Protects from status...";
             statusesControlAccessory.Location = new Point(7, 235);
             statusesControlAccessory.MinimumSize = new Size(500, 200);
             statusesControlAccessory.Name = "statusesControlAccessory";
@@ -3157,7 +3100,6 @@
             // statIncreaseControlAccessory
             // 
             statIncreaseControlAccessory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            statIncreaseControlAccessory.Count = 4;
             statIncreaseControlAccessory.Location = new Point(384, 141);
             statIncreaseControlAccessory.Name = "statIncreaseControlAccessory";
             statIncreaseControlAccessory.Size = new Size(179, 84);
@@ -3253,7 +3195,6 @@
             itemRestrictionsAccessory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             itemRestrictionsAccessory.Location = new Point(323, 50);
             itemRestrictionsAccessory.Name = "itemRestrictionsAccessory";
-            itemRestrictionsAccessory.ShowThrowable = false;
             itemRestrictionsAccessory.Size = new Size(240, 125);
             itemRestrictionsAccessory.TabIndex = 25;
             itemRestrictionsAccessory.FlagsChanged += AccessoryDataChanged;
@@ -3262,7 +3203,6 @@
             // 
             listBoxAccessories.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxAccessories.FormattingEnabled = true;
-            listBoxAccessories.ItemHeight = 15;
             listBoxAccessories.Location = new Point(9, 13);
             listBoxAccessories.Margin = new Padding(4, 3, 4, 3);
             listBoxAccessories.Name = "listBoxAccessories";
@@ -3330,8 +3270,6 @@
             // statusesControlMateria
             // 
             statusesControlMateria.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            statusesControlMateria.FullList = true;
-            statusesControlMateria.GroupBoxText = "Statuses";
             statusesControlMateria.Location = new Point(190, 200);
             statusesControlMateria.MinimumSize = new Size(380, 200);
             statusesControlMateria.Name = "statusesControlMateria";
@@ -3363,11 +3301,6 @@
             // 
             materiaLevelControl.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             materiaLevelControl.Location = new Point(577, 200);
-            materiaLevelControl.Lvl2APValue = 0;
-            materiaLevelControl.Lvl3APValue = 0;
-            materiaLevelControl.Lvl4APValue = 0;
-            materiaLevelControl.Lvl5APValue = 0;
-            materiaLevelControl.MaxLevel = 5;
             materiaLevelControl.Name = "materiaLevelControl";
             materiaLevelControl.Size = new Size(187, 252);
             materiaLevelControl.TabIndex = 17;
@@ -3454,7 +3387,6 @@
             // 
             listBoxMateria.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxMateria.FormattingEnabled = true;
-            listBoxMateria.ItemHeight = 15;
             listBoxMateria.Location = new Point(9, 13);
             listBoxMateria.Margin = new Padding(4, 3, 4, 3);
             listBoxMateria.Name = "listBoxMateria";
@@ -3520,7 +3452,6 @@
             // 
             listBoxKeyItems.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxKeyItems.FormattingEnabled = true;
-            listBoxKeyItems.ItemHeight = 15;
             listBoxKeyItems.Location = new Point(9, 13);
             listBoxKeyItems.Margin = new Padding(4, 3, 4, 3);
             listBoxKeyItems.Name = "listBoxKeyItems";
@@ -3611,7 +3542,6 @@
             // 
             listBoxLimitBreaks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxLimitBreaks.FormattingEnabled = true;
-            listBoxLimitBreaks.ItemHeight = 15;
             listBoxLimitBreaks.Location = new Point(7, 6);
             listBoxLimitBreaks.Margin = new Padding(4, 3, 4, 3);
             listBoxLimitBreaks.Name = "listBoxLimitBreaks";
@@ -3636,7 +3566,6 @@
             // 
             listBoxBattleText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxBattleText.FormattingEnabled = true;
-            listBoxBattleText.ItemHeight = 15;
             listBoxBattleText.Location = new Point(7, 6);
             listBoxBattleText.Margin = new Padding(4, 3, 4, 3);
             listBoxBattleText.Name = "listBoxBattleText";
