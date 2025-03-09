@@ -275,11 +275,13 @@ namespace FF7Scarlet.ExeEditor
             listBoxChocoboNames = new ListBox();
             tabPageAudio = new TabPage();
             groupBoxAudioPan = new GroupBox();
+            buttonAudioPanTest = new Button();
             numericAudioPan = new NumericUpDown();
             labelAudioPan = new Label();
             trackBarAudioPan = new TrackBar();
             listBoxAudioPan = new ListBox();
             groupBoxAudioVolume = new GroupBox();
+            buttonAudioVolumeTest = new Button();
             numericAudioVolume = new NumericUpDown();
             labelAuidioVolume = new Label();
             trackBarAudioVolume = new TrackBar();
@@ -2971,6 +2973,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             // groupBoxAudioPan
             // 
+            groupBoxAudioPan.Controls.Add(buttonAudioPanTest);
             groupBoxAudioPan.Controls.Add(numericAudioPan);
             groupBoxAudioPan.Controls.Add(labelAudioPan);
             groupBoxAudioPan.Controls.Add(trackBarAudioPan);
@@ -2982,14 +2985,25 @@ namespace FF7Scarlet.ExeEditor
             groupBoxAudioPan.TabStop = false;
             groupBoxAudioPan.Text = "Audio pan";
             // 
+            // buttonAudioPanTest
+            // 
+            buttonAudioPanTest.Enabled = false;
+            buttonAudioPanTest.Location = new Point(199, 438);
+            buttonAudioPanTest.Name = "buttonAudioPanTest";
+            buttonAudioPanTest.Size = new Size(75, 23);
+            buttonAudioPanTest.TabIndex = 7;
+            buttonAudioPanTest.Text = "Test";
+            buttonAudioPanTest.UseVisualStyleBackColor = true;
+            buttonAudioPanTest.Click += buttonAudioPanTest_Click;
+            // 
             // numericAudioPan
             // 
             numericAudioPan.Enabled = false;
-            numericAudioPan.Location = new Point(94, 440);
+            numericAudioPan.Location = new Point(62, 440);
             numericAudioPan.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             numericAudioPan.Minimum = new decimal(new int[] { 10000, 0, 0, int.MinValue });
             numericAudioPan.Name = "numericAudioPan";
-            numericAudioPan.Size = new Size(180, 23);
+            numericAudioPan.Size = new Size(131, 23);
             numericAudioPan.TabIndex = 6;
             numericAudioPan.ValueChanged += numericAudioPan_ValueChanged;
             // 
@@ -2997,7 +3011,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             labelAudioPan.AutoSize = true;
             labelAudioPan.Enabled = false;
-            labelAudioPan.Location = new Point(58, 442);
+            labelAudioPan.Location = new Point(26, 442);
             labelAudioPan.Name = "labelAudioPan";
             labelAudioPan.Size = new Size(30, 15);
             labelAudioPan.TabIndex = 5;
@@ -3027,6 +3041,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             // groupBoxAudioVolume
             // 
+            groupBoxAudioVolume.Controls.Add(buttonAudioVolumeTest);
             groupBoxAudioVolume.Controls.Add(numericAudioVolume);
             groupBoxAudioVolume.Controls.Add(labelAuidioVolume);
             groupBoxAudioVolume.Controls.Add(trackBarAudioVolume);
@@ -3038,14 +3053,25 @@ namespace FF7Scarlet.ExeEditor
             groupBoxAudioVolume.TabStop = false;
             groupBoxAudioVolume.Text = "Audio volume";
             // 
+            // buttonAudioVolumeTest
+            // 
+            buttonAudioVolumeTest.Enabled = false;
+            buttonAudioVolumeTest.Location = new Point(199, 439);
+            buttonAudioVolumeTest.Name = "buttonAudioVolumeTest";
+            buttonAudioVolumeTest.Size = new Size(75, 23);
+            buttonAudioVolumeTest.TabIndex = 4;
+            buttonAudioVolumeTest.Text = "Test";
+            buttonAudioVolumeTest.UseVisualStyleBackColor = true;
+            buttonAudioVolumeTest.Click += buttonVolumeTest_Click;
+            // 
             // numericAudioVolume
             // 
             numericAudioVolume.Enabled = false;
-            numericAudioVolume.Location = new Point(94, 441);
+            numericAudioVolume.Location = new Point(62, 441);
             numericAudioVolume.Maximum = new decimal(new int[] { 0, 0, 0, 0 });
             numericAudioVolume.Minimum = new decimal(new int[] { 10000, 0, 0, int.MinValue });
             numericAudioVolume.Name = "numericAudioVolume";
-            numericAudioVolume.Size = new Size(180, 23);
+            numericAudioVolume.Size = new Size(131, 23);
             numericAudioVolume.TabIndex = 3;
             numericAudioVolume.ValueChanged += numericAudioVolume_ValueChanged;
             // 
@@ -3053,7 +3079,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             labelAuidioVolume.AutoSize = true;
             labelAuidioVolume.Enabled = false;
-            labelAuidioVolume.Location = new Point(38, 443);
+            labelAuidioVolume.Location = new Point(6, 443);
             labelAuidioVolume.Name = "labelAuidioVolume";
             labelAuidioVolume.Size = new Size(50, 15);
             labelAuidioVolume.TabIndex = 2;
@@ -3492,6 +3518,8 @@ namespace FF7Scarlet.ExeEditor
         private NumericUpDown numericAudioPan;
         private Label labelAudioPan;
         private TrackBar trackBarAudioPan;
+        private Button buttonAudioVolumeTest;
+        private Button buttonAudioPanTest;
     }
 }
 

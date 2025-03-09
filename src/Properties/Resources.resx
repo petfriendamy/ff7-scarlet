@@ -256,6 +256,9 @@
   <data name="Tifa" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\GUI\Portraits\Tifa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="victory" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\GUI\victory.wav;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Vincent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\GUI\Portraits\Vincent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

@@ -6,7 +6,9 @@ using FF7Scarlet.Shared.Controls;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Inventory;
-using Shojy.FF7.Elena.Materias;
+using SharpDX;
+using SharpDX.DirectSound;
+using SharpDX.Multimedia;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -24,6 +26,13 @@ namespace FF7Scarlet.ExeEditor
             unsavedChanges = false,
             limitNeedsSync = false;
         private int prevLimit;
+
+        private readonly DirectSound directSound;
+        private readonly PrimarySoundBuffer buffer;
+        private readonly SecondarySoundBuffer sound;
+        private readonly WaveFormat waveFormat;
+        private readonly SoundBufferDescription bufferDesc, soundDesc;
+        private readonly DataStream part1, part2;
 
         private Character? SelectedCharacter
         {
@@ -293,6 +302,32 @@ namespace FF7Scarlet.ExeEditor
             {
                 comboBoxShopIndex.SelectedIndex = 0;
             }
+
+            //setup audio
+            directSound = new DirectSound();
+            directSound.SetCooperativeLevel(Handle, CooperativeLevel.Priority);
+
+            //create the primary buffer
+            bufferDesc = new SoundBufferDescription();
+            bufferDesc.Flags = BufferFlags.PrimaryBuffer;
+            buffer = new PrimarySoundBuffer(directSound, bufferDesc);
+
+            //create the secondary buffer
+            waveFormat = new WaveFormat(44100, 1);
+            soundDesc = new SoundBufferDescription();
+            soundDesc.BufferBytes = waveFormat.ConvertLatencyToByteSize(60000);
+            soundDesc.Format = waveFormat;
+            soundDesc.Flags = BufferFlags.ControlVolume | BufferFlags.ControlPan;
+            sound = new SecondarySoundBuffer(directSound, soundDesc);
+
+            //pre-load the sound file
+            var capabilities = sound.Capabilities;
+            part1 = sound.Lock(0, capabilities.BufferBytes, LockFlags.EntireBuffer, out part2);
+            foreach (var b in Properties.Resources.victory)
+            {
+                part1.Write(b);
+            }
+            sound.Unlock(part1, part2);
         }
 
         #endregion
@@ -850,6 +885,14 @@ namespace FF7Scarlet.ExeEditor
                 SetUnsaved(true);
                 loading = false;
             }
+        }
+
+        private void PlaySound(int volume, int pan)
+        {
+            sound.Volume = volume;
+            sound.Pan = pan;
+            sound.CurrentPosition = 0;
+            sound.Play(0, PlayFlags.None);
         }
 
         #endregion
@@ -2209,6 +2252,24 @@ namespace FF7Scarlet.ExeEditor
                     listBoxAudioPan.Items[i] = $"{i}: {value}";
                     SetUnsaved(true);
                 }
+            }
+        }
+
+        private void buttonVolumeTest_Click(object sender, EventArgs e)
+        {
+            int i = listBoxAudioVolume.SelectedIndex;
+            if (i >= 0 && i < ExeData.NUM_AUDIO_VALUES)
+            {
+                PlaySound(editor.AudioVolume[i], 0);
+            }
+        }
+
+        private void buttonAudioPanTest_Click(object sender, EventArgs e)
+        {
+            int i = listBoxAudioPan.SelectedIndex;
+            if (i >= 0 && i < ExeData.NUM_AUDIO_VALUES)
+            {
+                PlaySound(0, editor.AudioPan[i]);
             }
         }
 
