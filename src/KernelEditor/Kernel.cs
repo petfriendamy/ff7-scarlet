@@ -882,6 +882,19 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        public StatusChange GetStatusChange(KernelSection section, int pos)
+        {
+            switch (section)
+            {
+                case KernelSection.AttackData:
+                    return AttackData.Attacks[pos].StatusChange;
+                case KernelSection.ItemData:
+                    return ItemData.Items[pos].StatusChange;
+                default:
+                    return new StatusChange(0xFF);
+            }
+        }
+
         public SpecialEffects GetSpecialEffects(KernelSection section, int pos)
         {
             switch (section)

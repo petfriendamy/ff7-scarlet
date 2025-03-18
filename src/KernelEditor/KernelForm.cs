@@ -957,6 +957,20 @@ namespace FF7Scarlet.KernelEditor
                             equipmentStatus[section].SelectedIndex = status + 1;
                         }
                     }
+                    if (statusChangeComboBoxes.ContainsKey(section))
+                    {
+                        var change = kernel.GetStatusChange(section, i);
+                        if (change.Type == StatusChangeType.None)
+                        {
+                            statusChangeComboBoxes[section].SelectedIndex = 0;
+                            statusLists[section].Enabled = false;
+                        }
+                        else
+                        {
+                            statusChangeComboBoxes[section].SelectedIndex = statusChangeTypes.IndexOf(change.Type) + 1;
+                            statusLists[section].Enabled = true;
+                        }
+                    }
 
                     //special attack flags
                     if (specialAttackFlags.ContainsKey(section))
@@ -1009,19 +1023,8 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
                             }
+                            numericAttackStatusChangeChance.Enabled = (attack.StatusChange.Type != StatusChangeType.None);
                             numericAttackStatusChangeChance.Value = attack.StatusChange.Amount;
-                            if (attack.StatusChange.Type == StatusChangeType.None)
-                            {
-                                comboBoxAttackStatusChange.SelectedIndex = 0;
-                                numericAttackStatusChangeChance.Enabled = false;
-                                statusesControlAttack.Enabled = false;
-                            }
-                            else
-                            {
-                                comboBoxAttackStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
-                                numericAttackStatusChangeChance.Enabled = true;
-                                statusesControlAttack.Enabled = true;
-                            }
                             if (i < Kernel.INDEXED_SPELL_COUNT)
                             {
                                 comboBoxMagicType.Enabled = true;
@@ -2388,14 +2391,13 @@ namespace FF7Scarlet.KernelEditor
                         if (SelectedAttack != null)
                         {
                             numericAttackStatusChangeChance.Enabled = hasStatus;
-                            statusesControlAttack.Enabled = hasStatus;
                             SelectedAttack.StatusChange.Type = status;
                         }
                         break;
                     case KernelSection.ItemData:
                         if (SelectedItem != null)
                         {
-                            //SelectedItem.StatusChange.Type = status;
+                            SelectedItem.StatusChange.Type = status;
                         }
                         break;
                 }
