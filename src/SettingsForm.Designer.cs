@@ -42,9 +42,12 @@
             groupBoxPS3Tweaks = new GroupBox();
             checkBoxPS3Tweaks = new CheckBox();
             labelPS3Tweaks = new Label();
+            groupBoxRememberLastOpened = new GroupBox();
+            checkBoxRemeberLastOpened = new CheckBox();
             groupBoxBattleLgp.SuspendLayout();
             groupBoxVanillaExe.SuspendLayout();
             groupBoxPS3Tweaks.SuspendLayout();
+            groupBoxRememberLastOpened.SuspendLayout();
             SuspendLayout();
             // 
             // groupBoxBattleLgp
@@ -53,7 +56,7 @@
             groupBoxBattleLgp.Controls.Add(labelBattleLgp);
             groupBoxBattleLgp.Controls.Add(textBoxBattleLgp);
             groupBoxBattleLgp.Controls.Add(buttonBattleLgpBrowse);
-            groupBoxBattleLgp.Location = new Point(13, 116);
+            groupBoxBattleLgp.Location = new Point(15, 173);
             groupBoxBattleLgp.Margin = new Padding(4, 3, 4, 3);
             groupBoxBattleLgp.Name = "groupBoxBattleLgp";
             groupBoxBattleLgp.Padding = new Padding(4, 3, 4, 3);
@@ -95,7 +98,7 @@
             // buttonOK
             // 
             buttonOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonOK.Location = new Point(376, 296);
+            buttonOK.Location = new Point(377, 356);
             buttonOK.Name = "buttonOK";
             buttonOK.Size = new Size(75, 23);
             buttonOK.TabIndex = 3;
@@ -106,7 +109,7 @@
             // buttonCancel
             // 
             buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonCancel.Location = new Point(295, 296);
+            buttonCancel.Location = new Point(296, 356);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(75, 23);
             buttonCancel.TabIndex = 2;
@@ -119,7 +122,7 @@
             groupBoxVanillaExe.Controls.Add(labelVanillaExe);
             groupBoxVanillaExe.Controls.Add(textBoxVanillaExe);
             groupBoxVanillaExe.Controls.Add(buttonVanillaExeBrowse);
-            groupBoxVanillaExe.Location = new Point(14, 12);
+            groupBoxVanillaExe.Location = new Point(15, 69);
             groupBoxVanillaExe.Margin = new Padding(4, 3, 4, 3);
             groupBoxVanillaExe.Name = "groupBoxVanillaExe";
             groupBoxVanillaExe.Padding = new Padding(4, 3, 4, 3);
@@ -160,12 +163,12 @@
             // 
             // groupBoxPS3Tweaks
             // 
-            groupBoxPS3Tweaks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxPS3Tweaks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxPS3Tweaks.Controls.Add(checkBoxPS3Tweaks);
             groupBoxPS3Tweaks.Controls.Add(labelPS3Tweaks);
-            groupBoxPS3Tweaks.Location = new Point(13, 220);
+            groupBoxPS3Tweaks.Location = new Point(15, 277);
             groupBoxPS3Tweaks.Name = "groupBoxPS3Tweaks";
-            groupBoxPS3Tweaks.Size = new Size(438, 70);
+            groupBoxPS3Tweaks.Size = new Size(438, 73);
             groupBoxPS3Tweaks.TabIndex = 4;
             groupBoxPS3Tweaks.TabStop = false;
             groupBoxPS3Tweaks.Text = "Postscriptthree tweaks";
@@ -174,7 +177,7 @@
             // 
             checkBoxPS3Tweaks.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBoxPS3Tweaks.AutoSize = true;
-            checkBoxPS3Tweaks.Location = new Point(10, 45);
+            checkBoxPS3Tweaks.Location = new Point(10, 48);
             checkBoxPS3Tweaks.Name = "checkBoxPS3Tweaks";
             checkBoxPS3Tweaks.Size = new Size(68, 19);
             checkBoxPS3Tweaks.TabIndex = 1;
@@ -186,9 +189,29 @@
             labelPS3Tweaks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             labelPS3Tweaks.Location = new Point(10, 19);
             labelPS3Tweaks.Name = "labelPS3Tweaks";
-            labelPS3Tweaks.Size = new Size(422, 17);
+            labelPS3Tweaks.Size = new Size(422, 20);
             labelPS3Tweaks.TabIndex = 0;
             labelPS3Tweaks.Text = "Include additional features enabled by the Postscriptthree Tweaks mod.";
+            // 
+            // groupBoxRememberLastOpened
+            // 
+            groupBoxRememberLastOpened.Controls.Add(checkBoxRemeberLastOpened);
+            groupBoxRememberLastOpened.Location = new Point(15, 12);
+            groupBoxRememberLastOpened.Name = "groupBoxRememberLastOpened";
+            groupBoxRememberLastOpened.Size = new Size(437, 51);
+            groupBoxRememberLastOpened.TabIndex = 5;
+            groupBoxRememberLastOpened.TabStop = false;
+            groupBoxRememberLastOpened.Text = "Remember last opened files";
+            // 
+            // checkBoxRemeberLastOpened
+            // 
+            checkBoxRemeberLastOpened.AutoSize = true;
+            checkBoxRemeberLastOpened.Location = new Point(9, 22);
+            checkBoxRemeberLastOpened.Name = "checkBoxRemeberLastOpened";
+            checkBoxRemeberLastOpened.Size = new Size(68, 19);
+            checkBoxRemeberLastOpened.TabIndex = 0;
+            checkBoxRemeberLastOpened.Text = "Enabled";
+            checkBoxRemeberLastOpened.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -196,14 +219,15 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = buttonCancel;
-            ClientSize = new Size(464, 331);
+            ClientSize = new Size(464, 391);
+            Controls.Add(groupBoxRememberLastOpened);
             Controls.Add(groupBoxPS3Tweaks);
             Controls.Add(groupBoxVanillaExe);
             Controls.Add(buttonCancel);
             Controls.Add(buttonOK);
             Controls.Add(groupBoxBattleLgp);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(440, 370);
+            MinimumSize = new Size(440, 430);
             Name = "SettingsForm";
             Text = "Scarlet - Settings";
             groupBoxBattleLgp.ResumeLayout(false);
@@ -212,6 +236,8 @@
             groupBoxVanillaExe.PerformLayout();
             groupBoxPS3Tweaks.ResumeLayout(false);
             groupBoxPS3Tweaks.PerformLayout();
+            groupBoxRememberLastOpened.ResumeLayout(false);
+            groupBoxRememberLastOpened.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -230,5 +256,7 @@
         private GroupBox groupBoxPS3Tweaks;
         private Label labelPS3Tweaks;
         private CheckBox checkBoxPS3Tweaks;
+        private GroupBox groupBoxRememberLastOpened;
+        private CheckBox checkBoxRemeberLastOpened;
     }
 }

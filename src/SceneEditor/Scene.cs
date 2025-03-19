@@ -18,6 +18,7 @@ namespace FF7Scarlet.SceneEditor
         private readonly byte[] formationAIRaw = new byte[Formation.AI_BLOCK_SIZE];
         private readonly byte[] enemyAIraw = new byte[Enemy.AI_BLOCK_SIZE];
         private readonly byte[] rawData = new byte[UNCOMPRESSED_BLOCK_SIZE];
+        public const string CONFIG_KEY = "ScenePath";
 
         public Enemy?[] Enemies
         {

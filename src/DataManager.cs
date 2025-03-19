@@ -12,7 +12,7 @@ using FF7Scarlet.Shared;
 namespace FF7Scarlet
 {
     public enum FormType { KernelEditor, SceneEditor, ExeEditor }
-    public enum FileClass { EXE, Kernel, Kernel2, Scene, BattleLgp }
+    public enum FileClass { Exe, VanillaExe, Kernel, Kernel2, Scene, BattleLgp }
 
     public static class DataManager
     {
@@ -34,10 +34,13 @@ namespace FF7Scarlet
         public static ExeData? VanillaExe { get; private set; }
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
+        public static bool RememberLastOpened { get; set; }
         public static bool PS3TweaksEnabled { get; set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
 
-        public const string PS3_TWEAKS_KEY = "PS3TweaksEnabled";
+        public const string
+            REMEMBER_LAST_OPENED_KEY = "RememberLastOpened",
+            PS3_TWEAKS_KEY = "PS3TweaksEnabled";
 
         //clipboard
         public static Scene? CopiedScene { get; set; }
@@ -84,11 +87,11 @@ namespace FF7Scarlet
             startupForm = form;
         }
 
-        public static void SetFilePath(FileClass fileClass, string path, bool isSetting = false)
+        public static void SetFilePath(FileClass fileClass, string path, bool suppressRelativeCheck = false)
         {
-            if (ValidateFile(fileClass, path, isSetting))
+            if (ValidateFile(fileClass, path, suppressRelativeCheck))
             {
-                if (fileClass != FileClass.BattleLgp && !isSetting)
+                if (fileClass != FileClass.VanillaExe && fileClass != FileClass.BattleLgp && !suppressRelativeCheck)
                 {
                     var result = MessageBox.Show("Would you like to auto-detect the other files based on this one's location?",
                         "Auto-Detect Files", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -100,7 +103,7 @@ namespace FF7Scarlet
                         bool isSteam = true;
 
                         //figure out relative file paths
-                        if (fileClass == FileClass.EXE)
+                        if (fileClass == FileClass.Exe)
                         {
                             //check for version
                             code = ExeData.GetLanguageCode(path);
@@ -181,15 +184,15 @@ namespace FF7Scarlet
                         }
 
                         //attempt to find the files in their directories
-                        if (exeDir != null && fileClass != FileClass.EXE)
+                        if (exeDir != null && fileClass != FileClass.Exe)
                         {
                             if (isSteam)
                             {
-                                ValidateFile(FileClass.EXE, exeDir + @"\ff7_" + code + ".exe");
+                                ValidateFile(FileClass.Exe, exeDir + @"\ff7_" + code + ".exe");
                             }
                             else
                             {
-                                ValidateFile(FileClass.EXE, exeDir + @"\FF7.exe");
+                                ValidateFile(FileClass.Exe, exeDir + @"\FF7.exe");
                             }
                         }
                         if (kernelDir != null)
@@ -216,7 +219,7 @@ namespace FF7Scarlet
             }
         }
 
-        private static bool ValidateFile(FileClass fileClass, string path, bool isSetting = false)
+        private static bool ValidateFile(FileClass fileClass, string path, bool suppressRelativeCheck = false)
         {
             try
             {
@@ -224,10 +227,11 @@ namespace FF7Scarlet
                 {
                     switch (fileClass)
                     {
-                        case FileClass.EXE:
-                            if (ExeData.ValidateEXE(path, isSetting))
+                        case FileClass.Exe:
+                        case FileClass.VanillaExe:
+                            if (ExeData.ValidateEXE(path, (fileClass == FileClass.VanillaExe)))
                             {
-                                if (isSetting)
+                                if (fileClass == FileClass.VanillaExe)
                                 {
                                     if (ExeData.GetLanguage(path) == Language.English)
                                     {

@@ -26,7 +26,9 @@ namespace FF7Scarlet.ExeEditor
     {
         //constants
         private static readonly int[] EXE_HEADER = { 0x4D, 0x5A, 0x90 };
-        public const string CONFIG_KEY = "VanillaExePath";
+        public const string
+            CONFIG_KEY = "ExePath",
+            VANILLA_CONFIG_KEY = "VanillaExePath";
 
         public static readonly MultiStringLength[] BATTLE_ARENA_TEXT_LENGTHS =
         {

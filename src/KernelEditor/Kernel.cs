@@ -31,6 +31,9 @@ namespace FF7Scarlet.KernelEditor
         private bool loaded = false;
         public Character[] CharacterList { get; }
         private ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
+        public const string
+            KERNEL_CONFIG_KEY = "KernelPath",
+            KERNEL2_CONFIG_KEY = "Kernel2Path";
 
         public Kernel(string file) : base(file, KernelType.KernelBin)
         {

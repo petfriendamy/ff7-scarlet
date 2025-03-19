@@ -1,6 +1,9 @@
 ﻿using FF7Scarlet.ExeEditor;
+using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
+using SharpDX.DirectSound;
 using System.Configuration;
+using System.IO;
 
 namespace FF7Scarlet
 {
@@ -21,44 +24,39 @@ namespace FF7Scarlet
             var settings = config.AppSettings.Settings;
             if (settings != null)
             {
-                //check ff7.exe
-                if (settings[ExeData.CONFIG_KEY] != null)
+                //check previously loaded files
+                if (settings[DataManager.REMEMBER_LAST_OPENED_KEY] == null)
                 {
-                    string path = settings[ExeData.CONFIG_KEY].Value;
-                    try
+                    DataManager.RememberLastOpened = true;
+                    settings.Add(DataManager.REMEMBER_LAST_OPENED_KEY, $"{DataManager.RememberLastOpened}");
+                }
+                else
+                {
+                    bool temp;
+                    if (bool.TryParse(settings[DataManager.REMEMBER_LAST_OPENED_KEY].Value, out temp))
                     {
-                        if (!string.IsNullOrEmpty(path))
-                        {
-                            DataManager.SetFilePath(FileClass.EXE, path, true);
-                        }
+                        DataManager.RememberLastOpened = temp;
                     }
-                    catch //if the file can't be loaded, remove it from settings
-                    {
-                        MessageBox.Show($"The file at '{path}' could not be loaded, and has been removed from settings.",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        settings[ExeData.CONFIG_KEY].Value = string.Empty;
-                        config.Save();
-                    }
+                }
+                if (DataManager.RememberLastOpened)
+                {
+                    LoadFromConfig(config, FileClass.Exe);
+                    LoadFromConfig(config, FileClass.Kernel);
+                    LoadFromConfig(config, FileClass.Kernel2);
+                    LoadFromConfig(config, FileClass.Scene);
+                    UpdateTextBoxes(false);
+                }
+
+                //check vanilla EXE
+                if (settings[ExeData.VANILLA_CONFIG_KEY] != null)
+                {
+                    LoadFromConfig(config, FileClass.VanillaExe);
                 }
 
                 //check battle.lgp
                 if (settings[BattleLgp.CONFIG_KEY] != null)
                 {
-                    string path = settings[BattleLgp.CONFIG_KEY].Value;
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(path))
-                        {
-                            DataManager.SetFilePath(FileClass.BattleLgp, path);
-                        }
-                    }
-                    catch //if the file can't be loaded, remove it from settings
-                    {
-                        MessageBox.Show($"The file at '{path}' could not be loaded, and has been removed from settings.",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        settings[BattleLgp.CONFIG_KEY].Value = string.Empty;
-                        config.Save();
-                    }
+                    LoadFromConfig(config, FileClass.BattleLgp);
                 }
 
                 //check PS3 tweaks
@@ -73,7 +71,52 @@ namespace FF7Scarlet
             }
         }
 
-        private void UpdateTextBoxes()
+        private static void LoadFromConfig(Configuration config, FileClass fileClass)
+        {
+            var settings = config.AppSettings.Settings;
+            if (settings != null)
+            {
+                string configKey = string.Empty;
+                switch (fileClass)
+                {
+                    case FileClass.Exe:
+                        configKey = ExeData.CONFIG_KEY;
+                        break;
+                    case FileClass.VanillaExe:
+                        configKey = ExeData.VANILLA_CONFIG_KEY;
+                        break;
+                    case FileClass.Kernel:
+                        configKey = Kernel.KERNEL_CONFIG_KEY;
+                        break;
+                    case FileClass.Kernel2:
+                        configKey = Kernel.KERNEL2_CONFIG_KEY;
+                        break;
+                    case FileClass.Scene:
+                        configKey = Scene.CONFIG_KEY;
+                        break;
+                    case FileClass.BattleLgp:
+                        configKey = BattleLgp.CONFIG_KEY;
+                        break;
+                }
+                string path = settings[configKey].Value;
+                try
+                {
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        DataManager.SetFilePath(fileClass, path, true);
+                    }
+                }
+                catch //if the file can't be loaded, remove it from settings
+                {
+                    MessageBox.Show($"The file at '{path}' could not be loaded, and has been removed from settings.",
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    settings[configKey].Value = string.Empty;
+                    config.Save();
+                }
+            }
+        }
+
+        private void UpdateTextBoxes(bool updateSettings)
         {
             textBoxEXE.Text = DataManager.ExePath;
             textBoxKernel.Text = DataManager.KernelPath;
@@ -86,13 +129,60 @@ namespace FF7Scarlet
                 buttonKernel2Browse.Enabled = true;
                 toolTipHoverText.RemoveAll();
             }
-            if (DataManager.SceneFilePathExists)
+            buttonSceneEditor.Enabled = DataManager.SceneFilePathExists;
+            buttonExeEditor.Enabled = DataManager.ExePathExists;
+
+            if (DataManager.RememberLastOpened && updateSettings)
             {
-                buttonSceneEditor.Enabled = true;
-            }
-            if (DataManager.ExePathExists)
-            {
-                buttonExeEditor.Enabled = true;
+                //get Scarlet.config settings
+                DataManager.ConfigFile.ExeConfigFilename = AppContext.BaseDirectory + @"\Scarlet.config";
+                var config = ConfigurationManager.OpenMappedExeConfiguration(DataManager.ConfigFile,
+                    ConfigurationUserLevel.None);
+                var settings = config.AppSettings.Settings;
+                if (settings != null)
+                {
+                    //exe
+                    if (settings[ExeData.CONFIG_KEY] == null)
+                    {
+                        settings.Add(ExeData.CONFIG_KEY, DataManager.ExePath);
+                    }
+                    else
+                    {
+                        settings[ExeData.CONFIG_KEY].Value = DataManager.ExePath;
+                    }
+
+                    //kernel
+                    if (settings[Kernel.KERNEL_CONFIG_KEY] == null)
+                    {
+                        settings.Add(Kernel.KERNEL_CONFIG_KEY, DataManager.KernelPath);
+                    }
+                    else
+                    {
+                        settings[Kernel.KERNEL_CONFIG_KEY].Value = DataManager.KernelPath;
+                    }
+
+                    //kernel2
+                    if (settings[Kernel.KERNEL2_CONFIG_KEY] == null)
+                    {
+                        settings.Add(Kernel.KERNEL2_CONFIG_KEY, DataManager.Kernel2Path);
+                    }
+                    else
+                    {
+                        settings[Kernel.KERNEL2_CONFIG_KEY].Value = DataManager.Kernel2Path;
+                    }
+
+                    //scene
+                    if (settings[Scene.CONFIG_KEY] == null)
+                    {
+                        settings.Add(Scene.CONFIG_KEY, DataManager.ScenePath);
+                    }
+                    else
+                    {
+                        settings[Scene.CONFIG_KEY].Value = DataManager.ScenePath;
+                    }
+
+                    config.Save();
+                }
             }
         }
 
@@ -143,8 +233,8 @@ namespace FF7Scarlet
                 }
                 if (result == DialogResult.OK)
                 {
-                    DataManager.SetFilePath(FileClass.EXE, file);
-                    UpdateTextBoxes();
+                    DataManager.SetFilePath(FileClass.Exe, file);
+                    UpdateTextBoxes(true);
                 }
             }
             catch (Exception ex)
@@ -168,7 +258,7 @@ namespace FF7Scarlet
                 if (result == DialogResult.OK)
                 {
                     DataManager.SetFilePath(FileClass.Kernel, file);
-                    UpdateTextBoxes();
+                    UpdateTextBoxes(true);
                     CheckLookupTable();
                 }
             }
@@ -193,7 +283,7 @@ namespace FF7Scarlet
                 if (result == DialogResult.OK)
                 {
                     DataManager.SetFilePath(FileClass.Kernel2, file);
-                    UpdateTextBoxes();
+                    UpdateTextBoxes(true);
                 }
             }
             catch (Exception ex)
@@ -217,7 +307,7 @@ namespace FF7Scarlet
                 if (result == DialogResult.OK)
                 {
                     DataManager.SetFilePath(FileClass.Scene, file);
-                    UpdateTextBoxes();
+                    UpdateTextBoxes(true);
                     CheckLookupTable();
                 }
             }

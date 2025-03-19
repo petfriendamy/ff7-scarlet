@@ -2375,7 +2375,7 @@ namespace FF7Scarlet.ExeEditor
                     }
                     else if (editor.IsUnedited)
                     {
-                        DataManager.SetFilePath(FileClass.EXE, editor.FilePath, true);
+                        DataManager.SetFilePath(FileClass.VanillaExe, editor.FilePath);
                     }
                     else
                     {
@@ -2396,7 +2396,7 @@ namespace FF7Scarlet.ExeEditor
                         {
                             try
                             {
-                                DataManager.SetFilePath(FileClass.EXE, path, true);
+                                DataManager.SetFilePath(FileClass.VanillaExe, path);
                             }
                             catch (Exception ex)
                             {
@@ -2460,7 +2460,7 @@ namespace FF7Scarlet.ExeEditor
                         else if (result == DialogResult.Yes)
                         {
                             File.Copy(editor.FilePath, backupPath);
-                            DataManager.SetFilePath(FileClass.EXE, backupPath, true);
+                            DataManager.SetFilePath(FileClass.VanillaExe, backupPath);
                         }
                     }
                     editor.WriteEXE();

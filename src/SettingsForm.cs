@@ -19,6 +19,7 @@ namespace FF7Scarlet
             {
                 textBoxBattleLgp.Text = DataManager.BattleLgpPath;
             }
+            checkBoxRemeberLastOpened.Checked = DataManager.RememberLastOpened;
             checkBoxPS3Tweaks.Checked = DataManager.PS3TweaksEnabled;
         }
 
@@ -94,16 +95,16 @@ namespace FF7Scarlet
                 //check EXE
                 if (!string.IsNullOrEmpty(vanillaExePath) && vanillaExePath != DataManager.VanillaExePath)
                 {
-                    DataManager.SetFilePath(FileClass.EXE, vanillaExePath, true);
+                    DataManager.SetFilePath(FileClass.VanillaExe, vanillaExePath);
                     if (DataManager.VanillaExePathExists) //add the path to the App.config
                     {
-                        if (settings[ExeData.CONFIG_KEY] == null)
+                        if (settings[ExeData.VANILLA_CONFIG_KEY] == null)
                         {
-                            settings.Add(ExeData.CONFIG_KEY, vanillaExePath);
+                            settings.Add(ExeData.VANILLA_CONFIG_KEY, vanillaExePath);
                         }
                         else
                         {
-                            settings[ExeData.CONFIG_KEY].Value = vanillaExePath;
+                            settings[ExeData.VANILLA_CONFIG_KEY].Value = vanillaExePath;
                         }
                     }
                 }
@@ -124,6 +125,18 @@ namespace FF7Scarlet
                         }
                     }
                 }
+
+                //enable/disable remembering previously opened files
+                DataManager.RememberLastOpened = checkBoxRemeberLastOpened.Checked;
+                if (settings[DataManager.REMEMBER_LAST_OPENED_KEY] == null)
+                {
+                    settings.Add(DataManager.REMEMBER_LAST_OPENED_KEY, $"{DataManager.RememberLastOpened}");
+                }
+                else
+                {
+                    settings[DataManager.REMEMBER_LAST_OPENED_KEY].Value = $"{DataManager.RememberLastOpened}";
+                }
+                config.Save();
 
                 //enable/disable PS3 tweaks
                 DataManager.PS3TweaksEnabled = checkBoxPS3Tweaks.Checked;
