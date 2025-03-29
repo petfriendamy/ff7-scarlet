@@ -60,6 +60,7 @@ namespace FF7Scarlet.KernelEditor
         private readonly Dictionary<KernelSection, ListBox> listBoxes = new();
         private readonly Dictionary<KernelSection, TextBox> nameTextBoxes = new();
         private readonly Dictionary<KernelSection, TextBox> descriptionTextBoxes = new();
+        private readonly Dictionary<KernelSection, Label> idLabels = new();
         private readonly Dictionary<KernelSection, ComboBox> cameraMovementSingle = new();
         private readonly Dictionary<KernelSection, ComboBox> cameraMovementMulti = new();
         private readonly Dictionary<KernelSection, ComboBox> attackEffectIDs = new();
@@ -323,6 +324,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.CommandData, listBoxCommands);
             nameTextBoxes.Add(KernelSection.CommandData, textBoxCommandName);
             descriptionTextBoxes.Add(KernelSection.CommandData, textBoxCommandDescription);
+            idLabels.Add(KernelSection.CommandData, labelCommandID);
             cameraMovementSingle.Add(KernelSection.CommandData, comboBoxCommandCameraMovementIDSingle);
             cameraMovementMulti.Add(KernelSection.CommandData, comboBoxCommandCamMovementIDMulti);
             targetData.Add(KernelSection.CommandData, targetDataControlCommand);
@@ -333,6 +335,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.AttackData, listBoxAttacks);
             nameTextBoxes.Add(KernelSection.AttackData, textBoxAttackName);
             descriptionTextBoxes.Add(KernelSection.AttackData, textBoxAttackDescription);
+            idLabels.Add(KernelSection.AttackData, labelAttackId);
             cameraMovementSingle.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDSingle);
             cameraMovementMulti.Add(KernelSection.AttackData, comboBoxAttackCamMovementIDMulti);
             attackEffectIDs.Add(KernelSection.AttackData, comboBoxAttackAttackEffectID);
@@ -348,6 +351,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.ItemData, listBoxItems);
             nameTextBoxes.Add(KernelSection.ItemData, textBoxItemName);
             descriptionTextBoxes.Add(KernelSection.ItemData, textBoxItemDescription);
+            idLabels.Add(KernelSection.ItemData, labelItemID);
             cameraMovementSingle.Add(KernelSection.ItemData, comboBoxItemCamMovementID);
             attackEffectIDs.Add(KernelSection.ItemData, comboBoxItemAttackEffectID);
             targetData.Add(KernelSection.ItemData, targetDataControlItem);
@@ -363,6 +367,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.WeaponData, listBoxWeapons);
             nameTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponName);
             descriptionTextBoxes.Add(KernelSection.WeaponData, textBoxWeaponDescription);
+            idLabels.Add(KernelSection.WeaponData, labelWeaponID);
             statIncreases.Add(KernelSection.WeaponData, statIncreaseControlWeapon);
             targetData.Add(KernelSection.WeaponData, targetDataControlWeapon);
             damageCalculationControls.Add(KernelSection.WeaponData, damageCalculationControlWeapon);
@@ -378,6 +383,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.ArmorData, listBoxArmor);
             nameTextBoxes.Add(KernelSection.ArmorData, textBoxArmorName);
             descriptionTextBoxes.Add(KernelSection.ArmorData, textBoxArmorDescription);
+            idLabels.Add(KernelSection.ArmorData, labelArmorID);
             statIncreases.Add(KernelSection.ArmorData, statIncreaseControlArmor);
             itemRestrictionLists.Add(KernelSection.ArmorData, itemRestrictionsArmor);
             equipableLists.Add(KernelSection.ArmorData, equipableListArmor);
@@ -392,6 +398,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.AccessoryData, listBoxAccessories);
             nameTextBoxes.Add(KernelSection.AccessoryData, textBoxAccessoryName);
             descriptionTextBoxes.Add(KernelSection.AccessoryData, textBoxAccessoryDescription);
+            idLabels.Add(KernelSection.AccessoryData, labelAccessoryID);
             statIncreases.Add(KernelSection.AccessoryData, statIncreaseControlAccessory);
             itemRestrictionLists.Add(KernelSection.AccessoryData, itemRestrictionsAccessory);
             equipableLists.Add(KernelSection.AccessoryData, equipableListAccessory);
@@ -404,6 +411,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxes.Add(KernelSection.MateriaData, listBoxMateria);
             nameTextBoxes.Add(KernelSection.MateriaData, textBoxMateriaName);
             descriptionTextBoxes.Add(KernelSection.MateriaData, textBoxMateriaDescription);
+            idLabels.Add(KernelSection.MateriaData, labelMateriaID);
             statusLists.Add(KernelSection.MateriaData, statusesControlMateria);
 
             //key items
@@ -864,6 +872,12 @@ namespace FF7Scarlet.KernelEditor
                     EnableOrDisableTabPageControls(section, true);
                     nameTextBoxes[section].Text = kernel.GetAssociatedNames(section)[i];
                     descriptionTextBoxes[section].Text = kernel.GetAssociatedDescriptions(section)[i];
+
+                    //check for ID
+                    if (idLabels.ContainsKey(section))
+                    {
+                        idLabels[section].Text = $"ID: {i:X2}";
+                    }
 
                     //check for toolstrips
                     if (toolStrips.ContainsKey(section))

@@ -34,6 +34,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KernelForm));
             tabControlMain = new TabControl();
             tabPageCommandData = new TabPage();
+            labelCommandID = new Label();
             comboBoxCommandInitialCursorAction = new ComboBox();
             labelCommandInitialCursorAction = new Label();
             targetDataControlCommand = new FF7Scarlet.KernelEditor.Controls.TargetDataControl();
@@ -49,6 +50,7 @@
             tabPageAttackData = new TabPage();
             tabControlAttacks = new TabControl();
             tabPageAttacks1 = new TabPage();
+            labelAttackId = new Label();
             checkBoxAttackIsLimit = new CheckBox();
             labelAttackHurtActionIndex = new Label();
             comboBoxAttackHurtActionIndex = new ComboBox();
@@ -340,6 +342,11 @@
             attackCopyToolStripMenuItem = new ToolStripMenuItem();
             attackPasteToolStripMenuItem = new ToolStripMenuItem();
             attackDeleteToolStripMenuItem = new ToolStripMenuItem();
+            labelItemID = new Label();
+            labelWeaponID = new Label();
+            labelArmorID = new Label();
+            labelAccessoryID = new Label();
+            labelMateriaID = new Label();
             tabControlMain.SuspendLayout();
             tabPageCommandData.SuspendLayout();
             tabPageAttackData.SuspendLayout();
@@ -459,6 +466,7 @@
             // 
             // tabPageCommandData
             // 
+            tabPageCommandData.Controls.Add(labelCommandID);
             tabPageCommandData.Controls.Add(comboBoxCommandInitialCursorAction);
             tabPageCommandData.Controls.Add(labelCommandInitialCursorAction);
             tabPageCommandData.Controls.Add(targetDataControlCommand);
@@ -479,6 +487,16 @@
             tabPageCommandData.TabIndex = 0;
             tabPageCommandData.Text = "Command";
             tabPageCommandData.UseVisualStyleBackColor = true;
+            // 
+            // labelCommandID
+            // 
+            labelCommandID.AutoSize = true;
+            labelCommandID.Location = new Point(730, 13);
+            labelCommandID.Name = "labelCommandID";
+            labelCommandID.Size = new Size(34, 15);
+            labelCommandID.TabIndex = 36;
+            labelCommandID.Text = "ID: ??";
+            labelCommandID.TextAlign = ContentAlignment.TopRight;
             // 
             // comboBoxCommandInitialCursorAction
             // 
@@ -625,6 +643,7 @@
             // 
             // tabPageAttacks1
             // 
+            tabPageAttacks1.Controls.Add(labelAttackId);
             tabPageAttacks1.Controls.Add(checkBoxAttackIsLimit);
             tabPageAttacks1.Controls.Add(labelAttackHurtActionIndex);
             tabPageAttacks1.Controls.Add(comboBoxAttackHurtActionIndex);
@@ -655,6 +674,16 @@
             tabPageAttacks1.TabIndex = 0;
             tabPageAttacks1.Text = "Page 1";
             tabPageAttacks1.UseVisualStyleBackColor = true;
+            // 
+            // labelAttackId
+            // 
+            labelAttackId.AutoSize = true;
+            labelAttackId.Location = new Point(529, 3);
+            labelAttackId.Name = "labelAttackId";
+            labelAttackId.Size = new Size(34, 15);
+            labelAttackId.TabIndex = 44;
+            labelAttackId.Text = "ID: ??";
+            labelAttackId.TextAlign = ContentAlignment.TopRight;
             // 
             // checkBoxAttackIsLimit
             // 
@@ -849,7 +878,7 @@
             textBoxSummonText.Location = new Point(238, 21);
             textBoxSummonText.Margin = new Padding(4, 3, 4, 3);
             textBoxSummonText.Name = "textBoxSummonText";
-            textBoxSummonText.Size = new Size(324, 23);
+            textBoxSummonText.Size = new Size(256, 23);
             textBoxSummonText.TabIndex = 6;
             textBoxSummonText.TextChanged += textBoxSummonText_TextChanged;
             // 
@@ -2180,6 +2209,7 @@
             // 
             // tabPageItems1
             // 
+            tabPageItems1.Controls.Add(labelItemID);
             tabPageItems1.Controls.Add(labelItemName);
             tabPageItems1.Controls.Add(itemRestrictionsItem);
             tabPageItems1.Controls.Add(damageCalculationControlItem);
@@ -2409,6 +2439,7 @@
             // 
             // tabPageWeapon1
             // 
+            tabPageWeapon1.Controls.Add(labelWeaponID);
             tabPageWeapon1.Controls.Add(numericWeaponCritChance);
             tabPageWeapon1.Controls.Add(numericWeaponHitChance);
             tabPageWeapon1.Controls.Add(elementsControlWeapon);
@@ -2728,6 +2759,7 @@
             // 
             // tabPageArmor1
             // 
+            tabPageArmor1.Controls.Add(labelArmorID);
             tabPageArmor1.Controls.Add(labelArmorElementModifier);
             tabPageArmor1.Controls.Add(numericArmorMagicDefensePercent);
             tabPageArmor1.Controls.Add(labelArmorMagicDefensePercent);
@@ -3039,6 +3071,7 @@
             // 
             // tabPageAccessory1
             // 
+            tabPageAccessory1.Controls.Add(labelAccessoryID);
             tabPageAccessory1.Controls.Add(labelAccessoryElementModifier);
             tabPageAccessory1.Controls.Add(comboBoxAccessoryElementModifier);
             tabPageAccessory1.Controls.Add(statusesControlAccessory);
@@ -3212,6 +3245,7 @@
             // 
             // tabPageMateriaData
             // 
+            tabPageMateriaData.Controls.Add(labelMateriaID);
             tabPageMateriaData.Controls.Add(buttonMateriaAttributes);
             tabPageMateriaData.Controls.Add(comboBoxMateriaEquipAttributes);
             tabPageMateriaData.Controls.Add(labelMateriaEquipAttributes);
@@ -3749,6 +3783,56 @@
             attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
             // 
+            // labelItemID
+            // 
+            labelItemID.AutoSize = true;
+            labelItemID.Location = new Point(530, 3);
+            labelItemID.Name = "labelItemID";
+            labelItemID.Size = new Size(34, 15);
+            labelItemID.TabIndex = 45;
+            labelItemID.Text = "ID: ??";
+            labelItemID.TextAlign = ContentAlignment.TopRight;
+            // 
+            // labelWeaponID
+            // 
+            labelWeaponID.AutoSize = true;
+            labelWeaponID.Location = new Point(530, 3);
+            labelWeaponID.Name = "labelWeaponID";
+            labelWeaponID.Size = new Size(34, 15);
+            labelWeaponID.TabIndex = 45;
+            labelWeaponID.Text = "ID: ??";
+            labelWeaponID.TextAlign = ContentAlignment.TopRight;
+            // 
+            // labelArmorID
+            // 
+            labelArmorID.AutoSize = true;
+            labelArmorID.Location = new Point(530, 3);
+            labelArmorID.Name = "labelArmorID";
+            labelArmorID.Size = new Size(34, 15);
+            labelArmorID.TabIndex = 45;
+            labelArmorID.Text = "ID: ??";
+            labelArmorID.TextAlign = ContentAlignment.TopRight;
+            // 
+            // labelAccessoryID
+            // 
+            labelAccessoryID.AutoSize = true;
+            labelAccessoryID.Location = new Point(530, 3);
+            labelAccessoryID.Name = "labelAccessoryID";
+            labelAccessoryID.Size = new Size(34, 15);
+            labelAccessoryID.TabIndex = 45;
+            labelAccessoryID.Text = "ID: ??";
+            labelAccessoryID.TextAlign = ContentAlignment.TopRight;
+            // 
+            // labelMateriaID
+            // 
+            labelMateriaID.AutoSize = true;
+            labelMateriaID.Location = new Point(730, 13);
+            labelMateriaID.Name = "labelMateriaID";
+            labelMateriaID.Size = new Size(34, 15);
+            labelMateriaID.TabIndex = 45;
+            labelMateriaID.Text = "ID: ??";
+            labelMateriaID.TextAlign = ContentAlignment.TopRight;
+            // 
             // KernelForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -4198,5 +4282,12 @@
         private Label labelMagicType;
         private ComboBox comboBoxMagicType;
         private Button buttonMagicOrder;
+        private Label labelCommandID;
+        private Label labelAttackId;
+        private Label labelItemID;
+        private Label labelWeaponID;
+        private Label labelArmorID;
+        private Label labelAccessoryID;
+        private Label labelMateriaID;
     }
 }
