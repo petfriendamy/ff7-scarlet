@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KernelForm));
             tabControlMain = new TabControl();
             tabPageCommandData = new TabPage();
@@ -139,6 +139,12 @@
             textBoxCharacterName = new TextBox();
             labelCharacterName = new Label();
             listBoxInitCharacters = new ListBox();
+            tabPageCharacterLimits = new TabPage();
+            limitRequirementControl4 = new FF7Scarlet.KernelEditor.Controls.LimitRequirementControl();
+            limitRequirementControl3 = new FF7Scarlet.KernelEditor.Controls.LimitRequirementControl();
+            limitRequirementControl2 = new FF7Scarlet.KernelEditor.Controls.LimitRequirementControl();
+            limitRequirementControl1 = new FF7Scarlet.KernelEditor.Controls.LimitRequirementControl();
+            listBoxCharacterLimits = new ListBox();
             tabPageCharacterGrowth = new TabPage();
             groupBoxSelectedCurve = new GroupBox();
             labelInaccurateCurve = new Label();
@@ -377,6 +383,7 @@
             groupBoxCharacterWeapon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericCharacterLevel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericCharacterID).BeginInit();
+            tabPageCharacterLimits.SuspendLayout();
             tabPageCharacterGrowth.SuspendLayout();
             groupBoxSelectedCurve.SuspendLayout();
             groupBoxCurveBonuses.SuspendLayout();
@@ -1118,6 +1125,7 @@
             // tabControlCharacters
             // 
             tabControlCharacters.Controls.Add(tabPageInitCharacterStats);
+            tabControlCharacters.Controls.Add(tabPageCharacterLimits);
             tabControlCharacters.Controls.Add(tabPageCharacterGrowth);
             tabControlCharacters.Controls.Add(tabPageCharacterAI);
             tabControlCharacters.Dock = DockStyle.Fill;
@@ -1597,7 +1605,70 @@
             listBoxInitCharacters.Name = "listBoxInitCharacters";
             listBoxInitCharacters.Size = new Size(146, 139);
             listBoxInitCharacters.TabIndex = 0;
-            listBoxInitCharacters.SelectedIndexChanged += listBoxInitCharacters_SelectedIndexChanged;
+            listBoxInitCharacters.SelectedIndexChanged += listBoxCharacters_SelectedIndexChanged;
+            // 
+            // tabPageCharacterLimits
+            // 
+            tabPageCharacterLimits.Controls.Add(limitRequirementControl4);
+            tabPageCharacterLimits.Controls.Add(limitRequirementControl3);
+            tabPageCharacterLimits.Controls.Add(limitRequirementControl2);
+            tabPageCharacterLimits.Controls.Add(limitRequirementControl1);
+            tabPageCharacterLimits.Controls.Add(listBoxCharacterLimits);
+            tabPageCharacterLimits.Location = new Point(4, 24);
+            tabPageCharacterLimits.Name = "tabPageCharacterLimits";
+            tabPageCharacterLimits.Size = new Size(768, 474);
+            tabPageCharacterLimits.TabIndex = 2;
+            tabPageCharacterLimits.Text = "Limits";
+            tabPageCharacterLimits.UseVisualStyleBackColor = true;
+            // 
+            // limitRequirementControl4
+            // 
+            limitRequirementControl4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            limitRequirementControl4.Enabled = false;
+            limitRequirementControl4.Location = new Point(158, 354);
+            limitRequirementControl4.Name = "limitRequirementControl4";
+            limitRequirementControl4.Size = new Size(605, 110);
+            limitRequirementControl4.TabIndex = 5;
+            limitRequirementControl4.DataChanged += limitRequirementControl_DataChanged;
+            // 
+            // limitRequirementControl3
+            // 
+            limitRequirementControl3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            limitRequirementControl3.Enabled = false;
+            limitRequirementControl3.Location = new Point(158, 238);
+            limitRequirementControl3.Name = "limitRequirementControl3";
+            limitRequirementControl3.Size = new Size(605, 110);
+            limitRequirementControl3.TabIndex = 4;
+            limitRequirementControl3.DataChanged += limitRequirementControl_DataChanged;
+            // 
+            // limitRequirementControl2
+            // 
+            limitRequirementControl2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            limitRequirementControl2.Enabled = false;
+            limitRequirementControl2.Location = new Point(158, 122);
+            limitRequirementControl2.Name = "limitRequirementControl2";
+            limitRequirementControl2.Size = new Size(605, 110);
+            limitRequirementControl2.TabIndex = 3;
+            limitRequirementControl2.DataChanged += limitRequirementControl_DataChanged;
+            // 
+            // limitRequirementControl1
+            // 
+            limitRequirementControl1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            limitRequirementControl1.Enabled = false;
+            limitRequirementControl1.Location = new Point(158, 6);
+            limitRequirementControl1.Name = "limitRequirementControl1";
+            limitRequirementControl1.Size = new Size(605, 110);
+            limitRequirementControl1.TabIndex = 2;
+            limitRequirementControl1.DataChanged += limitRequirementControl_DataChanged;
+            // 
+            // listBoxCharacterLimits
+            // 
+            listBoxCharacterLimits.FormattingEnabled = true;
+            listBoxCharacterLimits.Location = new Point(6, 6);
+            listBoxCharacterLimits.Name = "listBoxCharacterLimits";
+            listBoxCharacterLimits.Size = new Size(146, 139);
+            listBoxCharacterLimits.TabIndex = 1;
+            listBoxCharacterLimits.SelectedIndexChanged += listBoxCharacters_SelectedIndexChanged;
             // 
             // tabPageCharacterGrowth
             // 
@@ -1811,30 +1882,30 @@
             // 
             chartMainCurve.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             chartMainCurve.BackColor = SystemColors.Control;
-            chartArea3.AxisX.Interval = 10D;
-            chartArea3.AxisX.IntervalOffset = 9D;
-            chartArea3.AxisX.IsStartedFromZero = false;
-            chartArea3.AxisX.Maximum = 99D;
-            chartArea3.AxisX.Minimum = 1D;
-            chartArea3.Name = "ChartArea1";
-            chartMainCurve.ChartAreas.Add(chartArea3);
+            chartArea2.AxisX.Interval = 10D;
+            chartArea2.AxisX.IntervalOffset = 9D;
+            chartArea2.AxisX.IsStartedFromZero = false;
+            chartArea2.AxisX.Maximum = 99D;
+            chartArea2.AxisX.Minimum = 1D;
+            chartArea2.Name = "ChartArea1";
+            chartMainCurve.ChartAreas.Add(chartArea2);
             chartMainCurve.Location = new Point(6, 22);
             chartMainCurve.Name = "chartMainCurve";
             chartMainCurve.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Color = Color.SteelBlue;
-            series5.Name = "Min";
-            series5.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series5.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series6.ChartArea = "ChartArea1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series6.Color = Color.Firebrick;
-            series6.Name = "Max";
-            series6.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series6.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            chartMainCurve.Series.Add(series5);
-            chartMainCurve.Series.Add(series6);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Color = Color.SteelBlue;
+            series3.Name = "Min";
+            series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series3.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Color = Color.Firebrick;
+            series4.Name = "Max";
+            series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series4.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            chartMainCurve.Series.Add(series3);
+            chartMainCurve.Series.Add(series4);
             chartMainCurve.Size = new Size(592, 262);
             chartMainCurve.TabIndex = 0;
             chartMainCurve.Text = "Main curve";
@@ -3893,6 +3964,7 @@
             groupBoxCharacterWeapon.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)numericCharacterLevel).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericCharacterID).EndInit();
+            tabPageCharacterLimits.ResumeLayout(false);
             tabPageCharacterGrowth.ResumeLayout(false);
             groupBoxSelectedCurve.ResumeLayout(false);
             groupBoxSelectedCurve.PerformLayout();
@@ -4296,5 +4368,11 @@
         private Label labelArmorID;
         private Label labelAccessoryID;
         private Label labelMateriaID;
+        private TabPage tabPageCharacterLimits;
+        private ListBox listBoxCharacterLimits;
+        private Controls.LimitRequirementControl limitRequirementControl1;
+        private Controls.LimitRequirementControl limitRequirementControl4;
+        private Controls.LimitRequirementControl limitRequirementControl3;
+        private Controls.LimitRequirementControl limitRequirementControl2;
     }
 }

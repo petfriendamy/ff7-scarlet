@@ -452,6 +452,7 @@ namespace FF7Scarlet.KernelEditor
                     //playable characters
                     if (i < Kernel.PLAYABLE_CHARACTER_COUNT)
                     {
+                        listBoxCharacterLimits.Items.Add(parsedName);
                         listBoxCharacterGrowth.Items.Add(parsedName);
 
                         if (i == 6 || i == 7) //Cait/Vincent
@@ -466,6 +467,12 @@ namespace FF7Scarlet.KernelEditor
                     }
                 }
             }
+
+            limitRequirementControl1.SetData(kernel.GetLimitNames(), 1);
+            limitRequirementControl2.SetData(kernel.GetLimitNames(), 2);
+            limitRequirementControl3.SetData(kernel.GetLimitNames(), 3);
+            limitRequirementControl4.SetData(kernel.GetLimitNames(), 4);
+
             listBoxCharacterAI.Items.Add("(unknown)");
             LoadItemLists();
             foreach (var f in Enum.GetNames<CharacterFlags>())
@@ -1205,6 +1212,17 @@ namespace FF7Scarlet.KernelEditor
                     comboBoxCharacterAccessory.SelectedIndex = character.AccessoryID + 1;
                 }
                 characterStatsControl.SetStatsFromCharacter(character);
+
+                limitRequirementControl1.Enabled = true;
+                limitRequirementControl2.Enabled = true;
+                limitRequirementControl3.Enabled = true;
+                limitRequirementControl4.Enabled = true;
+
+                limitRequirementControl1.SetCharacter(character);
+                limitRequirementControl2.SetCharacter(character);
+                limitRequirementControl3.SetCharacter(character);
+                limitRequirementControl4.SetCharacter(character);
+
                 loading = false;
             }
         }
@@ -2094,10 +2112,20 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private void listBoxInitCharacters_SelectedIndexChanged(object sender, EventArgs e)
+        private void listBoxCharacters_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!loading)
             {
+                //load both init data and limit data
+                int i = SelectedCharacterIndex;
+                if (sender == listBoxCharacterLimits)
+                {
+                    i = listBoxCharacterLimits.SelectedIndex;
+                }
+                loading = true;
+                listBoxInitCharacters.SelectedIndex = i;
+                listBoxCharacterLimits.SelectedIndex = i;
+
                 if (initialStatsNeedSync) //sync unsaved stat data
                 {
                     var chara = kernel.CharacterList[prevCharacter];
@@ -2106,8 +2134,8 @@ namespace FF7Scarlet.KernelEditor
                         SyncInitialStats(chara);
                     }
                 }
-                prevCharacter = SelectedCharacterIndex;
-                PopulateInitCharacterDataTab(SelectedCharacterIndex);
+                prevCharacter = i;
+                PopulateInitCharacterDataTab(i);
             }
         }
 
@@ -2812,6 +2840,14 @@ namespace FF7Scarlet.KernelEditor
                         SetUnsaved(true);
                     }
                 }
+            }
+        }
+
+        private void limitRequirementControl_DataChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                SetUnsaved(true);
             }
         }
 

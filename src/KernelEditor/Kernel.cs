@@ -274,6 +274,13 @@ namespace FF7Scarlet.KernelEditor
             return string.Empty;
         }
 
+        public string[] GetLimitNames()
+        {
+            var names = new string[ExeData.NUM_LIMITS];
+            Array.Copy(MagicNames.Strings, ATTACK_COUNT, names, 0, ExeData.NUM_LIMITS);
+            return names;
+        }
+
         public Item? GetItemByID(int id)
         {
             foreach (var item in ItemData.Items)
