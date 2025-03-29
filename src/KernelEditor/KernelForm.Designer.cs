@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KernelForm));
             tabControlMain = new TabControl();
             tabPageCommandData = new TabPage();
@@ -194,6 +194,7 @@
             tabPageItemData = new TabPage();
             tabControlItems = new TabControl();
             tabPageItems1 = new TabPage();
+            labelItemID = new Label();
             labelItemName = new Label();
             itemRestrictionsItem = new FF7Scarlet.KernelEditor.Controls.ItemRestrictionsControl();
             damageCalculationControlItem = new FF7Scarlet.KernelEditor.Controls.DamageCalculationControl();
@@ -216,6 +217,7 @@
             tabPageWeaponData = new TabPage();
             tabControlWeapons = new TabControl();
             tabPageWeapon1 = new TabPage();
+            labelWeaponID = new Label();
             numericWeaponCritChance = new NumericUpDown();
             numericWeaponHitChance = new NumericUpDown();
             elementsControlWeapon = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
@@ -246,6 +248,7 @@
             tabPageArmorData = new TabPage();
             tabControlArmor = new TabControl();
             tabPageArmor1 = new TabPage();
+            labelArmorID = new Label();
             labelArmorElementModifier = new Label();
             numericArmorMagicDefensePercent = new NumericUpDown();
             labelArmorMagicDefensePercent = new Label();
@@ -275,6 +278,7 @@
             tabPageAccessoryData = new TabPage();
             tabControlAccessories = new TabControl();
             tabPageAccessory1 = new TabPage();
+            labelAccessoryID = new Label();
             labelAccessoryElementModifier = new Label();
             comboBoxAccessoryElementModifier = new ComboBox();
             statusesControlAccessory = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
@@ -291,6 +295,7 @@
             itemRestrictionsAccessory = new FF7Scarlet.KernelEditor.Controls.ItemRestrictionsControl();
             listBoxAccessories = new ListBox();
             tabPageMateriaData = new TabPage();
+            labelMateriaID = new Label();
             buttonMateriaAttributes = new Button();
             comboBoxMateriaEquipAttributes = new ComboBox();
             labelMateriaEquipAttributes = new Label();
@@ -342,11 +347,6 @@
             attackCopyToolStripMenuItem = new ToolStripMenuItem();
             attackPasteToolStripMenuItem = new ToolStripMenuItem();
             attackDeleteToolStripMenuItem = new ToolStripMenuItem();
-            labelItemID = new Label();
-            labelWeaponID = new Label();
-            labelArmorID = new Label();
-            labelAccessoryID = new Label();
-            labelMateriaID = new Label();
             tabControlMain.SuspendLayout();
             tabPageCommandData.SuspendLayout();
             tabPageAttackData.SuspendLayout();
@@ -490,6 +490,7 @@
             // 
             // labelCommandID
             // 
+            labelCommandID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelCommandID.AutoSize = true;
             labelCommandID.Location = new Point(730, 13);
             labelCommandID.Name = "labelCommandID";
@@ -677,6 +678,7 @@
             // 
             // labelAttackId
             // 
+            labelAttackId.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelAttackId.AutoSize = true;
             labelAttackId.Location = new Point(529, 3);
             labelAttackId.Name = "labelAttackId";
@@ -1809,30 +1811,30 @@
             // 
             chartMainCurve.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             chartMainCurve.BackColor = SystemColors.Control;
-            chartArea1.AxisX.Interval = 10D;
-            chartArea1.AxisX.IntervalOffset = 9D;
-            chartArea1.AxisX.IsStartedFromZero = false;
-            chartArea1.AxisX.Maximum = 99D;
-            chartArea1.AxisX.Minimum = 1D;
-            chartArea1.Name = "ChartArea1";
-            chartMainCurve.ChartAreas.Add(chartArea1);
+            chartArea3.AxisX.Interval = 10D;
+            chartArea3.AxisX.IntervalOffset = 9D;
+            chartArea3.AxisX.IsStartedFromZero = false;
+            chartArea3.AxisX.Maximum = 99D;
+            chartArea3.AxisX.Minimum = 1D;
+            chartArea3.Name = "ChartArea1";
+            chartMainCurve.ChartAreas.Add(chartArea3);
             chartMainCurve.Location = new Point(6, 22);
             chartMainCurve.Name = "chartMainCurve";
             chartMainCurve.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Color = Color.SteelBlue;
-            series1.Name = "Min";
-            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Color = Color.Firebrick;
-            series2.Name = "Max";
-            series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            chartMainCurve.Series.Add(series1);
-            chartMainCurve.Series.Add(series2);
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Color = Color.SteelBlue;
+            series5.Name = "Min";
+            series5.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series5.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series6.Color = Color.Firebrick;
+            series6.Name = "Max";
+            series6.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series6.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            chartMainCurve.Series.Add(series5);
+            chartMainCurve.Series.Add(series6);
             chartMainCurve.Size = new Size(592, 262);
             chartMainCurve.TabIndex = 0;
             chartMainCurve.Text = "Main curve";
@@ -2229,6 +2231,17 @@
             tabPageItems1.Text = "Page 1";
             tabPageItems1.UseVisualStyleBackColor = true;
             // 
+            // labelItemID
+            // 
+            labelItemID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelItemID.AutoSize = true;
+            labelItemID.Location = new Point(530, 3);
+            labelItemID.Name = "labelItemID";
+            labelItemID.Size = new Size(34, 15);
+            labelItemID.TabIndex = 45;
+            labelItemID.Text = "ID: ??";
+            labelItemID.TextAlign = ContentAlignment.TopRight;
+            // 
             // labelItemName
             // 
             labelItemName.AutoSize = true;
@@ -2464,6 +2477,17 @@
             tabPageWeapon1.TabIndex = 0;
             tabPageWeapon1.Text = "Page 1";
             tabPageWeapon1.UseVisualStyleBackColor = true;
+            // 
+            // labelWeaponID
+            // 
+            labelWeaponID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelWeaponID.AutoSize = true;
+            labelWeaponID.Location = new Point(530, 3);
+            labelWeaponID.Name = "labelWeaponID";
+            labelWeaponID.Size = new Size(34, 15);
+            labelWeaponID.TabIndex = 45;
+            labelWeaponID.Text = "ID: ??";
+            labelWeaponID.TextAlign = ContentAlignment.TopRight;
             // 
             // numericWeaponCritChance
             // 
@@ -2787,6 +2811,17 @@
             tabPageArmor1.Text = "Page 1";
             tabPageArmor1.UseVisualStyleBackColor = true;
             // 
+            // labelArmorID
+            // 
+            labelArmorID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelArmorID.AutoSize = true;
+            labelArmorID.Location = new Point(530, 3);
+            labelArmorID.Name = "labelArmorID";
+            labelArmorID.Size = new Size(34, 15);
+            labelArmorID.TabIndex = 45;
+            labelArmorID.Text = "ID: ??";
+            labelArmorID.TextAlign = ContentAlignment.TopRight;
+            // 
             // labelArmorElementModifier
             // 
             labelArmorElementModifier.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -3089,6 +3124,17 @@
             tabPageAccessory1.Text = "Page 1";
             tabPageAccessory1.UseVisualStyleBackColor = true;
             // 
+            // labelAccessoryID
+            // 
+            labelAccessoryID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelAccessoryID.AutoSize = true;
+            labelAccessoryID.Location = new Point(530, 3);
+            labelAccessoryID.Name = "labelAccessoryID";
+            labelAccessoryID.Size = new Size(34, 15);
+            labelAccessoryID.TabIndex = 45;
+            labelAccessoryID.Text = "ID: ??";
+            labelAccessoryID.TextAlign = ContentAlignment.TopRight;
+            // 
             // labelAccessoryElementModifier
             // 
             labelAccessoryElementModifier.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -3269,6 +3315,17 @@
             tabPageMateriaData.TabIndex = 7;
             tabPageMateriaData.Text = "Materia";
             tabPageMateriaData.UseVisualStyleBackColor = true;
+            // 
+            // labelMateriaID
+            // 
+            labelMateriaID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelMateriaID.AutoSize = true;
+            labelMateriaID.Location = new Point(730, 13);
+            labelMateriaID.Name = "labelMateriaID";
+            labelMateriaID.Size = new Size(34, 15);
+            labelMateriaID.TabIndex = 45;
+            labelMateriaID.Text = "ID: ??";
+            labelMateriaID.TextAlign = ContentAlignment.TopRight;
             // 
             // buttonMateriaAttributes
             // 
@@ -3782,56 +3839,6 @@
             attackDeleteToolStripMenuItem.Name = "attackDeleteToolStripMenuItem";
             attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
-            // 
-            // labelItemID
-            // 
-            labelItemID.AutoSize = true;
-            labelItemID.Location = new Point(530, 3);
-            labelItemID.Name = "labelItemID";
-            labelItemID.Size = new Size(34, 15);
-            labelItemID.TabIndex = 45;
-            labelItemID.Text = "ID: ??";
-            labelItemID.TextAlign = ContentAlignment.TopRight;
-            // 
-            // labelWeaponID
-            // 
-            labelWeaponID.AutoSize = true;
-            labelWeaponID.Location = new Point(530, 3);
-            labelWeaponID.Name = "labelWeaponID";
-            labelWeaponID.Size = new Size(34, 15);
-            labelWeaponID.TabIndex = 45;
-            labelWeaponID.Text = "ID: ??";
-            labelWeaponID.TextAlign = ContentAlignment.TopRight;
-            // 
-            // labelArmorID
-            // 
-            labelArmorID.AutoSize = true;
-            labelArmorID.Location = new Point(530, 3);
-            labelArmorID.Name = "labelArmorID";
-            labelArmorID.Size = new Size(34, 15);
-            labelArmorID.TabIndex = 45;
-            labelArmorID.Text = "ID: ??";
-            labelArmorID.TextAlign = ContentAlignment.TopRight;
-            // 
-            // labelAccessoryID
-            // 
-            labelAccessoryID.AutoSize = true;
-            labelAccessoryID.Location = new Point(530, 3);
-            labelAccessoryID.Name = "labelAccessoryID";
-            labelAccessoryID.Size = new Size(34, 15);
-            labelAccessoryID.TabIndex = 45;
-            labelAccessoryID.Text = "ID: ??";
-            labelAccessoryID.TextAlign = ContentAlignment.TopRight;
-            // 
-            // labelMateriaID
-            // 
-            labelMateriaID.AutoSize = true;
-            labelMateriaID.Location = new Point(730, 13);
-            labelMateriaID.Name = "labelMateriaID";
-            labelMateriaID.Size = new Size(34, 15);
-            labelMateriaID.TabIndex = 45;
-            labelMateriaID.Text = "ID: ??";
-            labelMateriaID.TextAlign = ContentAlignment.TopRight;
             // 
             // KernelForm
             // 

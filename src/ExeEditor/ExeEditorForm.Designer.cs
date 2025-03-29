@@ -288,6 +288,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxAudioVolume = new ListBox();
             buttonHext = new Button();
             panelButtons = new Panel();
+            labelLimitID = new Label();
             tabControlMain.SuspendLayout();
             tabPageInitialData.SuspendLayout();
             groupBoxCharacterMP.SuspendLayout();
@@ -940,6 +941,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             // tabPageLimits1
             // 
+            tabPageLimits1.Controls.Add(labelLimitID);
             tabPageLimits1.Controls.Add(labelLimitHurtActionIndex);
             tabPageLimits1.Controls.Add(comboBoxLimitHurtActionIndex);
             tabPageLimits1.Controls.Add(labelLimitAttackEffectID);
@@ -3131,6 +3133,17 @@ namespace FF7Scarlet.ExeEditor
             panelButtons.Size = new Size(784, 46);
             panelButtons.TabIndex = 6;
             // 
+            // labelLimitID
+            // 
+            labelLimitID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelLimitID.AutoSize = true;
+            labelLimitID.Location = new Point(534, 6);
+            labelLimitID.Name = "labelLimitID";
+            labelLimitID.Size = new Size(34, 15);
+            labelLimitID.TabIndex = 43;
+            labelLimitID.Text = "ID: ??";
+            labelLimitID.TextAlign = ContentAlignment.TopRight;
+            // 
             // ExeEditorForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3520,6 +3533,7 @@ namespace FF7Scarlet.ExeEditor
         private TrackBar trackBarAudioPan;
         private Button buttonAudioVolumeTest;
         private Button buttonAudioPanTest;
+        private Label labelLimitID;
     }
 }
 

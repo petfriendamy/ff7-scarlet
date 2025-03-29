@@ -267,7 +267,7 @@ namespace FF7Scarlet.KernelEditor
 
         public string GetLimitName(int index)
         {
-            if (index > 0 && index < ExeData.NUM_LIMITS)
+            if (index >= 0 && index < ExeData.NUM_LIMITS)
             {
                 return MagicNames.Strings[index + ATTACK_COUNT];
             }
