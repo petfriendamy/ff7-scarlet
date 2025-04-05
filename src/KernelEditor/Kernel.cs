@@ -267,11 +267,18 @@ namespace FF7Scarlet.KernelEditor
 
         public string GetLimitName(int index)
         {
-            if (index > 0 && index < ExeData.NUM_LIMITS)
+            if (index >= 0 && index < ExeData.NUM_LIMITS)
             {
                 return MagicNames.Strings[index + ATTACK_COUNT];
             }
             return string.Empty;
+        }
+
+        public string[] GetLimitNames()
+        {
+            var names = new string[ExeData.NUM_LIMITS];
+            Array.Copy(MagicNames.Strings, ATTACK_COUNT, names, 0, ExeData.NUM_LIMITS);
+            return names;
         }
 
         public Item? GetItemByID(int id)

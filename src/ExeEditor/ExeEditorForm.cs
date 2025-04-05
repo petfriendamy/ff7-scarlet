@@ -1238,6 +1238,7 @@ namespace FF7Scarlet.ExeEditor
                         tabControlLimits.Enabled = true;
 
                         //page 1
+                        labelLimitID.Text = $"ID: {i:X2}";
                         numericLimitAttackPercent.Value = attack.AccuracyRate;
                         numericLimitMPCost.Value = attack.MPCost;
                         comboBoxLimitAttackEffectID.Text = attack.AttackEffectID.ToString("X2");

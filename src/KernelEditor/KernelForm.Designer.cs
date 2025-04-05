@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KernelForm));
             tabControlMain = new TabControl();
             tabPageCommandData = new TabPage();
+            labelCommandID = new Label();
             comboBoxCommandInitialCursorAction = new ComboBox();
             labelCommandInitialCursorAction = new Label();
             targetDataControlCommand = new FF7Scarlet.KernelEditor.Controls.TargetDataControl();
@@ -49,6 +50,7 @@
             tabPageAttackData = new TabPage();
             tabControlAttacks = new TabControl();
             tabPageAttacks1 = new TabPage();
+            labelAttackId = new Label();
             checkBoxAttackIsLimit = new CheckBox();
             labelAttackHurtActionIndex = new Label();
             comboBoxAttackHurtActionIndex = new ComboBox();
@@ -137,6 +139,12 @@
             textBoxCharacterName = new TextBox();
             labelCharacterName = new Label();
             listBoxInitCharacters = new ListBox();
+            tabPageCharacterLimits = new TabPage();
+            limitRequirementControl4 = new FF7Scarlet.KernelEditor.Controls.LimitRequirementControl();
+            limitRequirementControl3 = new FF7Scarlet.KernelEditor.Controls.LimitRequirementControl();
+            limitRequirementControl2 = new FF7Scarlet.KernelEditor.Controls.LimitRequirementControl();
+            limitRequirementControl1 = new FF7Scarlet.KernelEditor.Controls.LimitRequirementControl();
+            listBoxCharacterLimits = new ListBox();
             tabPageCharacterGrowth = new TabPage();
             groupBoxSelectedCurve = new GroupBox();
             labelInaccurateCurve = new Label();
@@ -192,6 +200,7 @@
             tabPageItemData = new TabPage();
             tabControlItems = new TabControl();
             tabPageItems1 = new TabPage();
+            labelItemID = new Label();
             labelItemName = new Label();
             itemRestrictionsItem = new FF7Scarlet.KernelEditor.Controls.ItemRestrictionsControl();
             damageCalculationControlItem = new FF7Scarlet.KernelEditor.Controls.DamageCalculationControl();
@@ -214,6 +223,7 @@
             tabPageWeaponData = new TabPage();
             tabControlWeapons = new TabControl();
             tabPageWeapon1 = new TabPage();
+            labelWeaponID = new Label();
             numericWeaponCritChance = new NumericUpDown();
             numericWeaponHitChance = new NumericUpDown();
             elementsControlWeapon = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
@@ -244,6 +254,7 @@
             tabPageArmorData = new TabPage();
             tabControlArmor = new TabControl();
             tabPageArmor1 = new TabPage();
+            labelArmorID = new Label();
             labelArmorElementModifier = new Label();
             numericArmorMagicDefensePercent = new NumericUpDown();
             labelArmorMagicDefensePercent = new Label();
@@ -273,6 +284,7 @@
             tabPageAccessoryData = new TabPage();
             tabControlAccessories = new TabControl();
             tabPageAccessory1 = new TabPage();
+            labelAccessoryID = new Label();
             labelAccessoryElementModifier = new Label();
             comboBoxAccessoryElementModifier = new ComboBox();
             statusesControlAccessory = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
@@ -289,6 +301,7 @@
             itemRestrictionsAccessory = new FF7Scarlet.KernelEditor.Controls.ItemRestrictionsControl();
             listBoxAccessories = new ListBox();
             tabPageMateriaData = new TabPage();
+            labelMateriaID = new Label();
             buttonMateriaAttributes = new Button();
             comboBoxMateriaEquipAttributes = new ComboBox();
             labelMateriaEquipAttributes = new Label();
@@ -370,6 +383,7 @@
             groupBoxCharacterWeapon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericCharacterLevel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericCharacterID).BeginInit();
+            tabPageCharacterLimits.SuspendLayout();
             tabPageCharacterGrowth.SuspendLayout();
             groupBoxSelectedCurve.SuspendLayout();
             groupBoxCurveBonuses.SuspendLayout();
@@ -459,6 +473,7 @@
             // 
             // tabPageCommandData
             // 
+            tabPageCommandData.Controls.Add(labelCommandID);
             tabPageCommandData.Controls.Add(comboBoxCommandInitialCursorAction);
             tabPageCommandData.Controls.Add(labelCommandInitialCursorAction);
             tabPageCommandData.Controls.Add(targetDataControlCommand);
@@ -479,6 +494,17 @@
             tabPageCommandData.TabIndex = 0;
             tabPageCommandData.Text = "Command";
             tabPageCommandData.UseVisualStyleBackColor = true;
+            // 
+            // labelCommandID
+            // 
+            labelCommandID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelCommandID.AutoSize = true;
+            labelCommandID.Location = new Point(730, 13);
+            labelCommandID.Name = "labelCommandID";
+            labelCommandID.Size = new Size(34, 15);
+            labelCommandID.TabIndex = 36;
+            labelCommandID.Text = "ID: ??";
+            labelCommandID.TextAlign = ContentAlignment.TopRight;
             // 
             // comboBoxCommandInitialCursorAction
             // 
@@ -625,6 +651,7 @@
             // 
             // tabPageAttacks1
             // 
+            tabPageAttacks1.Controls.Add(labelAttackId);
             tabPageAttacks1.Controls.Add(checkBoxAttackIsLimit);
             tabPageAttacks1.Controls.Add(labelAttackHurtActionIndex);
             tabPageAttacks1.Controls.Add(comboBoxAttackHurtActionIndex);
@@ -655,6 +682,17 @@
             tabPageAttacks1.TabIndex = 0;
             tabPageAttacks1.Text = "Page 1";
             tabPageAttacks1.UseVisualStyleBackColor = true;
+            // 
+            // labelAttackId
+            // 
+            labelAttackId.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelAttackId.AutoSize = true;
+            labelAttackId.Location = new Point(529, 3);
+            labelAttackId.Name = "labelAttackId";
+            labelAttackId.Size = new Size(34, 15);
+            labelAttackId.TabIndex = 44;
+            labelAttackId.Text = "ID: ??";
+            labelAttackId.TextAlign = ContentAlignment.TopRight;
             // 
             // checkBoxAttackIsLimit
             // 
@@ -849,7 +887,7 @@
             textBoxSummonText.Location = new Point(238, 21);
             textBoxSummonText.Margin = new Padding(4, 3, 4, 3);
             textBoxSummonText.Name = "textBoxSummonText";
-            textBoxSummonText.Size = new Size(324, 23);
+            textBoxSummonText.Size = new Size(256, 23);
             textBoxSummonText.TabIndex = 6;
             textBoxSummonText.TextChanged += textBoxSummonText_TextChanged;
             // 
@@ -1087,6 +1125,7 @@
             // tabControlCharacters
             // 
             tabControlCharacters.Controls.Add(tabPageInitCharacterStats);
+            tabControlCharacters.Controls.Add(tabPageCharacterLimits);
             tabControlCharacters.Controls.Add(tabPageCharacterGrowth);
             tabControlCharacters.Controls.Add(tabPageCharacterAI);
             tabControlCharacters.Dock = DockStyle.Fill;
@@ -1566,7 +1605,70 @@
             listBoxInitCharacters.Name = "listBoxInitCharacters";
             listBoxInitCharacters.Size = new Size(146, 139);
             listBoxInitCharacters.TabIndex = 0;
-            listBoxInitCharacters.SelectedIndexChanged += listBoxInitCharacters_SelectedIndexChanged;
+            listBoxInitCharacters.SelectedIndexChanged += listBoxCharacters_SelectedIndexChanged;
+            // 
+            // tabPageCharacterLimits
+            // 
+            tabPageCharacterLimits.Controls.Add(limitRequirementControl4);
+            tabPageCharacterLimits.Controls.Add(limitRequirementControl3);
+            tabPageCharacterLimits.Controls.Add(limitRequirementControl2);
+            tabPageCharacterLimits.Controls.Add(limitRequirementControl1);
+            tabPageCharacterLimits.Controls.Add(listBoxCharacterLimits);
+            tabPageCharacterLimits.Location = new Point(4, 24);
+            tabPageCharacterLimits.Name = "tabPageCharacterLimits";
+            tabPageCharacterLimits.Size = new Size(768, 474);
+            tabPageCharacterLimits.TabIndex = 2;
+            tabPageCharacterLimits.Text = "Limits";
+            tabPageCharacterLimits.UseVisualStyleBackColor = true;
+            // 
+            // limitRequirementControl4
+            // 
+            limitRequirementControl4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            limitRequirementControl4.Enabled = false;
+            limitRequirementControl4.Location = new Point(158, 354);
+            limitRequirementControl4.Name = "limitRequirementControl4";
+            limitRequirementControl4.Size = new Size(605, 110);
+            limitRequirementControl4.TabIndex = 5;
+            limitRequirementControl4.DataChanged += limitRequirementControl_DataChanged;
+            // 
+            // limitRequirementControl3
+            // 
+            limitRequirementControl3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            limitRequirementControl3.Enabled = false;
+            limitRequirementControl3.Location = new Point(158, 238);
+            limitRequirementControl3.Name = "limitRequirementControl3";
+            limitRequirementControl3.Size = new Size(605, 110);
+            limitRequirementControl3.TabIndex = 4;
+            limitRequirementControl3.DataChanged += limitRequirementControl_DataChanged;
+            // 
+            // limitRequirementControl2
+            // 
+            limitRequirementControl2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            limitRequirementControl2.Enabled = false;
+            limitRequirementControl2.Location = new Point(158, 122);
+            limitRequirementControl2.Name = "limitRequirementControl2";
+            limitRequirementControl2.Size = new Size(605, 110);
+            limitRequirementControl2.TabIndex = 3;
+            limitRequirementControl2.DataChanged += limitRequirementControl_DataChanged;
+            // 
+            // limitRequirementControl1
+            // 
+            limitRequirementControl1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            limitRequirementControl1.Enabled = false;
+            limitRequirementControl1.Location = new Point(158, 6);
+            limitRequirementControl1.Name = "limitRequirementControl1";
+            limitRequirementControl1.Size = new Size(605, 110);
+            limitRequirementControl1.TabIndex = 2;
+            limitRequirementControl1.DataChanged += limitRequirementControl_DataChanged;
+            // 
+            // listBoxCharacterLimits
+            // 
+            listBoxCharacterLimits.FormattingEnabled = true;
+            listBoxCharacterLimits.Location = new Point(6, 6);
+            listBoxCharacterLimits.Name = "listBoxCharacterLimits";
+            listBoxCharacterLimits.Size = new Size(146, 139);
+            listBoxCharacterLimits.TabIndex = 1;
+            listBoxCharacterLimits.SelectedIndexChanged += listBoxCharacters_SelectedIndexChanged;
             // 
             // tabPageCharacterGrowth
             // 
@@ -1780,30 +1882,30 @@
             // 
             chartMainCurve.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             chartMainCurve.BackColor = SystemColors.Control;
-            chartArea1.AxisX.Interval = 10D;
-            chartArea1.AxisX.IntervalOffset = 9D;
-            chartArea1.AxisX.IsStartedFromZero = false;
-            chartArea1.AxisX.Maximum = 99D;
-            chartArea1.AxisX.Minimum = 1D;
-            chartArea1.Name = "ChartArea1";
-            chartMainCurve.ChartAreas.Add(chartArea1);
+            chartArea2.AxisX.Interval = 10D;
+            chartArea2.AxisX.IntervalOffset = 9D;
+            chartArea2.AxisX.IsStartedFromZero = false;
+            chartArea2.AxisX.Maximum = 99D;
+            chartArea2.AxisX.Minimum = 1D;
+            chartArea2.Name = "ChartArea1";
+            chartMainCurve.ChartAreas.Add(chartArea2);
             chartMainCurve.Location = new Point(6, 22);
             chartMainCurve.Name = "chartMainCurve";
             chartMainCurve.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Color = Color.SteelBlue;
-            series1.Name = "Min";
-            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Color = Color.Firebrick;
-            series2.Name = "Max";
-            series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            chartMainCurve.Series.Add(series1);
-            chartMainCurve.Series.Add(series2);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Color = Color.SteelBlue;
+            series3.Name = "Min";
+            series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series3.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Color = Color.Firebrick;
+            series4.Name = "Max";
+            series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series4.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            chartMainCurve.Series.Add(series3);
+            chartMainCurve.Series.Add(series4);
             chartMainCurve.Size = new Size(592, 262);
             chartMainCurve.TabIndex = 0;
             chartMainCurve.Text = "Main curve";
@@ -2180,6 +2282,7 @@
             // 
             // tabPageItems1
             // 
+            tabPageItems1.Controls.Add(labelItemID);
             tabPageItems1.Controls.Add(labelItemName);
             tabPageItems1.Controls.Add(itemRestrictionsItem);
             tabPageItems1.Controls.Add(damageCalculationControlItem);
@@ -2198,6 +2301,17 @@
             tabPageItems1.TabIndex = 0;
             tabPageItems1.Text = "Page 1";
             tabPageItems1.UseVisualStyleBackColor = true;
+            // 
+            // labelItemID
+            // 
+            labelItemID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelItemID.AutoSize = true;
+            labelItemID.Location = new Point(530, 3);
+            labelItemID.Name = "labelItemID";
+            labelItemID.Size = new Size(34, 15);
+            labelItemID.TabIndex = 45;
+            labelItemID.Text = "ID: ??";
+            labelItemID.TextAlign = ContentAlignment.TopRight;
             // 
             // labelItemName
             // 
@@ -2409,6 +2523,7 @@
             // 
             // tabPageWeapon1
             // 
+            tabPageWeapon1.Controls.Add(labelWeaponID);
             tabPageWeapon1.Controls.Add(numericWeaponCritChance);
             tabPageWeapon1.Controls.Add(numericWeaponHitChance);
             tabPageWeapon1.Controls.Add(elementsControlWeapon);
@@ -2433,6 +2548,17 @@
             tabPageWeapon1.TabIndex = 0;
             tabPageWeapon1.Text = "Page 1";
             tabPageWeapon1.UseVisualStyleBackColor = true;
+            // 
+            // labelWeaponID
+            // 
+            labelWeaponID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelWeaponID.AutoSize = true;
+            labelWeaponID.Location = new Point(530, 3);
+            labelWeaponID.Name = "labelWeaponID";
+            labelWeaponID.Size = new Size(34, 15);
+            labelWeaponID.TabIndex = 45;
+            labelWeaponID.Text = "ID: ??";
+            labelWeaponID.TextAlign = ContentAlignment.TopRight;
             // 
             // numericWeaponCritChance
             // 
@@ -2728,6 +2854,7 @@
             // 
             // tabPageArmor1
             // 
+            tabPageArmor1.Controls.Add(labelArmorID);
             tabPageArmor1.Controls.Add(labelArmorElementModifier);
             tabPageArmor1.Controls.Add(numericArmorMagicDefensePercent);
             tabPageArmor1.Controls.Add(labelArmorMagicDefensePercent);
@@ -2754,6 +2881,17 @@
             tabPageArmor1.TabIndex = 0;
             tabPageArmor1.Text = "Page 1";
             tabPageArmor1.UseVisualStyleBackColor = true;
+            // 
+            // labelArmorID
+            // 
+            labelArmorID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelArmorID.AutoSize = true;
+            labelArmorID.Location = new Point(530, 3);
+            labelArmorID.Name = "labelArmorID";
+            labelArmorID.Size = new Size(34, 15);
+            labelArmorID.TabIndex = 45;
+            labelArmorID.Text = "ID: ??";
+            labelArmorID.TextAlign = ContentAlignment.TopRight;
             // 
             // labelArmorElementModifier
             // 
@@ -3039,6 +3177,7 @@
             // 
             // tabPageAccessory1
             // 
+            tabPageAccessory1.Controls.Add(labelAccessoryID);
             tabPageAccessory1.Controls.Add(labelAccessoryElementModifier);
             tabPageAccessory1.Controls.Add(comboBoxAccessoryElementModifier);
             tabPageAccessory1.Controls.Add(statusesControlAccessory);
@@ -3055,6 +3194,17 @@
             tabPageAccessory1.TabIndex = 0;
             tabPageAccessory1.Text = "Page 1";
             tabPageAccessory1.UseVisualStyleBackColor = true;
+            // 
+            // labelAccessoryID
+            // 
+            labelAccessoryID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelAccessoryID.AutoSize = true;
+            labelAccessoryID.Location = new Point(530, 3);
+            labelAccessoryID.Name = "labelAccessoryID";
+            labelAccessoryID.Size = new Size(34, 15);
+            labelAccessoryID.TabIndex = 45;
+            labelAccessoryID.Text = "ID: ??";
+            labelAccessoryID.TextAlign = ContentAlignment.TopRight;
             // 
             // labelAccessoryElementModifier
             // 
@@ -3212,6 +3362,7 @@
             // 
             // tabPageMateriaData
             // 
+            tabPageMateriaData.Controls.Add(labelMateriaID);
             tabPageMateriaData.Controls.Add(buttonMateriaAttributes);
             tabPageMateriaData.Controls.Add(comboBoxMateriaEquipAttributes);
             tabPageMateriaData.Controls.Add(labelMateriaEquipAttributes);
@@ -3235,6 +3386,17 @@
             tabPageMateriaData.TabIndex = 7;
             tabPageMateriaData.Text = "Materia";
             tabPageMateriaData.UseVisualStyleBackColor = true;
+            // 
+            // labelMateriaID
+            // 
+            labelMateriaID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelMateriaID.AutoSize = true;
+            labelMateriaID.Location = new Point(730, 13);
+            labelMateriaID.Name = "labelMateriaID";
+            labelMateriaID.Size = new Size(34, 15);
+            labelMateriaID.TabIndex = 45;
+            labelMateriaID.Text = "ID: ??";
+            labelMateriaID.TextAlign = ContentAlignment.TopRight;
             // 
             // buttonMateriaAttributes
             // 
@@ -3802,6 +3964,7 @@
             groupBoxCharacterWeapon.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)numericCharacterLevel).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericCharacterID).EndInit();
+            tabPageCharacterLimits.ResumeLayout(false);
             tabPageCharacterGrowth.ResumeLayout(false);
             groupBoxSelectedCurve.ResumeLayout(false);
             groupBoxSelectedCurve.PerformLayout();
@@ -4198,5 +4361,18 @@
         private Label labelMagicType;
         private ComboBox comboBoxMagicType;
         private Button buttonMagicOrder;
+        private Label labelCommandID;
+        private Label labelAttackId;
+        private Label labelItemID;
+        private Label labelWeaponID;
+        private Label labelArmorID;
+        private Label labelAccessoryID;
+        private Label labelMateriaID;
+        private TabPage tabPageCharacterLimits;
+        private ListBox listBoxCharacterLimits;
+        private Controls.LimitRequirementControl limitRequirementControl1;
+        private Controls.LimitRequirementControl limitRequirementControl4;
+        private Controls.LimitRequirementControl limitRequirementControl3;
+        private Controls.LimitRequirementControl limitRequirementControl2;
     }
 }
