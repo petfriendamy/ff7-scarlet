@@ -62,6 +62,7 @@ namespace FF7Scarlet.ExeEditor
             NUM_CHOCOBO_NAMES = 46,
             NUM_CHOCOBO_RACE_ITEMS = 24,
             NUM_AUDIO_VALUES = 128,
+            NUM_WALKABILITY_MODELS = 11,
             
             MENU_TEXT_LENGTH = 20,
             ITEM_MENU_TEXT_LENGTH = 12,
@@ -119,6 +120,10 @@ namespace FF7Scarlet.ExeEditor
             CHOCOBO_RACE_ITEMS_POS = 0x57B3D0,
             CHOCOBO_NAMES_POS = 0x57B658;
 
+        private static readonly int[] MODEL_CAN_WALK_POS = { 0x34c356, 0, 0x34c383, 0x34c4cc, 0x34c57e, 0x34c5c9, 0x568440, 0x568444, 0x568448, 0x56844c, 0x568450 };
+        private static readonly int[] MODEL_CAN_DISEMBARK_POS= { 0, 0x34c45f, 0x34c3c1, 0x34c518, 0x34c54c, 0x34c59a, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec };
+        private static readonly int[] MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS = { 0x34c4f3, 0x34c52d };
+
         //properties
         public string FilePath { get; private set; } = string.Empty;
         public Language Language { get; private set; }
@@ -160,6 +165,8 @@ namespace FF7Scarlet.ExeEditor
         public Dictionary<byte, byte> MateriaPriority { get; } = new();
         public int[] AudioVolume { get; } = new int[NUM_AUDIO_VALUES];
         public int[] AudioPan { get; } = new int[NUM_AUDIO_VALUES];
+        public int[] ModelMoveBitmasks { get; } = new int[NUM_WALKABILITY_MODELS];
+        public int[] ModelDisembarkBitmasks{ get; } = new int[NUM_WALKABILITY_MODELS];
         public bool IsUnedited { get; private set; }
 
 
@@ -778,6 +785,21 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < MateriaPrices.Length; ++i)
                         {
                             MateriaPrices[i] = reader.ReadUInt32();
+                        }
+
+                        //get walkability data
+                        for (i = 0; i < NUM_WALKABILITY_MODELS; i++)
+                        {
+                            if (MODEL_CAN_WALK_POS[i] > 0)
+                            {
+                                stream.Seek(MODEL_CAN_WALK_POS[i], SeekOrigin.Begin);
+                                ModelMoveBitmasks[i] = reader.ReadInt32();
+                            }
+                            if (MODEL_CAN_DISEMBARK_POS[i] > 0)
+                            {
+                                stream.Seek(MODEL_CAN_DISEMBARK_POS[i], SeekOrigin.Begin);
+                                ModelDisembarkBitmasks[i] = reader.ReadInt32();
+                            }
                         }
                     }
                     FilePath = path;
