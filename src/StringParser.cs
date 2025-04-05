@@ -8,8 +8,13 @@ namespace FF7Scarlet
 {
     public static class StringParser
     {
-        public static string AddSpaces(string str, bool makeLower = false)
+        public static string AddSpaces(string? str, bool makeLower = false)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                return string.Empty;
+            }
+
             char curr;
             for (int i = 1; i < str.Length - 1; ++i)
             {

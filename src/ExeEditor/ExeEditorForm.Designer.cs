@@ -84,6 +84,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxLimits = new ListBox();
             tabControlLimits = new TabControl();
             tabPageLimits1 = new TabPage();
+            labelLimitID = new Label();
             labelLimitHurtActionIndex = new Label();
             comboBoxLimitHurtActionIndex = new ComboBox();
             labelLimitAttackEffectID = new Label();
@@ -176,11 +177,11 @@ namespace FF7Scarlet.ExeEditor
             tabPageMenus = new TabPage();
             tabControlMenus = new TabControl();
             tabPageMainMenu = new TabPage();
-            groupBox2 = new GroupBox();
+            groupBoxQuitMenu = new GroupBox();
             listBoxQuitTexts = new ListBox();
             textBoxQuitText = new TextBox();
             labelQuitText = new Label();
-            groupBox1 = new GroupBox();
+            groupBoxMainMenu = new GroupBox();
             listBoxMainMenu = new ListBox();
             textBoxMainMenuText = new TextBox();
             labelMainMenuText = new Label();
@@ -287,14 +288,13 @@ namespace FF7Scarlet.ExeEditor
             trackBarAudioVolume = new TrackBar();
             listBoxAudioVolume = new ListBox();
             tabWorldmapWalkability = new TabPage();
-            groupBoxTriangleTypes = new GroupBox();
+            groupBoxDisembarkTriangleTypes = new GroupBox();
+            checkedListBoxDisembarkTriangleTypes = new CheckedListBox();
+            groupBoxWalkableTriangleTypes = new GroupBox();
+            checkedListBoxWalkableTriangleTypes = new CheckedListBox();
             listBoxModels = new ListBox();
             buttonHext = new Button();
             panelButtons = new Panel();
-            labelLimitID = new Label();
-            checkedListBox1 = new CheckedListBox();
-            groupBox3 = new GroupBox();
-            checkedListBox2 = new CheckedListBox();
             tabControlMain.SuspendLayout();
             tabPageInitialData.SuspendLayout();
             groupBoxCharacterMP.SuspendLayout();
@@ -343,8 +343,8 @@ namespace FF7Scarlet.ExeEditor
             tabPageMenus.SuspendLayout();
             tabControlMenus.SuspendLayout();
             tabPageMainMenu.SuspendLayout();
-            groupBox2.SuspendLayout();
-            groupBox1.SuspendLayout();
+            groupBoxQuitMenu.SuspendLayout();
+            groupBoxMainMenu.SuspendLayout();
             tabPageItemMagicMenu.SuspendLayout();
             groupBoxMagicMenu.SuspendLayout();
             groupBoxItemMenu.SuspendLayout();
@@ -381,9 +381,9 @@ namespace FF7Scarlet.ExeEditor
             ((System.ComponentModel.ISupportInitialize)numericAudioVolume).BeginInit();
             ((System.ComponentModel.ISupportInitialize)trackBarAudioVolume).BeginInit();
             tabWorldmapWalkability.SuspendLayout();
-            groupBoxTriangleTypes.SuspendLayout();
+            groupBoxDisembarkTriangleTypes.SuspendLayout();
+            groupBoxWalkableTriangleTypes.SuspendLayout();
             panelButtons.SuspendLayout();
-            groupBox3.SuspendLayout();
             SuspendLayout();
             // 
             // buttonSaveEXE
@@ -544,7 +544,7 @@ namespace FF7Scarlet.ExeEditor
             labelCharacterBaseMP.AutoSize = true;
             labelCharacterBaseMP.Location = new Point(127, 19);
             labelCharacterBaseMP.Name = "labelCharacterBaseMP";
-            labelCharacterBaseMP.Size = new Size(32, 15);
+            labelCharacterBaseMP.Size = new Size(33, 15);
             labelCharacterBaseMP.TabIndex = 2;
             labelCharacterBaseMP.Text = "Max:";
             // 
@@ -615,7 +615,7 @@ namespace FF7Scarlet.ExeEditor
             labelCharacterBaseHP.AutoSize = true;
             labelCharacterBaseHP.Location = new Point(127, 19);
             labelCharacterBaseHP.Name = "labelCharacterBaseHP";
-            labelCharacterBaseHP.Size = new Size(32, 15);
+            labelCharacterBaseHP.Size = new Size(33, 15);
             labelCharacterBaseHP.TabIndex = 2;
             labelCharacterBaseHP.Text = "Max:";
             // 
@@ -978,12 +978,23 @@ namespace FF7Scarlet.ExeEditor
             tabPageLimits1.Text = "Page 1";
             tabPageLimits1.UseVisualStyleBackColor = true;
             // 
+            // labelLimitID
+            // 
+            labelLimitID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelLimitID.AutoSize = true;
+            labelLimitID.Location = new Point(534, 6);
+            labelLimitID.Name = "labelLimitID";
+            labelLimitID.Size = new Size(34, 15);
+            labelLimitID.TabIndex = 43;
+            labelLimitID.Text = "ID: ??";
+            labelLimitID.TextAlign = ContentAlignment.TopRight;
+            // 
             // labelLimitHurtActionIndex
             // 
             labelLimitHurtActionIndex.AutoSize = true;
             labelLimitHurtActionIndex.Location = new Point(382, 142);
             labelLimitHurtActionIndex.Name = "labelLimitHurtActionIndex";
-            labelLimitHurtActionIndex.Size = new Size(101, 15);
+            labelLimitHurtActionIndex.Size = new Size(102, 15);
             labelLimitHurtActionIndex.TabIndex = 42;
             labelLimitHurtActionIndex.Text = "Hurt action index:";
             // 
@@ -1707,7 +1718,7 @@ namespace FF7Scarlet.ExeEditor
             labelShopIndex.AutoSize = true;
             labelShopIndex.Location = new Point(6, 19);
             labelShopIndex.Name = "labelShopIndex";
-            labelShopIndex.Size = new Size(68, 15);
+            labelShopIndex.Size = new Size(69, 15);
             labelShopIndex.TabIndex = 0;
             labelShopIndex.Text = "Shop index:";
             // 
@@ -1955,8 +1966,8 @@ namespace FF7Scarlet.ExeEditor
             // 
             // tabPageMainMenu
             // 
-            tabPageMainMenu.Controls.Add(groupBox2);
-            tabPageMainMenu.Controls.Add(groupBox1);
+            tabPageMainMenu.Controls.Add(groupBoxQuitMenu);
+            tabPageMainMenu.Controls.Add(groupBoxMainMenu);
             tabPageMainMenu.Location = new Point(4, 24);
             tabPageMainMenu.Name = "tabPageMainMenu";
             tabPageMainMenu.Padding = new Padding(3);
@@ -1965,18 +1976,18 @@ namespace FF7Scarlet.ExeEditor
             tabPageMainMenu.Text = "Main menu";
             tabPageMainMenu.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
+            // groupBoxQuitMenu
             // 
-            groupBox2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox2.Controls.Add(listBoxQuitTexts);
-            groupBox2.Controls.Add(textBoxQuitText);
-            groupBox2.Controls.Add(labelQuitText);
-            groupBox2.Location = new Point(5, 376);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(758, 117);
-            groupBox2.TabIndex = 7;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Quit Menu";
+            groupBoxQuitMenu.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxQuitMenu.Controls.Add(listBoxQuitTexts);
+            groupBoxQuitMenu.Controls.Add(textBoxQuitText);
+            groupBoxQuitMenu.Controls.Add(labelQuitText);
+            groupBoxQuitMenu.Location = new Point(5, 376);
+            groupBoxQuitMenu.Name = "groupBoxQuitMenu";
+            groupBoxQuitMenu.Size = new Size(758, 117);
+            groupBoxQuitMenu.TabIndex = 7;
+            groupBoxQuitMenu.TabStop = false;
+            groupBoxQuitMenu.Text = "Quit Menu";
             // 
             // listBoxQuitTexts
             // 
@@ -2006,18 +2017,18 @@ namespace FF7Scarlet.ExeEditor
             labelQuitText.TabIndex = 5;
             labelQuitText.Text = "Text:";
             // 
-            // groupBox1
+            // groupBoxMainMenu
             // 
-            groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox1.Controls.Add(listBoxMainMenu);
-            groupBox1.Controls.Add(textBoxMainMenuText);
-            groupBox1.Controls.Add(labelMainMenuText);
-            groupBox1.Location = new Point(5, 3);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(758, 367);
-            groupBox1.TabIndex = 6;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Main Menu";
+            groupBoxMainMenu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxMainMenu.Controls.Add(listBoxMainMenu);
+            groupBoxMainMenu.Controls.Add(textBoxMainMenuText);
+            groupBoxMainMenu.Controls.Add(labelMainMenuText);
+            groupBoxMainMenu.Location = new Point(5, 3);
+            groupBoxMainMenu.Name = "groupBoxMainMenu";
+            groupBoxMainMenu.Size = new Size(758, 367);
+            groupBoxMainMenu.TabIndex = 6;
+            groupBoxMainMenu.TabStop = false;
+            groupBoxMainMenu.Text = "Main Menu";
             // 
             // listBoxMainMenu
             // 
@@ -2534,7 +2545,7 @@ namespace FF7Scarlet.ExeEditor
             labelStatusEffectMenu.AutoSize = true;
             labelStatusEffectMenu.Location = new Point(261, 6);
             labelStatusEffectMenu.Name = "labelStatusEffectMenu";
-            labelStatusEffectMenu.Size = new Size(98, 15);
+            labelStatusEffectMenu.Size = new Size(99, 15);
             labelStatusEffectMenu.TabIndex = 6;
             labelStatusEffectMenu.Text = "Status menu text:";
             // 
@@ -2553,7 +2564,7 @@ namespace FF7Scarlet.ExeEditor
             labelStatusEffectTextBattle.AutoSize = true;
             labelStatusEffectTextBattle.Location = new Point(261, 50);
             labelStatusEffectTextBattle.Name = "labelStatusEffectTextBattle";
-            labelStatusEffectTextBattle.Size = new Size(77, 15);
+            labelStatusEffectTextBattle.Size = new Size(78, 15);
             labelStatusEffectTextBattle.TabIndex = 4;
             labelStatusEffectTextBattle.Text = "In-battle text:";
             // 
@@ -3121,8 +3132,8 @@ namespace FF7Scarlet.ExeEditor
             // 
             // tabWorldmapWalkability
             // 
-            tabWorldmapWalkability.Controls.Add(groupBox3);
-            tabWorldmapWalkability.Controls.Add(groupBoxTriangleTypes);
+            tabWorldmapWalkability.Controls.Add(groupBoxDisembarkTriangleTypes);
+            tabWorldmapWalkability.Controls.Add(groupBoxWalkableTriangleTypes);
             tabWorldmapWalkability.Controls.Add(listBoxModels);
             tabWorldmapWalkability.Location = new Point(4, 24);
             tabWorldmapWalkability.Name = "tabWorldmapWalkability";
@@ -3132,15 +3143,57 @@ namespace FF7Scarlet.ExeEditor
             tabWorldmapWalkability.Text = "Worldmap Walkability";
             tabWorldmapWalkability.UseVisualStyleBackColor = true;
             // 
-            // groupBoxTriangleTypes
+            // groupBoxDisembarkTriangleTypes
             // 
-            groupBoxTriangleTypes.Controls.Add(checkedListBox1);
-            groupBoxTriangleTypes.Location = new Point(185, 6);
-            groupBoxTriangleTypes.Name = "groupBoxTriangleTypes";
-            groupBoxTriangleTypes.Size = new Size(585, 190);
-            groupBoxTriangleTypes.TabIndex = 41;
-            groupBoxTriangleTypes.TabStop = false;
-            groupBoxTriangleTypes.Text = "Can walk/drive on:";
+            groupBoxDisembarkTriangleTypes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxDisembarkTriangleTypes.Controls.Add(checkedListBoxDisembarkTriangleTypes);
+            groupBoxDisembarkTriangleTypes.Enabled = false;
+            groupBoxDisembarkTriangleTypes.Location = new Point(185, 202);
+            groupBoxDisembarkTriangleTypes.Name = "groupBoxDisembarkTriangleTypes";
+            groupBoxDisembarkTriangleTypes.Size = new Size(585, 190);
+            groupBoxDisembarkTriangleTypes.TabIndex = 43;
+            groupBoxDisembarkTriangleTypes.TabStop = false;
+            groupBoxDisembarkTriangleTypes.Text = "Can disembark to:";
+            // 
+            // checkedListBoxDisembarkTriangleTypes
+            // 
+            checkedListBoxDisembarkTriangleTypes.BorderStyle = BorderStyle.None;
+            checkedListBoxDisembarkTriangleTypes.ColumnWidth = 140;
+            checkedListBoxDisembarkTriangleTypes.Dock = DockStyle.Fill;
+            checkedListBoxDisembarkTriangleTypes.FormattingEnabled = true;
+            checkedListBoxDisembarkTriangleTypes.Items.AddRange(new object[] { "Grass", "Forest", "Mountain", "Sea", "River Crossing", "River", "Water", "Swamp", "Desert", "Wasteland", "Snow", "Riverside", "Cliff", "Corel Bridge", "Wutai Bridge", "Unused (15)", "Hill side", "Beach", "Sub Pen", "Canyon", "Mountain Pass", "Unknown (21)", "Waterfall", "Unused (23)", "Gold Saucer Desert", "Jungle", "Sea 2", "Northern Cave", "Gold Saucer Border", "Bridgehead", "Back Entrance", "Unused (31)" });
+            checkedListBoxDisembarkTriangleTypes.Location = new Point(3, 19);
+            checkedListBoxDisembarkTriangleTypes.MultiColumn = true;
+            checkedListBoxDisembarkTriangleTypes.Name = "checkedListBoxDisembarkTriangleTypes";
+            checkedListBoxDisembarkTriangleTypes.Size = new Size(579, 168);
+            checkedListBoxDisembarkTriangleTypes.TabIndex = 42;
+            checkedListBoxDisembarkTriangleTypes.ItemCheck += checkedListBoxDisembarkTriangleTypes_ItemCheck;
+            // 
+            // groupBoxWalkableTriangleTypes
+            // 
+            groupBoxWalkableTriangleTypes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxWalkableTriangleTypes.Controls.Add(checkedListBoxWalkableTriangleTypes);
+            groupBoxWalkableTriangleTypes.Enabled = false;
+            groupBoxWalkableTriangleTypes.Location = new Point(185, 6);
+            groupBoxWalkableTriangleTypes.Name = "groupBoxWalkableTriangleTypes";
+            groupBoxWalkableTriangleTypes.Size = new Size(585, 190);
+            groupBoxWalkableTriangleTypes.TabIndex = 41;
+            groupBoxWalkableTriangleTypes.TabStop = false;
+            groupBoxWalkableTriangleTypes.Text = "Can walk/drive on:";
+            // 
+            // checkedListBoxWalkableTriangleTypes
+            // 
+            checkedListBoxWalkableTriangleTypes.BorderStyle = BorderStyle.None;
+            checkedListBoxWalkableTriangleTypes.ColumnWidth = 140;
+            checkedListBoxWalkableTriangleTypes.Dock = DockStyle.Fill;
+            checkedListBoxWalkableTriangleTypes.FormattingEnabled = true;
+            checkedListBoxWalkableTriangleTypes.Items.AddRange(new object[] { "Grass", "Forest", "Mountain", "Sea", "River Crossing", "River", "Water", "Swamp", "Desert", "Wasteland", "Snow", "Riverside", "Cliff", "Corel Bridge", "Wutai Bridge", "Unused (15)", "Hill side", "Beach", "Sub Pen", "Canyon", "Mountain Pass", "Unknown (21)", "Waterfall", "Unused (23)", "Gold Saucer Desert", "Jungle", "Sea 2", "Northern Cave", "Gold Saucer Border", "Bridgehead", "Back Entrance", "Unused (31)" });
+            checkedListBoxWalkableTriangleTypes.Location = new Point(3, 19);
+            checkedListBoxWalkableTriangleTypes.MultiColumn = true;
+            checkedListBoxWalkableTriangleTypes.Name = "checkedListBoxWalkableTriangleTypes";
+            checkedListBoxWalkableTriangleTypes.Size = new Size(579, 168);
+            checkedListBoxWalkableTriangleTypes.TabIndex = 42;
+            checkedListBoxWalkableTriangleTypes.ItemCheck += checkedListBoxWalkableTriangleTypes_ItemCheck;
             // 
             // listBoxModels
             // 
@@ -3152,6 +3205,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxModels.Name = "listBoxModels";
             listBoxModels.Size = new Size(174, 514);
             listBoxModels.TabIndex = 40;
+            listBoxModels.SelectedIndexChanged += listBoxModels_SelectedIndexChanged;
             // 
             // buttonHext
             // 
@@ -3176,51 +3230,6 @@ namespace FF7Scarlet.ExeEditor
             panelButtons.Name = "panelButtons";
             panelButtons.Size = new Size(784, 46);
             panelButtons.TabIndex = 6;
-            // 
-            // labelLimitID
-            // 
-            labelLimitID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            labelLimitID.AutoSize = true;
-            labelLimitID.Location = new Point(534, 6);
-            labelLimitID.Name = "labelLimitID";
-            labelLimitID.Size = new Size(34, 15);
-            labelLimitID.TabIndex = 43;
-            labelLimitID.Text = "ID: ??";
-            labelLimitID.TextAlign = ContentAlignment.TopRight;
-            // 
-            // checkedListBox1
-            // 
-            checkedListBox1.BorderStyle = BorderStyle.None;
-            checkedListBox1.ColumnWidth = 140;
-            checkedListBox1.FormattingEnabled = true;
-            checkedListBox1.Items.AddRange(new object[] { "Grass", "Forest", "Mountain", "Sea", "River Crossing", "River", "Water", "Swamp", "Desert", "Wasteland", "Snow", "Riverside", "Cliff", "Corel Bridge", "Wutai Bridge", "Unused (15)", "Hill side", "Beach", "Sub Pen", "Canyon", "Mountain Pass", "Unknown (21)", "Waterfall", "Unused (23)", "Gold Saucer Desert", "Jungle", "Sea 2", "Northern Cave", "Gold Saucer Border", "Bridgehead", "Back Entrance", "Unused (31)" });
-            checkedListBox1.Location = new Point(6, 22);
-            checkedListBox1.MultiColumn = true;
-            checkedListBox1.Name = "checkedListBox1";
-            checkedListBox1.Size = new Size(573, 162);
-            checkedListBox1.TabIndex = 42;
-            // 
-            // groupBox3
-            // 
-            groupBox3.Controls.Add(checkedListBox2);
-            groupBox3.Location = new Point(185, 202);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(585, 190);
-            groupBox3.TabIndex = 43;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "Can disembark to:";
-            // 
-            // checkedListBox2
-            // 
-            checkedListBox2.BorderStyle = BorderStyle.None;
-            checkedListBox2.ColumnWidth = 140;
-            checkedListBox2.FormattingEnabled = true;
-            checkedListBox2.Items.AddRange(new object[] { "Grass", "Forest", "Mountain", "Sea", "River Crossing", "River", "Water", "Swamp", "Desert", "Wasteland", "Snow", "Riverside", "Cliff", "Corel Bridge", "Wutai Bridge", "Unused (15)", "Hill side", "Beach", "Sub Pen", "Canyon", "Mountain Pass", "Unknown (21)", "Waterfall", "Unused (23)", "Gold Saucer Desert", "Jungle", "Sea 2", "Northern Cave", "Gold Saucer Border", "Bridgehead", "Back Entrance", "Unused (31)" });
-            checkedListBox2.Location = new Point(6, 22);
-            checkedListBox2.MultiColumn = true;
-            checkedListBox2.Name = "checkedListBox2";
-            checkedListBox2.Size = new Size(573, 162);
-            checkedListBox2.TabIndex = 42;
             // 
             // ExeEditorForm
             // 
@@ -3291,10 +3300,10 @@ namespace FF7Scarlet.ExeEditor
             tabPageMenus.ResumeLayout(false);
             tabControlMenus.ResumeLayout(false);
             tabPageMainMenu.ResumeLayout(false);
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
-            groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
+            groupBoxQuitMenu.ResumeLayout(false);
+            groupBoxQuitMenu.PerformLayout();
+            groupBoxMainMenu.ResumeLayout(false);
+            groupBoxMainMenu.PerformLayout();
             tabPageItemMagicMenu.ResumeLayout(false);
             groupBoxMagicMenu.ResumeLayout(false);
             groupBoxMagicMenu.PerformLayout();
@@ -3351,9 +3360,9 @@ namespace FF7Scarlet.ExeEditor
             ((System.ComponentModel.ISupportInitialize)numericAudioVolume).EndInit();
             ((System.ComponentModel.ISupportInitialize)trackBarAudioVolume).EndInit();
             tabWorldmapWalkability.ResumeLayout(false);
-            groupBoxTriangleTypes.ResumeLayout(false);
+            groupBoxDisembarkTriangleTypes.ResumeLayout(false);
+            groupBoxWalkableTriangleTypes.ResumeLayout(false);
             panelButtons.ResumeLayout(false);
-            groupBox3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -3590,8 +3599,8 @@ namespace FF7Scarlet.ExeEditor
         private Label labelQuitText;
         private TextBox textBoxQuitText;
         private ListBox listBoxQuitTexts;
-        private GroupBox groupBox1;
-        private GroupBox groupBox2;
+        private GroupBox groupBoxMainMenu;
+        private GroupBox groupBoxQuitMenu;
         private TabPage tabPageBattleArena;
         private Label labelBattleArena;
         private TextBox textBoxBattleArena;
@@ -3617,11 +3626,11 @@ namespace FF7Scarlet.ExeEditor
         private Label labelLimitID;
 
         private TabPage tabWorldmapWalkability;
-        private GroupBox groupBoxTriangleTypes;
+        private GroupBox groupBoxWalkableTriangleTypes;
         private ListBox listBoxModels;
-        private CheckedListBox checkedListBox1;
-        private GroupBox groupBox3;
-        private CheckedListBox checkedListBox2;
+        private CheckedListBox checkedListBoxWalkableTriangleTypes;
+        private GroupBox groupBoxDisembarkTriangleTypes;
+        private CheckedListBox checkedListBoxDisembarkTriangleTypes;
     }
 }
 

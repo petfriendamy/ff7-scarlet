@@ -1,7 +1,9 @@
 ﻿using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
+using SharpDX.Win32;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
+using System.Collections;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -165,8 +167,8 @@ namespace FF7Scarlet.ExeEditor
         public Dictionary<byte, byte> MateriaPriority { get; } = new();
         public int[] AudioVolume { get; } = new int[NUM_AUDIO_VALUES];
         public int[] AudioPan { get; } = new int[NUM_AUDIO_VALUES];
-        public int[] ModelMoveBitmasks { get; } = new int[NUM_WALKABILITY_MODELS];
-        public int[] ModelDisembarkBitmasks{ get; } = new int[NUM_WALKABILITY_MODELS];
+        public BitArray[] ModelMoveBitmasks { get; } = new BitArray[NUM_WALKABILITY_MODELS];
+        public BitArray[] ModelDisembarkBitmasks{ get; } = new BitArray[NUM_WALKABILITY_MODELS];
         public bool IsUnedited { get; private set; }
 
 
@@ -537,6 +539,25 @@ namespace FF7Scarlet.ExeEditor
                         //English only stuff (for now)
                         if (Language == Language.English)
                         {
+                            //get walkability data
+                            for (i = 0; i < NUM_WALKABILITY_MODELS; i++)
+                            {
+                                if (MODEL_CAN_WALK_POS[i] > 0)
+                                {
+                                    stream.Seek(MODEL_CAN_WALK_POS[i], SeekOrigin.Begin);
+                                    int temp = reader.ReadInt32();
+                                    var bytes = BitConverter.GetBytes(temp);
+                                    ModelMoveBitmasks[i] = new BitArray(bytes);
+                                }
+                                if (MODEL_CAN_DISEMBARK_POS[i] > 0)
+                                {
+                                    stream.Seek(MODEL_CAN_DISEMBARK_POS[i], SeekOrigin.Begin);
+                                    int temp = reader.ReadInt32();
+                                    var bytes = BitConverter.GetBytes(temp);
+                                    ModelDisembarkBitmasks[i] = new BitArray(bytes);
+                                }
+                            }
+
                             //get quit menu text
                             stream.Seek(QUIT_TEXT_POS_1, SeekOrigin.Begin);
                             for (i = 0; i < NUM_QUIT_TEXTS_1; ++i)
@@ -786,21 +807,6 @@ namespace FF7Scarlet.ExeEditor
                         {
                             MateriaPrices[i] = reader.ReadUInt32();
                         }
-
-                        //get walkability data
-                        for (i = 0; i < NUM_WALKABILITY_MODELS; i++)
-                        {
-                            if (MODEL_CAN_WALK_POS[i] > 0)
-                            {
-                                stream.Seek(MODEL_CAN_WALK_POS[i], SeekOrigin.Begin);
-                                ModelMoveBitmasks[i] = reader.ReadInt32();
-                            }
-                            if (MODEL_CAN_DISEMBARK_POS[i] > 0)
-                            {
-                                stream.Seek(MODEL_CAN_DISEMBARK_POS[i], SeekOrigin.Begin);
-                                ModelDisembarkBitmasks[i] = reader.ReadInt32();
-                            }
-                        }
                     }
                     FilePath = path;
                 }
@@ -828,6 +834,34 @@ namespace FF7Scarlet.ExeEditor
                         //English-only stuff (for now)
                         if (Language == Language.English)
                         {
+                            //write walkability data
+                            for (int i = 0; i < NUM_WALKABILITY_MODELS; i++)
+                            {
+                                if (MODEL_CAN_WALK_POS[i] > 0)
+                                {
+                                    stream.Seek(MODEL_CAN_WALK_POS[i], SeekOrigin.Begin);
+                                    var temp = new byte[4];
+                                    ModelMoveBitmasks[i].CopyTo(temp, 0);
+                                    writer.Write(temp);
+
+                                    if ((WorldMapModels)i == WorldMapModels.TinyBronco) //additional bitmasks
+                                    {
+                                        foreach (var p in MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS)
+                                        {
+                                            stream.Seek(p, SeekOrigin.Begin);
+                                            writer.Write(temp);
+                                        }
+                                    }
+                                }
+                                if (MODEL_CAN_DISEMBARK_POS[i] > 0)
+                                {
+                                    stream.Seek(MODEL_CAN_DISEMBARK_POS[i], SeekOrigin.Begin);
+                                    var temp = new byte[4];
+                                    ModelDisembarkBitmasks[i].CopyTo(temp, 0);
+                                    writer.Write(temp);
+                                }
+                            }
+
                             //write quit text
                             stream.Seek(QUIT_TEXT_POS_1, SeekOrigin.Begin);
                             for (int i = 0; i < NUM_QUIT_TEXTS_1; ++i)
@@ -1381,6 +1415,23 @@ namespace FF7Scarlet.ExeEditor
                         {
                             AudioPan[i] = reader.ReadInt32();
                         }
+
+                        //read walkability data
+                        for (i = 0; i < NUM_WALKABILITY_MODELS; i++)
+                        {
+                            if (MODEL_CAN_WALK_POS[i] > 0)
+                            {
+                                int temp = reader.ReadInt32();
+                                var temp2 = BitConverter.GetBytes(temp);
+                                ModelMoveBitmasks[i] = new BitArray(temp2);
+                            }
+                            if (MODEL_CAN_DISEMBARK_POS[i] > 0)
+                            {
+                                int temp = reader.ReadInt32();
+                                var temp2 = BitConverter.GetBytes(temp);
+                                ModelDisembarkBitmasks[i] = new BitArray(temp2);
+                            }
+                        }
                     }
                 }
             }
@@ -1614,10 +1665,27 @@ namespace FF7Scarlet.ExeEditor
                     output.AddRange(BitConverter.GetBytes(a));
                 }
 
-                //get audio pan
+                //write audio pan
                 foreach (var a in AudioPan)
                 {
                     output.AddRange(BitConverter.GetBytes(a));
+                }
+
+                //write walkability data
+                for (int i = 0; i < NUM_WALKABILITY_MODELS; i++)
+                {
+                    if (ModelMoveBitmasks[i] != null)
+                    {
+                        var temp = new byte[4];
+                        ModelMoveBitmasks[i].CopyTo(temp, 0);
+                        output.AddRange(temp);
+                    }
+                    if (ModelDisembarkBitmasks[i] != null)
+                    {
+                        var temp = new byte[4];
+                        ModelDisembarkBitmasks[i].CopyTo(temp, 0);
+                        output.AddRange(temp);
+                    }
                 }
             }
 
@@ -1719,6 +1787,98 @@ namespace FF7Scarlet.ExeEditor
                         pos += AP_MASTER_OFFSET;
                         writer.WriteLine($"{pos:X2} = {APPriceMultiplier:X2}");
                         writer.WriteLine();
+                    }
+
+                    //compare world map walkability
+                    for (i = 0; i < NUM_WALKABILITY_MODELS; ++i)
+                    {
+                        bool moveDiff = false,
+                                disembarkDiff = false;
+
+                        byte[] moveBytesNew = new byte[4],
+                            moveBytesOriginal = new byte[4],
+                            disembarkBytesNew = new byte[4],
+                            disembarkBytesOriginal = new byte[4];
+
+                        if (ModelMoveBitmasks[i] != null)
+                        {
+                            ModelMoveBitmasks[i].CopyTo(moveBytesNew, 0);
+                            original.ModelMoveBitmasks[i].CopyTo(moveBytesOriginal, 0);
+                        }
+                        if (ModelDisembarkBitmasks[i] != null)
+                        {
+                            ModelDisembarkBitmasks[i].CopyTo(disembarkBytesNew, 0);
+                            original.ModelDisembarkBitmasks[i].CopyTo(disembarkBytesOriginal, 0);
+                        }
+
+                        for (j = 0; j < 4; ++j)
+                        {
+                            if (moveBytesNew[j] != moveBytesOriginal[j] || disembarkBytesNew[j] != disembarkBytesOriginal[j])
+                            {
+                                if (!checker)
+                                {
+                                    writer.WriteLine("# World map walkability");
+                                    checker = true;
+                                }
+                                if (!moveDiff && !disembarkDiff)
+                                {
+                                    var str = StringParser.AddSpaces(Enum.GetName((WorldMapModels)i));
+                                    writer.WriteLine($"# {str}");
+                                }
+                                if (moveBytesNew[j] != moveBytesOriginal[j])
+                                {
+                                    moveDiff = true;
+                                }
+                                if (disembarkBytesNew[j] != disembarkBytesOriginal[j])
+                                {
+                                    disembarkDiff = true;
+                                }
+                            }
+                        }
+
+                        if (moveDiff)
+                        {
+                            pos = MODEL_CAN_WALK_POS[i] + HEXT_OFFSET_1;
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var b in moveBytesNew)
+                            {
+                                writer.Write($"{b:X2} ");
+                            }
+                            writer.WriteLine();
+
+                            if ((WorldMapModels)i == WorldMapModels.TinyBronco) //additional bitmasks
+                            {
+                                foreach (var p in MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS)
+                                {
+                                    pos = p + HEXT_OFFSET_1;
+                                    writer.Write($"{pos:X2} = ");
+                                    foreach (var b in moveBytesNew)
+                                    {
+                                        writer.Write($"{b:X2} ");
+                                    }
+                                    writer.WriteLine();
+                                }
+                            }
+                        }
+                        if (disembarkDiff)
+                        {
+                            pos = MODEL_CAN_DISEMBARK_POS[i] + HEXT_OFFSET_1;
+                            writer.Write($"{pos:X2} = ");
+                            foreach (var b in moveBytesNew)
+                            {
+                                writer.Write($"{b:X2} ");
+                            }
+                            writer.WriteLine();
+                        }
+                        if (moveDiff || disembarkDiff)
+                        {
+                            writer.WriteLine();
+                        }
+                    }
+                    if (checker)
+                    {
+                        writer.WriteLine();
+                        checker = false;
                     }
 
                     //write quit menu text

@@ -273,7 +273,7 @@ namespace FF7Scarlet
 
         public byte[] GetBytesTruncated()
         {
-            var str = ToString();
+            var str = ToString().Trim();
             var copy = new FFText(str);
             return copy.GetBytes();
         }

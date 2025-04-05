@@ -9,6 +9,7 @@ using Shojy.FF7.Elena.Inventory;
 using SharpDX;
 using SharpDX.DirectSound;
 using SharpDX.Multimedia;
+using System.Collections;
 
 namespace FF7Scarlet.ExeEditor
 {
@@ -2271,6 +2272,55 @@ namespace FF7Scarlet.ExeEditor
             if (i >= 0 && i < ExeData.NUM_AUDIO_VALUES)
             {
                 PlaySound(0, editor.AudioPan[i]);
+            }
+        }
+
+        #endregion
+
+        #region World Map Data
+
+        private void listBoxModels_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = listBoxModels.SelectedIndex;
+            if (!loading && i >= 0 && i < ExeData.NUM_WALKABILITY_MODELS)
+            {
+                loading = true;
+                var model = (WorldMapModels)i;
+                groupBoxWalkableTriangleTypes.Enabled = model != WorldMapModels.Highwind;
+                groupBoxDisembarkTriangleTypes.Enabled = model != WorldMapModels.Player;
+
+                for (int j = 0; j < 32; ++j)
+                {
+                    if (editor.ModelMoveBitmasks[i] != null)
+                    {
+                        checkedListBoxWalkableTriangleTypes.SetItemChecked(j, editor.ModelMoveBitmasks[i][j]);
+                    }
+                    if (editor.ModelDisembarkBitmasks[i] != null)
+                    {
+                        checkedListBoxDisembarkTriangleTypes.SetItemChecked(j, editor.ModelDisembarkBitmasks[i][j]);
+                    }
+                }
+                loading = false;
+            }
+        }
+
+        private void checkedListBoxWalkableTriangleTypes_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            int i = listBoxModels.SelectedIndex;
+            if (!loading && i >= 0 && i < ExeData.NUM_WALKABILITY_MODELS)
+            {
+                editor.ModelMoveBitmasks[i][e.Index] = e.NewValue == CheckState.Checked;
+                SetUnsaved(true);
+            }
+        }
+
+        private void checkedListBoxDisembarkTriangleTypes_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            int i = listBoxModels.SelectedIndex;
+            if (!loading && i >= 0 && i < ExeData.NUM_WALKABILITY_MODELS)
+            {
+                editor.ModelDisembarkBitmasks[i][e.Index] = e.NewValue == CheckState.Checked;
+                SetUnsaved(true);
             }
         }
 

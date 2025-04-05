@@ -1112,7 +1112,7 @@ namespace FF7Scarlet.KernelEditor
                         text = new FFText[strings.Length];
                         for (i = 0; i < strings.Length; ++i)
                         {
-                            text[i] = new FFText(strings[i]);
+                            text[i] = new FFText(strings[i].Trim());
                         }
                         
                     }
