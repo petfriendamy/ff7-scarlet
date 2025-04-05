@@ -291,6 +291,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxModels = new ListBox();
             buttonHext = new Button();
             panelButtons = new Panel();
+            labelLimitID = new Label();
             checkedListBox1 = new CheckedListBox();
             groupBox3 = new GroupBox();
             checkedListBox2 = new CheckedListBox();
