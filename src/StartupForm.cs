@@ -343,6 +343,14 @@ namespace FF7Scarlet
             settings.ShowDialog();
         }
 
+        #region AutoUpdate functionality
+
+        public enum AppUpdateChannelOptions
+        {
+            Stable = 0,
+            Canary
+        }
+
         private string GetUpdateVersion(string name)
         {
             return name.Replace("FF7Scarlet-v", "");
@@ -361,6 +369,19 @@ namespace FF7Scarlet
             return String.Empty;
         }
 
+        private string GetUpdateChannel(AppUpdateChannelOptions channel)
+        {
+            switch (channel)
+            {
+                case AppUpdateChannelOptions.Stable:
+                    return "https://github.com/petfriendamy/ff7-scarlet/releases/latest";
+                case AppUpdateChannelOptions.Canary:
+                    return "https://github.com/petfriendamy/ff7-scarlet/releases/tags/canary";
+                default:
+                    return "";
+            }
+        }
+
         private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
         {
             dynamic release = JValue.Parse(args.RemoteData);
@@ -377,7 +398,9 @@ namespace FF7Scarlet
         {
             AutoUpdater.HttpUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0";
             AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
-            AutoUpdater.Start("https://api.github.com/repos/petfriendamy/ff7-scarlet/releases/latest");
+            AutoUpdater.Start(GetUpdateChannel(AppUpdateChannelOptions.Stable));
         }
+
+        #endregion
     }
 }
