@@ -1,6 +1,8 @@
-﻿using FF7Scarlet.ExeEditor;
+﻿using AutoUpdaterDotNET;
+using FF7Scarlet.ExeEditor;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
+using Newtonsoft.Json.Linq;
 using SharpDX.DirectSound;
 using System.Configuration;
 using System.IO;
@@ -339,6 +341,43 @@ namespace FF7Scarlet
         {
             var settings = new SettingsForm();
             settings.ShowDialog();
+        }
+
+        private string GetUpdateVersion(string name)
+        {
+            return name.Replace("FF7Scarlet-v", "");
+        }
+
+        private string GetUpdateReleaseUrl(dynamic assets)
+        {
+            foreach (dynamic asset in assets)
+            {
+                string url = asset.browser_download_url.Value;
+
+                if (url.Contains("FF7Scarlet-v") && url.EndsWith(".zip"))
+                    return url;
+            }
+
+            return String.Empty;
+        }
+
+        private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
+        {
+            dynamic release = JValue.Parse(args.RemoteData);
+
+            args.UpdateInfo = new UpdateInfoEventArgs
+            {
+                CurrentVersion = (new Version(GetUpdateVersion(release.name.Value))).ToString(),
+                DownloadURL = GetUpdateReleaseUrl(release.assets),
+                ChangelogURL = "https://github.com/petfriendamy/ff7-scarlet/releases/latest"
+            };
+        }
+
+        private void StartupForm_Load(object sender, EventArgs e)
+        {
+            AutoUpdater.HttpUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0";
+            AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
+            AutoUpdater.Start("https://api.github.com/repos/petfriendamy/ff7-scarlet/releases/latest");
         }
     }
 }

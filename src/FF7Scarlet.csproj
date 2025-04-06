@@ -18,6 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpDX.DirectSound" Version="4.2.0" />
     <PackageReference Include="Shojy.FF7.Elena" Version="0.7.0-pre" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />

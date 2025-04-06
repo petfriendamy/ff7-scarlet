@@ -278,6 +278,7 @@
             MaximizeBox = false;
             Name = "StartupForm";
             Text = "Scarlet - Main Menu";
+            Load += StartupForm_Load;
             groupBoxKernel.ResumeLayout(false);
             groupBoxKernel.PerformLayout();
             groupBoxKernel2.ResumeLayout(false);
