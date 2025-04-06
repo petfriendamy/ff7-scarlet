@@ -42,7 +42,7 @@ namespace FF7Scarlet.Shared
                 case UpdateChannel.Stable:
                     return "https://github.com/petfriendamy/ff7-scarlet/releases/latest";
                 case UpdateChannel.Canary:
-                    return "https://github.com/petfriendamy/ff7-scarlet/releases/tags/canary";
+                    return "https://github.com/petfriendamy/ff7-scarlet/releases/tag/canary";
                 default:
                     return "";
             }

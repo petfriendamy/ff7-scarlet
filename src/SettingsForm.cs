@@ -1,6 +1,4 @@
 ﻿using System.Configuration;
-using System.IO;
-using AutoUpdaterDotNET;
 using FF7Scarlet.ExeEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
