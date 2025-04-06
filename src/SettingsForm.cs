@@ -27,12 +27,10 @@ namespace FF7Scarlet
             {
                 textBoxBattleLgp.Text = DataManager.BattleLgpPath;
             }
-            comboBoxUpdateChannel.SelectedIndex = (int)ScarletUpdater.UpdateChannel;
-            checkBoxUpdateOnLaunch.Checked = ScarletUpdater.UpdateOnStartup;
+            comboBoxUpdateChannel.SelectedIndex = (int)DataManager.Updater.UpdateChannel;
+            checkBoxUpdateOnLaunch.Checked = DataManager.Updater.UpdateOnStartup;
             checkBoxRemeberLastOpened.Checked = DataManager.RememberLastOpened;
             checkBoxPS3Tweaks.Checked = DataManager.PS3TweaksEnabled;
-
-            AutoUpdater.ParseUpdateInfoEvent += GotUpdate;
         }
 
         private void comboBoxUpdateChannel_SelectedIndexChanged(object sender, EventArgs e)
@@ -43,9 +41,9 @@ namespace FF7Scarlet
 
         private void buttonCheckForUpdates_Click(object sender, EventArgs e)
         {
-            var channel = (UpdateChannel)comboBoxUpdateChannel.SelectedIndex;
-            ScarletUpdater.CheckForUpdates(channel);
-            buttonCheckForUpdates.Enabled = false;
+            DataManager.Updater.UpdateChannel = (UpdateChannel)comboBoxUpdateChannel.SelectedIndex;
+            DataManager.Updater.CheckForUpdates();
+            comboBoxUpdateChannel.Enabled = buttonCheckForUpdates.Enabled = false;
             buttonCheckForUpdates.Text = "Checking...";
         }
 
@@ -139,12 +137,12 @@ namespace FF7Scarlet
                 }
 
                 //set update channel
-                ScarletUpdater.UpdateChannel = (UpdateChannel)comboBoxUpdateChannel.SelectedIndex;
-                UpdateSetting(ref settings, ScarletUpdater.UPDATE_CHANNEL_KEY, Enum.GetName(ScarletUpdater.UpdateChannel));
+                DataManager.Updater.UpdateChannel = (UpdateChannel)comboBoxUpdateChannel.SelectedIndex;
+                UpdateSetting(ref settings, ScarletUpdater.UPDATE_CHANNEL_KEY, Enum.GetName(DataManager.Updater.UpdateChannel));
 
                 //enable/disable update on startup
-                ScarletUpdater.UpdateOnStartup = checkBoxUpdateOnLaunch.Checked;
-                UpdateSetting(ref settings, ScarletUpdater.UPDATE_ON_STARTUP_KEY, $"{ScarletUpdater.UpdateOnStartup}");
+                DataManager.Updater.UpdateOnStartup = checkBoxUpdateOnLaunch.Checked;
+                UpdateSetting(ref settings, ScarletUpdater.UPDATE_ON_STARTUP_KEY, $"{DataManager.Updater.UpdateOnStartup}");
 
                 //enable/disable remembering previously opened files
                 DataManager.RememberLastOpened = checkBoxRemeberLastOpened.Checked;
@@ -171,11 +169,6 @@ namespace FF7Scarlet
             {
                 settings[key].Value = value;
             }
-        }
-
-        private void GotUpdate(ParseUpdateInfoEventArgs args)
-        {
-            buttonCheckForUpdates.Enabled = true;
         }
     }
 }

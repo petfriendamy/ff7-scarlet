@@ -1,11 +1,10 @@
-﻿using AutoUpdaterDotNET;
-using FF7Scarlet.ExeEditor;
+﻿using FF7Scarlet.ExeEditor;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
-using Newtonsoft.Json.Linq;
-using SharpDX.DirectSound;
 using FF7Scarlet.Shared;
 using System.Configuration;
+using System.Diagnostics;
+using System.Threading.Channels;
 using System.Xml;
 
 namespace FF7Scarlet
@@ -45,31 +44,45 @@ namespace FF7Scarlet
                 //check for updates
                 if (settings[ScarletUpdater.UPDATE_ON_STARTUP_KEY] == null)
                 {
-                    settings.Add(ScarletUpdater.UPDATE_ON_STARTUP_KEY, $"{ScarletUpdater.UpdateOnStartup}");
+                    settings.Add(ScarletUpdater.UPDATE_ON_STARTUP_KEY, $"{DataManager.Updater.UpdateOnStartup}");
                 }
                 else
                 {
                     bool temp;
                     if (bool.TryParse(settings[ScarletUpdater.UPDATE_ON_STARTUP_KEY].Value, out temp))
                     {
-                        ScarletUpdater.UpdateOnStartup = temp;
+                        DataManager.Updater.UpdateOnStartup = temp;
                     }
                 }
                 if (settings[ScarletUpdater.UPDATE_CHANNEL_KEY] == null)
                 {
-                    settings.Add(ScarletUpdater.UPDATE_CHANNEL_KEY, Enum.GetName(ScarletUpdater.UpdateChannel));
+                    settings.Add(ScarletUpdater.UPDATE_CHANNEL_KEY, Enum.GetName(DataManager.Updater.UpdateChannel));
                 }
                 else
                 {
                     UpdateChannel temp;
                     if (Enum.TryParse(settings[ScarletUpdater.UPDATE_CHANNEL_KEY].Value, out temp))
                     {
-                        ScarletUpdater.UpdateChannel = temp;
+                        DataManager.Updater.UpdateChannel = temp;
                     }
                 }
-                if (ScarletUpdater.UpdateOnStartup)
+                if (DataManager.Updater.UpdateOnStartup)
                 {
-                    ScarletUpdater.CheckForUpdates(ScarletUpdater.UpdateChannel);
+                    // Detect which version we are running and propose to auto-update based on the user downloaded channel
+                    var module = Process.GetCurrentProcess().MainModule;
+                    if (module != null)
+                    {
+                        FileVersionInfo appVersion = FileVersionInfo.GetVersionInfo(module.FileName);
+                        if (appVersion.FilePrivatePart > 0 || appVersion.ProductPrivatePart > 0)
+                        {
+                            DataManager.Updater.UpdateChannel = UpdateChannel.Canary;
+                        }
+                        else
+                        {
+                            DataManager.Updater.UpdateChannel = UpdateChannel.Stable;
+                        }
+                        DataManager.Updater.CheckForUpdates();
+                    }
                 }
 
                 //check previously loaded files
@@ -391,71 +404,5 @@ namespace FF7Scarlet
             var settings = new SettingsForm();
             settings.ShowDialog();
         }
-
-        #region AutoUpdate functionality
-
-        public enum AppUpdateChannelOptions
-        {
-            Stable = 0,
-            Canary
-        }
-
-        private string GetUpdateVersion(string name)
-        {
-            return name.Replace("FF7Scarlet-v", "");
-        }
-
-        private string GetUpdateReleaseUrl(dynamic assets)
-        {
-            foreach (dynamic asset in assets)
-            {
-                string url = asset.browser_download_url.Value;
-
-                if (url.Contains("FF7Scarlet-v") && url.EndsWith(".zip"))
-                    return url;
-            }
-
-            return String.Empty;
-        }
-
-        private string GetUpdateChannel(AppUpdateChannelOptions channel)
-        {
-            switch (channel)
-            {
-                case AppUpdateChannelOptions.Stable:
-                    return "https://github.com/petfriendamy/ff7-scarlet/releases/latest";
-                case AppUpdateChannelOptions.Canary:
-                    return "https://github.com/petfriendamy/ff7-scarlet/releases/tags/canary";
-                default:
-                    return "";
-            }
-        }
-
-        private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
-        {
-            dynamic release = JValue.Parse(args.RemoteData);
-
-            args.UpdateInfo = new UpdateInfoEventArgs
-            {
-                CurrentVersion = (new Version(GetUpdateVersion(release.name.Value))).ToString(),
-                DownloadURL = GetUpdateReleaseUrl(release.assets),
-                ChangelogURL = "https://github.com/petfriendamy/ff7-scarlet/releases/latest"
-            };
-        }
-
-        private void StartupForm_Load(object sender, EventArgs e)
-        {
-            AutoUpdater.HttpUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0";
-            AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
-
-            // Detect which version we are running and propose to auto-update based on the user downloaded channel
-            FileVersionInfo appVersion = FileVersionInfo.GetVersionInfo(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-            if (appVersion.FilePrivatePart > 0 || appVersion.ProductPrivatePart > 0)
-                AutoUpdater.Start(GetUpdateChannel(AppUpdateChannelOptions.Canary));
-            else
-                AutoUpdater.Start(GetUpdateChannel(AppUpdateChannelOptions.Stable));
-        }
-
-        #endregion
     }
 }

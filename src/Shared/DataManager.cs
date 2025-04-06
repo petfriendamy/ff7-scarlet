@@ -34,6 +34,7 @@ namespace FF7Scarlet.Shared
         public static bool RememberLastOpened { get; set; } = true;
         public static bool PS3TweaksEnabled { get; set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
+        public static ScarletUpdater Updater { get; } = new ScarletUpdater();
 
         public const string
             REMEMBER_LAST_OPENED_KEY = "RememberLastOpened",
