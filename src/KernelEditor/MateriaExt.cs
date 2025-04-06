@@ -1,4 +1,5 @@
-﻿using Shojy.FF7.Elena.Materias;
+﻿using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Materias;
 using System.Collections.ObjectModel;
 
 namespace FF7Scarlet.KernelEditor

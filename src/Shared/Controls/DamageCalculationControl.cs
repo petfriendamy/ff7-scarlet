@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Media;
 using System.ComponentModel;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.KernelEditor.Controls
 {

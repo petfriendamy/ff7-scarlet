@@ -46,12 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Scarlet.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="GUI\Portraits\" />
   </ItemGroup>
 

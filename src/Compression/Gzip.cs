@@ -1,5 +1,6 @@
 ﻿using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
+using FF7Scarlet.Shared;
 using Shojy.FF7.Elena;
 using System;
 using System.Collections.Generic;

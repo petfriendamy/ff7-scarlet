@@ -3158,6 +3158,7 @@ namespace FF7Scarlet.ExeEditor
             // checkedListBoxDisembarkTriangleTypes
             // 
             checkedListBoxDisembarkTriangleTypes.BorderStyle = BorderStyle.None;
+            checkedListBoxDisembarkTriangleTypes.CheckOnClick = true;
             checkedListBoxDisembarkTriangleTypes.ColumnWidth = 140;
             checkedListBoxDisembarkTriangleTypes.Dock = DockStyle.Fill;
             checkedListBoxDisembarkTriangleTypes.FormattingEnabled = true;
@@ -3184,6 +3185,7 @@ namespace FF7Scarlet.ExeEditor
             // checkedListBoxWalkableTriangleTypes
             // 
             checkedListBoxWalkableTriangleTypes.BorderStyle = BorderStyle.None;
+            checkedListBoxWalkableTriangleTypes.CheckOnClick = true;
             checkedListBoxWalkableTriangleTypes.ColumnWidth = 140;
             checkedListBoxWalkableTriangleTypes.Dock = DockStyle.Fill;
             checkedListBoxWalkableTriangleTypes.FormattingEnabled = true;

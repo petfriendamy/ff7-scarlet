@@ -4,9 +4,9 @@ using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using Newtonsoft.Json.Linq;
 using SharpDX.DirectSound;
+using FF7Scarlet.Shared;
 using System.Configuration;
-using System.Diagnostics;
-using System.IO;
+using System.Xml;
 
 namespace FF7Scarlet
 {
@@ -21,16 +21,60 @@ namespace FF7Scarlet
             toolTipHoverText.SetToolTip(groupBoxKernel2, "kernel2 cannot be loaded without kernel.bin.");
 
             //get Scarlet.config settings
-            DataManager.ConfigFile.ExeConfigFilename = AppContext.BaseDirectory + @"\Scarlet.config";
+            string filePath = AppContext.BaseDirectory + @"\Scarlet.config";
+            if (!File.Exists(filePath))
+            {
+                var set = new XmlWriterSettings();
+                set.Indent = true;
+                set.NewLineOnAttributes = true;
+                using (var cfg = XmlWriter.Create(filePath, set))
+                {
+                    cfg.WriteStartDocument();
+                    cfg.WriteStartElement("configuration");
+                    cfg.WriteStartElement("appSettings");
+                    cfg.WriteEndElement();
+                    cfg.WriteEndElement();
+                }
+            }
+            DataManager.ConfigFile.ExeConfigFilename = filePath;
             var config = ConfigurationManager.OpenMappedExeConfiguration(DataManager.ConfigFile,
                 ConfigurationUserLevel.None);
             var settings = config.AppSettings.Settings;
             if (settings != null)
             {
+                //check for updates
+                if (settings[ScarletUpdater.UPDATE_ON_STARTUP_KEY] == null)
+                {
+                    settings.Add(ScarletUpdater.UPDATE_ON_STARTUP_KEY, $"{ScarletUpdater.UpdateOnStartup}");
+                }
+                else
+                {
+                    bool temp;
+                    if (bool.TryParse(settings[ScarletUpdater.UPDATE_ON_STARTUP_KEY].Value, out temp))
+                    {
+                        ScarletUpdater.UpdateOnStartup = temp;
+                    }
+                }
+                if (settings[ScarletUpdater.UPDATE_CHANNEL_KEY] == null)
+                {
+                    settings.Add(ScarletUpdater.UPDATE_CHANNEL_KEY, Enum.GetName(ScarletUpdater.UpdateChannel));
+                }
+                else
+                {
+                    UpdateChannel temp;
+                    if (Enum.TryParse(settings[ScarletUpdater.UPDATE_CHANNEL_KEY].Value, out temp))
+                    {
+                        ScarletUpdater.UpdateChannel = temp;
+                    }
+                }
+                if (ScarletUpdater.UpdateOnStartup)
+                {
+                    ScarletUpdater.CheckForUpdates(ScarletUpdater.UpdateChannel);
+                }
+
                 //check previously loaded files
                 if (settings[DataManager.REMEMBER_LAST_OPENED_KEY] == null)
                 {
-                    DataManager.RememberLastOpened = true;
                     settings.Add(DataManager.REMEMBER_LAST_OPENED_KEY, $"{DataManager.RememberLastOpened}");
                 }
                 else
@@ -101,7 +145,11 @@ namespace FF7Scarlet
                         configKey = BattleLgp.CONFIG_KEY;
                         break;
                 }
-                string path = settings[configKey].Value;
+                string path = string.Empty;
+                if (settings[configKey] != null)
+                {
+                    path = settings[configKey].Value;
+                }
                 try
                 {
                     if (!string.IsNullOrEmpty(path))

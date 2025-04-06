@@ -2,9 +2,8 @@
 using System.Globalization;
 using System.Text;
 using FF7Scarlet.AIEditor;
-using FF7Scarlet.Shared;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.Shared
 {
     public enum TextCommands : byte
     {
@@ -157,7 +156,7 @@ namespace FF7Scarlet
 
         public bool IsEmpty()
         {
-            return (ToString() == string.Empty);
+            return ToString() == string.Empty;
         }
 
         public override string ToString()
