@@ -27,6 +27,19 @@ namespace FF7Scarlet.Shared
             switch (channel)
             {
                 case UpdateChannel.Stable:
+                    return "https://api.github.com/repos/petfriendamy/ff7-scarlet/releases/latest";
+                case UpdateChannel.Canary:
+                    return "https://api.github.com/repos/petfriendamy/ff7-scarlet/releases/tags/canary";
+                default:
+                    return "";
+            }
+        }
+
+        private string GetChangelogUrl(UpdateChannel channel)
+        {
+            switch (channel)
+            {
+                case UpdateChannel.Stable:
                     return "https://github.com/petfriendamy/ff7-scarlet/releases/latest";
                 case UpdateChannel.Canary:
                     return "https://github.com/petfriendamy/ff7-scarlet/releases/tags/canary";
@@ -67,7 +80,7 @@ namespace FF7Scarlet.Shared
             {
                 CurrentVersion = (new Version(GetUpdateVersion(release.name.Value))).ToString(),
                 DownloadURL = GetUpdateReleaseUrl(release.assets),
-                ChangelogURL = GetUpdateChannel(UpdateChannel)
+                ChangelogURL = GetChangelogUrl(UpdateChannel)
             };
         }
     }
