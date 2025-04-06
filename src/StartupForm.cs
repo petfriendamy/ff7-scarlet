@@ -5,6 +5,7 @@ using FF7Scarlet.SceneEditor;
 using Newtonsoft.Json.Linq;
 using SharpDX.DirectSound;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 
 namespace FF7Scarlet
@@ -398,7 +399,13 @@ namespace FF7Scarlet
         {
             AutoUpdater.HttpUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0";
             AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
-            AutoUpdater.Start(GetUpdateChannel(AppUpdateChannelOptions.Stable));
+
+            // Detect which version we are running and propose to auto-update based on the user downloaded channel
+            FileVersionInfo appVersion = FileVersionInfo.GetVersionInfo(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            if (appVersion.FilePrivatePart > 0 || appVersion.ProductPrivatePart > 0)
+                AutoUpdater.Start(GetUpdateChannel(AppUpdateChannelOptions.Canary));
+            else
+                AutoUpdater.Start(GetUpdateChannel(AppUpdateChannelOptions.Stable));
         }
 
         #endregion
