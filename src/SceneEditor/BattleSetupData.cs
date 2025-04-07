@@ -1,4 +1,6 @@
-﻿namespace FF7Scarlet.SceneEditor
+﻿using FF7Scarlet.Shared;
+
+namespace FF7Scarlet.SceneEditor
 {
     public class BattleSetupData
     {

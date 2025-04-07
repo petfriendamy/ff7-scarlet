@@ -1,4 +1,5 @@
 ﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Battle;
 using System;
 

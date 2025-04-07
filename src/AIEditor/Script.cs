@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using FF7Scarlet.Shared;
+using System.Globalization;
 using System.Text;
 
 namespace FF7Scarlet.AIEditor

@@ -1,4 +1,5 @@
-﻿using Shojy.FF7.Elena.Battle;
+﻿using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Battle;
 
 namespace FF7Scarlet.SceneEditor
 {

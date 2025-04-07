@@ -1,6 +1,7 @@
 ﻿using Shojy.FF7.Elena.Materias;
 using System.Windows.Forms.VisualStyles;
 using System.ComponentModel;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.KernelEditor
 {

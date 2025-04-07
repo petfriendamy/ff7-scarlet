@@ -1,15 +1,12 @@
-﻿using System.IO.Compression;
-using System.Configuration;
-using Shojy.FF7.Elena;
+﻿using System.Configuration;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using FF7Scarlet.Compression;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.ExeEditor;
-using FF7Scarlet.Shared;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.Shared
 {
     public enum FormType { KernelEditor, SceneEditor, ExeEditor }
     public enum FileClass { Exe, VanillaExe, Kernel, Kernel2, Scene, BattleLgp }
@@ -34,9 +31,10 @@ namespace FF7Scarlet
         public static ExeData? VanillaExe { get; private set; }
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
-        public static bool RememberLastOpened { get; set; }
+        public static bool RememberLastOpened { get; set; } = true;
         public static bool PS3TweaksEnabled { get; set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
+        public static ScarletUpdater Updater { get; } = new ScarletUpdater();
 
         public const string
             REMEMBER_LAST_OPENED_KEY = "RememberLastOpened",
@@ -229,7 +227,7 @@ namespace FF7Scarlet
                     {
                         case FileClass.Exe:
                         case FileClass.VanillaExe:
-                            if (ExeData.ValidateEXE(path, (fileClass == FileClass.VanillaExe)))
+                            if (ExeData.ValidateEXE(path, fileClass == FileClass.VanillaExe))
                             {
                                 if (fileClass == FileClass.VanillaExe)
                                 {
@@ -508,7 +506,7 @@ namespace FF7Scarlet
                 throw new FileNotFoundException("No kernel.bin file is loaded.");
             }
 
-            Gzip.CreateKernel(kernel, KernelPath, (updateKernel2 ? Kernel2Path : null));
+            Gzip.CreateKernel(kernel, KernelPath, updateKernel2 ? Kernel2Path : null);
 
             if (reload) //reload the kernel
             {

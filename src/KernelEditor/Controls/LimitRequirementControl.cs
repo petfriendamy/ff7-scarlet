@@ -1,4 +1,5 @@
-﻿using Shojy.FF7.Elena.Characters;
+﻿using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Characters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

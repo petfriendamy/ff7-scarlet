@@ -1,4 +1,6 @@
-﻿namespace FF7Scarlet.AIEditor
+﻿using FF7Scarlet.Shared;
+
+namespace FF7Scarlet.AIEditor
 {
     public abstract class Code
     {
