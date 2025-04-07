@@ -19,6 +19,7 @@ namespace FF7Scarlet.Shared
         public ScarletUpdater()
         {
             AutoUpdater.HttpUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0";
+            AutoUpdater.ShowSkipButton = false;
             AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
         }
 
@@ -67,8 +68,9 @@ namespace FF7Scarlet.Shared
             return string.Empty;
         }
 
-        public void CheckForUpdates()
+        public void CheckForUpdates(bool settings)
         {
+            AutoUpdater.Mandatory = AutoUpdater.ReportErrors = settings;
             AutoUpdater.Start(GetUpdateChannel(UpdateChannel));
         }
 

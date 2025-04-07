@@ -40,7 +40,7 @@ namespace FF7Scarlet
         private void buttonCheckForUpdates_Click(object sender, EventArgs e)
         {
             DataManager.Updater.UpdateChannel = (UpdateChannel)comboBoxUpdateChannel.SelectedIndex;
-            DataManager.Updater.CheckForUpdates();
+            DataManager.Updater.CheckForUpdates(true);
             comboBoxUpdateChannel.Enabled = buttonCheckForUpdates.Enabled = false;
             buttonCheckForUpdates.Text = "Checking...";
         }

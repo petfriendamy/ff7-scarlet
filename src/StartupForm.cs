@@ -81,7 +81,7 @@ namespace FF7Scarlet
                         {
                             DataManager.Updater.UpdateChannel = UpdateChannel.Stable;
                         }
-                        DataManager.Updater.CheckForUpdates();
+                        DataManager.Updater.CheckForUpdates(false);
                     }
                 }
 
