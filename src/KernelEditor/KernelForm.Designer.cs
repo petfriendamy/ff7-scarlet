@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KernelForm));
             tabControlMain = new TabControl();
             tabPageCommandData = new TabPage();
@@ -1882,30 +1882,30 @@
             // 
             chartMainCurve.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             chartMainCurve.BackColor = SystemColors.Control;
-            chartArea2.AxisX.Interval = 10D;
-            chartArea2.AxisX.IntervalOffset = 9D;
-            chartArea2.AxisX.IsStartedFromZero = false;
-            chartArea2.AxisX.Maximum = 99D;
-            chartArea2.AxisX.Minimum = 1D;
-            chartArea2.Name = "ChartArea1";
-            chartMainCurve.ChartAreas.Add(chartArea2);
+            chartArea1.AxisX.Interval = 10D;
+            chartArea1.AxisX.IntervalOffset = 9D;
+            chartArea1.AxisX.IsStartedFromZero = false;
+            chartArea1.AxisX.Maximum = 99D;
+            chartArea1.AxisX.Minimum = 1D;
+            chartArea1.Name = "ChartArea1";
+            chartMainCurve.ChartAreas.Add(chartArea1);
             chartMainCurve.Location = new Point(6, 22);
             chartMainCurve.Name = "chartMainCurve";
             chartMainCurve.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Color = Color.SteelBlue;
-            series3.Name = "Min";
-            series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series3.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series4.Color = Color.Firebrick;
-            series4.Name = "Max";
-            series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series4.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            chartMainCurve.Series.Add(series3);
-            chartMainCurve.Series.Add(series4);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = Color.SteelBlue;
+            series1.Name = "Min";
+            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Color = Color.Firebrick;
+            series2.Name = "Max";
+            series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            chartMainCurve.Series.Add(series1);
+            chartMainCurve.Series.Add(series2);
             chartMainCurve.Size = new Size(592, 262);
             chartMainCurve.TabIndex = 0;
             chartMainCurve.Text = "Main curve";
@@ -2676,7 +2676,7 @@
             materiaSlotSelectorWeapon.Name = "materiaSlotSelectorWeapon";
             materiaSlotSelectorWeapon.Size = new Size(211, 35);
             materiaSlotSelectorWeapon.TabIndex = 3;
-            materiaSlotSelectorWeapon.DataChanged += WeaponDataChanged;
+            materiaSlotSelectorWeapon.DataChanged += materiaSlotSelectorWeapon_DataChanged;
             materiaSlotSelectorWeapon.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
             // 
             // labelWeaponMateriaGrowth
@@ -3077,7 +3077,7 @@
             materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
             materiaSlotSelectorArmor.Size = new Size(211, 35);
             materiaSlotSelectorArmor.TabIndex = 4;
-            materiaSlotSelectorArmor.DataChanged += ArmorDataChanged;
+            materiaSlotSelectorArmor.DataChanged += materiaSlotSelectorArmor_DataChanged;
             materiaSlotSelectorArmor.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
             // 
             // labelArmorMateriaGrowth

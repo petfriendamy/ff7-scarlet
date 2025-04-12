@@ -1727,12 +1727,6 @@ namespace FF7Scarlet.KernelEditor
             weapon.BoostedStat4 = increases[3].Stat;
             weapon.BoostedStat4Bonus = increases[3].Amount;
 
-            var slots = materiaSlotSelectorWeapon.GetSlots();
-            for (int i = 0; i < 8; ++i)
-            {
-                weapon.MateriaSlots[i] = slots[i];
-            }
-
             weapon.AttackElements = elementsControlWeapon.GetElements();
             int s = comboBoxWeaponStatus.SelectedIndex;
             if (s == 0)
@@ -1772,12 +1766,6 @@ namespace FF7Scarlet.KernelEditor
             armor.BoostedStat3Bonus = increases[2].Amount;
             armor.BoostedStat4 = increases[3].Stat;
             armor.BoostedStat4Bonus = increases[3].Amount;
-
-            var slots = materiaSlotSelectorWeapon.GetSlots();
-            for (int i = 0; i < 8; ++i)
-            {
-                armor.MateriaSlots[i] = slots[i];
-            }
 
             int temp;
             armor.ElementalDefense = elementsControlArmor.GetElements();
@@ -3249,7 +3237,35 @@ namespace FF7Scarlet.KernelEditor
                     {
                         SelectedWeapon.GrowthRate = rate;
                     }
+
+                    //check if currently selected character is using this weapon
+                    //and if so, update the growth rate
+                    if (SelectedCharacter != null && SelectedCharacter.WeaponID == SelectedWeaponIndex)
+                    {
+                        materiaSlotSelectorCharacterWeapon.GrowthRate = rate;
+                    }
                 }
+            }
+        }
+
+        private void materiaSlotSelectorWeapon_DataChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedWeapon != null)
+            {
+                var slots = materiaSlotSelectorWeapon.GetSlots();
+                for (int i = 0; i < 8; ++i)
+                {
+                    SelectedWeapon.MateriaSlots[i] = slots[i];
+                }
+
+                //check if currently selected character is using this weapon
+                //and if so, update the slots
+                if (SelectedCharacter != null && SelectedCharacter.WeaponID == SelectedWeaponIndex)
+                {
+                    materiaSlotSelectorCharacterWeapon.SetSlots(SelectedWeapon);
+                }
+
+                SetUnsaved(true);
             }
         }
 
@@ -3265,7 +3281,34 @@ namespace FF7Scarlet.KernelEditor
                     {
                         SelectedArmor.GrowthRate = rate;
                     }
+
+                    //check if currently selected character is using this armor
+                    //and if so, update the growth rate
+                    if (SelectedCharacter != null && SelectedCharacter.ArmorID == SelectedArmorIndex)
+                    {
+                        materiaSlotSelectorCharacterArmor.GrowthRate = rate;
+                    }
                 }
+            }
+        }
+
+        private void materiaSlotSelectorArmor_DataChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedArmor != null)
+            {
+                var slots = materiaSlotSelectorArmor.GetSlots();
+                for (int i = 0; i < 8; ++i)
+                {
+                    SelectedArmor.MateriaSlots[i] = slots[i];
+                }
+
+                //check if currently selected character is using this armor
+                //and if so, update the slots
+                if (SelectedCharacter != null && SelectedCharacter.ArmorID == SelectedArmorIndex)
+                {
+                    materiaSlotSelectorCharacterArmor.SetSlots(SelectedArmor);
+                }
+                SetUnsaved(true);
             }
         }
 
