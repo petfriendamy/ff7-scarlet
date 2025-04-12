@@ -1936,17 +1936,17 @@ namespace FF7Scarlet.ExeEditor
                             {
                                 writer.WriteLine($"# {original.Limits[i].Name}");
                             }
-                            for (i = 0; i < DataParser.ATTACK_BLOCK_SIZE; ++i)
+                            for (j = 0; j < DataParser.ATTACK_BLOCK_SIZE; ++j)
                             {
-                                if (temp1[i] != temp2[i])
+                                if (temp1[j] != temp2[j])
                                 {
                                     if (!diff)
                                     {
-                                        pos = LIMIT_BREAK_POS + HEXT_OFFSET_2 + i;
+                                        pos = LIMIT_BREAK_POS + HEXT_OFFSET_2 + (i * DataParser.ATTACK_BLOCK_SIZE) + j;
                                         writer.Write($"{pos:X2} = ");
                                         diff = true;
                                     }
-                                    writer.Write($"{temp1[i]:X2} ");
+                                    writer.Write($"{temp1[j]:X2} ");
                                 }
                                 else
                                 {

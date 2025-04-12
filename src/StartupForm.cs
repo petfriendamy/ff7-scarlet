@@ -72,14 +72,13 @@ namespace FF7Scarlet
                     var module = Process.GetCurrentProcess().MainModule;
                     if (module != null)
                     {
-                        FileVersionInfo appVersion = FileVersionInfo.GetVersionInfo(module.FileName);
-                        if (appVersion.FilePrivatePart > 0 || appVersion.ProductPrivatePart > 0)
+                        if (DataManager.Updater.UpdateChannel == UpdateChannel.Stable)
                         {
-                            DataManager.Updater.UpdateChannel = UpdateChannel.Canary;
-                        }
-                        else
-                        {
-                            DataManager.Updater.UpdateChannel = UpdateChannel.Stable;
+                            var appVersion = FileVersionInfo.GetVersionInfo(module.FileName);
+                            if (appVersion.FilePrivatePart > 0 || appVersion.ProductPrivatePart > 0)
+                            {
+                                DataManager.Updater.UpdateChannel = UpdateChannel.Canary;
+                            }
                         }
                         DataManager.Updater.CheckForUpdates(false);
                     }
