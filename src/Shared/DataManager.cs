@@ -223,6 +223,11 @@ namespace FF7Scarlet.Shared
             {
                 if (File.Exists(path))
                 {
+                    //check if the file is writable
+                    using (var file = File.Open(path, FileMode.Open, FileAccess.Write))
+                    {
+                        file.Close();
+                    }
                     switch (fileClass)
                     {
                         case FileClass.Exe:

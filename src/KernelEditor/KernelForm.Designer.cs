@@ -147,6 +147,9 @@
             listBoxCharacterLimits = new ListBox();
             tabPageCharacterGrowth = new TabPage();
             groupBoxSelectedCurve = new GroupBox();
+            labelCurveMax = new Label();
+            labelCurveMin = new Label();
+            labelCurveLevel = new Label();
             labelInaccurateCurve = new Label();
             buttonEditBaseCurve = new Button();
             groupBoxCurveBonuses = new GroupBox();
@@ -1686,6 +1689,9 @@
             // groupBoxSelectedCurve
             // 
             groupBoxSelectedCurve.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxSelectedCurve.Controls.Add(labelCurveMax);
+            groupBoxSelectedCurve.Controls.Add(labelCurveMin);
+            groupBoxSelectedCurve.Controls.Add(labelCurveLevel);
             groupBoxSelectedCurve.Controls.Add(labelInaccurateCurve);
             groupBoxSelectedCurve.Controls.Add(buttonEditBaseCurve);
             groupBoxSelectedCurve.Controls.Add(groupBoxCurveBonuses);
@@ -1698,6 +1704,36 @@
             groupBoxSelectedCurve.TabIndex = 3;
             groupBoxSelectedCurve.TabStop = false;
             groupBoxSelectedCurve.Text = "Selected curve";
+            // 
+            // labelCurveMax
+            // 
+            labelCurveMax.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelCurveMax.AutoSize = true;
+            labelCurveMax.Location = new Point(512, 52);
+            labelCurveMax.Name = "labelCurveMax";
+            labelCurveMax.Size = new Size(46, 15);
+            labelCurveMax.TabIndex = 9;
+            labelCurveMax.Text = "Max: ??";
+            // 
+            // labelCurveMin
+            // 
+            labelCurveMin.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelCurveMin.AutoSize = true;
+            labelCurveMin.Location = new Point(512, 37);
+            labelCurveMin.Name = "labelCurveMin";
+            labelCurveMin.Size = new Size(44, 15);
+            labelCurveMin.TabIndex = 8;
+            labelCurveMin.Text = "Min: ??";
+            // 
+            // labelCurveLevel
+            // 
+            labelCurveLevel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelCurveLevel.AutoSize = true;
+            labelCurveLevel.Location = new Point(512, 22);
+            labelCurveLevel.Name = "labelCurveLevel";
+            labelCurveLevel.Size = new Size(50, 15);
+            labelCurveLevel.TabIndex = 7;
+            labelCurveLevel.Text = "Level: ??";
             // 
             // labelInaccurateCurve
             // 
@@ -1906,9 +1942,10 @@
             series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
             chartMainCurve.Series.Add(series1);
             chartMainCurve.Series.Add(series2);
-            chartMainCurve.Size = new Size(592, 262);
+            chartMainCurve.Size = new Size(500, 262);
             chartMainCurve.TabIndex = 0;
             chartMainCurve.Text = "Main curve";
+            chartMainCurve.MouseMove += chartMainCurve_MouseMove;
             // 
             // listBoxStatCurves
             // 
@@ -4374,5 +4411,8 @@
         private Controls.LimitRequirementControl limitRequirementControl4;
         private Controls.LimitRequirementControl limitRequirementControl3;
         private Controls.LimitRequirementControl limitRequirementControl2;
+        private Label labelCurveMax;
+        private Label labelCurveMin;
+        private Label labelCurveLevel;
     }
 }

@@ -17,7 +17,6 @@ using FF7Scarlet.KernelEditor.Controls;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
-using System;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -1282,8 +1281,16 @@ namespace FF7Scarlet.KernelEditor
                 bool isEXP = (stat == (int)CurveStats.EXP);
                 groupBoxCurveBonuses.Enabled = !isEXP;
                 EnableOrDisableInner(groupBoxCurveBonuses, !isEXP, null);
-                if (!isEXP)
+                if (isEXP)
                 {
+                    labelCurveMin.Text = "Value: ??";
+                    labelCurveMax.Visible = false;
+                }
+                else
+                {
+                    labelCurveMin.Text = "Min: ??";
+                    labelCurveMax.Visible = true;
+
                     for (int i = 0; i < 12; ++i)
                     {
                         if (stat == (int)CurveStats.HP)
@@ -2906,6 +2913,47 @@ namespace FF7Scarlet.KernelEditor
                     }
                 }
             }
+        }
+
+        private void chartMainCurve_MouseMove(object sender, MouseEventArgs e)
+        {
+            int p = FindNearestPoint(e.X);
+            if (p >= 0)
+            {
+                labelCurveLevel.Text = $"Level: {p + 1}";
+                if (listBoxStatCurves.SelectedIndex == (int)CurveStats.EXP)
+                {
+                    int val = (int)MainCurveMax.Points[p].YValues[0];
+
+                    labelCurveMin.Text = $"Value: {val}";
+                }
+                else
+                {
+                    int min = (int)MainCurveMin.Points[p].YValues[0],
+                        max = (int)MainCurveMax.Points[p].YValues[0];
+
+                    labelCurveMin.Text = $"Min: {min}";
+                    labelCurveMax.Text = $"Max: {max}";
+                }
+            }
+        }
+
+        private int FindNearestPoint(double x)
+        {
+            var area = chartMainCurve.ChartAreas[0];
+            int nearestPoint = -1;
+            double nearestDistance = double.MaxValue;
+
+            for (int i = 0; i < 99; ++i)
+            {
+                var distance = Math.Abs(area.AxisX.ValueToPixelPosition(MainCurveMax.Points[i].XValue) - x);
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestPoint = i;
+                }
+            }
+            return nearestPoint;
         }
 
         private void listBoxCharacterAI_SelectedIndexChanged(object sender, EventArgs e)
