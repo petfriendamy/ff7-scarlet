@@ -48,6 +48,7 @@
             labelCommandName = new Label();
             listBoxCommands = new ListBox();
             tabPageAttackData = new TabPage();
+            comboBoxAttackType = new ComboBox();
             tabControlAttacks = new TabControl();
             tabPageAttacks1 = new TabPage();
             labelAttackId = new Label();
@@ -629,6 +630,7 @@
             // 
             // tabPageAttackData
             // 
+            tabPageAttackData.Controls.Add(comboBoxAttackType);
             tabPageAttackData.Controls.Add(tabControlAttacks);
             tabPageAttackData.Controls.Add(listBoxAttacks);
             tabPageAttackData.Location = new Point(4, 24);
@@ -639,6 +641,17 @@
             tabPageAttackData.TabIndex = 1;
             tabPageAttackData.Text = "Attacks";
             tabPageAttackData.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxAttackType
+            // 
+            comboBoxAttackType.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxAttackType.FormattingEnabled = true;
+            comboBoxAttackType.Items.AddRange(new object[] { "Magic", "Summons", "Enemy skills", "Limit breaks" });
+            comboBoxAttackType.Location = new Point(9, 13);
+            comboBoxAttackType.Name = "comboBoxAttackType";
+            comboBoxAttackType.Size = new Size(174, 23);
+            comboBoxAttackType.TabIndex = 38;
+            comboBoxAttackType.SelectedIndexChanged += comboBoxAttackType_SelectedIndexChanged;
             // 
             // tabControlAttacks
             // 
@@ -1107,10 +1120,10 @@
             // 
             listBoxAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxAttacks.FormattingEnabled = true;
-            listBoxAttacks.Location = new Point(9, 13);
+            listBoxAttacks.Location = new Point(9, 42);
             listBoxAttacks.Margin = new Padding(4, 3, 4, 3);
             listBoxAttacks.Name = "listBoxAttacks";
-            listBoxAttacks.Size = new Size(174, 469);
+            listBoxAttacks.Size = new Size(174, 439);
             listBoxAttacks.TabIndex = 0;
             listBoxAttacks.SelectedIndexChanged += listBoxAttacks_SelectedIndexChanged;
             // 
@@ -4414,5 +4427,6 @@
         private Label labelCurveMax;
         private Label labelCurveMin;
         private Label labelCurveLevel;
+        private ComboBox comboBoxAttackType;
     }
 }

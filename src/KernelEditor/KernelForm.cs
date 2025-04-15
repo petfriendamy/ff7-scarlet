@@ -120,6 +120,58 @@ namespace FF7Scarlet.KernelEditor
         }
 
         /// <summary>
+        /// Gets the current attack type.
+        /// </summary>
+        private AttackTypes SelectedAttackType
+        {
+            get { return (AttackTypes)comboBoxAttackType.SelectedIndex; }
+        }
+
+        /// <summary>
+        /// Gets the attack offset, relative to attack type.
+        /// </summary>
+        private int AttackOffset
+        {
+            get
+            {
+                switch (SelectedAttackType)
+                {
+                    case AttackTypes.Summon:
+                        return Kernel.SUMMON_OFFSET;
+                    case AttackTypes.ESkill:
+                        return Kernel.ESKILL_OFFSET;
+                    case AttackTypes.Limit:
+                        return Kernel.LIMIT_OFFSET;
+                    default:
+                        return 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the attack count, relative to attack type.
+        /// </summary>
+        private int AttackCount
+        {
+            get
+            {
+                switch (SelectedAttackType)
+                {
+                    case AttackTypes.Magic:
+                        return Kernel.SUMMON_OFFSET;
+                    case AttackTypes.Summon:
+                        return Kernel.ESKILL_OFFSET - Kernel.SUMMON_OFFSET + 2;
+                    case AttackTypes.ESkill:
+                        return Kernel.SPECIAL_SUMMON_OFFSET - Kernel.ESKILL_OFFSET;
+                    case AttackTypes.Limit:
+                        return Kernel.ATTACK_COUNT - Kernel.LIMIT_OFFSET;
+                    default:
+                        return Kernel.ATTACK_COUNT;
+                }
+            }
+        }
+
+        /// <summary>
         /// The currently selected attack. Returns null if none is selected.
         /// </summary>
         private Attack? SelectedAttack
@@ -139,7 +191,10 @@ namespace FF7Scarlet.KernelEditor
         /// </summary>
         private int SelectedAttackIndex
         {
-            get { return listBoxAttacks.SelectedIndex; }
+            get
+            {
+                return listBoxAttacks.SelectedIndex + AttackOffset;
+            }
         }
 
         /// <summary>
@@ -566,6 +621,7 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //section-specific data
+            comboBoxAttackType.SelectedIndex = 0;
             foreach (var lb in listBoxes)
             {
                 UpdateNames(lb.Key);
@@ -648,7 +704,7 @@ namespace FF7Scarlet.KernelEditor
                     //check if control is ignored
                     if (ignoreList != null && ignoreList.Contains(c))
                     {
-                        if (!(c is ListBox)) { c.Enabled = false; }
+                        //if (!(c is ListBox)) { c.Enabled = false; }
                     }
                     else
                     {
@@ -688,6 +744,11 @@ namespace FF7Scarlet.KernelEditor
             if (tabPages.ContainsKey(section))
             {
                 list.Add(listBoxes[section]); //ignore main listbox
+
+                if (section == KernelSection.AttackData) //ignore selection combo box
+                {
+                    list.Add(comboBoxAttackType);
+                }
 
                 //if kernel2 isn't loaded, disable name and description text boxes
                 if (!DataManager.BothKernelFilePathsExist)
@@ -873,6 +934,17 @@ namespace FF7Scarlet.KernelEditor
             if (listBoxes.ContainsKey(section))
             {
                 int i = listBoxes[section].SelectedIndex, j;
+                if (section == KernelSection.AttackData)
+                {
+                    if (SelectedAttackType == AttackTypes.Summon && i > AttackCount - 2)
+                    {
+                        i = Kernel.SPECIAL_SUMMON_OFFSET + (i - AttackCount);
+                    }
+                    else
+                    {
+                        i += AttackOffset;
+                    }
+                }
                 if (i >= 0 && i < kernel.GetCount(section))
                 {
                     EnableOrDisableTabPageControls(section, true);
@@ -1477,14 +1549,33 @@ namespace FF7Scarlet.KernelEditor
                 var names = kernel.GetAssociatedNames(s);
                 if (names != null)
                 {
-                    foreach (var n in names)
+                    int top = 0, bottom = names.Length, j;
+                    bool summons = false;
+                    if (section == KernelSection.AttackData) //offset for attacks
                     {
-                        listBoxes[s].Items.Add(n);
+                        top = AttackOffset;
+                        bottom = AttackOffset + AttackCount;
+                        summons = SelectedAttackType == AttackTypes.Summon;
+                        if (summons) { bottom -= 2; }
                     }
+
+                    for (j = top; j < bottom; ++j)
+                    {
+                        listBoxes[s].Items.Add(names[j]);
+                    }
+                    if (summons) //add extra limits
+                    {
+                        for (j = Kernel.SPECIAL_SUMMON_OFFSET; j < Kernel.SPECIAL_SUMMON_OFFSET + 2; ++j)
+                        {
+                            listBoxes[s].Items.Add(names[j]);
+                        }
+                    }
+
+                    //re-set previously selected item
                     listBoxes[s].SelectedIndex = i;
                     if (i >= 0 && i < listBoxes[s].Items.Count)
                     {
-                        nameTextBoxes[s].Text = names[i];
+                        nameTextBoxes[s].Text = names[i + top];
                     }
                 }
                 listBoxes[s].ResumeLayout();
@@ -1854,6 +1945,7 @@ namespace FF7Scarlet.KernelEditor
             {
                 materia.Element = elem[comboBoxMateriaElement.SelectedIndex - 1];
             }
+            materia.EquipEffect = (byte)comboBoxMateriaEquipAttributes.SelectedIndex;
             materia.Status = statusesControlMateria.GetStatuses();
             materia.Level2AP = materiaLevelControl.Lvl2APValue;
             materia.Level3AP = materiaLevelControl.Lvl3APValue;
@@ -2527,6 +2619,15 @@ namespace FF7Scarlet.KernelEditor
         #endregion
 
         #region Attack Controls
+
+        private void comboBoxAttackType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                listBoxAttacks.SelectedIndex = -1;
+                UpdateNames(KernelSection.AttackData);
+            }
+        }
 
         private void textBoxAttackName_TextChanged(object sender, EventArgs e)
         {
