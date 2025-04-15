@@ -1,10 +1,8 @@
 ﻿using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
-using SharpDX.Win32;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using System.Collections;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -64,7 +62,7 @@ namespace FF7Scarlet.ExeEditor
             NUM_CHOCOBO_NAMES = 46,
             NUM_CHOCOBO_RACE_ITEMS = 24,
             NUM_AUDIO_VALUES = 128,
-            NUM_WALKABILITY_MODELS = 11,
+            NUM_WALKABILITY_MODELS = 12,
             
             MENU_TEXT_LENGTH = 20,
             ITEM_MENU_TEXT_LENGTH = 12,
@@ -110,6 +108,7 @@ namespace FF7Scarlet.ExeEditor
             MATERIA_PRIORITY_POS = 0x5201C8,
             NAME_DATA_POS = 0x5206B8,
             CAIT_SITH_DATA_POS = 0x520C10,
+            VINCENT_DATA_POS = CAIT_SITH_DATA_POS + DataParser.CHARACTER_RECORD_LENGTH,
             SHOP_NAME_POS = 0x5219C8,
             SHOP_TEXT_POS = 0x521A80,
             SHOP_INVENTORY_POS = 0x521E18,
@@ -122,8 +121,8 @@ namespace FF7Scarlet.ExeEditor
             CHOCOBO_RACE_ITEMS_POS = 0x57B3D0,
             CHOCOBO_NAMES_POS = 0x57B658;
 
-        private static readonly int[] MODEL_CAN_WALK_POS = { 0x34c356, 0, 0x34c383, 0x34c4cc, 0x34c57e, 0x34c5c9, 0x568440, 0x568444, 0x568448, 0x56844c, 0x568450 };
-        private static readonly int[] MODEL_CAN_DISEMBARK_POS= { 0, 0x34c45f, 0x34c3c1, 0x34c518, 0x34c54c, 0x34c59a, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec };
+        private static readonly int[] MODEL_CAN_WALK_POS = { 0x34c356, 0, 0x34c383, 0x34c4cc, 0x34c57e, 0x34c5c9, 0x568440, 0x568444, 0x568448, 0x56844c, 0x568450, 0x34bbdb };
+        private static readonly int[] MODEL_CAN_DISEMBARK_POS = { 0, 0x34c45f, 0x34c3c1, 0x34c518, 0x34c54c, 0x34c59a, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0 };
         private static readonly int[] MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS = { 0x34c4f3, 0x34c52d };
 
         //properties
@@ -1722,6 +1721,19 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        //private function to get the correct Hext offset for current position
+        private long GetHextPosition(long pos)
+        {
+            if (pos > 0x50000) //approx
+            {
+                return pos + HEXT_OFFSET_2;
+            }
+            else
+            {
+                return pos + HEXT_OFFSET_1;
+            }
+        }
+
         //private function to write text for a Hext file
         private string WriteHextStrings(FFText[] strings, FFText[] original, long position, int length, int count,
             int offset = 0)
@@ -1740,8 +1752,7 @@ namespace FF7Scarlet.ExeEditor
                     output.Append($"# {text2} -> {text1}");
                     output.AppendLine();
                     var temp = strings[i + offset].GetBytes();
-                    pos = position + HEXT_OFFSET_2 + (length * i);
-                    output.Append($"{pos:X2} = ");
+                    output.Append($"{GetHextPosition(position + (length * i)):X2} = ");
                     foreach (var x in temp)
                     {
                         output.Append($"{x:X2} ");
@@ -1782,7 +1793,7 @@ namespace FF7Scarlet.ExeEditor
                     if (APPriceMultiplier != original.APPriceMultiplier)
                     {
                         writer.WriteLine("# AP price multiplier");
-                        pos = AP_MULTIPLIER_POS + HEXT_OFFSET_1;
+                        pos = GetHextPosition(AP_MULTIPLIER_POS);
                         writer.WriteLine($"{pos:X2} = {APPriceMultiplier:X2}");
                         pos += AP_MASTER_OFFSET;
                         writer.WriteLine($"{pos:X2} = {APPriceMultiplier:X2}");
@@ -1838,8 +1849,7 @@ namespace FF7Scarlet.ExeEditor
 
                         if (moveDiff)
                         {
-                            pos = MODEL_CAN_WALK_POS[i] + HEXT_OFFSET_1;
-                            writer.Write($"{pos:X2} = ");
+                            writer.Write($"{GetHextPosition(MODEL_CAN_WALK_POS[i]):X2} = ");
                             foreach (var b in moveBytesNew)
                             {
                                 writer.Write($"{b:X2} ");
@@ -1850,8 +1860,7 @@ namespace FF7Scarlet.ExeEditor
                             {
                                 foreach (var p in MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS)
                                 {
-                                    pos = p + HEXT_OFFSET_1;
-                                    writer.Write($"{pos:X2} = ");
+                                    writer.Write($"{GetHextPosition(p):X2} = ");
                                     foreach (var b in moveBytesNew)
                                     {
                                         writer.Write($"{b:X2} ");
@@ -1862,8 +1871,7 @@ namespace FF7Scarlet.ExeEditor
                         }
                         if (disembarkDiff)
                         {
-                            pos = MODEL_CAN_DISEMBARK_POS[i] + HEXT_OFFSET_1;
-                            writer.Write($"{pos:X2} = ");
+                            writer.Write($"{GetHextPosition(MODEL_CAN_DISEMBARK_POS[i]):X2} = ");
                             foreach (var b in moveBytesNew)
                             {
                                 writer.Write($"{b:X2} ");
@@ -1942,7 +1950,7 @@ namespace FF7Scarlet.ExeEditor
                                 {
                                     if (!diff)
                                     {
-                                        pos = LIMIT_BREAK_POS + HEXT_OFFSET_2 + (i * DataParser.ATTACK_BLOCK_SIZE) + j;
+                                        pos = GetHextPosition(LIMIT_BREAK_POS + (i * DataParser.ATTACK_BLOCK_SIZE) + j);
                                         writer.Write($"{pos:X2} = ");
                                         diff = true;
                                     }
@@ -2009,7 +2017,7 @@ namespace FF7Scarlet.ExeEditor
                                 checker = true;
                                 writer.WriteLine($"# {text2} -> {text1}");
                                 var temp = LimitSuccess[i].GetBytes();
-                                pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
+                                pos = GetHextPosition(LIMIT_TEXT_POS + (GetLimitTextLength() * j));
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var x in temp)
                                 {
@@ -2028,7 +2036,7 @@ namespace FF7Scarlet.ExeEditor
                                 checker = true;
                                 writer.WriteLine($"# {text2} -> {text1}");
                                 var temp = LimitFail[i].GetBytes();
-                                pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
+                                pos = GetHextPosition(LIMIT_TEXT_POS + (GetLimitTextLength() * j));
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var x in temp)
                                 {
@@ -2048,7 +2056,7 @@ namespace FF7Scarlet.ExeEditor
                             checker = true;
                             writer.WriteLine($"# {text2} -> {text1}");
                             var temp = LimitWrong[i].GetBytes();
-                            pos = LIMIT_TEXT_POS + HEXT_OFFSET_2 + (GetLimitTextLength() * j);
+                            pos = GetHextPosition(LIMIT_TEXT_POS + (GetLimitTextLength() * j));
                             writer.Write($"{pos:X2} = ");
                             foreach (var x in temp)
                             {
@@ -2085,8 +2093,7 @@ namespace FF7Scarlet.ExeEditor
                             }
                             if (!diff)
                             {
-                                pos = ITEM_SORT_POS + HEXT_OFFSET_2 + (i * 2);
-                                writer.Write($"{pos:X2} = ");
+                                writer.Write($"{GetHextPosition(ITEM_SORT_POS + (i * 2)):X2} = ");
                                 diff = true;
                             }
                             var temp = BitConverter.GetBytes(items1[i]);
@@ -2135,8 +2142,7 @@ namespace FF7Scarlet.ExeEditor
                             }
                             if (!diff)
                             {
-                                pos = MATERIA_PRIORITY_POS + HEXT_OFFSET_2 + i;
-                                writer.Write($"{pos:X2} = ");
+                                writer.Write($"{GetHextPosition(MATERIA_PRIORITY_POS + i):X2} = ");
                                 diff = true;
                             }
                             writer.Write($"{p1[i]:X2} ");
@@ -2172,8 +2178,7 @@ namespace FF7Scarlet.ExeEditor
                                 {
                                     if (!diff)
                                     {
-                                        pos = CAIT_SITH_DATA_POS + HEXT_OFFSET_2 + i;
-                                        writer.Write($"{pos:X2} = ");
+                                        writer.Write($"{GetHextPosition(CAIT_SITH_DATA_POS + i):X2} = ");
                                         diff = true;
                                     }
                                     writer.Write($"{temp1[i]:X2} ");
@@ -2207,8 +2212,7 @@ namespace FF7Scarlet.ExeEditor
                                 {
                                     if (!diff)
                                     {
-                                        pos = CAIT_SITH_DATA_POS + HEXT_OFFSET_2 + DataParser.CHARACTER_RECORD_LENGTH + i;
-                                        writer.Write($"{pos:X2} = ");
+                                        writer.Write($"{GetHextPosition(VINCENT_DATA_POS + i):X2} = ");
                                         diff = true;
                                     }
                                     writer.Write($"{temp1[i]:X2} ");
@@ -2253,7 +2257,7 @@ namespace FF7Scarlet.ExeEditor
                                         checker = true;
                                         if (!diff)
                                         {
-                                            pos = SHOP_INVENTORY_POS + HEXT_OFFSET_2 + (ShopInventory.SHOP_DATA_LENGTH * i) + j;
+                                            pos = GetHextPosition(SHOP_INVENTORY_POS + (ShopInventory.SHOP_DATA_LENGTH * i) + j);
                                             writer.Write($"{pos:X2} = ");
                                             diff = true;
                                         }
@@ -2278,8 +2282,7 @@ namespace FF7Scarlet.ExeEditor
                             if (ItemPrices[i] != original.ItemPrices[i])
                             {
                                 writer.WriteLine($"# {DataManager.Kernel.ItemData.Items[i].Name} price");
-                                pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (i * 4);
-                                writer.Write($"{pos:X2} = ");
+                                writer.Write($"{GetHextPosition(ITEM_PRICE_DATA_POS + (i * 4)):X2} = ");
                                 foreach (var b in BitConverter.GetBytes(ItemPrices[i]))
                                 {
                                     writer.Write($"{b:X2} ");
@@ -2295,7 +2298,7 @@ namespace FF7Scarlet.ExeEditor
                             if (WeaponPrices[i] != original.WeaponPrices[i])
                             {
                                 writer.WriteLine($"# {DataManager.Kernel.WeaponData.Weapons[i].Name} price");
-                                pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.WEAPON_START * 4) + (i * 4);
+                                pos = GetHextPosition(ITEM_PRICE_DATA_POS + (DataParser.WEAPON_START * 4) + (i * 4));
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var b in BitConverter.GetBytes(WeaponPrices[i]))
                                 {
@@ -2312,7 +2315,7 @@ namespace FF7Scarlet.ExeEditor
                             if (ArmorPrices[i] != original.ArmorPrices[i])
                             {
                                 writer.WriteLine($"# {DataManager.Kernel.ArmorData.Armors[i].Name} price");
-                                pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.ARMOR_START * 4) + (i * 4);
+                                pos = GetHextPosition(ITEM_PRICE_DATA_POS + (DataParser.ARMOR_START * 4) + (i * 4));
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var b in BitConverter.GetBytes(ArmorPrices[i]))
                                 {
@@ -2329,7 +2332,7 @@ namespace FF7Scarlet.ExeEditor
                             if (AccessoryPrices[i] != original.AccessoryPrices[i])
                             {
                                 writer.WriteLine($"# {DataManager.Kernel.AccessoryData.Accessories[i].Name} price");
-                                pos = ITEM_PRICE_DATA_POS + HEXT_OFFSET_2 + (DataParser.ACCESSORY_START * 4) + (i * 4);
+                                pos = GetHextPosition(ITEM_PRICE_DATA_POS + (DataParser.ACCESSORY_START * 4) + (i * 4));
                                 writer.Write($"{pos:X2} = ");
                                 foreach (var b in BitConverter.GetBytes(AccessoryPrices[i]))
                                 {
@@ -2346,8 +2349,7 @@ namespace FF7Scarlet.ExeEditor
                             if (MateriaPrices[i] != original.MateriaPrices[i])
                             {
                                 writer.WriteLine($"# {DataManager.Kernel.MateriaData.Materias[i].Name} price");
-                                pos = MATERIA_PRICE_DATA_POS + HEXT_OFFSET_2 + (i * 4);
-                                writer.Write($"{pos:X2} = ");
+                                writer.Write($"{GetHextPosition(MATERIA_PRICE_DATA_POS + (i * 4)):X2} = ");
                                 foreach (var b in BitConverter.GetBytes(MateriaPrices[i]))
                                 {
                                     writer.Write($"{b:X2} ");
@@ -2370,8 +2372,7 @@ namespace FF7Scarlet.ExeEditor
                             checker = true;
                             writer.WriteLine($"# {name2} -> {name1}");
                             var temp = ChocoboNames[NUM_CHOCOBO_NAMES].GetBytes();
-                            pos = TEIOH_POS + HEXT_OFFSET_2;
-                            writer.Write($"{pos:X2} = ");
+                            writer.Write($"{GetHextPosition(TEIOH_POS):X2} = ");
                             foreach (var x in temp)
                             {
                                 writer.Write($"{x:X2} ");
@@ -2390,8 +2391,7 @@ namespace FF7Scarlet.ExeEditor
                                     writer.WriteLine("# Audio volume");
                                     checker = true;
                                 }
-                                pos = AUDIO_VOLUME_POS + HEXT_OFFSET_2 + (i * 4);
-                                writer.Write($"{pos:X2} = ");
+                                writer.Write($"{GetHextPosition(AUDIO_VOLUME_POS + (i * 4)):X2} = ");
                                 var temp = BitConverter.GetBytes(AudioVolume[i]);
                                 foreach (var b in temp)
                                 {
@@ -2416,8 +2416,7 @@ namespace FF7Scarlet.ExeEditor
                                     writer.WriteLine("# Audio pan");
                                     checker = true;
                                 }
-                                pos = AUDIO_PAN_POS + HEXT_OFFSET_2 + (i * 4);
-                                writer.Write($"{pos:X2} = ");
+                                writer.Write($"{GetHextPosition(AUDIO_PAN_POS + (i * 4)):X2} = ");
                                 var temp = BitConverter.GetBytes(AudioPan[i]);
                                 foreach (var b in temp)
                                 {

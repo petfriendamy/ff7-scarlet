@@ -3201,7 +3201,6 @@ namespace FF7Scarlet.ExeEditor
             // 
             listBoxModels.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxModels.FormattingEnabled = true;
-            listBoxModels.Items.AddRange(new object[] { "Cloud, Tifa & Cid", "Highwind", "Wild Chocobo", "Tiny Bronco", "Buggy", "Submarine", "Yellow Chocobo", "Green Chocobo", "Blue Chocobo", "Black Chocobo", "Gold Chocobo" });
             listBoxModels.Location = new Point(4, 7);
             listBoxModels.Margin = new Padding(4, 3, 4, 3);
             listBoxModels.Name = "listBoxModels";

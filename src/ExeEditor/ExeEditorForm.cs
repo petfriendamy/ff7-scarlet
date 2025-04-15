@@ -173,6 +173,13 @@ namespace FF7Scarlet.ExeEditor
                 }
             }
 
+            //add world map data
+            for (i = 0; i < ExeData.NUM_WALKABILITY_MODELS; ++i)
+            {
+                var name = StringParser.AddSpaces(Enum.GetName((WorldMapModels)i));
+                listBoxModels.Items.Add(name);
+            }
+
             //English-only stuff
             if (editor.Language != Language.English)
             {
@@ -2286,8 +2293,8 @@ namespace FF7Scarlet.ExeEditor
             {
                 loading = true;
                 var model = (WorldMapModels)i;
-                groupBoxWalkableTriangleTypes.Enabled = model != WorldMapModels.Highwind;
-                groupBoxDisembarkTriangleTypes.Enabled = model != WorldMapModels.Player;
+                groupBoxWalkableTriangleTypes.Enabled = editor.ModelMoveBitmasks[i] != null;
+                groupBoxDisembarkTriangleTypes.Enabled = editor.ModelDisembarkBitmasks[i] != null;
 
                 for (int j = 0; j < 32; ++j)
                 {

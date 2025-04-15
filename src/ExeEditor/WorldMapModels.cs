@@ -9,6 +9,6 @@ namespace FF7Scarlet.ExeEditor
     public enum WorldMapModels
     {
         Player, Highwind, WildChocobo, TinyBronco, Buggy, Submarine, YellowChocobo,
-        GreenChocobo, BlueChocobo, BlackChocobo, GoldChocobo
+        GreenChocobo, BlueChocobo, BlackChocobo, GoldChocobo, CargoShip
     }
 }

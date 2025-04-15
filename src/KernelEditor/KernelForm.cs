@@ -934,19 +934,19 @@ namespace FF7Scarlet.KernelEditor
             if (listBoxes.ContainsKey(section))
             {
                 int i = listBoxes[section].SelectedIndex, j;
-                if (section == KernelSection.AttackData)
-                {
-                    if (SelectedAttackType == AttackTypes.Summon && i > AttackCount - 2)
-                    {
-                        i = Kernel.SPECIAL_SUMMON_OFFSET + (i - AttackCount);
-                    }
-                    else
-                    {
-                        i += AttackOffset;
-                    }
-                }
                 if (i >= 0 && i < kernel.GetCount(section))
                 {
+                    if (section == KernelSection.AttackData)
+                    {
+                        if (SelectedAttackType == AttackTypes.Summon && i > AttackCount - 3)
+                        {
+                            i = Kernel.SPECIAL_SUMMON_OFFSET + (i - AttackCount) + 2;
+                        }
+                        else
+                        {
+                            i += AttackOffset;
+                        }
+                    }
                     EnableOrDisableTabPageControls(section, true);
                     nameTextBoxes[section].Text = kernel.GetAssociatedNames(section)[i];
                     descriptionTextBoxes[section].Text = kernel.GetAssociatedDescriptions(section)[i];

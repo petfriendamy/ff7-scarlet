@@ -14,7 +14,7 @@ namespace FF7Scarlet.Shared
 {
     public static class DataParser
     {
-        public static int ATTACK_BLOCK_SIZE = 28, CHARACTER_NAME_LENGTH = 12, CHARACTER_RECORD_LENGTH = 132;
+        public const int ATTACK_BLOCK_SIZE = 28, CHARACTER_NAME_LENGTH = 12, CHARACTER_RECORD_LENGTH = 132;
         public const ushort
             WEAPON_START = 128,
             ARMOR_START = 256,
