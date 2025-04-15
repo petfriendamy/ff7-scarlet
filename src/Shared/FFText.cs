@@ -240,9 +240,9 @@ namespace FF7Scarlet.Shared
                     Array.Copy(BitConverter.GetBytes(ToInt()), threeByteInt, 3);
                     return threeByteInt;
                 case ParameterTypes.Debug:
-                    var temp = ToString();
-                    if (temp == string.Empty) { return Array.Empty<byte>(); }
-                    return Encoding.ASCII.GetBytes(temp);
+                    var str = ToString();
+                    if (str == string.Empty) { return Array.Empty<byte>(); }
+                    return Encoding.ASCII.GetBytes(str);
                 default:
                     var copy = new byte[data.Length];
                     Array.Copy(data, copy, data.Length);
