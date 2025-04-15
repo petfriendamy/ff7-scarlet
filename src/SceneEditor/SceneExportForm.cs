@@ -103,7 +103,7 @@
                                 groupBoxExport.Enabled = false;
                                 buttonExport.Enabled = false;
                                 processing = true;
-                                var selected = new int[listBoxSceneList.Items.Count];
+                                var selected = new int[listBoxSceneList.SelectedIndices.Count];
                                 for (int i = 0; i < selected.Length; ++i)
                                 {
                                     selected[i] = listBoxSceneList.SelectedIndices[i];

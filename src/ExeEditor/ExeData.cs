@@ -80,8 +80,9 @@ namespace FF7Scarlet.ExeEditor
             ITEM_NAME_LENGTH = 16;
 
         private const long
-            HEXT_OFFSET_1 = 0x400C00,
-            HEXT_OFFSET_2 = 0x401600,
+            HEXT_OFFSET_TEXT = 0x400C00,
+            HEXT_OFFSET_DATA = 0x401600,
+            DATA_SECTION_START = 0x3B8A00,
 
             TEST_BYTE_POS = 0x94,
             AP_MULTIPLIER_POS = 0x31F14F,
@@ -1724,13 +1725,13 @@ namespace FF7Scarlet.ExeEditor
         //private function to get the correct Hext offset for current position
         private long GetHextPosition(long pos)
         {
-            if (pos > 0x50000) //approx
+            if (pos > DATA_SECTION_START)
             {
-                return pos + HEXT_OFFSET_2;
+                return pos + HEXT_OFFSET_DATA;
             }
             else
             {
-                return pos + HEXT_OFFSET_1;
+                return pos + HEXT_OFFSET_TEXT;
             }
         }
 
@@ -1740,7 +1741,6 @@ namespace FF7Scarlet.ExeEditor
         {
             var output = new StringBuilder();
             bool checker = false;
-            long pos;
 
             for (int i = 0; i < count; ++i)
             {
