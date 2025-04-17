@@ -229,11 +229,23 @@ namespace FF7Scarlet.KernelEditor
         {
             if (section == KernelSection.AttackData) { return ATTACK_COUNT; }
             else if (section == KernelSection.BattleText) { return BattleText.Strings.Length; }
+            else
             {
-                var temp = GetTextSection(section);
-                if (temp != null)
+                if ((int)section > KERNEL1_END)
                 {
-                    return temp.Strings.Length;
+                    var temp = GetTextSection(section);
+                    if (temp != null)
+                    {
+                        return temp.Strings.Length;
+                    }
+                }
+                else
+                {
+                    var temp = GetAssociatedNames(section);
+                    if (temp != null)
+                    {
+                        return temp.Length;
+                    }
                 }
             }
             return 0;
