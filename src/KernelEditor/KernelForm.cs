@@ -3614,7 +3614,7 @@ namespace FF7Scarlet.KernelEditor
                                 }
                                 else if (chunk == (int)KernelSection.SummonAttackNames)
                                 {
-                                    int i = listBoxAttacks.SelectedIndex - Kernel.SUMMON_OFFSET;
+                                    int i = SelectedAttackIndex - Kernel.SUMMON_OFFSET;
                                     if (i >= 0 && i < kernel.SummonAttackNames.Strings.Length)
                                     {
                                         textBoxSummonText.Text = kernel.SummonAttackNames.Strings[i];

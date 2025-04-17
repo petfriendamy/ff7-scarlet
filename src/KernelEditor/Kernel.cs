@@ -230,18 +230,10 @@ namespace FF7Scarlet.KernelEditor
             if (section == KernelSection.AttackData) { return ATTACK_COUNT; }
             else if (section == KernelSection.BattleText) { return BattleText.Strings.Length; }
             {
-                string[] temp;
-                if ((int)section < DESCRIPTIONS_END)
-                {
-                    temp = GetAssociatedDescriptions(section);
-                }
-                else
-                {
-                    temp = GetAssociatedNames(section);
-                }
+                var temp = GetTextSection(section);
                 if (temp != null)
                 {
-                    return temp.Length;
+                    return temp.Strings.Length;
                 }
             }
             return 0;
@@ -514,7 +506,7 @@ namespace FF7Scarlet.KernelEditor
         public void UpdateName(KernelSection section, string? name, int pos)
         {
             var ds = GetDataSection(section);
-            var names = GetAssociatedNames(ds);
+            var names = GetAssociatedNames(ds, true);
             string n = string.Empty;
             if (name != null) { n = name; }
             if (names.Length > 0)
@@ -523,7 +515,10 @@ namespace FF7Scarlet.KernelEditor
                 switch (ds) //update associated item name (if it exists)
                 {
                     case KernelSection.AttackData:
-                        AttackData.Attacks[pos].Name = n;
+                        if (pos < ATTACK_COUNT)
+                        {
+                            AttackData.Attacks[pos].Name = n;
+                        }
                         break;
 
                     case KernelSection.ItemData:
