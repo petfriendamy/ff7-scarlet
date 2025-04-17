@@ -100,6 +100,7 @@ namespace FF7Scarlet.KernelEditor
                 {
                     headers[i] = reader.ReadUInt16();
                 }
+                ms.Seek(headers[0], SeekOrigin.Begin);
 
                 //read each line
                 var bytes = new List<byte>();
@@ -228,12 +229,19 @@ namespace FF7Scarlet.KernelEditor
         {
             if (section == KernelSection.AttackData) { return ATTACK_COUNT; }
             else if (section == KernelSection.BattleText) { return BattleText.Strings.Length; }
-            else
             {
-                var temp = GetAssociatedNames(section);
+                string[] temp;
+                if ((int)section < DESCRIPTIONS_END)
+                {
+                    temp = GetAssociatedDescriptions(section);
+                }
+                else
+                {
+                    temp = GetAssociatedNames(section);
+                }
                 if (temp != null)
                 {
-                    return GetAssociatedNames(section).Length;
+                    return temp.Length;
                 }
             }
             return 0;
@@ -553,7 +561,10 @@ namespace FF7Scarlet.KernelEditor
                 switch (ds) //update associated item description (if it exists)
                 {
                     case KernelSection.AttackData:
-                        AttackData.Attacks[pos].Description = d;
+                        if (pos < ATTACK_COUNT)
+                        {
+                            AttackData.Attacks[pos].Description = d;
+                        }
                         break;
 
                     case KernelSection.ItemData:
