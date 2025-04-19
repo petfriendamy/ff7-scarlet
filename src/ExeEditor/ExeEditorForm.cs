@@ -1155,7 +1155,7 @@ namespace FF7Scarlet.ExeEditor
                 if (slot != -1)
                 {
                     var mat = DataParser.CopyMateria(SelectedCharacter.WeaponMateria[slot]);
-                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData))
+                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData, DataManager.Kernel.GetEnemySkillNames()))
                     {
                         if (edit.ShowDialog() == DialogResult.OK)
                         {
@@ -1176,7 +1176,7 @@ namespace FF7Scarlet.ExeEditor
                 if (slot != -1)
                 {
                     var mat = DataParser.CopyMateria(SelectedCharacter.ArmorMateria[slot]);
-                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData))
+                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData, DataManager.Kernel.GetEnemySkillNames()))
                     {
                         if (edit.ShowDialog() == DialogResult.OK)
                         {

@@ -2637,7 +2637,7 @@ namespace FF7Scarlet.KernelEditor
                 string name = textBoxAttackName.Text;
                 SelectedAttack.Name = name;
                 kernel.MagicNames.Strings[SelectedAttackIndex] = name;
-                listBoxAttacks.Items[SelectedAttackIndex] = name;
+                listBoxAttacks.Items[SelectedAttackIndex - AttackOffset] = name;
                 SetUnsaved(true);
                 loading = false;
             }
@@ -2909,7 +2909,7 @@ namespace FF7Scarlet.KernelEditor
             if (slot != -1 && SelectedCharacter != null)
             {
                 var mat = DataParser.CopyMateria(SelectedCharacter.WeaponMateria[slot]);
-                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
+                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData, kernel.GetEnemySkillNames()))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
@@ -2927,7 +2927,7 @@ namespace FF7Scarlet.KernelEditor
             if (slot != -1 && SelectedCharacter != null)
             {
                 var mat = DataParser.CopyMateria(SelectedCharacter.ArmorMateria[slot]);
-                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
+                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData, kernel.GetEnemySkillNames()))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
@@ -3194,7 +3194,7 @@ namespace FF7Scarlet.KernelEditor
             if (slot != -1)
             {
                 var mat = DataParser.CopyMateria(kernel.InitialData.Materia[slot]);
-                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
+                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData, kernel.GetEnemySkillNames()))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
@@ -3226,7 +3226,7 @@ namespace FF7Scarlet.KernelEditor
             if (slot != -1)
             {
                 var mat = DataParser.CopyMateria(kernel.InitialData.StolenMateria[slot]);
-                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData))
+                using (var edit = new MateriaAPEditForm(mat, kernel.MateriaData, kernel.GetEnemySkillNames()))
                 {
                     if (edit.ShowDialog() == DialogResult.OK)
                     {

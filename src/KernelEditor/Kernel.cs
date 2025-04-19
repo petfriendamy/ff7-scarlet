@@ -23,7 +23,8 @@ namespace FF7Scarlet.KernelEditor
             SPECIAL_SUMMON_OFFSET = 0x60, LIMIT_OFFSET = 0x62, CHARACTER_COUNT = 11,
             PLAYABLE_CHARACTER_COUNT = 9, AI_BLOCK_COUNT = 12, AI_BLOCK_SIZE = 2024,
             INVENTORY_SIZE = 320, MATERIA_INVENTORY_SIZE = 200, STOLEN_MATERIA_COUNT = 48,
-            INDEXED_SPELL_COUNT = 56;
+            INDEXED_SPELL_COUNT = 56,
+            ESKILL_COUNT = SPECIAL_SUMMON_OFFSET - ESKILL_OFFSET;
         public bool[] AttackIsLimit = new bool[ATTACK_COUNT];
 
         public CharacterAI[] CharacterAI { get; } = new CharacterAI[AI_BLOCK_COUNT];
@@ -276,6 +277,13 @@ namespace FF7Scarlet.KernelEditor
                 return DataParser.GetAttackNameString(atk);
             }
             return $"Unknown ({id:X4})";
+        }
+
+        public string[] GetEnemySkillNames()
+        {
+            var names = new string[ESKILL_COUNT];
+            Array.Copy(MagicNames.Strings, ESKILL_OFFSET, names, 0, ESKILL_COUNT);
+            return names;
         }
 
         public string GetLimitName(int index)
