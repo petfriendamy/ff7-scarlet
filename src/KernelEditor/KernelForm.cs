@@ -17,6 +17,7 @@ using FF7Scarlet.KernelEditor.Controls;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
+using FF7Scarlet.ExeEditor;
 
 namespace FF7Scarlet.KernelEditor
 {
@@ -604,9 +605,14 @@ namespace FF7Scarlet.KernelEditor
             {
                 comboBoxMateriaType.Items.Add(mt);
             }
-            foreach (var e in MateriaExt.EQUIP_EFFECTS)
+            for (int i = 0; i < MateriaEquipEffect.COUNT; ++i) // (var e in MateriaExt.EQUIP_EFFECTS)
             {
-                comboBoxMateriaEquipAttributes.Items.Add(e);
+                string name = $"Effect ID {i:X2}";
+                if (DataManager.ExeData != null)
+                {
+                    name = DataManager.ExeData.MateriaEquipEffects[i].ToString();
+                }
+                comboBoxMateriaEquipAttributes.Items.Add(name);
             }
             independentMateriaTypes = Enum.GetValues<IndependentMateriaTypes>().ToList();
 
@@ -1192,7 +1198,7 @@ namespace FF7Scarlet.KernelEditor
                             UpdateMateriaSubtype(materia);
                             materiaLevelControl.SetAPLevels(materia.Level2AP, materia.Level3AP, materia.Level4AP,
                                 materia.Level5AP);
-                            if (materia.EquipEffect > 0x10)
+                            if (materia.EquipEffect > MateriaEquipEffect.COUNT)
                             {
                                 comboBoxMateriaEquipAttributes.SelectedIndex = 0;
                             }

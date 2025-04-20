@@ -21,6 +21,7 @@ namespace FF7Scarlet.ExeEditor
         private ExeData editor;
         private List<StatusChangeType> statusChangeTypes = new();
         private TextBox[] nameTextBoxes;
+        private NumericUpDown[] materiaNumerics;
         private ComboBox[] ShopItemList;
         private bool
             loading = true,
@@ -86,6 +87,14 @@ namespace FF7Scarlet.ExeEditor
                 textBoxCaitSith, textBoxVincent, textBoxCid, textBoxChocobo
             ];
 
+            //get materia equip effect numerics as array
+            materiaNumerics =
+            [
+                numericMateriaEffectStrength, numericMateriaEffectVitality, numericMateriaEffectMagic,
+                numericMateriaEffectSpirit, numericMateriaEffectDexterity, numericMateriaEffectLuck,
+                numericMateriaEffectHP, numericMateriaEffectMP
+            ];
+
             //get shop comboboxes as array
             ShopItemList =
             [
@@ -96,6 +105,12 @@ namespace FF7Scarlet.ExeEditor
             //set max values
             numericItemPrice.Maximum = uint.MaxValue;
             numericMateriaPrice.Maximum = uint.MaxValue;
+
+            foreach (var n in materiaNumerics)
+            {
+                n.Minimum = -99;
+                n.Maximum = 99;
+            }
 
             textBoxMainMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
             textBoxItemMenuText.MaxLength = ExeData.ITEM_MENU_TEXT_LENGTH - 1;
@@ -131,7 +146,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxLimits.EndUpdate();
 
             //populate comboboxes
-            SuspendOrResumeComboBoxes(tabControlMain, false);
+            SuspendOrResumeComboAndListBoxes(tabControlMain, false);
 
             //character flags
             foreach (var f in Enum.GetNames<CharacterFlags>())
@@ -296,7 +311,7 @@ namespace FF7Scarlet.ExeEditor
             }
 
             //resume combo boxes
-            SuspendOrResumeComboBoxes(tabControlMain, true);
+            SuspendOrResumeComboAndListBoxes(tabControlMain, true);
 
             UpdateFormData();
             loading = false;
@@ -355,13 +370,7 @@ namespace FF7Scarlet.ExeEditor
             int i;
 
             //suspend layouts
-            SuspendOrResumeExeTextListBoxes(false);
-            listBoxItemPrices.SuspendLayout();
-            listBoxMateriaPrices.SuspendLayout();
-            comboBoxShopType.SuspendLayout();
-            listBoxChocoboNames.SuspendLayout();
-            listBoxSortItemName.SuspendLayout();
-            listBoxAudioVolume.SuspendLayout();
+            SuspendOrResumeComboAndListBoxes(tabControlMain, false);
 
             //clear items
             int shopType = comboBoxShopType.SelectedIndex;
@@ -389,6 +398,7 @@ namespace FF7Scarlet.ExeEditor
                     }
                 }
             }
+            listBoxAffectedMateria.Items.Clear();
             listBoxStatusEffects.Items.Clear();
             listBoxItemPrices.Items.Clear();
             listBoxMateriaPrices.Items.Clear();
@@ -400,6 +410,9 @@ namespace FF7Scarlet.ExeEditor
 
             //set AP price multiplier
             numericMateriaAPPriceMultiplier.Value = editor.APPriceMultiplier;
+
+            //set materia data
+            UpdateMateriaData((int)numericMateriaEffectCurrent.Value);
 
             //set character names
             for (i = 0; i < 10; ++i)
@@ -607,17 +620,12 @@ namespace FF7Scarlet.ExeEditor
             SetLimitText();
 
             //resume layouts
-            SuspendOrResumeExeTextListBoxes(true);
-            listBoxItemPrices.ResumeLayout();
-            listBoxMateriaPrices.ResumeLayout();
-            comboBoxShopType.ResumeLayout();
-            listBoxSortItemName.ResumeLayout();
-            listBoxChocoboNames.ResumeLayout();
+            SuspendOrResumeComboAndListBoxes(tabControlMain, true);
             loading = false;
         }
 
-        //suspend comboboxes so we can add stuff to them (or resume when done)
-        private void SuspendOrResumeComboBoxes(Control control, bool resume)
+        //suspend combo and listboxes so we can add stuff to them (or resume when done)
+        private void SuspendOrResumeComboAndListBoxes(Control control, bool resume)
         {
             if (control is TabControl)
             {
@@ -626,7 +634,7 @@ namespace FF7Scarlet.ExeEditor
                 {
                     for (int i = 0; i < tc.TabCount; ++i)
                     {
-                        SuspendOrResumeComboBoxes(tc.TabPages[i], resume);
+                        SuspendOrResumeComboAndListBoxes(tc.TabPages[i], resume);
                     }
                 }
             }
@@ -634,7 +642,7 @@ namespace FF7Scarlet.ExeEditor
             {
                 for (int i = 0; i < control.Controls.Count; ++i)
                 {
-                    SuspendOrResumeComboBoxes(control.Controls[i], resume);
+                    SuspendOrResumeComboAndListBoxes(control.Controls[i], resume);
                 }
             }
             else if (control is ComboBox)
@@ -643,55 +651,65 @@ namespace FF7Scarlet.ExeEditor
                 if (resume) { cb?.ResumeLayout(); }
                 else { cb?.SuspendLayout(); }
             }
+            else if (control is ListBox)
+            {
+                var lb = control as ListBox;
+                if (resume) { lb?.ResumeLayout(); }
+                else { lb?.SuspendLayout(); }
+            }
         }
 
-        private void SuspendOrResumeExeTextListBoxes(bool resume)
+        //update materia data
+        private void UpdateMateriaData(int i)
         {
-            foreach (TabPage t in tabControlMenus.TabPages)
+            if (i >= 0 && i < MateriaEquipEffect.COUNT)
             {
-                foreach (Control c in t.Controls)
+                bool wasAlreadyLoading = loading;
+                loading = true;
+                numericMateriaEffectStrength.Value = editor.MateriaEquipEffects[i].StatChanges[0];
+                numericMateriaEffectVitality.Value = editor.MateriaEquipEffects[i].StatChanges[1];
+                numericMateriaEffectMagic.Value = editor.MateriaEquipEffects[i].StatChanges[2];
+                numericMateriaEffectSpirit.Value = editor.MateriaEquipEffects[i].StatChanges[3];
+                numericMateriaEffectDexterity.Value = editor.MateriaEquipEffects[i].StatChanges[4];
+                numericMateriaEffectLuck.Value = editor.MateriaEquipEffects[i].StatChanges[5];
+                numericMateriaEffectHP.Value = editor.MateriaEquipEffects[i].StatChanges[6];
+                numericMateriaEffectMP.Value = editor.MateriaEquipEffects[i].StatChanges[7];
+
+                if (DataManager.Kernel != null)
                 {
-                    if (c is GroupBox)
+                    listBoxAffectedMateria.Enabled = true;
+                    listBoxAffectedMateria.SuspendLayout();
+                    listBoxAffectedMateria.Items.Clear();
+                    foreach (var m in DataManager.Kernel.MateriaData.Materias)
                     {
-                        foreach (Control c2 in c.Controls)
+                        if (m.EquipEffect == i)
                         {
-                            if (c2 is ListBox)
-                            {
-                                if (resume) { c2.ResumeLayout(); }
-                                else { c2.SuspendLayout(); }
-                            }
+                            listBoxAffectedMateria.Items.Add(m.Name);
                         }
                     }
-                    else if (c is ListBox)
-                    {
-                        if (resume) { c.ResumeLayout(); }
-                        else { c.SuspendLayout(); }
-                    }
+                    listBoxAffectedMateria.ResumeLayout();
                 }
-            }
-            foreach (TabPage t in tabControlOtherText.TabPages)
-            {
-                foreach (Control c in t.Controls)
-                {
-                    if (c is GroupBox)
-                    {
-                        foreach (Control c2 in c.Controls)
-                        {
-                            if (c2 is ListBox)
-                            {
-                                if (resume) { c2.ResumeLayout(); }
-                                else { c2.SuspendLayout(); }
-                            }
-                        }
-                    }
-                    else if (c is ListBox)
-                    {
-                        if (resume) { c.ResumeLayout(); }
-                        else { c.SuspendLayout(); }
-                    }
-                }
+                loading = wasAlreadyLoading;
             }
         }
+
+        //get the index of the recently changed materia equip effect numeric
+        private int GetEquipEffectIndex(NumericUpDown? numeric)
+        {
+            if (numeric != null)
+            {
+                for (int i = 0; i < materiaNumerics.Length; ++i)
+                {
+                    if (materiaNumerics[i] == numeric)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        }
+
+        //sync unsaved limit data
         private void SyncLimitData(Attack limit)
         {
             limit.AccuracyRate = (byte)numericLimitAttackPercent.Value;
@@ -1413,6 +1431,29 @@ namespace FF7Scarlet.ExeEditor
             {
                 SelectedLimit.StatusChange.Amount = (byte)numericLimitStatusChangeChance.Value;
                 SetUnsaved(true);
+            }
+        }
+
+        #endregion
+
+        #region Materia Data
+
+        private void numericMateriaEffectCurrent_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateMateriaData((int)numericMateriaEffectCurrent.Value);
+        }
+
+        private void numericMateriaEffect_ValueChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                int curr = (int)numericMateriaEffectCurrent.Value,
+                    stat = GetEquipEffectIndex(sender as NumericUpDown);
+                if (stat >= 0)
+                {
+                    editor.MateriaEquipEffects[curr].StatChanges[stat] = (short)materiaNumerics[stat].Value;
+                    SetUnsaved(true);
+                }
             }
         }
 

@@ -114,6 +114,28 @@ namespace FF7Scarlet.ExeEditor
             statusesControlLimit = new StatusesControl();
             tabPageLimits3 = new TabPage();
             targetDataControlLimit = new TargetDataControl();
+            tabPageMateria = new TabPage();
+            listBoxAffectedMateria = new ListBox();
+            labelAffectedMateria = new Label();
+            groupBoxMateriaStatChanges = new GroupBox();
+            numericMateriaEffectMP = new NumericUpDown();
+            labelMateriaEffectMP = new Label();
+            numericMateriaEffectHP = new NumericUpDown();
+            labelMateriaEffectHP = new Label();
+            numericMateriaEffectLuck = new NumericUpDown();
+            labelMateriaEffectLuck = new Label();
+            numericMateriaEffectDexterity = new NumericUpDown();
+            labelMateriaEffectDexterity = new Label();
+            numericMateriaEffectSpirit = new NumericUpDown();
+            labelMateriaEffectSpirit = new Label();
+            numericMateriaEffectMagic = new NumericUpDown();
+            labelMateriaEffectMagic = new Label();
+            numericMateriaEffectVitality = new NumericUpDown();
+            labelMateriaEffectVitality = new Label();
+            numericMateriaEffectStrength = new NumericUpDown();
+            labelMateriaEffectStrength = new Label();
+            numericMateriaEffectCurrent = new NumericUpDown();
+            labelMateriaEffectCurrent = new Label();
             tabPageNames = new TabPage();
             textBoxChocobo = new TextBox();
             pictureBoxChocobo = new PictureBox();
@@ -164,16 +186,6 @@ namespace FF7Scarlet.ExeEditor
             labelItemPrice = new Label();
             labelItemPrices = new Label();
             listBoxItemPrices = new ListBox();
-            tabPageSortOrder = new TabPage();
-            groupBoxMateriaPriority = new GroupBox();
-            buttonMateriaMoveDown = new Button();
-            buttonMateriaMoveUp = new Button();
-            listBoxMateriaPriority = new ListBox();
-            groupBoxSortItemName = new GroupBox();
-            buttonItemsMoveDown = new Button();
-            buttonItemsMoveUp = new Button();
-            buttonItemsAutoSort = new Button();
-            listBoxSortItemName = new ListBox();
             tabPageMenus = new TabPage();
             tabControlMenus = new TabControl();
             tabPageMainMenu = new TabPage();
@@ -274,6 +286,18 @@ namespace FF7Scarlet.ExeEditor
             labelChocoboName = new Label();
             textBoxChocoboName = new TextBox();
             listBoxChocoboNames = new ListBox();
+            tabPageMisc = new TabPage();
+            tabControlMisc = new TabControl();
+            tabPageSortOrder = new TabPage();
+            groupBoxMateriaPriority = new GroupBox();
+            buttonMateriaMoveDown = new Button();
+            buttonMateriaMoveUp = new Button();
+            listBoxMateriaPriority = new ListBox();
+            groupBoxSortItemName = new GroupBox();
+            buttonItemsMoveDown = new Button();
+            buttonItemsMoveUp = new Button();
+            buttonItemsAutoSort = new Button();
+            listBoxSortItemName = new ListBox();
             tabPageAudio = new TabPage();
             groupBoxAudioPan = new GroupBox();
             buttonAudioPanTest = new Button();
@@ -320,6 +344,17 @@ namespace FF7Scarlet.ExeEditor
             tabPageLimits2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericLimitStatusChangeChance).BeginInit();
             tabPageLimits3.SuspendLayout();
+            tabPageMateria.SuspendLayout();
+            groupBoxMateriaStatChanges.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectMP).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectHP).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectLuck).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectDexterity).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectSpirit).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectMagic).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectVitality).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectStrength).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectCurrent).BeginInit();
             tabPageNames.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxChocobo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxCid).BeginInit();
@@ -337,9 +372,6 @@ namespace FF7Scarlet.ExeEditor
             ((System.ComponentModel.ISupportInitialize)numericMateriaPrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericMateriaAPPriceMultiplier).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericItemPrice).BeginInit();
-            tabPageSortOrder.SuspendLayout();
-            groupBoxMateriaPriority.SuspendLayout();
-            groupBoxSortItemName.SuspendLayout();
             tabPageMenus.SuspendLayout();
             tabControlMenus.SuspendLayout();
             tabPageMainMenu.SuspendLayout();
@@ -373,6 +405,11 @@ namespace FF7Scarlet.ExeEditor
             tabPageChocoboRacing.SuspendLayout();
             groupBoxChocoboRacePrizes.SuspendLayout();
             groupBoxChocoboNames.SuspendLayout();
+            tabPageMisc.SuspendLayout();
+            tabControlMisc.SuspendLayout();
+            tabPageSortOrder.SuspendLayout();
+            groupBoxMateriaPriority.SuspendLayout();
+            groupBoxSortItemName.SuspendLayout();
             tabPageAudio.SuspendLayout();
             groupBoxAudioPan.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericAudioPan).BeginInit();
@@ -424,13 +461,12 @@ namespace FF7Scarlet.ExeEditor
             // 
             tabControlMain.Controls.Add(tabPageInitialData);
             tabControlMain.Controls.Add(tabPageLimitBreaks);
+            tabControlMain.Controls.Add(tabPageMateria);
             tabControlMain.Controls.Add(tabPageNames);
             tabControlMain.Controls.Add(tabPageShopData);
-            tabControlMain.Controls.Add(tabPageSortOrder);
             tabControlMain.Controls.Add(tabPageMenus);
             tabControlMain.Controls.Add(tabPageOtherText);
-            tabControlMain.Controls.Add(tabPageAudio);
-            tabControlMain.Controls.Add(tabWorldmapWalkability);
+            tabControlMain.Controls.Add(tabPageMisc);
             tabControlMain.Dock = DockStyle.Fill;
             tabControlMain.Location = new Point(0, 0);
             tabControlMain.Margin = new Padding(4, 3, 4, 3);
@@ -1266,6 +1302,237 @@ namespace FF7Scarlet.ExeEditor
             targetDataControlLimit.TabIndex = 0;
             targetDataControlLimit.FlagsChanged += LimitDataChanged;
             // 
+            // tabPageMateria
+            // 
+            tabPageMateria.Controls.Add(listBoxAffectedMateria);
+            tabPageMateria.Controls.Add(labelAffectedMateria);
+            tabPageMateria.Controls.Add(groupBoxMateriaStatChanges);
+            tabPageMateria.Location = new Point(4, 24);
+            tabPageMateria.Name = "tabPageMateria";
+            tabPageMateria.Size = new Size(776, 527);
+            tabPageMateria.TabIndex = 10;
+            tabPageMateria.Text = "Materia effects";
+            tabPageMateria.UseVisualStyleBackColor = true;
+            // 
+            // listBoxAffectedMateria
+            // 
+            listBoxAffectedMateria.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            listBoxAffectedMateria.Enabled = false;
+            listBoxAffectedMateria.FormattingEnabled = true;
+            listBoxAffectedMateria.Location = new Point(15, 127);
+            listBoxAffectedMateria.Name = "listBoxAffectedMateria";
+            listBoxAffectedMateria.SelectionMode = SelectionMode.None;
+            listBoxAffectedMateria.Size = new Size(252, 379);
+            listBoxAffectedMateria.TabIndex = 2;
+            // 
+            // labelAffectedMateria
+            // 
+            labelAffectedMateria.AutoSize = true;
+            labelAffectedMateria.Location = new Point(15, 109);
+            labelAffectedMateria.Name = "labelAffectedMateria";
+            labelAffectedMateria.Size = new Size(98, 15);
+            labelAffectedMateria.TabIndex = 1;
+            labelAffectedMateria.Text = "Affected materia:";
+            // 
+            // groupBoxMateriaStatChanges
+            // 
+            groupBoxMateriaStatChanges.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectMP);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectMP);
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectHP);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectHP);
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectLuck);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectLuck);
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectDexterity);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectDexterity);
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectSpirit);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectSpirit);
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectMagic);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectMagic);
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectVitality);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectVitality);
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectStrength);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectStrength);
+            groupBoxMateriaStatChanges.Controls.Add(numericMateriaEffectCurrent);
+            groupBoxMateriaStatChanges.Controls.Add(labelMateriaEffectCurrent);
+            groupBoxMateriaStatChanges.Location = new Point(9, 3);
+            groupBoxMateriaStatChanges.Name = "groupBoxMateriaStatChanges";
+            groupBoxMateriaStatChanges.Size = new Size(758, 103);
+            groupBoxMateriaStatChanges.TabIndex = 0;
+            groupBoxMateriaStatChanges.TabStop = false;
+            groupBoxMateriaStatChanges.Text = "Stat changes";
+            // 
+            // numericMateriaEffectMP
+            // 
+            numericMateriaEffectMP.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            numericMateriaEffectMP.Location = new Point(608, 74);
+            numericMateriaEffectMP.Name = "numericMateriaEffectMP";
+            numericMateriaEffectMP.Size = new Size(80, 23);
+            numericMateriaEffectMP.TabIndex = 17;
+            numericMateriaEffectMP.ValueChanged += numericMateriaEffect_ValueChanged;
+            // 
+            // labelMateriaEffectMP
+            // 
+            labelMateriaEffectMP.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            labelMateriaEffectMP.AutoSize = true;
+            labelMateriaEffectMP.Location = new Point(608, 56);
+            labelMateriaEffectMP.Name = "labelMateriaEffectMP";
+            labelMateriaEffectMP.Size = new Size(28, 15);
+            labelMateriaEffectMP.TabIndex = 16;
+            labelMateriaEffectMP.Text = "MP:";
+            // 
+            // numericMateriaEffectHP
+            // 
+            numericMateriaEffectHP.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            numericMateriaEffectHP.Location = new Point(522, 74);
+            numericMateriaEffectHP.Name = "numericMateriaEffectHP";
+            numericMateriaEffectHP.Size = new Size(80, 23);
+            numericMateriaEffectHP.TabIndex = 15;
+            numericMateriaEffectHP.ValueChanged += numericMateriaEffect_ValueChanged;
+            // 
+            // labelMateriaEffectHP
+            // 
+            labelMateriaEffectHP.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            labelMateriaEffectHP.AutoSize = true;
+            labelMateriaEffectHP.Location = new Point(522, 56);
+            labelMateriaEffectHP.Name = "labelMateriaEffectHP";
+            labelMateriaEffectHP.Size = new Size(26, 15);
+            labelMateriaEffectHP.TabIndex = 14;
+            labelMateriaEffectHP.Text = "HP:";
+            // 
+            // numericMateriaEffectLuck
+            // 
+            numericMateriaEffectLuck.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            numericMateriaEffectLuck.Location = new Point(436, 74);
+            numericMateriaEffectLuck.Name = "numericMateriaEffectLuck";
+            numericMateriaEffectLuck.Size = new Size(80, 23);
+            numericMateriaEffectLuck.TabIndex = 13;
+            numericMateriaEffectLuck.ValueChanged += numericMateriaEffect_ValueChanged;
+            // 
+            // labelMateriaEffectLuck
+            // 
+            labelMateriaEffectLuck.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            labelMateriaEffectLuck.AutoSize = true;
+            labelMateriaEffectLuck.Location = new Point(436, 56);
+            labelMateriaEffectLuck.Name = "labelMateriaEffectLuck";
+            labelMateriaEffectLuck.Size = new Size(39, 15);
+            labelMateriaEffectLuck.TabIndex = 12;
+            labelMateriaEffectLuck.Text = "LUCK:";
+            // 
+            // numericMateriaEffectDexterity
+            // 
+            numericMateriaEffectDexterity.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            numericMateriaEffectDexterity.Location = new Point(350, 74);
+            numericMateriaEffectDexterity.Name = "numericMateriaEffectDexterity";
+            numericMateriaEffectDexterity.Size = new Size(80, 23);
+            numericMateriaEffectDexterity.TabIndex = 11;
+            numericMateriaEffectDexterity.ValueChanged += numericMateriaEffect_ValueChanged;
+            // 
+            // labelMateriaEffectDexterity
+            // 
+            labelMateriaEffectDexterity.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            labelMateriaEffectDexterity.AutoSize = true;
+            labelMateriaEffectDexterity.Location = new Point(350, 56);
+            labelMateriaEffectDexterity.Name = "labelMateriaEffectDexterity";
+            labelMateriaEffectDexterity.Size = new Size(31, 15);
+            labelMateriaEffectDexterity.TabIndex = 10;
+            labelMateriaEffectDexterity.Text = "DEX:";
+            // 
+            // numericMateriaEffectSpirit
+            // 
+            numericMateriaEffectSpirit.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            numericMateriaEffectSpirit.Location = new Point(264, 74);
+            numericMateriaEffectSpirit.Name = "numericMateriaEffectSpirit";
+            numericMateriaEffectSpirit.Size = new Size(80, 23);
+            numericMateriaEffectSpirit.TabIndex = 9;
+            numericMateriaEffectSpirit.ValueChanged += numericMateriaEffect_ValueChanged;
+            // 
+            // labelMateriaEffectSpirit
+            // 
+            labelMateriaEffectSpirit.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            labelMateriaEffectSpirit.AutoSize = true;
+            labelMateriaEffectSpirit.Location = new Point(264, 56);
+            labelMateriaEffectSpirit.Name = "labelMateriaEffectSpirit";
+            labelMateriaEffectSpirit.Size = new Size(30, 15);
+            labelMateriaEffectSpirit.TabIndex = 8;
+            labelMateriaEffectSpirit.Text = "SPR:";
+            // 
+            // numericMateriaEffectMagic
+            // 
+            numericMateriaEffectMagic.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            numericMateriaEffectMagic.Location = new Point(178, 74);
+            numericMateriaEffectMagic.Name = "numericMateriaEffectMagic";
+            numericMateriaEffectMagic.Size = new Size(80, 23);
+            numericMateriaEffectMagic.TabIndex = 7;
+            numericMateriaEffectMagic.ValueChanged += numericMateriaEffect_ValueChanged;
+            // 
+            // labelMateriaEffectMagic
+            // 
+            labelMateriaEffectMagic.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            labelMateriaEffectMagic.AutoSize = true;
+            labelMateriaEffectMagic.Location = new Point(178, 56);
+            labelMateriaEffectMagic.Name = "labelMateriaEffectMagic";
+            labelMateriaEffectMagic.Size = new Size(37, 15);
+            labelMateriaEffectMagic.TabIndex = 6;
+            labelMateriaEffectMagic.Text = "MAG:";
+            // 
+            // numericMateriaEffectVitality
+            // 
+            numericMateriaEffectVitality.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            numericMateriaEffectVitality.Location = new Point(92, 74);
+            numericMateriaEffectVitality.Name = "numericMateriaEffectVitality";
+            numericMateriaEffectVitality.Size = new Size(80, 23);
+            numericMateriaEffectVitality.TabIndex = 5;
+            numericMateriaEffectVitality.ValueChanged += numericMateriaEffect_ValueChanged;
+            // 
+            // labelMateriaEffectVitality
+            // 
+            labelMateriaEffectVitality.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            labelMateriaEffectVitality.AutoSize = true;
+            labelMateriaEffectVitality.Location = new Point(92, 56);
+            labelMateriaEffectVitality.Name = "labelMateriaEffectVitality";
+            labelMateriaEffectVitality.Size = new Size(26, 15);
+            labelMateriaEffectVitality.TabIndex = 4;
+            labelMateriaEffectVitality.Text = "VIT:";
+            // 
+            // numericMateriaEffectStrength
+            // 
+            numericMateriaEffectStrength.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            numericMateriaEffectStrength.Location = new Point(6, 74);
+            numericMateriaEffectStrength.Name = "numericMateriaEffectStrength";
+            numericMateriaEffectStrength.Size = new Size(80, 23);
+            numericMateriaEffectStrength.TabIndex = 3;
+            numericMateriaEffectStrength.ValueChanged += numericMateriaEffect_ValueChanged;
+            // 
+            // labelMateriaEffectStrength
+            // 
+            labelMateriaEffectStrength.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            labelMateriaEffectStrength.AutoSize = true;
+            labelMateriaEffectStrength.Location = new Point(6, 56);
+            labelMateriaEffectStrength.Name = "labelMateriaEffectStrength";
+            labelMateriaEffectStrength.Size = new Size(29, 15);
+            labelMateriaEffectStrength.TabIndex = 2;
+            labelMateriaEffectStrength.Text = "STR:";
+            // 
+            // numericMateriaEffectCurrent
+            // 
+            numericMateriaEffectCurrent.Location = new Point(65, 22);
+            numericMateriaEffectCurrent.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+            numericMateriaEffectCurrent.Name = "numericMateriaEffectCurrent";
+            numericMateriaEffectCurrent.Size = new Size(60, 23);
+            numericMateriaEffectCurrent.TabIndex = 1;
+            numericMateriaEffectCurrent.ValueChanged += numericMateriaEffectCurrent_ValueChanged;
+            // 
+            // labelMateriaEffectCurrent
+            // 
+            labelMateriaEffectCurrent.AutoSize = true;
+            labelMateriaEffectCurrent.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            labelMateriaEffectCurrent.Location = new Point(6, 24);
+            labelMateriaEffectCurrent.Name = "labelMateriaEffectCurrent";
+            labelMateriaEffectCurrent.Size = new Size(53, 15);
+            labelMateriaEffectCurrent.TabIndex = 0;
+            labelMateriaEffectCurrent.Text = "Current:";
+            // 
             // tabPageNames
             // 
             tabPageNames.Controls.Add(textBoxChocobo);
@@ -1819,123 +2086,6 @@ namespace FF7Scarlet.ExeEditor
             listBoxItemPrices.Size = new Size(200, 454);
             listBoxItemPrices.TabIndex = 0;
             listBoxItemPrices.SelectedIndexChanged += listBoxItemPrices_SelectedIndexChanged;
-            // 
-            // tabPageSortOrder
-            // 
-            tabPageSortOrder.Controls.Add(groupBoxMateriaPriority);
-            tabPageSortOrder.Controls.Add(groupBoxSortItemName);
-            tabPageSortOrder.Location = new Point(4, 24);
-            tabPageSortOrder.Name = "tabPageSortOrder";
-            tabPageSortOrder.Size = new Size(776, 527);
-            tabPageSortOrder.TabIndex = 5;
-            tabPageSortOrder.Text = "Sorting";
-            tabPageSortOrder.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxMateriaPriority
-            // 
-            groupBoxMateriaPriority.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            groupBoxMateriaPriority.Controls.Add(buttonMateriaMoveDown);
-            groupBoxMateriaPriority.Controls.Add(buttonMateriaMoveUp);
-            groupBoxMateriaPriority.Controls.Add(listBoxMateriaPriority);
-            groupBoxMateriaPriority.Location = new Point(297, 3);
-            groupBoxMateriaPriority.Name = "groupBoxMateriaPriority";
-            groupBoxMateriaPriority.Size = new Size(280, 521);
-            groupBoxMateriaPriority.TabIndex = 2;
-            groupBoxMateriaPriority.TabStop = false;
-            groupBoxMateriaPriority.Text = "Materia priority";
-            // 
-            // buttonMateriaMoveDown
-            // 
-            buttonMateriaMoveDown.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonMateriaMoveDown.Enabled = false;
-            buttonMateriaMoveDown.Location = new Point(208, 482);
-            buttonMateriaMoveDown.Name = "buttonMateriaMoveDown";
-            buttonMateriaMoveDown.Size = new Size(66, 23);
-            buttonMateriaMoveDown.TabIndex = 5;
-            buttonMateriaMoveDown.Text = "Down";
-            buttonMateriaMoveDown.UseVisualStyleBackColor = true;
-            buttonMateriaMoveDown.Click += buttonMateriaMoveDown_Click;
-            // 
-            // buttonMateriaMoveUp
-            // 
-            buttonMateriaMoveUp.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonMateriaMoveUp.Enabled = false;
-            buttonMateriaMoveUp.Location = new Point(136, 482);
-            buttonMateriaMoveUp.Name = "buttonMateriaMoveUp";
-            buttonMateriaMoveUp.Size = new Size(66, 23);
-            buttonMateriaMoveUp.TabIndex = 4;
-            buttonMateriaMoveUp.Text = "Up";
-            buttonMateriaMoveUp.UseVisualStyleBackColor = true;
-            buttonMateriaMoveUp.Click += buttonMateriaMoveUp_Click;
-            // 
-            // listBoxMateriaPriority
-            // 
-            listBoxMateriaPriority.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            listBoxMateriaPriority.FormattingEnabled = true;
-            listBoxMateriaPriority.Location = new Point(6, 22);
-            listBoxMateriaPriority.Name = "listBoxMateriaPriority";
-            listBoxMateriaPriority.Size = new Size(268, 454);
-            listBoxMateriaPriority.TabIndex = 0;
-            listBoxMateriaPriority.SelectedIndexChanged += listBoxMateriaPriority_SelectedIndexChanged;
-            // 
-            // groupBoxSortItemName
-            // 
-            groupBoxSortItemName.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            groupBoxSortItemName.Controls.Add(buttonItemsMoveDown);
-            groupBoxSortItemName.Controls.Add(buttonItemsMoveUp);
-            groupBoxSortItemName.Controls.Add(buttonItemsAutoSort);
-            groupBoxSortItemName.Controls.Add(listBoxSortItemName);
-            groupBoxSortItemName.Location = new Point(8, 3);
-            groupBoxSortItemName.Name = "groupBoxSortItemName";
-            groupBoxSortItemName.Size = new Size(280, 521);
-            groupBoxSortItemName.TabIndex = 1;
-            groupBoxSortItemName.TabStop = false;
-            groupBoxSortItemName.Text = "Items sorted by name";
-            // 
-            // buttonItemsMoveDown
-            // 
-            buttonItemsMoveDown.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonItemsMoveDown.Enabled = false;
-            buttonItemsMoveDown.Location = new Point(208, 482);
-            buttonItemsMoveDown.Name = "buttonItemsMoveDown";
-            buttonItemsMoveDown.Size = new Size(66, 23);
-            buttonItemsMoveDown.TabIndex = 3;
-            buttonItemsMoveDown.Text = "Down";
-            buttonItemsMoveDown.UseVisualStyleBackColor = true;
-            buttonItemsMoveDown.Click += buttonItemsMoveDown_Click;
-            // 
-            // buttonItemsMoveUp
-            // 
-            buttonItemsMoveUp.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonItemsMoveUp.Enabled = false;
-            buttonItemsMoveUp.Location = new Point(136, 482);
-            buttonItemsMoveUp.Name = "buttonItemsMoveUp";
-            buttonItemsMoveUp.Size = new Size(66, 23);
-            buttonItemsMoveUp.TabIndex = 2;
-            buttonItemsMoveUp.Text = "Up";
-            buttonItemsMoveUp.UseVisualStyleBackColor = true;
-            buttonItemsMoveUp.Click += buttonItemsMoveUp_Click;
-            // 
-            // buttonItemsAutoSort
-            // 
-            buttonItemsAutoSort.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonItemsAutoSort.Location = new Point(6, 482);
-            buttonItemsAutoSort.Name = "buttonItemsAutoSort";
-            buttonItemsAutoSort.Size = new Size(124, 23);
-            buttonItemsAutoSort.TabIndex = 1;
-            buttonItemsAutoSort.Text = "Auto sort";
-            buttonItemsAutoSort.UseVisualStyleBackColor = true;
-            buttonItemsAutoSort.Click += buttonItemsAutoSort_Click;
-            // 
-            // listBoxSortItemName
-            // 
-            listBoxSortItemName.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            listBoxSortItemName.FormattingEnabled = true;
-            listBoxSortItemName.Location = new Point(6, 22);
-            listBoxSortItemName.Name = "listBoxSortItemName";
-            listBoxSortItemName.Size = new Size(268, 454);
-            listBoxSortItemName.TabIndex = 0;
-            listBoxSortItemName.SelectedIndexChanged += listBoxSortItemName_SelectedIndexChanged;
             // 
             // tabPageMenus
             // 
@@ -2983,13 +3133,152 @@ namespace FF7Scarlet.ExeEditor
             listBoxChocoboNames.TabIndex = 40;
             listBoxChocoboNames.SelectedIndexChanged += listBoxChocoboNames_SelectedIndexChanged;
             // 
+            // tabPageMisc
+            // 
+            tabPageMisc.Controls.Add(tabControlMisc);
+            tabPageMisc.Location = new Point(4, 24);
+            tabPageMisc.Name = "tabPageMisc";
+            tabPageMisc.Size = new Size(776, 527);
+            tabPageMisc.TabIndex = 9;
+            tabPageMisc.Text = "Misc";
+            tabPageMisc.UseVisualStyleBackColor = true;
+            // 
+            // tabControlMisc
+            // 
+            tabControlMisc.Controls.Add(tabPageSortOrder);
+            tabControlMisc.Controls.Add(tabPageAudio);
+            tabControlMisc.Controls.Add(tabWorldmapWalkability);
+            tabControlMisc.Dock = DockStyle.Fill;
+            tabControlMisc.Location = new Point(0, 0);
+            tabControlMisc.Name = "tabControlMisc";
+            tabControlMisc.SelectedIndex = 0;
+            tabControlMisc.Size = new Size(776, 527);
+            tabControlMisc.TabIndex = 0;
+            // 
+            // tabPageSortOrder
+            // 
+            tabPageSortOrder.Controls.Add(groupBoxMateriaPriority);
+            tabPageSortOrder.Controls.Add(groupBoxSortItemName);
+            tabPageSortOrder.Location = new Point(4, 24);
+            tabPageSortOrder.Name = "tabPageSortOrder";
+            tabPageSortOrder.Size = new Size(768, 499);
+            tabPageSortOrder.TabIndex = 5;
+            tabPageSortOrder.Text = "Sorting";
+            tabPageSortOrder.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxMateriaPriority
+            // 
+            groupBoxMateriaPriority.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBoxMateriaPriority.Controls.Add(buttonMateriaMoveDown);
+            groupBoxMateriaPriority.Controls.Add(buttonMateriaMoveUp);
+            groupBoxMateriaPriority.Controls.Add(listBoxMateriaPriority);
+            groupBoxMateriaPriority.Location = new Point(297, 3);
+            groupBoxMateriaPriority.Name = "groupBoxMateriaPriority";
+            groupBoxMateriaPriority.Size = new Size(280, 493);
+            groupBoxMateriaPriority.TabIndex = 2;
+            groupBoxMateriaPriority.TabStop = false;
+            groupBoxMateriaPriority.Text = "Materia priority";
+            // 
+            // buttonMateriaMoveDown
+            // 
+            buttonMateriaMoveDown.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonMateriaMoveDown.Enabled = false;
+            buttonMateriaMoveDown.Location = new Point(208, 454);
+            buttonMateriaMoveDown.Name = "buttonMateriaMoveDown";
+            buttonMateriaMoveDown.Size = new Size(66, 23);
+            buttonMateriaMoveDown.TabIndex = 5;
+            buttonMateriaMoveDown.Text = "Down";
+            buttonMateriaMoveDown.UseVisualStyleBackColor = true;
+            buttonMateriaMoveDown.Click += buttonMateriaMoveDown_Click;
+            // 
+            // buttonMateriaMoveUp
+            // 
+            buttonMateriaMoveUp.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonMateriaMoveUp.Enabled = false;
+            buttonMateriaMoveUp.Location = new Point(136, 454);
+            buttonMateriaMoveUp.Name = "buttonMateriaMoveUp";
+            buttonMateriaMoveUp.Size = new Size(66, 23);
+            buttonMateriaMoveUp.TabIndex = 4;
+            buttonMateriaMoveUp.Text = "Up";
+            buttonMateriaMoveUp.UseVisualStyleBackColor = true;
+            buttonMateriaMoveUp.Click += buttonMateriaMoveUp_Click;
+            // 
+            // listBoxMateriaPriority
+            // 
+            listBoxMateriaPriority.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            listBoxMateriaPriority.FormattingEnabled = true;
+            listBoxMateriaPriority.Location = new Point(6, 22);
+            listBoxMateriaPriority.Name = "listBoxMateriaPriority";
+            listBoxMateriaPriority.Size = new Size(268, 424);
+            listBoxMateriaPriority.TabIndex = 0;
+            listBoxMateriaPriority.SelectedIndexChanged += listBoxMateriaPriority_SelectedIndexChanged;
+            // 
+            // groupBoxSortItemName
+            // 
+            groupBoxSortItemName.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBoxSortItemName.Controls.Add(buttonItemsMoveDown);
+            groupBoxSortItemName.Controls.Add(buttonItemsMoveUp);
+            groupBoxSortItemName.Controls.Add(buttonItemsAutoSort);
+            groupBoxSortItemName.Controls.Add(listBoxSortItemName);
+            groupBoxSortItemName.Location = new Point(8, 3);
+            groupBoxSortItemName.Name = "groupBoxSortItemName";
+            groupBoxSortItemName.Size = new Size(280, 493);
+            groupBoxSortItemName.TabIndex = 1;
+            groupBoxSortItemName.TabStop = false;
+            groupBoxSortItemName.Text = "Items sorted by name";
+            // 
+            // buttonItemsMoveDown
+            // 
+            buttonItemsMoveDown.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonItemsMoveDown.Enabled = false;
+            buttonItemsMoveDown.Location = new Point(208, 454);
+            buttonItemsMoveDown.Name = "buttonItemsMoveDown";
+            buttonItemsMoveDown.Size = new Size(66, 23);
+            buttonItemsMoveDown.TabIndex = 3;
+            buttonItemsMoveDown.Text = "Down";
+            buttonItemsMoveDown.UseVisualStyleBackColor = true;
+            buttonItemsMoveDown.Click += buttonItemsMoveDown_Click;
+            // 
+            // buttonItemsMoveUp
+            // 
+            buttonItemsMoveUp.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonItemsMoveUp.Enabled = false;
+            buttonItemsMoveUp.Location = new Point(136, 454);
+            buttonItemsMoveUp.Name = "buttonItemsMoveUp";
+            buttonItemsMoveUp.Size = new Size(66, 23);
+            buttonItemsMoveUp.TabIndex = 2;
+            buttonItemsMoveUp.Text = "Up";
+            buttonItemsMoveUp.UseVisualStyleBackColor = true;
+            buttonItemsMoveUp.Click += buttonItemsMoveUp_Click;
+            // 
+            // buttonItemsAutoSort
+            // 
+            buttonItemsAutoSort.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonItemsAutoSort.Location = new Point(6, 454);
+            buttonItemsAutoSort.Name = "buttonItemsAutoSort";
+            buttonItemsAutoSort.Size = new Size(124, 23);
+            buttonItemsAutoSort.TabIndex = 1;
+            buttonItemsAutoSort.Text = "Auto sort";
+            buttonItemsAutoSort.UseVisualStyleBackColor = true;
+            buttonItemsAutoSort.Click += buttonItemsAutoSort_Click;
+            // 
+            // listBoxSortItemName
+            // 
+            listBoxSortItemName.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            listBoxSortItemName.FormattingEnabled = true;
+            listBoxSortItemName.Location = new Point(6, 22);
+            listBoxSortItemName.Name = "listBoxSortItemName";
+            listBoxSortItemName.Size = new Size(268, 424);
+            listBoxSortItemName.TabIndex = 0;
+            listBoxSortItemName.SelectedIndexChanged += listBoxSortItemName_SelectedIndexChanged;
+            // 
             // tabPageAudio
             // 
             tabPageAudio.Controls.Add(groupBoxAudioPan);
             tabPageAudio.Controls.Add(groupBoxAudioVolume);
             tabPageAudio.Location = new Point(4, 24);
             tabPageAudio.Name = "tabPageAudio";
-            tabPageAudio.Size = new Size(776, 527);
+            tabPageAudio.Size = new Size(768, 499);
             tabPageAudio.TabIndex = 7;
             tabPageAudio.Text = "Audio";
             tabPageAudio.UseVisualStyleBackColor = true;
@@ -3138,7 +3427,7 @@ namespace FF7Scarlet.ExeEditor
             tabWorldmapWalkability.Location = new Point(4, 24);
             tabWorldmapWalkability.Name = "tabWorldmapWalkability";
             tabWorldmapWalkability.Padding = new Padding(3);
-            tabWorldmapWalkability.Size = new Size(776, 527);
+            tabWorldmapWalkability.Size = new Size(768, 499);
             tabWorldmapWalkability.TabIndex = 8;
             tabWorldmapWalkability.Text = "Worldmap Walkability";
             tabWorldmapWalkability.UseVisualStyleBackColor = true;
@@ -3150,7 +3439,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxDisembarkTriangleTypes.Enabled = false;
             groupBoxDisembarkTriangleTypes.Location = new Point(185, 202);
             groupBoxDisembarkTriangleTypes.Name = "groupBoxDisembarkTriangleTypes";
-            groupBoxDisembarkTriangleTypes.Size = new Size(585, 190);
+            groupBoxDisembarkTriangleTypes.Size = new Size(577, 190);
             groupBoxDisembarkTriangleTypes.TabIndex = 43;
             groupBoxDisembarkTriangleTypes.TabStop = false;
             groupBoxDisembarkTriangleTypes.Text = "Can disembark to:";
@@ -3166,7 +3455,7 @@ namespace FF7Scarlet.ExeEditor
             checkedListBoxDisembarkTriangleTypes.Location = new Point(3, 19);
             checkedListBoxDisembarkTriangleTypes.MultiColumn = true;
             checkedListBoxDisembarkTriangleTypes.Name = "checkedListBoxDisembarkTriangleTypes";
-            checkedListBoxDisembarkTriangleTypes.Size = new Size(579, 168);
+            checkedListBoxDisembarkTriangleTypes.Size = new Size(571, 168);
             checkedListBoxDisembarkTriangleTypes.TabIndex = 42;
             checkedListBoxDisembarkTriangleTypes.ItemCheck += checkedListBoxDisembarkTriangleTypes_ItemCheck;
             // 
@@ -3177,7 +3466,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxWalkableTriangleTypes.Enabled = false;
             groupBoxWalkableTriangleTypes.Location = new Point(185, 6);
             groupBoxWalkableTriangleTypes.Name = "groupBoxWalkableTriangleTypes";
-            groupBoxWalkableTriangleTypes.Size = new Size(585, 190);
+            groupBoxWalkableTriangleTypes.Size = new Size(577, 190);
             groupBoxWalkableTriangleTypes.TabIndex = 41;
             groupBoxWalkableTriangleTypes.TabStop = false;
             groupBoxWalkableTriangleTypes.Text = "Can walk/drive on:";
@@ -3193,7 +3482,7 @@ namespace FF7Scarlet.ExeEditor
             checkedListBoxWalkableTriangleTypes.Location = new Point(3, 19);
             checkedListBoxWalkableTriangleTypes.MultiColumn = true;
             checkedListBoxWalkableTriangleTypes.Name = "checkedListBoxWalkableTriangleTypes";
-            checkedListBoxWalkableTriangleTypes.Size = new Size(579, 168);
+            checkedListBoxWalkableTriangleTypes.Size = new Size(571, 168);
             checkedListBoxWalkableTriangleTypes.TabIndex = 42;
             checkedListBoxWalkableTriangleTypes.ItemCheck += checkedListBoxWalkableTriangleTypes_ItemCheck;
             // 
@@ -3204,7 +3493,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxModels.Location = new Point(4, 7);
             listBoxModels.Margin = new Padding(4, 3, 4, 3);
             listBoxModels.Name = "listBoxModels";
-            listBoxModels.Size = new Size(174, 514);
+            listBoxModels.Size = new Size(174, 484);
             listBoxModels.TabIndex = 40;
             listBoxModels.SelectedIndexChanged += listBoxModels_SelectedIndexChanged;
             // 
@@ -3275,6 +3564,19 @@ namespace FF7Scarlet.ExeEditor
             tabPageLimits2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericLimitStatusChangeChance).EndInit();
             tabPageLimits3.ResumeLayout(false);
+            tabPageMateria.ResumeLayout(false);
+            tabPageMateria.PerformLayout();
+            groupBoxMateriaStatChanges.ResumeLayout(false);
+            groupBoxMateriaStatChanges.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectMP).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectHP).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectLuck).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectDexterity).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectSpirit).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectMagic).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectVitality).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectStrength).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericMateriaEffectCurrent).EndInit();
             tabPageNames.ResumeLayout(false);
             tabPageNames.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxChocobo).EndInit();
@@ -3295,9 +3597,6 @@ namespace FF7Scarlet.ExeEditor
             ((System.ComponentModel.ISupportInitialize)numericMateriaPrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericMateriaAPPriceMultiplier).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericItemPrice).EndInit();
-            tabPageSortOrder.ResumeLayout(false);
-            groupBoxMateriaPriority.ResumeLayout(false);
-            groupBoxSortItemName.ResumeLayout(false);
             tabPageMenus.ResumeLayout(false);
             tabControlMenus.ResumeLayout(false);
             tabPageMainMenu.ResumeLayout(false);
@@ -3351,6 +3650,11 @@ namespace FF7Scarlet.ExeEditor
             groupBoxChocoboRacePrizes.PerformLayout();
             groupBoxChocoboNames.ResumeLayout(false);
             groupBoxChocoboNames.PerformLayout();
+            tabPageMisc.ResumeLayout(false);
+            tabControlMisc.ResumeLayout(false);
+            tabPageSortOrder.ResumeLayout(false);
+            groupBoxMateriaPriority.ResumeLayout(false);
+            groupBoxSortItemName.ResumeLayout(false);
             tabPageAudio.ResumeLayout(false);
             groupBoxAudioPan.ResumeLayout(false);
             groupBoxAudioPan.PerformLayout();
@@ -3632,6 +3936,30 @@ namespace FF7Scarlet.ExeEditor
         private CheckedListBox checkedListBoxWalkableTriangleTypes;
         private GroupBox groupBoxDisembarkTriangleTypes;
         private CheckedListBox checkedListBoxDisembarkTriangleTypes;
+        private TabPage tabPageMisc;
+        private TabControl tabControlMisc;
+        private TabPage tabPageMateria;
+        private GroupBox groupBoxMateriaStatChanges;
+        private NumericUpDown numericMateriaEffectCurrent;
+        private Label labelMateriaEffectCurrent;
+        private NumericUpDown numericMateriaEffectStrength;
+        private Label labelMateriaEffectStrength;
+        private NumericUpDown numericMateriaEffectMP;
+        private Label labelMateriaEffectMP;
+        private NumericUpDown numericMateriaEffectHP;
+        private Label labelMateriaEffectHP;
+        private NumericUpDown numericMateriaEffectLuck;
+        private Label labelMateriaEffectLuck;
+        private NumericUpDown numericMateriaEffectDexterity;
+        private Label labelMateriaEffectDexterity;
+        private NumericUpDown numericMateriaEffectSpirit;
+        private Label labelMateriaEffectSpirit;
+        private NumericUpDown numericMateriaEffectMagic;
+        private Label labelMateriaEffectMagic;
+        private NumericUpDown numericMateriaEffectVitality;
+        private Label labelMateriaEffectVitality;
+        private ListBox listBoxAffectedMateria;
+        private Label labelAffectedMateria;
     }
 }
 
