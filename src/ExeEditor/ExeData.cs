@@ -855,7 +855,7 @@ namespace FF7Scarlet.ExeEditor
                             //write walkability data
                             for (int i = 0; i < NUM_WALKABILITY_MODELS; i++)
                             {
-                                if (MODEL_CAN_WALK_POS[i] > 0)
+                                if (ModelMoveBitmasks[i] != null)
                                 {
                                     stream.Seek(MODEL_CAN_WALK_POS[i], SeekOrigin.Begin);
                                     var temp = new byte[4];
@@ -871,7 +871,7 @@ namespace FF7Scarlet.ExeEditor
                                         }
                                     }
                                 }
-                                if (MODEL_CAN_DISEMBARK_POS[i] > 0)
+                                if (ModelDisembarkBitmasks[i] != null)
                                 {
                                     stream.Seek(MODEL_CAN_DISEMBARK_POS[i], SeekOrigin.Begin);
                                     var temp = new byte[4];
@@ -1895,7 +1895,8 @@ namespace FF7Scarlet.ExeEditor
 
                         for (j = 0; j < 4; ++j)
                         {
-                            if (moveBytesNew[j] != moveBytesOriginal[j] || disembarkBytesNew[j] != disembarkBytesOriginal[j])
+                            if (moveBytesNew[j] != moveBytesOriginal[j] || (disembarkBytesNew[j] != disembarkBytesOriginal[j] &&
+                                i < (int)WorldMapModels.YellowChocobo))
                             {
                                 if (!checker)
                                 {
@@ -1911,7 +1912,8 @@ namespace FF7Scarlet.ExeEditor
                                 {
                                     moveDiff = true;
                                 }
-                                if (disembarkBytesNew[j] != disembarkBytesOriginal[j])
+                                if (disembarkBytesNew[j] != disembarkBytesOriginal[j] &&
+                                    i < (int)WorldMapModels.YellowChocobo)
                                 {
                                     disembarkDiff = true;
                                 }

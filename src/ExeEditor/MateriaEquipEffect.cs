@@ -4,8 +4,8 @@ namespace FF7Scarlet.ExeEditor
 {
     public class MateriaEquipEffect
     {
-        public const int DATA_LENGTH = 16, COUNT = 21;
-        public short[] StatChanges { get; } = new short[COUNT];
+        public const int DATA_LENGTH = 16, COUNT = 21, STAT_COUNT = DATA_LENGTH / 2;
+        public short[] StatChanges { get; } = new short[STAT_COUNT];
 
         public MateriaEquipEffect(byte[] data)
         {
@@ -21,7 +21,7 @@ namespace FF7Scarlet.ExeEditor
             using (var ms = new MemoryStream(data))
             using (var reader = new BinaryReader(ms))
             {
-                for (int i = 0; i < DATA_LENGTH / 2; ++i)
+                for (int i = 0; i < STAT_COUNT; ++i)
                 {
                     StatChanges[i] = reader.ReadInt16();
                 }
@@ -55,7 +55,7 @@ namespace FF7Scarlet.ExeEditor
         public override string ToString()
         {
             var str = new StringBuilder();
-            for (int i = 0; i < COUNT; ++i)
+            for (int i = 0; i < STAT_COUNT; ++i)
             {
                 if (StatChanges[i] != 0)
                 {
@@ -84,7 +84,8 @@ namespace FF7Scarlet.ExeEditor
             var bytes = new List<byte>();
             foreach (var stat in StatChanges)
             {
-                bytes.AddRange(BitConverter.GetBytes(stat));
+                var temp = BitConverter.GetBytes(stat);
+                bytes.AddRange(temp);
             }
             return bytes.ToArray();
         }
