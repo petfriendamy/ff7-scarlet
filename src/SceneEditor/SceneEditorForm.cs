@@ -1261,14 +1261,14 @@ namespace FF7Scarlet.SceneEditor
 
         private void comboBoxEnemyResistElement_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int newElement = comboBoxEnemyResistElement.SelectedIndex,
+            int newElement = comboBoxEnemyResistElement.SelectedIndex - 1,
                 selectedElement = listBoxEnemyElementResistances.SelectedIndex;
 
             if (!loading && selectedElement >= 0 && selectedElement < Enemy.ELEMENT_RESISTANCE_COUNT
-                && newElement >= 0 && newElement < resistList.Count && SelectedEnemy != null)
+                && newElement < resistList.Count && SelectedEnemy != null)
             {
                 loading = true;
-                if (newElement == 0)
+                if (newElement < 0)
                 {
                     SelectedEnemy.ResistanceRates[selectedElement] = null;
                     listBoxEnemyElementResistances.Items[selectedElement] = "(blank)";
