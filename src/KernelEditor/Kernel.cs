@@ -1196,6 +1196,9 @@ namespace FF7Scarlet.KernelEditor
                         }
                     }
 
+                    //must be a multiple of 2
+                    if (bytes.Count % 2 != 0) { bytes.Add(0xFF); }
+
                     //copy the newly converted strings to the KernelData array
                     KernelData[section] = bytes.ToArray();
                 }
