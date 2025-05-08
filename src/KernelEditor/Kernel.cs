@@ -610,11 +610,11 @@ namespace FF7Scarlet.KernelEditor
             var ts = GetTextSection(section);
             if (ts != null)
             {
-                if ((int)section < DESCRIPTIONS_END)
+                if ((int)section <= DESCRIPTIONS_END)
                 {
                     UpdateDescription(section, value, pos);
                 }
-                else if ((int)section < NAMES_END)
+                else if ((int)section <= NAMES_END)
                 {
                     UpdateName(section, value, pos);
                 }
