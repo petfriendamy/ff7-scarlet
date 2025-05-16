@@ -1904,7 +1904,7 @@ namespace FF7Scarlet.KernelEditor
         private void SyncAccessoryData(Accessory acc)
         {
             acc.ElementalDefense = elementsControlAccessory.GetElements();
-            int temp = temp = comboBoxArmorElementModifier.SelectedIndex;
+            int temp = comboBoxAccessoryElementModifier.SelectedIndex;
             if (temp == 0)
             {
                 acc.ElementalDamageModifier = DamageModifier.Normal;
