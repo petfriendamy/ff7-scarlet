@@ -297,6 +297,15 @@ namespace FF7Scarlet.AIEditor
             headersAreCorrect = false;
         }
 
+        public void InsertCodeAtPosition(int pos, IEnumerable<Code> code)
+        {
+            var c = code.ToArray();
+            for (int i = 0; i < c.Length; ++i)
+            {
+                InsertCodeAtPosition(pos + i, c[i]);
+            }
+        }
+
         public void ReplaceCodeAtPosition(int pos, Code newCode)
         {
             if (pos >= 0 && pos < code.Count)

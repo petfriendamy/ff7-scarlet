@@ -40,12 +40,29 @@ namespace FF7Scarlet.AIEditor
             get
             {
                 if (AIContainer == null || SelectedScript == null) { return null; }
-                return SelectedScript.GetCodeAtPosition(SelectedCodeIndex);
+                return SelectedScript.GetCodeAtPosition(SelectedCodeIndices[0]);
             }
         }
-        private int SelectedCodeIndex
+        private int[] SelectedCodeIndices
         {
-            get { return listBoxCurrScript.SelectedIndex; }
+            get
+            {
+                int count = listBoxCurrScript.SelectedIndices.Count;
+                if (count == 0)
+                {
+                    return [-1];
+                }
+                else
+                {
+                    var indices = new List<int>();
+                    for (int i = 0; i < count; ++i)
+                    {
+                        indices.Add(listBoxCurrScript.SelectedIndices[i]);
+                    }
+                    indices.Sort();
+                    return indices.ToArray();
+                }
+            }
         }
 
         public ScriptControl()
@@ -97,19 +114,11 @@ namespace FF7Scarlet.AIEditor
         {
             if (SelectedScript != null)
             {
-                //get indices as ints
-                var indices = new List<int> { };
-                foreach (int i in listBoxCurrScript.SelectedIndices)
-                {
-                    indices.Add(i);
-                }
-                indices.Sort();
-
                 //if code is selected, copy it to the clipboard
-                if (indices.Count > 0)
+                if (SelectedCodeIndices.Length > 0)
                 {
                     clipboard = new List<Code> { };
-                    foreach (int i in indices)
+                    foreach (int i in SelectedCodeIndices)
                     {
                         clipboard.Add(SelectedScript.GetCodeAtPosition(i));
                     }
@@ -123,17 +132,25 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
+        public void PasteFromClipboard()
+        {
+            if (SelectedScript != null && clipboard != null)
+            {
+                int pos = SelectedCodeIndices[0] + 1;
+                if (pos == 0) { pos = SelectedScript.Length; }
+
+                SelectedScript.InsertCodeAtPosition(pos, clipboard);
+                ReloadScript(pos);
+                InvokeDataChanged();
+            }
+        }
+
         private void RemoveSelectedLines()
         {
             if (SelectedScript != null)
             {
                 //get indices as ints
-                var indices = new List<int> { };
-                foreach (int i in listBoxCurrScript.SelectedIndices)
-                {
-                    indices.Add(i);
-                }
-                indices.Sort();
+                var indices = SelectedCodeIndices.ToList();
                 indices.Reverse();
 
                 //if code is selected, delete it
@@ -158,10 +175,9 @@ namespace FF7Scarlet.AIEditor
         {
             if (SelectedCode != null && SelectedScript != null)
             {
-                int temp = SelectedCodeIndex;
+                int temp = SelectedCodeIndices[0];
                 SelectedScript.MoveCodeUp(temp);
-                DisplayScript(SelectedScriptIndex);
-                listBoxCurrScript.SelectedIndex = temp - 1;
+                ReloadScript(temp - 1);
                 InvokeDataChanged();
             }
         }
@@ -170,10 +186,9 @@ namespace FF7Scarlet.AIEditor
         {
             if (SelectedCode != null && SelectedScript != null)
             {
-                int temp = SelectedCodeIndex;
+                int temp = SelectedCodeIndices[0];
                 SelectedScript.MoveCodeDown(temp);
-                DisplayScript(SelectedScriptIndex);
-                listBoxCurrScript.SelectedIndex = temp + 1;
+                ReloadScript(temp + 1);
                 InvokeDataChanged();
             }
         }
@@ -226,7 +241,7 @@ namespace FF7Scarlet.AIEditor
                     }
                     else
                     {
-                        i = SelectedCodeIndex + 1;
+                        i = SelectedCodeIndices[0] + 1;
                         SelectedScript.InsertCodeAtPosition(i, newCode);
                     }
                     if (createLabel)
@@ -260,7 +275,7 @@ namespace FF7Scarlet.AIEditor
 
                 if (result == DialogResult.OK)
                 {
-                    int i = SelectedCodeIndex;
+                    int i = SelectedCodeIndices[0];
                     newCode.SetParent(SelectedScript);
                     SelectedScript.ReplaceCodeAtPosition(i, newCode);
 
@@ -290,7 +305,7 @@ namespace FF7Scarlet.AIEditor
 
         private void toolStripButtonPaste_Click(object sender, EventArgs e)
         {
-            //stuff
+            PasteFromClipboard();
         }
 
         private void toolStripButtonMoveUp_Click(object sender, EventArgs e)
@@ -315,13 +330,16 @@ namespace FF7Scarlet.AIEditor
                 switch (e.KeyCode)
                 {
                     case Keys.C:
+                        e.SuppressKeyPress = true;
                         SetClipboard(false);
                         break;
                     case Keys.X:
+                        e.SuppressKeyPress = true;
                         SetClipboard(true);
                         break;
                     case Keys.V:
-                        //to add
+                        e.SuppressKeyPress = true;
+                        PasteFromClipboard();
                         break;
                     case Keys.Up:
                         e.SuppressKeyPress = true;
