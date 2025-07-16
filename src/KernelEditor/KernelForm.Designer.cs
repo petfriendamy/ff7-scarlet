@@ -357,6 +357,8 @@
             attackCopyToolStripMenuItem = new ToolStripMenuItem();
             attackPasteToolStripMenuItem = new ToolStripMenuItem();
             attackDeleteToolStripMenuItem = new ToolStripMenuItem();
+            toolStripDropDownTools = new ToolStripDropDownButton();
+            useKernel2StringsToolStripMenuItem = new ToolStripMenuItem();
             tabControlMain.SuspendLayout();
             tabPageCommandData.SuspendLayout();
             tabPageAttackData.SuspendLayout();
@@ -3877,7 +3879,7 @@
             // toolStripMain
             // 
             toolStripMain.GripStyle = ToolStripGripStyle.Hidden;
-            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownFile, toolStripDropDownEdit });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownFile, toolStripDropDownEdit, toolStripDropDownTools });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Padding = new Padding(5, 0, 1, 0);
@@ -3960,6 +3962,24 @@
             attackDeleteToolStripMenuItem.Name = "attackDeleteToolStripMenuItem";
             attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
+            // 
+            // toolStripDropDownTools
+            // 
+            toolStripDropDownTools.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownTools.DropDownItems.AddRange(new ToolStripItem[] { useKernel2StringsToolStripMenuItem });
+            toolStripDropDownTools.Image = (Image)resources.GetObject("toolStripDropDownTools.Image");
+            toolStripDropDownTools.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownTools.Name = "toolStripDropDownTools";
+            toolStripDropDownTools.ShowDropDownArrow = false;
+            toolStripDropDownTools.Size = new Size(38, 22);
+            toolStripDropDownTools.Text = "Tools";
+            // 
+            // useKernel2StringsToolStripMenuItem
+            // 
+            useKernel2StringsToolStripMenuItem.Name = "useKernel2StringsToolStripMenuItem";
+            useKernel2StringsToolStripMenuItem.Size = new Size(180, 22);
+            useKernel2StringsToolStripMenuItem.Text = "Use kernel2 strings";
+            useKernel2StringsToolStripMenuItem.Click += useKernel2StringsToolStripMenuItem_Click;
             // 
             // KernelForm
             // 
@@ -4428,5 +4448,7 @@
         private Label labelCurveMin;
         private Label labelCurveLevel;
         private ComboBox comboBoxAttackType;
+        private ToolStripDropDownButton toolStripDropDownTools;
+        private ToolStripMenuItem useKernel2StringsToolStripMenuItem;
     }
 }

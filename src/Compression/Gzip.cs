@@ -87,7 +87,7 @@ namespace FF7Scarlet.Compression
             }
 
             //get headers for each of the scene files
-            while (currOffset < fileData.Length)
+            while (currScene < Scene.SCENE_COUNT)
             {
                 sceneLookupTable[currBlock] = (byte)currScene;
                 j = 0;

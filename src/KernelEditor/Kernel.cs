@@ -182,10 +182,57 @@ namespace FF7Scarlet.KernelEditor
 
         public void ReloadBattleText()
         {
+            bool wasAlreadyLoaded = loaded;
             loaded = false;
             ParseTextSectionStrings(KernelSection.BattleText,
                 GetSectionRawData(KernelSection.BattleText, true));
-            loaded = true;
+            loaded = wasAlreadyLoaded;
+        }
+
+        public void CopyAllText(Kernel other)
+        {
+            int i;
+
+            //data sections
+            for (i = 0; i < KERNEL1_END; ++i)
+            {
+                var s = (KernelSection)i;
+                int count = GetCount(s);
+                if (s == KernelSection.AttackData)
+                {
+                    count = MagicNames.Strings.Length;
+                }
+                var otherNames = other.GetAssociatedNames(s, true);
+                var otherDescs = other.GetAssociatedDescriptions(s);
+
+                for (int j = 0; j < count; ++j)
+                {
+                    UpdateName(s, otherNames[j], j);
+                    if (j < GetCount(s))
+                    {
+                        UpdateDescription(s, otherDescs[j], j);
+                    }
+                }
+            }
+
+            //key items
+            for (i = 0; i < GetCount(KernelSection.KeyItemNames); ++i)
+            {
+                KeyItemNames.Strings[i] = other.KeyItemNames.Strings[i];
+                KeyItemDescriptions.Strings[i] = other.KeyItemDescriptions.Strings[i];
+            }
+
+            //battle text
+            for (i = 0; i < BattleTextFF.Length; ++i)
+            {
+                BattleTextFF[i] = other.BattleTextFF[i];
+            }
+
+            //summon attack names
+            for (i = 0; i < SummonAttackNames.Strings.Length; ++i)
+            {
+                SummonAttackNames.Strings[i] = other.SummonAttackNames.Strings[i];
+            }
         }
 
         public byte[] GetLookupTable()

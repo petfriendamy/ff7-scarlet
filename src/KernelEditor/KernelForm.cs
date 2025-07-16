@@ -365,6 +365,8 @@ namespace FF7Scarlet.KernelEditor
                 if (DataManager.AttackIsSynced((ushort)a.Index)) { syncedAttackIDs.Add((ushort)a.Index); }
             }
             selectedAttackToolStripMenuItem.Enabled = false;
+            useKernel2StringsToolStripMenuItem.Enabled = DataManager.BothKernelFilePathsExist;
+            useKernel2StringsToolStripMenuItem.Checked = DataManager.BothKernelFilePathsExist;
 
             //get curve controls
             curveBonuses = [
@@ -754,13 +756,6 @@ namespace FF7Scarlet.KernelEditor
                 if (section == KernelSection.AttackData) //ignore selection combo box
                 {
                     list.Add(comboBoxAttackType);
-                }
-
-                //if kernel2 isn't loaded, disable name and description text boxes
-                if (!DataManager.BothKernelFilePathsExist)
-                {
-                    list.Add(nameTextBoxes[section]);
-                    list.Add(descriptionTextBoxes[section]);
                 }
 
                 //if scene.bin isn't loaded, disable synced attacks
@@ -1693,6 +1688,20 @@ namespace FF7Scarlet.KernelEditor
             if (!wasAlreadyLoading) { loading = false; }
         }
 
+        private void ReloadAllText()
+        {
+            for (int i = 0; i < Kernel.KERNEL1_END; ++i)
+            {
+                var s = (KernelSection)i;
+                UpdateNames(s);
+                UpdateSelectedDescription(s);
+            }
+            UpdateNames(KernelSection.KeyItemNames);
+            UpdateSelectedDescription(KernelSection.KeyItemNames);
+            UpdateBattleText();
+            UpdateLimitNames();
+        }
+
         /// <summary>
         /// Get list of subtypes for the selected materia type
         /// </summary>
@@ -2334,11 +2343,8 @@ namespace FF7Scarlet.KernelEditor
                 if (i >= 0 && i < kernel.GetCount(KernelSection.BattleText))
                 {
                     loading = true;
-                    if (DataManager.BothKernelFilePathsExist)
-                    {
-                        labelBattleText.Enabled = true;
-                        textBoxBattleText.Enabled = true;
-                    }
+                    labelBattleText.Enabled = true;
+                    textBoxBattleText.Enabled = true;
                     textBoxBattleText.Text = kernel.BattleTextFF[i].ToString();
                     loading = false;
                 }
@@ -2353,13 +2359,10 @@ namespace FF7Scarlet.KernelEditor
                 if (i >= Kernel.ATTACK_COUNT && i < kernel.MagicNames.Strings.Length)
                 {
                     loading = true;
-                    if (DataManager.BothKernelFilePathsExist)
-                    {
-                        labelLimitName.Enabled = true;
-                        labelLimitDescription.Enabled = true;
-                        textBoxLimitName.Enabled = true;
-                        textBoxLimitDescription.Enabled = true;
-                    }
+                    labelLimitName.Enabled = true;
+                    labelLimitDescription.Enabled = true;
+                    textBoxLimitName.Enabled = true;
+                    textBoxLimitDescription.Enabled = true;
                     textBoxLimitName.Text = kernel.MagicNames.Strings[i];
                     textBoxLimitDescription.Text = kernel.MagicDescriptions.Strings[i];
                     loading = false;
@@ -3685,6 +3688,32 @@ namespace FF7Scarlet.KernelEditor
             {
                 DataManager.CopiedAttack.Index = SelectedAttackIndex;
                 kernel.AttackData.Attacks[SelectedAttackIndex] = DataParser.CopyAttack(DataManager.CopiedAttack);
+                SetUnsaved(true);
+            }
+        }
+
+        private void useKernel2StringsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var result = DialogResult.Yes;
+            if (unsavedChanges) //alert of unsaved data
+            {
+                result = MessageBox.Show("This action may result in unsaved data being lost. Are you sure?",
+                    "Unsaved changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            }
+            if (result == DialogResult.Yes)
+            {
+                bool flip = !useKernel2StringsToolStripMenuItem.Checked;
+
+                //reload the strings
+                var temp = new Kernel(DataManager.KernelPath);
+                if (flip)
+                {
+                    temp.MergeKernel2Data(DataManager.Kernel2Path);
+                }
+
+                kernel.CopyAllText(temp);
+                ReloadAllText();
+                useKernel2StringsToolStripMenuItem.Checked = flip;
                 SetUnsaved(true);
             }
         }
