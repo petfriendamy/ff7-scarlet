@@ -376,37 +376,14 @@ namespace FF7Scarlet.ExeEditor
             int shopType = comboBoxShopType.SelectedIndex;
             if (shopType < 0) { shopType = 0; }
             comboBoxShopType.Items.Clear();
-            foreach (TabPage p in tabControlMenus.TabPages)
-            {
-                foreach (Control c in p.Controls)
-                {
-                    if (c is GroupBox)
-                    {
-                        foreach (Control c2 in c.Controls)
-                        {
-                            if (c2 is ListBox)
-                            {
-                                var lb = c2 as ListBox;
-                                if (lb != null) { lb.Items.Clear(); }
-                            }
-                        }
-                    }
-                    else if (c is ListBox)
-                    {
-                        var lb = c as ListBox;
-                        if (lb != null) { lb.Items.Clear(); }
-                    }
-                }
-            }
+            ClearListBoxes(tabControlMenus);
+            ClearListBoxes(tabControlOtherText);
             listBoxAffectedMateria.Items.Clear();
-            listBoxStatusEffects.Items.Clear();
             listBoxItemPrices.Items.Clear();
             listBoxMateriaPrices.Items.Clear();
-            listBoxShopNames.Items.Clear();
-            listBoxShopText.Items.Clear();
             listBoxSortItemName.Items.Clear();
-            listBoxChocoboNames.Items.Clear();
             listBoxAudioVolume.Items.Clear();
+            listBoxAudioPan.Items.Clear();
 
             //set AP price multiplier
             numericMateriaAPPriceMultiplier.Value = editor.APPriceMultiplier;
@@ -656,6 +633,33 @@ namespace FF7Scarlet.ExeEditor
                 var lb = control as ListBox;
                 if (resume) { lb?.ResumeLayout(); }
                 else { lb?.SuspendLayout(); }
+            }
+        }
+
+        //clear listboxes
+        private void ClearListBoxes(TabControl tabs)
+        {
+            foreach (TabPage p in tabs.TabPages)
+            {
+                foreach (Control c in p.Controls)
+                {
+                    if (c is GroupBox)
+                    {
+                        foreach (Control c2 in c.Controls)
+                        {
+                            if (c2 is ListBox)
+                            {
+                                var lb = c2 as ListBox;
+                                if (lb != null) { lb.Items.Clear(); }
+                            }
+                        }
+                    }
+                    else if (c is ListBox)
+                    {
+                        var lb = c as ListBox;
+                        if (lb != null) { lb.Items.Clear(); }
+                    }
+                }
             }
         }
 

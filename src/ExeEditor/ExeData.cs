@@ -4,7 +4,6 @@ using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using System.Collections;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
 
 namespace FF7Scarlet.ExeEditor
@@ -1345,11 +1344,11 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //read chocobo names
-                        for (i = 0; i < NUM_CHOCOBO_NAMES; ++i)
+                        for (i = 0; i < NUM_CHOCOBO_NAMES + 1; ++i)
                         {
                             ChocoboNames[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                                 CHOCOBO_NAME_LENGTH);
-                            stream.Seek(ChocoboNames[i].ToString().Length + 1, SeekOrigin.Current);
+                            stream.Seek(CHOCOBO_NAME_LENGTH, SeekOrigin.Current);
                         }
 
                         //read item names
@@ -1357,7 +1356,7 @@ namespace FF7Scarlet.ExeEditor
                         {
                             ChocoboRacePrizes[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                                 ITEM_NAME_LENGTH);
-                            stream.Seek(ChocoboRacePrizes[i].ToString().Length + 1, SeekOrigin.Current);
+                            stream.Seek(ITEM_NAME_LENGTH, SeekOrigin.Current);
                         }
 
                         //read item menu text
@@ -1365,7 +1364,7 @@ namespace FF7Scarlet.ExeEditor
                         {
                             ItemMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
                                 ITEM_MENU_TEXT_LENGTH);
-                            stream.Seek(MateriaMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                            stream.Seek(ItemMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
                         //read magic menu text
@@ -1412,12 +1411,12 @@ namespace FF7Scarlet.ExeEditor
                         int curr = 0;
                         for (i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
                         {
+                            int len = BATTLE_ARENA_TEXT_LENGTHS[i].Length;
                             for (int j = 0; j < BATTLE_ARENA_TEXT_LENGTHS[i].Count; ++j)
                             {
-                                BattleArenaTexts[curr] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                    BATTLE_ARENA_TEXT_LENGTHS[i].Length);
+                                BattleArenaTexts[curr] = FFText.GetTextFromByteArray(bytes, (int)stream.Position, len);
+                                stream.Seek(BattleArenaTexts[curr].ToString().Length + 1, SeekOrigin.Current);
                                 curr++;
-                                stream.Seek(BattleArenaTexts[i].ToString().Length + 1, SeekOrigin.Current);
                             }
                         }
 
