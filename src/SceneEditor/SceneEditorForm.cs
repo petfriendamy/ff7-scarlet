@@ -126,8 +126,9 @@ namespace FF7Scarlet.SceneEditor
             Text = WINDOW_TITLE;
 
             //set max values for various controls
+            attackFormControl.SetIsKernel(false);
+            attackFormControl.DescriptionEnabled = false;
             textBoxEnemyName.MaxLength = Scene.NAME_LENGTH - 1;
-            textBoxAttackName.MaxLength = Scene.NAME_LENGTH - 1;
             numericEnemyHP.Maximum = uint.MaxValue;
             numericEnemyEXP.Maximum = uint.MaxValue;
             numericEnemyGil.Maximum = uint.MaxValue;
@@ -158,29 +159,6 @@ namespace FF7Scarlet.SceneEditor
                 comboBoxEnemyResistRate.Items.Add(StringParser.AddSpaces(r.ToString()));
             }
             comboBoxEnemyResistElement.EndUpdate();
-
-            comboBoxAttackStatusChange.BeginUpdate();
-            comboBoxAttackStatusChange.Items.Add("None");
-            foreach (var s in Enum.GetValues<StatusChangeType>())
-            {
-                if (s != StatusChangeType.None)
-                {
-                    comboBoxAttackStatusChange.Items.Add(s);
-                    statusChangeTypes.Add(s);
-                }
-            }
-            comboBoxAttackStatusChange.EndUpdate();
-
-            comboBoxAttackConditionSubMenu.BeginUpdate();
-            comboBoxAttackConditionSubMenu.Items.Add("None");
-            foreach (var c in Enum.GetValues<ConditionSubmenu>())
-            {
-                if (c != ConditionSubmenu.None)
-                {
-                    comboBoxAttackConditionSubMenu.Items.Add(c);
-                }
-            }
-            comboBoxAttackConditionSubMenu.EndUpdate();
 
             locationList =
                 (from l in LocationInfo.LOCATION_LIST
@@ -719,52 +697,14 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else
                 {
-                    tabControlAttackData.Enabled = false;
+                    attackFormControl.EnableOrDisableControls(false, false);
                     attackDeleteToolStripMenuItem.Enabled = false;
                 }
             }
             else
             {
-                tabControlAttackData.Enabled = true;
+                attackFormControl.UpdateForm(attack, attack.Index);
                 attackDeleteToolStripMenuItem.Enabled = true;
-
-                //page 1
-                textBoxAttackID.Text = attack.Index.ToString("X4");
-                textBoxAttackName.Text = attack.Name.ToString();
-                numericAttackAttackPercent.Value = attack.AccuracyRate;
-                numericAttackMPCost.Value = attack.MPCost;
-                comboBoxAttackAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
-                comboBoxAttackImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
-                elementsControlAttack.SetElements(attack.Elements);
-                comboBoxAttackCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
-                comboBoxAttackCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
-                comboBoxAttackHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
-                damageCalculationControlAttack.AttackPower = attack.AttackStrength;
-                damageCalculationControlAttack.ActualValue = attack.DamageCalculationID;
-
-                //page 2
-                specialAttackFlagsControlAttack.SetFlags(attack.SpecialAttackFlags);
-                statusesControlAttack.SetStatuses(attack.Statuses);
-                if (attack.ConditionSubmenu == ConditionSubmenu.None)
-                {
-                    comboBoxAttackConditionSubMenu.SelectedIndex = 0;
-                }
-                else
-                {
-                    comboBoxAttackConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
-                }
-                numericAttackStatusChangeChance.Value = attack.StatusChange.Amount;
-                if (attack.StatusChange.Type == StatusChangeType.None)
-                {
-                    comboBoxAttackStatusChange.SelectedIndex = 0;
-                }
-                else
-                {
-                    comboBoxAttackStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
-                }
-
-                //page 3
-                targetDataControlAttack.SetTargetData(attack.TargetFlags);
             }
 
             if (clearLoadingWhenDone) { loading = false; }
@@ -821,28 +761,6 @@ namespace FF7Scarlet.SceneEditor
                     loading = false;
                 }
             }
-        }
-
-        private void SyncAttackData(Attack attack)
-        {
-            attack.AccuracyRate = (byte)numericAttackAttackPercent.Value;
-            attack.MPCost = (ushort)numericAttackMPCost.Value;
-            attack.TargetFlags = targetDataControlAttack.GetTargetData();
-            attack.DamageCalculationID = damageCalculationControlAttack.ActualValue;
-            attack.AttackStrength = damageCalculationControlAttack.AttackPower;
-            if (comboBoxAttackConditionSubMenu.SelectedIndex == 0)
-            {
-                attack.ConditionSubmenu = ConditionSubmenu.None;
-            }
-            else
-            {
-                attack.ConditionSubmenu = (ConditionSubmenu)(comboBoxAttackConditionSubMenu.SelectedIndex - 1);
-            }
-            attack.Statuses = statusesControlAttack.GetStatuses();
-            attack.Elements = elementsControlAttack.GetElements();
-            attack.SpecialAttackFlags = specialAttackFlagsControlAttack.GetFlags();
-
-            attackNeedsSync = false;
         }
 
         private void LoadFormationData(Formation formation, bool clearLoadingWhenDone)
@@ -1005,7 +923,7 @@ namespace FF7Scarlet.SceneEditor
                     if (prev) { attack = scene.AttackList[prevAttack]; }
                     if (attack != null)
                     {
-                        SyncAttackData(attack);
+                        attackFormControl.SyncAttackData(attack);
                     }
                 }
 
@@ -1154,7 +1072,7 @@ namespace FF7Scarlet.SceneEditor
                     var attack = SelectedScene.AttackList[prevAttack];
                     if (attack != null)
                     {
-                        SyncAttackData(attack);
+                        attackFormControl.SyncAttackData(attack);
                     }
                 }
                 prevAttack = SelectedAttackIndex;
@@ -1716,126 +1634,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (!loading && SelectedScene != null && SelectedEnemy != null && SelectedAttack != null)
             {
-                SelectedAttack.Name = textBoxAttackName.Text;
                 UpdateSelectedAttackName(SelectedScene, SelectedEnemy, SelectedAttackIndex);
-                SetUnsaved(true);
-            }
-        }
-
-        private void comboBoxAttackAttackEffectID_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackAttackEffectID.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.AttackEffectID = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackImpactEffectID_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackImpactEffectID.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.ImpactEffectID = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackCamMovementIDSingle_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackCamMovementIDSingle.Text;
-                if (text.Length == 4)
-                {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.CameraMovementIDSingle = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackCamMovementIDMulti_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackCamMovementIDMulti.Text;
-                if (text.Length == 4)
-                {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.CameraMovementIDMulti = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackHurtActionIndex_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                var text = comboBoxAttackHurtActionIndex.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedAttack.TargetHurtActionIndex = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxAttackStatusChange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int i = comboBoxAttackStatusChange.SelectedIndex;
-            numericAttackStatusChangeChance.Enabled = (i > 0);
-            statusesControlAttack.Enabled = (i > 0);
-            if (!loading && SelectedAttack != null)
-            {
-                if (i == 0)
-                {
-                    SelectedAttack.StatusChange.Type = StatusChangeType.None;
-                }
-                else
-                {
-                    SelectedAttack.StatusChange.Type = statusChangeTypes[i - 1];
-                }
-                SetUnsaved(true);
-            }
-        }
-
-        private void numericAttackStatusChangeChance_ValueChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedAttack != null)
-            {
-                SelectedAttack.StatusChange.Amount = (byte)numericAttackStatusChangeChance.Value;
                 SetUnsaved(true);
             }
         }

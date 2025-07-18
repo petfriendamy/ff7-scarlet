@@ -349,6 +349,15 @@ namespace FF7Scarlet.KernelEditor
             return names;
         }
 
+        public string GetLimitDescription(int index)
+        {
+            if (index >= 0 && index < ExeData.NUM_LIMITS)
+            {
+                return MagicDescriptions.Strings[index + ATTACK_COUNT];
+            }
+            return string.Empty;
+        }
+
         public Item? GetItemByID(int id)
         {
             foreach (var item in ItemData.Items)

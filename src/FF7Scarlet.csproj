@@ -14,6 +14,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Shared\Controls\haefrjjy.aju~" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="scarlet_icon.ico" />
   </ItemGroup>
 

@@ -103,6 +103,9 @@ namespace FF7Scarlet.ExeEditor
             ];
 
             //set max values
+            attackFormControlLimit.SetIsKernel(false);
+            attackFormControlLimit.NameEnabled = false;
+            attackFormControlLimit.DescriptionEnabled = false;
             numericItemPrice.Maximum = uint.MaxValue;
             numericMateriaPrice.Maximum = uint.MaxValue;
 
@@ -152,27 +155,6 @@ namespace FF7Scarlet.ExeEditor
             foreach (var f in Enum.GetNames<CharacterFlags>())
             {
                 comboBoxCharacterFlags.Items.Add(f);
-            }
-
-            //limit status change
-            comboBoxLimitStatusChange.Items.Add("None");
-            foreach (var s in Enum.GetValues<StatusChangeType>())
-            {
-                if (s != StatusChangeType.None)
-                {
-                    comboBoxLimitStatusChange.Items.Add(s);
-                    statusChangeTypes.Add(s);
-                }
-            }
-
-            //limit condition submenu
-            comboBoxLimitConditionSubMenu.Items.Add("None");
-            foreach (var c in Enum.GetValues<AttackConditions>())
-            {
-                if (c != AttackConditions.None)
-                {
-                    comboBoxLimitConditionSubMenu.Items.Add(c);
-                }
             }
 
             //add shop data
@@ -713,29 +695,6 @@ namespace FF7Scarlet.ExeEditor
             return -1;
         }
 
-        //sync unsaved limit data
-        private void SyncLimitData(Attack limit)
-        {
-            limit.AccuracyRate = (byte)numericLimitAttackPercent.Value;
-            limit.MPCost = (ushort)numericLimitMPCost.Value;
-            limit.TargetFlags = targetDataControlLimit.GetTargetData();
-            limit.DamageCalculationID = damageCalculationControlLimit.ActualValue;
-            limit.AttackStrength = damageCalculationControlLimit.AttackPower;
-            if (comboBoxLimitConditionSubMenu.SelectedIndex == 0)
-            {
-                limit.ConditionSubmenu = ConditionSubmenu.None;
-            }
-            else
-            {
-                limit.ConditionSubmenu = (ConditionSubmenu)(comboBoxLimitConditionSubMenu.SelectedIndex - 1);
-            }
-            limit.Statuses = statusesControlLimit.GetStatuses();
-            limit.Elements = elementsControlLimit.GetElements();
-            limit.SpecialAttackFlags = specialAttackFlagsControlLimit.GetFlags();
-
-            limitNeedsSync = false;
-        }
-
         //update a character's name
         private void ChangeName(TextBox textBox, int charID)
         {
@@ -1254,7 +1213,7 @@ namespace FF7Scarlet.ExeEditor
                     var limit = editor.Limits[prevLimit];
                     if (limit != null)
                     {
-                        SyncLimitData(limit);
+                        attackFormControlLimit.SyncAttackData(limit);
                     }
                 }
 
@@ -1262,47 +1221,16 @@ namespace FF7Scarlet.ExeEditor
 
                 if (i >= 0 && i < ExeData.NUM_LIMITS)
                 {
-                    var attack = editor.Limits[i];
-                    if (attack != null)
+                    var limit = editor.Limits[i];
+                    if (limit != null)
                     {
-                        tabControlLimits.Enabled = true;
-
-                        //page 1
-                        labelLimitID.Text = $"ID: {i:X2}";
-                        numericLimitAttackPercent.Value = attack.AccuracyRate;
-                        numericLimitMPCost.Value = attack.MPCost;
-                        comboBoxLimitAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
-                        comboBoxLimitImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
-                        elementsControlLimit.SetElements(attack.Elements);
-                        comboBoxLimitCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
-                        comboBoxLimitCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
-                        comboBoxLimitHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
-                        damageCalculationControlLimit.AttackPower = attack.AttackStrength;
-                        damageCalculationControlLimit.ActualValue = attack.DamageCalculationID;
-
-                        //page 2
-                        specialAttackFlagsControlLimit.SetFlags(attack.SpecialAttackFlags);
-                        statusesControlLimit.SetStatuses(attack.Statuses);
-                        if (attack.ConditionSubmenu == ConditionSubmenu.None)
+                        string name = limit.Name, desc = limit.Description;
+                        if (DataManager.Kernel != null)
                         {
-                            comboBoxLimitConditionSubMenu.SelectedIndex = 0;
+                            name = DataManager.Kernel.GetLimitName(i);
+                            desc = DataManager.Kernel.GetLimitDescription(i);
                         }
-                        else
-                        {
-                            comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
-                        }
-                        numericLimitStatusChangeChance.Value = attack.StatusChange.Amount;
-                        if (attack.StatusChange.Type == StatusChangeType.None)
-                        {
-                            comboBoxLimitStatusChange.SelectedIndex = 0;
-                        }
-                        else
-                        {
-                            comboBoxLimitStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
-                        }
-
-                        //page 3
-                        targetDataControlLimit.SetTargetData(attack.TargetFlags);
+                        attackFormControlLimit.UpdateForm(limit, i, name, desc);
                     }
                 }
                 prevLimit = i;
@@ -1316,124 +1244,6 @@ namespace FF7Scarlet.ExeEditor
             if (!loading)
             {
                 limitNeedsSync = true;
-                SetUnsaved(true);
-            }
-        }
-
-        private void comboBoxLimitAttackEffectID_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitAttackEffectID.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.AttackEffectID = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxLimitImpactEffectID_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitImpactEffectID.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.ImpactEffectID = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxLimitCamMovementIDSingle_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitCamMovementIDSingle.Text;
-                if (text.Length == 4)
-                {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.CameraMovementIDSingle = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxLimitCamMovementIDMulti_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitCamMovementIDMulti.Text;
-                if (text.Length == 4)
-                {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.CameraMovementIDMulti = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxLimitHurtActionIndex_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitHurtActionIndex.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.TargetHurtActionIndex = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxLimitStatusChange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int i = comboBoxLimitStatusChange.SelectedIndex;
-            numericLimitStatusChangeChance.Enabled = (i > 0);
-            statusesControlLimit.Enabled = (i > 0);
-            if (!loading && SelectedLimit != null)
-            {
-                if (i == 0)
-                {
-                    SelectedLimit.StatusChange.Type = StatusChangeType.None;
-                }
-                else
-                {
-                    SelectedLimit.StatusChange.Type = statusChangeTypes[i - 1];
-                }
-                SetUnsaved(true);
-            }
-        }
-
-        private void numericLimitStatusChangeChance_ValueChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                SelectedLimit.StatusChange.Amount = (byte)numericLimitStatusChangeChance.Value;
                 SetUnsaved(true);
             }
         }
@@ -2431,7 +2241,7 @@ namespace FF7Scarlet.ExeEditor
             if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
             if (limitNeedsSync && SelectedLimit != null)
             {
-                SyncLimitData(SelectedLimit);
+                attackFormControlLimit.SyncAttackData(SelectedLimit);
             }
 
             DialogResult result;
@@ -2465,7 +2275,7 @@ namespace FF7Scarlet.ExeEditor
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
                 if (limitNeedsSync && SelectedLimit != null)
                 {
-                    SyncLimitData(SelectedLimit);
+                    attackFormControlLimit.SyncAttackData(SelectedLimit);
                 }
 
                 DialogResult result;
@@ -2549,7 +2359,7 @@ namespace FF7Scarlet.ExeEditor
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
                 if (limitNeedsSync && SelectedLimit != null)
                 {
-                    SyncLimitData(SelectedLimit);
+                    attackFormControlLimit.SyncAttackData(SelectedLimit);
                 }
 
                 try

@@ -21,6 +21,8 @@ namespace FF7Scarlet.Shared
         private static byte[] sceneLookupTable = new byte[64];
         private static Dictionary<ushort, Attack> syncedAttacks = new();
 
+        public static StatusChangeType[] StatusChangeTypes { get; } = Enum.GetValues<StatusChangeType>();
+
         public static string ExePath { get; private set; } = string.Empty;
         public static string VanillaExePath { get; private set; } = string.Empty;
         public static string KernelPath { get; private set; } = string.Empty;
