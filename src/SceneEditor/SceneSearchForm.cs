@@ -139,17 +139,16 @@ namespace FF7Scarlet.SceneEditor
             }
             else //formation
             {
-                SceneSearchResult? temp = null;
-
                 if (checkBoxFormationNumber.Checked) //find a specific formation number
                 {
                     int scene = (int)Math.Floor(numericFormationNumber.Value / Scene.FORMATION_COUNT);
                     int formation = (int)numericFormationNumber.Value % Scene.FORMATION_COUNT;
-                    temp = new SceneSearchResult(SearchType.Formation, scene, 0, formation);
+                    foundScenes.Add(new SceneSearchResult(SearchType.Formation, scene, 0, formation));
                 }
 
                 if (checkBoxFormationOpcode.Checked) //find opcodes
                 {
+                    SceneSearchResult? temp = null;
                     Opcodes op = opcodes[comboBoxFormationOpcode.SelectedIndex];
 
                     if (temp != null) //checking if the specified formation has this opcode
