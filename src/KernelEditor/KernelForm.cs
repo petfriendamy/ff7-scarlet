@@ -192,6 +192,14 @@ namespace FF7Scarlet.KernelEditor
         {
             get
             {
+                if (SelectedAttackType == AttackTypes.Summon)
+                {
+                    int special = AttackCount - 2;
+                    if (listBoxAttacks.SelectedIndex >= special)
+                    {
+                        return listBoxAttacks.SelectedIndex - special + Kernel.SPECIAL_SUMMON_OFFSET;
+                    }
+                }
                 return listBoxAttacks.SelectedIndex + AttackOffset;
             }
         }
@@ -2499,7 +2507,7 @@ namespace FF7Scarlet.KernelEditor
                 loading = true;
                 string name = attackFormControl.AttackName;
                 kernel.MagicNames.Strings[SelectedAttackIndex] = name;
-                listBoxAttacks.Items[SelectedAttackIndex - AttackOffset] = name;
+                listBoxAttacks.Items[listBoxAttacks.SelectedIndex] = name;
                 SetUnsaved(true);
                 loading = false;
             }
