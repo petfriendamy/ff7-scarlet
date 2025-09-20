@@ -4,7 +4,6 @@ using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
 using System.Configuration;
 using System.Diagnostics;
-using System.Threading.Channels;
 using System.Xml;
 
 namespace FF7Scarlet
@@ -361,15 +360,35 @@ namespace FF7Scarlet
             {
                 DialogResult result;
                 string file;
+                int index;
                 using (var loadFile = new OpenFileDialog())
                 {
-                    loadFile.Filter = "scene.bin|scene.bin";
+                    loadFile.Filter = "scene.bin|scene.bin|scene.bin (JP original)|scene.bin";
                     result = loadFile.ShowDialog();
                     file = loadFile.FileName;
+                    index = loadFile.FilterIndex;
                 }
                 if (result == DialogResult.OK)
                 {
-                    DataManager.SetFilePath(FileClass.Scene, file);
+                    bool isJPoriginal = (index == 2);
+                    if (isJPoriginal)
+                    {
+                        result = MessageBox.Show("Convert this file to JP International format? A backup will be made.", "Convert scene.bin?",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
+                        {
+                            DataManager.CreateBackupFile(file);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    DataManager.SetFilePath(FileClass.Scene, file, isJPoriginal:isJPoriginal);
+                    if (isJPoriginal)
+                    {
+                        DataManager.CreateSceneBin();
+                    }
                     UpdateTextBoxes(true);
                     CheckLookupTable();
                 }

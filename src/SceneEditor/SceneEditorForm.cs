@@ -27,7 +27,6 @@ namespace FF7Scarlet.SceneEditor
         private List<ResistanceRate> resistList;
         private List<ResistRates> resistRateList;
         private List<InventoryItem> itemList = new();
-        private List<StatusChangeType> statusChangeTypes = new();
         private List<Enemy> validEnemies = new();
         private List<Attack> validAttacks = new();
         private List<LocationInfo> locationList = new();
@@ -331,8 +330,19 @@ namespace FF7Scarlet.SceneEditor
         private void LoadSceneData(int sceneIndex, bool clearLoadingWhenDone, bool ignoreNull)
         {
             loading = true;
+            
             var scene = sceneList[sceneIndex];
-            if (!scene.ScriptsLoaded) { scene.ParseAIScripts(); }
+            if (!scene.ScriptsLoaded)
+            {
+                try
+                {
+                    scene.ParseAIScripts();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
             int i;
 
             //get attacks
@@ -355,8 +365,8 @@ namespace FF7Scarlet.SceneEditor
 
             validAttacks =
                 (from a in scene.AttackList
-                 where a != null
-                 select a).ToList();
+                    where a != null
+                    select a).ToList();
 
             comboBoxEnemyAttackID.BeginUpdate();
             comboBoxEnemyAttackID.Items.Clear();
@@ -373,8 +383,8 @@ namespace FF7Scarlet.SceneEditor
             //get enemies
             validEnemies =
                 (from e in scene.Enemies
-                 where e != null
-                 select e).ToList();
+                    where e != null
+                    select e).ToList();
 
             comboBoxEnemy.BeginUpdate();
             comboBoxFormationSelectedEnemy.BeginUpdate();
@@ -434,120 +444,127 @@ namespace FF7Scarlet.SceneEditor
             }
             else //load data
             {
-                tabControlEnemyData.Enabled = true;
-                enemyDeleteToolStripMenuItem.Enabled = true;
-
-                //page 1
-                textBoxEnemyName.Text = enemy.Name.ToString();
-                numericEnemyLevel.Value = enemy.Level;
-                numericEnemyHP.Value = enemy.HP;
-                numericEnemyMP.Value = enemy.MP;
-                numericEnemyStrength.Value = enemy.Strength;
-                numericEnemyDefense.Value = enemy.Defense;
-                numericEnemyMagic.Value = enemy.Magic;
-                numericEnemyMDef.Value = enemy.MDef;
-                numericEnemySpeed.Value = enemy.Speed;
-                numericEnemyEvade.Value = enemy.Evade;
-                numericEnemyLuck.Value = enemy.Luck;
-                numericEnemyEXP.Value = enemy.EXP;
-                numericEnemyAP.Value = enemy.AP;
-                numericEnemyGil.Value = enemy.Gil;
-                listBoxEnemyElementResistances.BeginUpdate();
-                listBoxEnemyElementResistances.Items.Clear();
-                foreach (var e in enemy.ResistanceRates)
+                try
                 {
-                    if (e == null)
-                    {
-                        listBoxEnemyElementResistances.Items.Add("(blank)");
-                    }
-                    else
-                    {
-                        listBoxEnemyElementResistances.Items.Add(e.GetText());
-                    }
-                }
-                listBoxEnemyElementResistances.EndUpdate();
-                EnableOrDisableGroupBox(groupBoxEnemyElementResistances, false, false);
-                statusesControlEnemyImmunities.SetStatuses(enemy.StatusImmunities);
+                    tabControlEnemyData.Enabled = true;
+                    enemyDeleteToolStripMenuItem.Enabled = true;
 
-                //page 2
-                listBoxEnemyAttacks.BeginUpdate();
-                listBoxEnemyAttacks.Items.Clear();
-                for (int i = 0; i < 16; ++i)
-                {
-                    if (enemy.AttackIDs[i] == HexParser.NULL_OFFSET_16_BIT)
+                    //page 1
+                    textBoxEnemyName.Text = enemy.Name.ToString();
+                    numericEnemyLevel.Value = enemy.Level;
+                    numericEnemyHP.Value = enemy.HP;
+                    numericEnemyMP.Value = enemy.MP;
+                    numericEnemyStrength.Value = enemy.Strength;
+                    numericEnemyDefense.Value = enemy.Defense;
+                    numericEnemyMagic.Value = enemy.Magic;
+                    numericEnemyMDef.Value = enemy.MDef;
+                    numericEnemySpeed.Value = enemy.Speed;
+                    numericEnemyEvade.Value = enemy.Evade;
+                    numericEnemyLuck.Value = enemy.Luck;
+                    numericEnemyEXP.Value = enemy.EXP;
+                    numericEnemyAP.Value = enemy.AP;
+                    numericEnemyGil.Value = enemy.Gil;
+                    listBoxEnemyElementResistances.BeginUpdate();
+                    listBoxEnemyElementResistances.Items.Clear();
+                    foreach (var e in enemy.ResistanceRates)
                     {
-                        listBoxEnemyAttacks.Items.Add("(none)");
-                    }
-                    else if (SelectedScene != null)
-                    {
-                        listBoxEnemyAttacks.Items.Add(SelectedScene.GetAttackName(enemy.AttackIDs[i]));
-                    }
-                }
-                listBoxEnemyAttacks.EndUpdate();
-                EnableOrDisableGroupBox(groupBoxEnemyAttacks, false, false);
-                numericEnemyBackDamageMultiplier.Value = enemy.BackAttackMultiplier;
-
-                //kernel data
-                if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
-                {
-                    listBoxEnemyItemDropRates.BeginUpdate();
-                    listBoxEnemyItemDropRates.Items.Clear();
-                    foreach (var item in enemy.ItemDropRates)
-                    {
-                        if (item == null)
+                        if (e == null)
                         {
-                            listBoxEnemyItemDropRates.Items.Add("(none)");
+                            listBoxEnemyElementResistances.Items.Add("(blank)");
                         }
                         else
                         {
-                            listBoxEnemyItemDropRates.Items.Add(GetItemDropText(item));
+                            listBoxEnemyElementResistances.Items.Add(e.GetText());
                         }
                     }
-                    listBoxEnemyItemDropRates.EndUpdate();
-                    EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, false);
-                    if (enemy.MorphItemIndex == HexParser.NULL_OFFSET_16_BIT)
+                    listBoxEnemyElementResistances.EndUpdate();
+                    EnableOrDisableGroupBox(groupBoxEnemyElementResistances, false, false);
+                    statusesControlEnemyImmunities.SetStatuses(enemy.StatusImmunities);
+
+                    //page 2
+                    listBoxEnemyAttacks.BeginUpdate();
+                    listBoxEnemyAttacks.Items.Clear();
+                    for (int i = 0; i < 16; ++i)
                     {
-                        comboBoxEnemyMorphItem.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        if (enemy.MorphItemIndex >= DataParser.MATERIA_START && !DataManager.PS3TweaksEnabled)
+                        if (enemy.AttackIDs[i] == HexParser.NULL_OFFSET_16_BIT)
                         {
-                            var result = MessageBox.Show("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
-                                "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            if (result == DialogResult.Yes)
+                            listBoxEnemyAttacks.Items.Add("(none)");
+                        }
+                        else if (SelectedScene != null)
+                        {
+                            listBoxEnemyAttacks.Items.Add(SelectedScene.GetAttackName(enemy.AttackIDs[i]));
+                        }
+                    }
+                    listBoxEnemyAttacks.EndUpdate();
+                    EnableOrDisableGroupBox(groupBoxEnemyAttacks, false, false);
+                    numericEnemyBackDamageMultiplier.Value = enemy.BackAttackMultiplier;
+
+                    //kernel data
+                    if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+                    {
+                        listBoxEnemyItemDropRates.BeginUpdate();
+                        listBoxEnemyItemDropRates.Items.Clear();
+                        foreach (var item in enemy.ItemDropRates)
+                        {
+                            if (item == null)
                             {
-                                DataManager.PS3TweaksEnabled = true;
-                                LoadKernelData();
-                                comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
+                                listBoxEnemyItemDropRates.Items.Add("(none)");
                             }
                             else
                             {
-                                comboBoxEnemyMorphItem.SelectedIndex = 0;
-                                enemy.MorphItemIndex = HexParser.NULL_OFFSET_16_BIT;
-                                SetUnsaved(true);
+                                listBoxEnemyItemDropRates.Items.Add(GetItemDropText(item));
                             }
+                        }
+                        listBoxEnemyItemDropRates.EndUpdate();
+                        EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, false);
+                        if (enemy.MorphItemIndex == HexParser.NULL_OFFSET_16_BIT)
+                        {
+                            comboBoxEnemyMorphItem.SelectedIndex = 0;
                         }
                         else
                         {
-                            comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
+                            if (enemy.MorphItemIndex >= DataParser.MATERIA_START && !DataManager.PS3TweaksEnabled)
+                            {
+                                var result = MessageBox.Show("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
+                                    "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (result == DialogResult.Yes)
+                                {
+                                    DataManager.PS3TweaksEnabled = true;
+                                    LoadKernelData();
+                                    comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
+                                }
+                                else
+                                {
+                                    comboBoxEnemyMorphItem.SelectedIndex = 0;
+                                    enemy.MorphItemIndex = HexParser.NULL_OFFSET_16_BIT;
+                                    SetUnsaved(true);
+                                }
+                            }
+                            else
+                            {
+                                comboBoxEnemyMorphItem.SelectedIndex = enemy.MorphItemIndex + 1;
+                            }
                         }
                     }
-                }
 
-                //model ID
-                if (DataManager.BattleLgpPathExists)
-                {
-                    comboBoxEnemyModelID.SelectedIndex = enemy.ModelID;
-                }
-                else
-                {
-                    comboBoxEnemyModelID.Text = enemy.ModelID.ToString("X4");
-                }
+                    //model ID
+                    if (DataManager.BattleLgpPathExists)
+                    {
+                        comboBoxEnemyModelID.SelectedIndex = enemy.ModelID;
+                    }
+                    else
+                    {
+                        comboBoxEnemyModelID.Text = enemy.ModelID.ToString("X4");
+                    }
 
-                //A.I. scripts
-                scriptControlEnemyAI.AIContainer = enemy;
-                UpdateScripts(enemy, listBoxEnemyScripts);
+                    //A.I. scripts
+                    scriptControlEnemyAI.AIContainer = enemy;
+                    UpdateScripts(enemy, listBoxEnemyScripts);
+                }
+                catch
+                {
+                    MessageBox.Show("This enemy data appears corrupt.", "Corrupt Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             if (clearLoadingWhenDone) { loading = false; }
         }

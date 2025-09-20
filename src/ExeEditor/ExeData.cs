@@ -843,6 +843,7 @@ namespace FF7Scarlet.ExeEditor
 
             if (File.Exists(path))
             {
+                IsUnedited = false;
                 try
                 {
                     using (var stream = new FileStream(path, FileMode.Open, FileAccess.Write))

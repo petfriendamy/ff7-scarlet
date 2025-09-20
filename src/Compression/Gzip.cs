@@ -68,7 +68,7 @@ namespace FF7Scarlet.Compression
             }
         }
 
-        public static Scene[] GetSceneList(string path, ref byte[] sceneLookupTable)
+        public static Scene[] GetSceneList(string path, ref byte[] sceneLookupTable, bool isJPoriginal)
         {
             //based on code from SegaChief; thanks!
             var fileData = File.ReadAllBytes(path);
@@ -140,7 +140,7 @@ namespace FF7Scarlet.Compression
                         outputStream.Write(uncompressedData, 0, decompressedSize);
                     }
                 }
-                sceneList[i] = new Scene(ref uncompressedData);
+                sceneList[i] = new Scene(ref uncompressedData, isJPoriginal);
             }
             return sceneList;
         }

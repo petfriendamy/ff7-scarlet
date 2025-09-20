@@ -2357,6 +2357,8 @@ namespace FF7Scarlet.ExeEditor
                 "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
+
+                //sync limit data
                 if (limitNeedsSync && SelectedLimit != null)
                 {
                     attackFormControlLimit.SyncAttackData(SelectedLimit);
@@ -2364,7 +2366,7 @@ namespace FF7Scarlet.ExeEditor
 
                 try
                 {
-                    string backupPath = editor.FilePath + ".bak";
+                    string backupPath = DataManager.GetBackupPath(editor.FilePath);
                     if (editor.IsUnedited && !File.Exists(backupPath)) //ask to make a backup
                     {
                         var result = MessageBox.Show("Make a backup of the EXE before saving?", "Make backup?",
@@ -2372,8 +2374,14 @@ namespace FF7Scarlet.ExeEditor
                         if (result == DialogResult.Cancel) { return; }
                         else if (result == DialogResult.Yes)
                         {
-                            File.Copy(editor.FilePath, backupPath);
-                            DataManager.SetFilePath(FileClass.VanillaExe, backupPath);
+                            DataManager.CreateBackupFile(editor.FilePath);
+
+                            //set vanilla EXE to the newly created backup
+                            if (!DataManager.VanillaExePathExists || DataManager.VanillaExePath == editor.FilePath)
+                            {
+                                DataManager.SetFilePath(FileClass.VanillaExe, backupPath);
+                                DataManager.UpdateSettingsFilePath(FileClass.VanillaExe);
+                            }
                         }
                     }
                     editor.WriteEXE();

@@ -87,9 +87,9 @@ namespace FF7Scarlet.Shared
             startupForm = form;
         }
 
-        public static void SetFilePath(FileClass fileClass, string path, bool suppressRelativeCheck = false)
+        public static void SetFilePath(FileClass fileClass, string path, bool suppressRelativeCheck = false, bool isJPoriginal = false)
         {
-            if (ValidateFile(fileClass, path, suppressRelativeCheck))
+            if (ValidateFile(fileClass, path, isJPoriginal))
             {
                 if (fileClass != FileClass.VanillaExe && fileClass != FileClass.BattleLgp && !suppressRelativeCheck)
                 {
@@ -206,7 +206,7 @@ namespace FF7Scarlet.Shared
                                 ValidateFile(FileClass.Kernel2, kernelDir + @"\kernel2.bin");
                             }
                         }
-                        if (battleDir != null &&fileClass != FileClass.Scene)
+                        if (battleDir != null && fileClass != FileClass.Scene)
                         {
                             ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
                         }
@@ -219,7 +219,7 @@ namespace FF7Scarlet.Shared
             }
         }
 
-        private static bool ValidateFile(FileClass fileClass, string path, bool suppressRelativeCheck = false)
+        private static bool ValidateFile(FileClass fileClass, string path, bool isJPoriginal = false)
         {
             try
             {
@@ -267,7 +267,7 @@ namespace FF7Scarlet.Shared
                         case FileClass.Scene:
                             try
                             {
-                                LoadSceneBin(path);
+                                LoadSceneBin(path, isJPoriginal);
                                 return true;
                             }
                             catch { return false; }
@@ -516,9 +516,9 @@ namespace FF7Scarlet.Shared
             }
         }
 
-        private static void LoadSceneBin(string path)
+        private static void LoadSceneBin(string path, bool isJPoriginal)
         {
-            sceneList = Gzip.GetSceneList(path, ref sceneLookupTable);
+            sceneList = Gzip.GetSceneList(path, ref sceneLookupTable, isJPoriginal);
             ScenePath = path;
         }
 
@@ -530,6 +530,68 @@ namespace FF7Scarlet.Shared
             if (!LookupTableIsCorrect())
             {
                 SyncLookupTable();
+            }
+        }
+
+        public static void UpdateSettingsFilePath(FileClass fileClass)
+        {
+            var config = ConfigurationManager.OpenMappedExeConfiguration(ConfigFile,
+                        ConfigurationUserLevel.None);
+            var settings = config.AppSettings.Settings;
+
+            if (settings == null)
+            {
+                throw new FileLoadException("Config file could not be loaded.");
+            }
+
+            switch (fileClass)
+            {
+                case FileClass.VanillaExe:
+                    if (VanillaExePathExists)
+                    {
+                        UpdateSetting(ref settings, ExeData.VANILLA_CONFIG_KEY, VanillaExePath);
+                    }
+                    break;
+                case FileClass.BattleLgp:
+                    if (BattleLgpPathExists)
+                    {
+                        UpdateSetting(ref settings, BattleLgp.CONFIG_KEY, BattleLgpPath);
+                    }
+                    break;
+            }
+            config.Save();
+        }
+
+        private static void UpdateSetting(ref KeyValueConfigurationCollection settings, string key, string? value)
+        {
+            if (settings[key] == null)
+            {
+                settings.Add(key, value);
+            }
+            else
+            {
+                settings[key].Value = value;
+            }
+        }
+
+        public static string GetBackupPath(string path)
+        {
+            string ext = Path.GetExtension(path);
+            return path.Substring(0, path.LastIndexOf('.')) + $"-bak{ext}";
+        }
+
+        public static void CreateBackupFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                int i = 1;
+                var backup = GetBackupPath(path);
+                while (File.Exists(backup))
+                {
+                    i++;
+                    backup = path.Substring(0, path.LastIndexOf('-')) + $"-bak{i}.bin";
+                }
+                File.Copy(path, backup);
             }
         }
 
