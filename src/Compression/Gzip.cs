@@ -1,5 +1,6 @@
 ﻿using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
+using FF7Scarlet.Shared;
 using Shojy.FF7.Elena;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,7 @@ namespace FF7Scarlet.Compression
             }
         }
 
-        public static Scene[] GetSceneList(string path, ref byte[] sceneLookupTable)
+        public static Scene[] GetSceneList(string path, ref byte[] sceneLookupTable, bool isJPoriginal)
         {
             //based on code from SegaChief; thanks!
             var fileData = File.ReadAllBytes(path);
@@ -86,7 +87,7 @@ namespace FF7Scarlet.Compression
             }
 
             //get headers for each of the scene files
-            while (currOffset < fileData.Length)
+            while (currScene < Scene.SCENE_COUNT)
             {
                 sceneLookupTable[currBlock] = (byte)currScene;
                 j = 0;
@@ -139,7 +140,7 @@ namespace FF7Scarlet.Compression
                         outputStream.Write(uncompressedData, 0, decompressedSize);
                     }
                 }
-                sceneList[i] = new Scene(ref uncompressedData);
+                sceneList[i] = new Scene(ref uncompressedData, isJPoriginal);
             }
             return sceneList;
         }

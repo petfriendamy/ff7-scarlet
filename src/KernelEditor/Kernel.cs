@@ -20,9 +20,11 @@ namespace FF7Scarlet.KernelEditor
     {
         public const int SECTION_COUNT = 27, KERNEL1_END = 9, DESCRIPTIONS_END = 17, NAMES_END = 25,
             ATTACK_COUNT = 128, MATERIA_COUNT = 96, SUMMON_OFFSET = 0x38, ESKILL_OFFSET = 0x48,
-            CHARACTER_COUNT = 11, PLAYABLE_CHARACTER_COUNT = 9, AI_BLOCK_COUNT = 12, AI_BLOCK_SIZE = 2024,
+            SPECIAL_SUMMON_OFFSET = 0x60, LIMIT_OFFSET = 0x62, CHARACTER_COUNT = 11,
+            PLAYABLE_CHARACTER_COUNT = 9, AI_BLOCK_COUNT = 12, AI_BLOCK_SIZE = 2024,
             INVENTORY_SIZE = 320, MATERIA_INVENTORY_SIZE = 200, STOLEN_MATERIA_COUNT = 48,
-            INDEXED_SPELL_COUNT = 56;
+            INDEXED_SPELL_COUNT = 56,
+            ESKILL_COUNT = SPECIAL_SUMMON_OFFSET - ESKILL_OFFSET;
         public bool[] AttackIsLimit = new bool[ATTACK_COUNT];
 
         public CharacterAI[] CharacterAI { get; } = new CharacterAI[AI_BLOCK_COUNT];
@@ -99,6 +101,7 @@ namespace FF7Scarlet.KernelEditor
                 {
                     headers[i] = reader.ReadUInt16();
                 }
+                ms.Seek(headers[0], SeekOrigin.Begin);
 
                 //read each line
                 var bytes = new List<byte>();
@@ -179,10 +182,57 @@ namespace FF7Scarlet.KernelEditor
 
         public void ReloadBattleText()
         {
+            bool wasAlreadyLoaded = loaded;
             loaded = false;
             ParseTextSectionStrings(KernelSection.BattleText,
                 GetSectionRawData(KernelSection.BattleText, true));
-            loaded = true;
+            loaded = wasAlreadyLoaded;
+        }
+
+        public void CopyAllText(Kernel other)
+        {
+            int i;
+
+            //data sections
+            for (i = 0; i < KERNEL1_END; ++i)
+            {
+                var s = (KernelSection)i;
+                int count = GetCount(s);
+                if (s == KernelSection.AttackData)
+                {
+                    count = MagicNames.Strings.Length;
+                }
+                var otherNames = other.GetAssociatedNames(s, true);
+                var otherDescs = other.GetAssociatedDescriptions(s);
+
+                for (int j = 0; j < count; ++j)
+                {
+                    UpdateName(s, otherNames[j], j);
+                    if (j < GetCount(s))
+                    {
+                        UpdateDescription(s, otherDescs[j], j);
+                    }
+                }
+            }
+
+            //key items
+            for (i = 0; i < GetCount(KernelSection.KeyItemNames); ++i)
+            {
+                KeyItemNames.Strings[i] = other.KeyItemNames.Strings[i];
+                KeyItemDescriptions.Strings[i] = other.KeyItemDescriptions.Strings[i];
+            }
+
+            //battle text
+            for (i = 0; i < BattleTextFF.Length; ++i)
+            {
+                BattleTextFF[i] = other.BattleTextFF[i];
+            }
+
+            //summon attack names
+            for (i = 0; i < SummonAttackNames.Strings.Length; ++i)
+            {
+                SummonAttackNames.Strings[i] = other.SummonAttackNames.Strings[i];
+            }
         }
 
         public byte[] GetLookupTable()
@@ -229,10 +279,21 @@ namespace FF7Scarlet.KernelEditor
             else if (section == KernelSection.BattleText) { return BattleText.Strings.Length; }
             else
             {
-                var temp = GetAssociatedNames(section);
-                if (temp != null)
+                if ((int)section > KERNEL1_END)
                 {
-                    return GetAssociatedNames(section).Length;
+                    var temp = GetTextSection(section);
+                    if (temp != null)
+                    {
+                        return temp.Strings.Length;
+                    }
+                }
+                else
+                {
+                    var temp = GetAssociatedNames(section);
+                    if (temp != null)
+                    {
+                        return temp.Length;
+                    }
                 }
             }
             return 0;
@@ -265,6 +326,13 @@ namespace FF7Scarlet.KernelEditor
             return $"Unknown ({id:X4})";
         }
 
+        public string[] GetEnemySkillNames()
+        {
+            var names = new string[ESKILL_COUNT];
+            Array.Copy(MagicNames.Strings, ESKILL_OFFSET, names, 0, ESKILL_COUNT);
+            return names;
+        }
+
         public string GetLimitName(int index)
         {
             if (index >= 0 && index < ExeData.NUM_LIMITS)
@@ -279,6 +347,15 @@ namespace FF7Scarlet.KernelEditor
             var names = new string[ExeData.NUM_LIMITS];
             Array.Copy(MagicNames.Strings, ATTACK_COUNT, names, 0, ExeData.NUM_LIMITS);
             return names;
+        }
+
+        public string GetLimitDescription(int index)
+        {
+            if (index >= 0 && index < ExeData.NUM_LIMITS)
+            {
+                return MagicDescriptions.Strings[index + ATTACK_COUNT];
+            }
+            return string.Empty;
         }
 
         public Item? GetItemByID(int id)
@@ -505,7 +582,7 @@ namespace FF7Scarlet.KernelEditor
         public void UpdateName(KernelSection section, string? name, int pos)
         {
             var ds = GetDataSection(section);
-            var names = GetAssociatedNames(ds);
+            var names = GetAssociatedNames(ds, true);
             string n = string.Empty;
             if (name != null) { n = name; }
             if (names.Length > 0)
@@ -514,7 +591,10 @@ namespace FF7Scarlet.KernelEditor
                 switch (ds) //update associated item name (if it exists)
                 {
                     case KernelSection.AttackData:
-                        AttackData.Attacks[pos].Name = n;
+                        if (pos < ATTACK_COUNT)
+                        {
+                            AttackData.Attacks[pos].Name = n;
+                        }
                         break;
 
                     case KernelSection.ItemData:
@@ -552,7 +632,10 @@ namespace FF7Scarlet.KernelEditor
                 switch (ds) //update associated item description (if it exists)
                 {
                     case KernelSection.AttackData:
-                        AttackData.Attacks[pos].Description = d;
+                        if (pos < ATTACK_COUNT)
+                        {
+                            AttackData.Attacks[pos].Description = d;
+                        }
                         break;
 
                     case KernelSection.ItemData:
@@ -583,11 +666,11 @@ namespace FF7Scarlet.KernelEditor
             var ts = GetTextSection(section);
             if (ts != null)
             {
-                if ((int)section < DESCRIPTIONS_END)
+                if ((int)section <= DESCRIPTIONS_END)
                 {
                     UpdateDescription(section, value, pos);
                 }
-                else if ((int)section < NAMES_END)
+                else if ((int)section <= NAMES_END)
                 {
                     UpdateName(section, value, pos);
                 }
@@ -1168,6 +1251,9 @@ namespace FF7Scarlet.KernelEditor
                             bytes.AddRange(text[i].GetBytes());
                         }
                     }
+
+                    //must be a multiple of 2
+                    if (bytes.Count % 2 != 0) { bytes.Add(0xFF); }
 
                     //copy the newly converted strings to the KernelData array
                     KernelData[section] = bytes.ToArray();

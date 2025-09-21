@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using FF7Scarlet.Shared;
+using System.ComponentModel;
 
 namespace FF7Scarlet.SceneEditor.Controls
 {

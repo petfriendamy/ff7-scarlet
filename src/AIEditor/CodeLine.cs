@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using FF7Scarlet.Shared;
+using System.Globalization;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -258,7 +259,7 @@ namespace FF7Scarlet.AIEditor
                         if (Parameter != null) { length += Parameter.Length; }
                         break;
                     case ParameterTypes.Debug:
-                        if (Parameter != null) { length += Parameter.Length + 2; }
+                        if (Parameter != null) { length += Parameter.Length + 1; }
                         break;
                 }
             }

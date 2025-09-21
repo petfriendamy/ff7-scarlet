@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KernelForm));
             tabControlMain = new TabControl();
             tabPageCommandData = new TabPage();
@@ -48,49 +48,8 @@
             labelCommandName = new Label();
             listBoxCommands = new ListBox();
             tabPageAttackData = new TabPage();
-            tabControlAttacks = new TabControl();
-            tabPageAttacks1 = new TabPage();
-            labelAttackId = new Label();
-            checkBoxAttackIsLimit = new CheckBox();
-            labelAttackHurtActionIndex = new Label();
-            comboBoxAttackHurtActionIndex = new ComboBox();
-            labelAttackAttackEffectID = new Label();
-            elementsControlAttack = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
-            comboBoxAttackAttackEffectID = new ComboBox();
-            labelAttackImpactEffectID = new Label();
-            comboBoxAttackImpactEffectID = new ComboBox();
-            textBoxAttackDescription = new TextBox();
-            damageCalculationControlAttack = new FF7Scarlet.KernelEditor.Controls.DamageCalculationControl();
-            labelAttackCamMovementIDMulti = new Label();
-            labelAttackName = new Label();
-            comboBoxAttackCamMovementIDMulti = new ComboBox();
-            textBoxAttackName = new TextBox();
-            labelAttackCamMovementIDSingle = new Label();
-            labelAttackDescription = new Label();
-            comboBoxAttackCamMovementIDSingle = new ComboBox();
-            labelSummonText = new Label();
-            numericAttackAttackPercent = new NumericUpDown();
-            textBoxSummonText = new TextBox();
-            labelAttackAttackPercent = new Label();
-            labelAttackMPCost = new Label();
-            numericAttackMPCost = new NumericUpDown();
-            tabPageAttacks2 = new TabPage();
-            specialAttackFlagsControlAttack = new FF7Scarlet.Shared.SpecialAttackFlagsControl();
-            numericAttackStatusChangeChance = new NumericUpDown();
-            comboBoxAttackConditionSubMenu = new ComboBox();
-            labelAttackStatusChangeChance = new Label();
-            comboBoxAttackStatusChange = new ComboBox();
-            labelAttackConditionSubMenu = new Label();
-            labelAttackStatusChange = new Label();
-            statusesControlAttack = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
-            tabPageAttacks3 = new TabPage();
-            buttonMagicOrder = new Button();
-            comboBoxMagicType = new ComboBox();
-            labelMagicType = new Label();
-            targetDataControlAttack = new FF7Scarlet.KernelEditor.Controls.TargetDataControl();
-            groupBoxAttackSpecialActions = new GroupBox();
-            buttonAttackSyncAll = new Button();
-            checkBoxAttackSyncWithSceneBin = new CheckBox();
+            attackFormControl = new FF7Scarlet.Shared.Controls.AttackFormControl();
+            comboBoxAttackType = new ComboBox();
             listBoxAttacks = new ListBox();
             tabPageCharacters = new TabPage();
             tabControlCharacters = new TabControl();
@@ -147,6 +106,9 @@
             listBoxCharacterLimits = new ListBox();
             tabPageCharacterGrowth = new TabPage();
             groupBoxSelectedCurve = new GroupBox();
+            labelCurveMax = new Label();
+            labelCurveMin = new Label();
+            labelCurveLevel = new Label();
             labelInaccurateCurve = new Label();
             buttonEditBaseCurve = new Button();
             groupBoxCurveBonuses = new GroupBox();
@@ -353,17 +315,11 @@
             attackCopyToolStripMenuItem = new ToolStripMenuItem();
             attackPasteToolStripMenuItem = new ToolStripMenuItem();
             attackDeleteToolStripMenuItem = new ToolStripMenuItem();
+            toolStripDropDownTools = new ToolStripDropDownButton();
+            useKernel2StringsToolStripMenuItem = new ToolStripMenuItem();
             tabControlMain.SuspendLayout();
             tabPageCommandData.SuspendLayout();
             tabPageAttackData.SuspendLayout();
-            tabControlAttacks.SuspendLayout();
-            tabPageAttacks1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackAttackPercent).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).BeginInit();
-            tabPageAttacks2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).BeginInit();
-            tabPageAttacks3.SuspendLayout();
-            groupBoxAttackSpecialActions.SuspendLayout();
             tabPageCharacters.SuspendLayout();
             tabControlCharacters.SuspendLayout();
             tabPageInitCharacterStats.SuspendLayout();
@@ -508,7 +464,6 @@
             // 
             // comboBoxCommandInitialCursorAction
             // 
-            comboBoxCommandInitialCursorAction.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             comboBoxCommandInitialCursorAction.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxCommandInitialCursorAction.FormattingEnabled = true;
             comboBoxCommandInitialCursorAction.Location = new Point(191, 163);
@@ -519,7 +474,6 @@
             // 
             // labelCommandInitialCursorAction
             // 
-            labelCommandInitialCursorAction.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelCommandInitialCursorAction.AutoSize = true;
             labelCommandInitialCursorAction.Location = new Point(191, 145);
             labelCommandInitialCursorAction.Name = "labelCommandInitialCursorAction";
@@ -529,7 +483,6 @@
             // 
             // targetDataControlCommand
             // 
-            targetDataControlCommand.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             targetDataControlCommand.Location = new Point(190, 192);
             targetDataControlCommand.Name = "targetDataControlCommand";
             targetDataControlCommand.Size = new Size(330, 125);
@@ -626,7 +579,8 @@
             // 
             // tabPageAttackData
             // 
-            tabPageAttackData.Controls.Add(tabControlAttacks);
+            tabPageAttackData.Controls.Add(attackFormControl);
+            tabPageAttackData.Controls.Add(comboBoxAttackType);
             tabPageAttackData.Controls.Add(listBoxAttacks);
             tabPageAttackData.Location = new Point(4, 24);
             tabPageAttackData.Margin = new Padding(4, 3, 4, 3);
@@ -637,477 +591,40 @@
             tabPageAttackData.Text = "Attacks";
             tabPageAttackData.UseVisualStyleBackColor = true;
             // 
-            // tabControlAttacks
-            // 
-            tabControlAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tabControlAttacks.Controls.Add(tabPageAttacks1);
-            tabControlAttacks.Controls.Add(tabPageAttacks2);
-            tabControlAttacks.Controls.Add(tabPageAttacks3);
-            tabControlAttacks.Location = new Point(191, 13);
-            tabControlAttacks.Name = "tabControlAttacks";
-            tabControlAttacks.SelectedIndex = 0;
-            tabControlAttacks.Size = new Size(577, 469);
-            tabControlAttacks.TabIndex = 37;
-            // 
-            // tabPageAttacks1
-            // 
-            tabPageAttacks1.Controls.Add(labelAttackId);
-            tabPageAttacks1.Controls.Add(checkBoxAttackIsLimit);
-            tabPageAttacks1.Controls.Add(labelAttackHurtActionIndex);
-            tabPageAttacks1.Controls.Add(comboBoxAttackHurtActionIndex);
-            tabPageAttacks1.Controls.Add(labelAttackAttackEffectID);
-            tabPageAttacks1.Controls.Add(elementsControlAttack);
-            tabPageAttacks1.Controls.Add(comboBoxAttackAttackEffectID);
-            tabPageAttacks1.Controls.Add(labelAttackImpactEffectID);
-            tabPageAttacks1.Controls.Add(comboBoxAttackImpactEffectID);
-            tabPageAttacks1.Controls.Add(textBoxAttackDescription);
-            tabPageAttacks1.Controls.Add(damageCalculationControlAttack);
-            tabPageAttacks1.Controls.Add(labelAttackCamMovementIDMulti);
-            tabPageAttacks1.Controls.Add(labelAttackName);
-            tabPageAttacks1.Controls.Add(comboBoxAttackCamMovementIDMulti);
-            tabPageAttacks1.Controls.Add(textBoxAttackName);
-            tabPageAttacks1.Controls.Add(labelAttackCamMovementIDSingle);
-            tabPageAttacks1.Controls.Add(labelAttackDescription);
-            tabPageAttacks1.Controls.Add(comboBoxAttackCamMovementIDSingle);
-            tabPageAttacks1.Controls.Add(labelSummonText);
-            tabPageAttacks1.Controls.Add(numericAttackAttackPercent);
-            tabPageAttacks1.Controls.Add(textBoxSummonText);
-            tabPageAttacks1.Controls.Add(labelAttackAttackPercent);
-            tabPageAttacks1.Controls.Add(labelAttackMPCost);
-            tabPageAttacks1.Controls.Add(numericAttackMPCost);
-            tabPageAttacks1.Location = new Point(4, 24);
-            tabPageAttacks1.Name = "tabPageAttacks1";
-            tabPageAttacks1.Padding = new Padding(3);
-            tabPageAttacks1.Size = new Size(569, 441);
-            tabPageAttacks1.TabIndex = 0;
-            tabPageAttacks1.Text = "Page 1";
-            tabPageAttacks1.UseVisualStyleBackColor = true;
-            // 
-            // labelAttackId
-            // 
-            labelAttackId.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            labelAttackId.AutoSize = true;
-            labelAttackId.Location = new Point(529, 3);
-            labelAttackId.Name = "labelAttackId";
-            labelAttackId.Size = new Size(34, 15);
-            labelAttackId.TabIndex = 44;
-            labelAttackId.Text = "ID: ??";
-            labelAttackId.TextAlign = ContentAlignment.TopRight;
-            // 
-            // checkBoxAttackIsLimit
-            // 
-            checkBoxAttackIsLimit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            checkBoxAttackIsLimit.AutoSize = true;
-            checkBoxAttackIsLimit.Location = new Point(501, 67);
-            checkBoxAttackIsLimit.Name = "checkBoxAttackIsLimit";
-            checkBoxAttackIsLimit.Size = new Size(61, 19);
-            checkBoxAttackIsLimit.TabIndex = 43;
-            checkBoxAttackIsLimit.Text = "Is limit";
-            checkBoxAttackIsLimit.UseVisualStyleBackColor = true;
-            checkBoxAttackIsLimit.CheckedChanged += checkBoxAttackIsLimit_CheckedChanged;
-            // 
-            // labelAttackHurtActionIndex
-            // 
-            labelAttackHurtActionIndex.AutoSize = true;
-            labelAttackHurtActionIndex.Location = new Point(382, 227);
-            labelAttackHurtActionIndex.Name = "labelAttackHurtActionIndex";
-            labelAttackHurtActionIndex.Size = new Size(102, 15);
-            labelAttackHurtActionIndex.TabIndex = 42;
-            labelAttackHurtActionIndex.Text = "Hurt action index:";
-            // 
-            // comboBoxAttackHurtActionIndex
-            // 
-            comboBoxAttackHurtActionIndex.FormattingEnabled = true;
-            comboBoxAttackHurtActionIndex.Location = new Point(382, 245);
-            comboBoxAttackHurtActionIndex.MaxLength = 2;
-            comboBoxAttackHurtActionIndex.Name = "comboBoxAttackHurtActionIndex";
-            comboBoxAttackHurtActionIndex.Size = new Size(180, 23);
-            comboBoxAttackHurtActionIndex.TabIndex = 41;
-            comboBoxAttackHurtActionIndex.TextChanged += comboBoxAttackHurtActionIndex_TextChanged;
-            // 
-            // labelAttackAttackEffectID
-            // 
-            labelAttackAttackEffectID.AutoSize = true;
-            labelAttackAttackEffectID.Location = new Point(216, 91);
-            labelAttackAttackEffectID.Name = "labelAttackAttackEffectID";
-            labelAttackAttackEffectID.Size = new Size(91, 15);
-            labelAttackAttackEffectID.TabIndex = 40;
-            labelAttackAttackEffectID.Text = "Attack effect ID:";
-            // 
-            // elementsControlAttack
-            // 
-            elementsControlAttack.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            elementsControlAttack.Location = new Point(6, 138);
-            elementsControlAttack.MinimumSize = new Size(370, 130);
-            elementsControlAttack.Name = "elementsControlAttack";
-            elementsControlAttack.Size = new Size(370, 130);
-            elementsControlAttack.TabIndex = 0;
-            elementsControlAttack.ElementsChanged += AttackDataChanged;
-            // 
-            // comboBoxAttackAttackEffectID
-            // 
-            comboBoxAttackAttackEffectID.FormattingEnabled = true;
-            comboBoxAttackAttackEffectID.Location = new Point(216, 109);
-            comboBoxAttackAttackEffectID.MaxLength = 2;
-            comboBoxAttackAttackEffectID.Name = "comboBoxAttackAttackEffectID";
-            comboBoxAttackAttackEffectID.Size = new Size(100, 23);
-            comboBoxAttackAttackEffectID.TabIndex = 39;
-            comboBoxAttackAttackEffectID.TextChanged += comboBoxAttackEffectID_TextChanged;
-            // 
-            // labelAttackImpactEffectID
-            // 
-            labelAttackImpactEffectID.AutoSize = true;
-            labelAttackImpactEffectID.Location = new Point(322, 91);
-            labelAttackImpactEffectID.Name = "labelAttackImpactEffectID";
-            labelAttackImpactEffectID.Size = new Size(94, 15);
-            labelAttackImpactEffectID.TabIndex = 38;
-            labelAttackImpactEffectID.Text = "Impact effect ID:";
-            // 
-            // comboBoxAttackImpactEffectID
-            // 
-            comboBoxAttackImpactEffectID.FormattingEnabled = true;
-            comboBoxAttackImpactEffectID.Location = new Point(322, 109);
-            comboBoxAttackImpactEffectID.MaxLength = 2;
-            comboBoxAttackImpactEffectID.Name = "comboBoxAttackImpactEffectID";
-            comboBoxAttackImpactEffectID.Size = new Size(100, 23);
-            comboBoxAttackImpactEffectID.TabIndex = 37;
-            comboBoxAttackImpactEffectID.TextChanged += comboBoxAttackImpactEffectID_TextChanged;
-            // 
-            // textBoxAttackDescription
-            // 
-            textBoxAttackDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxAttackDescription.Location = new Point(4, 65);
-            textBoxAttackDescription.Margin = new Padding(4, 3, 4, 3);
-            textBoxAttackDescription.Name = "textBoxAttackDescription";
-            textBoxAttackDescription.Size = new Size(490, 23);
-            textBoxAttackDescription.TabIndex = 4;
-            textBoxAttackDescription.TextChanged += textBoxAttackDescription_TextChanged;
-            // 
-            // damageCalculationControlAttack
-            // 
-            damageCalculationControlAttack.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            damageCalculationControlAttack.Location = new Point(6, 274);
-            damageCalculationControlAttack.Name = "damageCalculationControlAttack";
-            damageCalculationControlAttack.Size = new Size(556, 140);
-            damageCalculationControlAttack.TabIndex = 36;
-            damageCalculationControlAttack.DataChanged += AttackDataChanged;
-            // 
-            // labelAttackCamMovementIDMulti
-            // 
-            labelAttackCamMovementIDMulti.AutoSize = true;
-            labelAttackCamMovementIDMulti.Location = new Point(382, 183);
-            labelAttackCamMovementIDMulti.Name = "labelAttackCamMovementIDMulti";
-            labelAttackCamMovementIDMulti.Size = new Size(183, 15);
-            labelAttackCamMovementIDMulti.TabIndex = 35;
-            labelAttackCamMovementIDMulti.Text = "Cam movement ID (multi target):";
-            // 
-            // labelAttackName
-            // 
-            labelAttackName.AutoSize = true;
-            labelAttackName.Location = new Point(4, 3);
-            labelAttackName.Margin = new Padding(4, 0, 4, 0);
-            labelAttackName.Name = "labelAttackName";
-            labelAttackName.Size = new Size(42, 15);
-            labelAttackName.TabIndex = 1;
-            labelAttackName.Text = "Name:";
-            // 
-            // comboBoxAttackCamMovementIDMulti
-            // 
-            comboBoxAttackCamMovementIDMulti.FormattingEnabled = true;
-            comboBoxAttackCamMovementIDMulti.Location = new Point(382, 201);
-            comboBoxAttackCamMovementIDMulti.MaxLength = 4;
-            comboBoxAttackCamMovementIDMulti.Name = "comboBoxAttackCamMovementIDMulti";
-            comboBoxAttackCamMovementIDMulti.Size = new Size(180, 23);
-            comboBoxAttackCamMovementIDMulti.TabIndex = 36;
-            comboBoxAttackCamMovementIDMulti.TextChanged += comboBoxCamMovementIDMulti_TextChanged;
-            // 
-            // textBoxAttackName
-            // 
-            textBoxAttackName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxAttackName.Location = new Point(4, 21);
-            textBoxAttackName.Margin = new Padding(4, 3, 4, 3);
-            textBoxAttackName.Name = "textBoxAttackName";
-            textBoxAttackName.Size = new Size(226, 23);
-            textBoxAttackName.TabIndex = 2;
-            textBoxAttackName.TextChanged += textBoxAttackName_TextChanged;
-            // 
-            // labelAttackCamMovementIDSingle
-            // 
-            labelAttackCamMovementIDSingle.AutoSize = true;
-            labelAttackCamMovementIDSingle.Location = new Point(382, 139);
-            labelAttackCamMovementIDSingle.Name = "labelAttackCamMovementIDSingle";
-            labelAttackCamMovementIDSingle.Size = new Size(186, 15);
-            labelAttackCamMovementIDSingle.TabIndex = 33;
-            labelAttackCamMovementIDSingle.Text = "Cam movement ID (single target):";
-            // 
-            // labelAttackDescription
-            // 
-            labelAttackDescription.AutoSize = true;
-            labelAttackDescription.Location = new Point(4, 47);
-            labelAttackDescription.Margin = new Padding(4, 0, 4, 0);
-            labelAttackDescription.Name = "labelAttackDescription";
-            labelAttackDescription.Size = new Size(70, 15);
-            labelAttackDescription.TabIndex = 3;
-            labelAttackDescription.Text = "Description:";
-            // 
-            // comboBoxAttackCamMovementIDSingle
-            // 
-            comboBoxAttackCamMovementIDSingle.FormattingEnabled = true;
-            comboBoxAttackCamMovementIDSingle.Location = new Point(382, 157);
-            comboBoxAttackCamMovementIDSingle.MaxLength = 4;
-            comboBoxAttackCamMovementIDSingle.Name = "comboBoxAttackCamMovementIDSingle";
-            comboBoxAttackCamMovementIDSingle.Size = new Size(180, 23);
-            comboBoxAttackCamMovementIDSingle.TabIndex = 34;
-            comboBoxAttackCamMovementIDSingle.TextChanged += comboBoxCamMovementIDSingle_TextChanged;
-            // 
-            // labelSummonText
-            // 
-            labelSummonText.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            labelSummonText.AutoSize = true;
-            labelSummonText.Location = new Point(238, 3);
-            labelSummonText.Margin = new Padding(4, 0, 4, 0);
-            labelSummonText.Name = "labelSummonText";
-            labelSummonText.Size = new Size(127, 15);
-            labelSummonText.TabIndex = 5;
-            labelSummonText.Text = "Summon attack name:";
-            // 
-            // numericAttackAttackPercent
-            // 
-            numericAttackAttackPercent.Location = new Point(4, 109);
-            numericAttackAttackPercent.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
-            numericAttackAttackPercent.Name = "numericAttackAttackPercent";
-            numericAttackAttackPercent.Size = new Size(100, 23);
-            numericAttackAttackPercent.TabIndex = 10;
-            numericAttackAttackPercent.ValueChanged += AttackDataChanged;
-            // 
-            // textBoxSummonText
-            // 
-            textBoxSummonText.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBoxSummonText.Enabled = false;
-            textBoxSummonText.Location = new Point(238, 21);
-            textBoxSummonText.Margin = new Padding(4, 3, 4, 3);
-            textBoxSummonText.Name = "textBoxSummonText";
-            textBoxSummonText.Size = new Size(256, 23);
-            textBoxSummonText.TabIndex = 6;
-            textBoxSummonText.TextChanged += textBoxSummonText_TextChanged;
-            // 
-            // labelAttackAttackPercent
-            // 
-            labelAttackAttackPercent.AutoSize = true;
-            labelAttackAttackPercent.Location = new Point(4, 91);
-            labelAttackAttackPercent.Name = "labelAttackAttackPercent";
-            labelAttackAttackPercent.Size = new Size(54, 15);
-            labelAttackAttackPercent.TabIndex = 9;
-            labelAttackAttackPercent.Text = "Attack%:";
-            // 
-            // labelAttackMPCost
-            // 
-            labelAttackMPCost.AutoSize = true;
-            labelAttackMPCost.Location = new Point(110, 91);
-            labelAttackMPCost.Name = "labelAttackMPCost";
-            labelAttackMPCost.Size = new Size(53, 15);
-            labelAttackMPCost.TabIndex = 7;
-            labelAttackMPCost.Text = "MP cost:";
-            // 
-            // numericAttackMPCost
-            // 
-            numericAttackMPCost.Location = new Point(110, 109);
-            numericAttackMPCost.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
-            numericAttackMPCost.Name = "numericAttackMPCost";
-            numericAttackMPCost.Size = new Size(100, 23);
-            numericAttackMPCost.TabIndex = 8;
-            numericAttackMPCost.ValueChanged += AttackDataChanged;
-            // 
-            // tabPageAttacks2
-            // 
-            tabPageAttacks2.Controls.Add(specialAttackFlagsControlAttack);
-            tabPageAttacks2.Controls.Add(numericAttackStatusChangeChance);
-            tabPageAttacks2.Controls.Add(comboBoxAttackConditionSubMenu);
-            tabPageAttacks2.Controls.Add(labelAttackStatusChangeChance);
-            tabPageAttacks2.Controls.Add(comboBoxAttackStatusChange);
-            tabPageAttacks2.Controls.Add(labelAttackConditionSubMenu);
-            tabPageAttacks2.Controls.Add(labelAttackStatusChange);
-            tabPageAttacks2.Controls.Add(statusesControlAttack);
-            tabPageAttacks2.Location = new Point(4, 24);
-            tabPageAttacks2.Name = "tabPageAttacks2";
-            tabPageAttacks2.Padding = new Padding(3);
-            tabPageAttacks2.Size = new Size(569, 441);
-            tabPageAttacks2.TabIndex = 1;
-            tabPageAttacks2.Text = "Page 2";
-            tabPageAttacks2.UseVisualStyleBackColor = true;
-            // 
-            // specialAttackFlagsControlAttack
-            // 
-            specialAttackFlagsControlAttack.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            specialAttackFlagsControlAttack.Location = new Point(6, 6);
-            specialAttackFlagsControlAttack.Name = "specialAttackFlagsControlAttack";
-            specialAttackFlagsControlAttack.Size = new Size(558, 100);
-            specialAttackFlagsControlAttack.TabIndex = 43;
-            specialAttackFlagsControlAttack.FlagsChanged += AttackDataChanged;
-            // 
-            // numericAttackStatusChangeChance
-            // 
-            numericAttackStatusChangeChance.Location = new Point(149, 333);
-            numericAttackStatusChangeChance.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
-            numericAttackStatusChangeChance.Name = "numericAttackStatusChangeChance";
-            numericAttackStatusChangeChance.Size = new Size(108, 23);
-            numericAttackStatusChangeChance.TabIndex = 5;
-            numericAttackStatusChangeChance.ValueChanged += numericAttackStatusChangeChance_ValueChanged;
-            // 
-            // comboBoxAttackConditionSubMenu
-            // 
-            comboBoxAttackConditionSubMenu.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxAttackConditionSubMenu.FormattingEnabled = true;
-            comboBoxAttackConditionSubMenu.Location = new Point(6, 377);
-            comboBoxAttackConditionSubMenu.Name = "comboBoxAttackConditionSubMenu";
-            comboBoxAttackConditionSubMenu.Size = new Size(251, 23);
-            comboBoxAttackConditionSubMenu.TabIndex = 44;
-            comboBoxAttackConditionSubMenu.SelectedIndexChanged += AttackDataChanged;
-            // 
-            // labelAttackStatusChangeChance
-            // 
-            labelAttackStatusChangeChance.AutoSize = true;
-            labelAttackStatusChangeChance.Location = new Point(149, 315);
-            labelAttackStatusChangeChance.Name = "labelAttackStatusChangeChance";
-            labelAttackStatusChangeChance.Size = new Size(108, 15);
-            labelAttackStatusChangeChance.TabIndex = 4;
-            labelAttackStatusChangeChance.Text = "Chance (out of 63):";
-            // 
-            // comboBoxAttackStatusChange
-            // 
-            comboBoxAttackStatusChange.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxAttackStatusChange.FormattingEnabled = true;
-            comboBoxAttackStatusChange.Location = new Point(6, 333);
-            comboBoxAttackStatusChange.Name = "comboBoxAttackStatusChange";
-            comboBoxAttackStatusChange.Size = new Size(137, 23);
-            comboBoxAttackStatusChange.TabIndex = 3;
-            comboBoxAttackStatusChange.SelectedIndexChanged += comboBoxStatusChange_SelectedIndexChanged;
-            // 
-            // labelAttackConditionSubMenu
-            // 
-            labelAttackConditionSubMenu.AutoSize = true;
-            labelAttackConditionSubMenu.Location = new Point(6, 359);
-            labelAttackConditionSubMenu.Name = "labelAttackConditionSubMenu";
-            labelAttackConditionSubMenu.Size = new Size(121, 15);
-            labelAttackConditionSubMenu.TabIndex = 43;
-            labelAttackConditionSubMenu.Text = "Condition sub-menu:";
-            // 
-            // labelAttackStatusChange
-            // 
-            labelAttackStatusChange.AutoSize = true;
-            labelAttackStatusChange.Location = new Point(6, 315);
-            labelAttackStatusChange.Name = "labelAttackStatusChange";
-            labelAttackStatusChange.Size = new Size(84, 15);
-            labelAttackStatusChange.TabIndex = 2;
-            labelAttackStatusChange.Text = "Status change:";
-            // 
-            // statusesControlAttack
-            // 
-            statusesControlAttack.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            statusesControlAttack.Location = new Point(6, 112);
-            statusesControlAttack.MinimumSize = new Size(380, 200);
-            statusesControlAttack.Name = "statusesControlAttack";
-            statusesControlAttack.Size = new Size(557, 200);
-            statusesControlAttack.TabIndex = 1;
-            statusesControlAttack.StatusesChanged += AttackDataChanged;
-            // 
-            // tabPageAttacks3
-            // 
-            tabPageAttacks3.Controls.Add(buttonMagicOrder);
-            tabPageAttacks3.Controls.Add(comboBoxMagicType);
-            tabPageAttacks3.Controls.Add(labelMagicType);
-            tabPageAttacks3.Controls.Add(targetDataControlAttack);
-            tabPageAttacks3.Controls.Add(groupBoxAttackSpecialActions);
-            tabPageAttacks3.Location = new Point(4, 24);
-            tabPageAttacks3.Name = "tabPageAttacks3";
-            tabPageAttacks3.Size = new Size(569, 441);
-            tabPageAttacks3.TabIndex = 2;
-            tabPageAttacks3.Text = "Page 3";
-            tabPageAttacks3.UseVisualStyleBackColor = true;
-            // 
-            // buttonMagicOrder
-            // 
-            buttonMagicOrder.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            buttonMagicOrder.Location = new Point(342, 53);
-            buttonMagicOrder.Name = "buttonMagicOrder";
-            buttonMagicOrder.Size = new Size(220, 23);
-            buttonMagicOrder.TabIndex = 48;
-            buttonMagicOrder.Text = "Set magic order...";
-            buttonMagicOrder.UseVisualStyleBackColor = true;
-            buttonMagicOrder.Click += buttonSpellPosition_Click;
-            // 
-            // comboBoxMagicType
-            // 
-            comboBoxMagicType.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            comboBoxMagicType.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxMagicType.FormattingEnabled = true;
-            comboBoxMagicType.Location = new Point(342, 24);
-            comboBoxMagicType.Name = "comboBoxMagicType";
-            comboBoxMagicType.Size = new Size(220, 23);
-            comboBoxMagicType.TabIndex = 47;
-            comboBoxMagicType.SelectedIndexChanged += comboBoxMagicType_SelectedIndexChanged;
-            // 
-            // labelMagicType
-            // 
-            labelMagicType.AutoSize = true;
-            labelMagicType.Location = new Point(342, 6);
-            labelMagicType.Name = "labelMagicType";
-            labelMagicType.Size = new Size(69, 15);
-            labelMagicType.TabIndex = 46;
-            labelMagicType.Text = "Magic type:";
-            // 
-            // targetDataControlAttack
-            // 
-            targetDataControlAttack.Location = new Point(6, 6);
-            targetDataControlAttack.Name = "targetDataControlAttack";
-            targetDataControlAttack.Size = new Size(330, 125);
-            targetDataControlAttack.TabIndex = 0;
-            targetDataControlAttack.FlagsChanged += AttackDataChanged;
-            // 
-            // groupBoxAttackSpecialActions
-            // 
-            groupBoxAttackSpecialActions.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBoxAttackSpecialActions.Controls.Add(buttonAttackSyncAll);
-            groupBoxAttackSpecialActions.Controls.Add(checkBoxAttackSyncWithSceneBin);
-            groupBoxAttackSpecialActions.Enabled = false;
-            groupBoxAttackSpecialActions.Location = new Point(6, 137);
-            groupBoxAttackSpecialActions.Name = "groupBoxAttackSpecialActions";
-            groupBoxAttackSpecialActions.Size = new Size(330, 50);
-            groupBoxAttackSpecialActions.TabIndex = 45;
-            groupBoxAttackSpecialActions.TabStop = false;
-            groupBoxAttackSpecialActions.Text = "Special actions";
-            groupBoxAttackSpecialActions.Visible = false;
-            // 
-            // buttonAttackSyncAll
-            // 
-            buttonAttackSyncAll.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            buttonAttackSyncAll.Location = new Point(183, 18);
-            buttonAttackSyncAll.Name = "buttonAttackSyncAll";
-            buttonAttackSyncAll.Size = new Size(141, 23);
-            buttonAttackSyncAll.TabIndex = 1;
-            buttonAttackSyncAll.Text = "Sync all";
-            buttonAttackSyncAll.UseVisualStyleBackColor = true;
-            buttonAttackSyncAll.Click += buttonAttackSyncAll_Click;
-            // 
-            // checkBoxAttackSyncWithSceneBin
-            // 
-            checkBoxAttackSyncWithSceneBin.AutoSize = true;
-            checkBoxAttackSyncWithSceneBin.Location = new Point(6, 21);
-            checkBoxAttackSyncWithSceneBin.Name = "checkBoxAttackSyncWithSceneBin";
-            checkBoxAttackSyncWithSceneBin.Size = new Size(171, 19);
-            checkBoxAttackSyncWithSceneBin.TabIndex = 0;
-            checkBoxAttackSyncWithSceneBin.Text = "Keep synced with scene.bin";
-            checkBoxAttackSyncWithSceneBin.UseVisualStyleBackColor = true;
-            checkBoxAttackSyncWithSceneBin.CheckedChanged += checkBoxAttackSyncWithSceneBin_CheckedChanged;
+            // attackFormControl
+            // 
+            attackFormControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            attackFormControl.Location = new Point(190, 13);
+            attackFormControl.Name = "attackFormControl";
+            attackFormControl.Size = new Size(577, 468);
+            attackFormControl.TabIndex = 39;
+            attackFormControl.DataChanged += AttackDataChanged;
+            attackFormControl.NameChanged += textBoxAttackName_TextChanged;
+            attackFormControl.DescriptionChanged += textBoxAttackDescription_TextChanged;
+            attackFormControl.SummonTextChanged += textBoxSummonText_TextChanged;
+            attackFormControl.ChangeIsLimit += checkBoxAttackIsLimit_CheckedChanged;
+            attackFormControl.ChangeMagicType += comboBoxMagicType_SelectedIndexChanged;
+            attackFormControl.ChangeMagicOrder += buttonSpellPosition_Click;
+            // 
+            // comboBoxAttackType
+            // 
+            comboBoxAttackType.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxAttackType.FormattingEnabled = true;
+            comboBoxAttackType.Items.AddRange(new object[] { "Magic", "Summons", "Enemy skills", "Limit breaks" });
+            comboBoxAttackType.Location = new Point(9, 13);
+            comboBoxAttackType.Name = "comboBoxAttackType";
+            comboBoxAttackType.Size = new Size(174, 23);
+            comboBoxAttackType.TabIndex = 38;
+            comboBoxAttackType.SelectedIndexChanged += comboBoxAttackType_SelectedIndexChanged;
             // 
             // listBoxAttacks
             // 
             listBoxAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listBoxAttacks.FormattingEnabled = true;
-            listBoxAttacks.Location = new Point(9, 13);
+            listBoxAttacks.Location = new Point(9, 42);
             listBoxAttacks.Margin = new Padding(4, 3, 4, 3);
             listBoxAttacks.Name = "listBoxAttacks";
-            listBoxAttacks.Size = new Size(174, 469);
+            listBoxAttacks.Size = new Size(174, 439);
             listBoxAttacks.TabIndex = 0;
             listBoxAttacks.SelectedIndexChanged += listBoxAttacks_SelectedIndexChanged;
             // 
@@ -1686,6 +1203,9 @@
             // groupBoxSelectedCurve
             // 
             groupBoxSelectedCurve.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxSelectedCurve.Controls.Add(labelCurveMax);
+            groupBoxSelectedCurve.Controls.Add(labelCurveMin);
+            groupBoxSelectedCurve.Controls.Add(labelCurveLevel);
             groupBoxSelectedCurve.Controls.Add(labelInaccurateCurve);
             groupBoxSelectedCurve.Controls.Add(buttonEditBaseCurve);
             groupBoxSelectedCurve.Controls.Add(groupBoxCurveBonuses);
@@ -1698,6 +1218,36 @@
             groupBoxSelectedCurve.TabIndex = 3;
             groupBoxSelectedCurve.TabStop = false;
             groupBoxSelectedCurve.Text = "Selected curve";
+            // 
+            // labelCurveMax
+            // 
+            labelCurveMax.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelCurveMax.AutoSize = true;
+            labelCurveMax.Location = new Point(512, 52);
+            labelCurveMax.Name = "labelCurveMax";
+            labelCurveMax.Size = new Size(46, 15);
+            labelCurveMax.TabIndex = 9;
+            labelCurveMax.Text = "Max: ??";
+            // 
+            // labelCurveMin
+            // 
+            labelCurveMin.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelCurveMin.AutoSize = true;
+            labelCurveMin.Location = new Point(512, 37);
+            labelCurveMin.Name = "labelCurveMin";
+            labelCurveMin.Size = new Size(44, 15);
+            labelCurveMin.TabIndex = 8;
+            labelCurveMin.Text = "Min: ??";
+            // 
+            // labelCurveLevel
+            // 
+            labelCurveLevel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelCurveLevel.AutoSize = true;
+            labelCurveLevel.Location = new Point(512, 22);
+            labelCurveLevel.Name = "labelCurveLevel";
+            labelCurveLevel.Size = new Size(50, 15);
+            labelCurveLevel.TabIndex = 7;
+            labelCurveLevel.Text = "Level: ??";
             // 
             // labelInaccurateCurve
             // 
@@ -1882,33 +1432,34 @@
             // 
             chartMainCurve.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             chartMainCurve.BackColor = SystemColors.Control;
-            chartArea2.AxisX.Interval = 10D;
-            chartArea2.AxisX.IntervalOffset = 9D;
-            chartArea2.AxisX.IsStartedFromZero = false;
-            chartArea2.AxisX.Maximum = 99D;
-            chartArea2.AxisX.Minimum = 1D;
-            chartArea2.Name = "ChartArea1";
-            chartMainCurve.ChartAreas.Add(chartArea2);
+            chartArea1.AxisX.Interval = 10D;
+            chartArea1.AxisX.IntervalOffset = 9D;
+            chartArea1.AxisX.IsStartedFromZero = false;
+            chartArea1.AxisX.Maximum = 99D;
+            chartArea1.AxisX.Minimum = 1D;
+            chartArea1.Name = "ChartArea1";
+            chartMainCurve.ChartAreas.Add(chartArea1);
             chartMainCurve.Location = new Point(6, 22);
             chartMainCurve.Name = "chartMainCurve";
             chartMainCurve.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Color = Color.SteelBlue;
-            series3.Name = "Min";
-            series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series3.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series4.Color = Color.Firebrick;
-            series4.Name = "Max";
-            series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series4.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            chartMainCurve.Series.Add(series3);
-            chartMainCurve.Series.Add(series4);
-            chartMainCurve.Size = new Size(592, 262);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = Color.SteelBlue;
+            series1.Name = "Min";
+            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Color = Color.Firebrick;
+            series2.Name = "Max";
+            series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            chartMainCurve.Series.Add(series1);
+            chartMainCurve.Series.Add(series2);
+            chartMainCurve.Size = new Size(500, 262);
             chartMainCurve.TabIndex = 0;
             chartMainCurve.Text = "Main curve";
+            chartMainCurve.MouseMove += chartMainCurve_MouseMove;
             // 
             // listBoxStatCurves
             // 
@@ -2676,7 +2227,7 @@
             materiaSlotSelectorWeapon.Name = "materiaSlotSelectorWeapon";
             materiaSlotSelectorWeapon.Size = new Size(211, 35);
             materiaSlotSelectorWeapon.TabIndex = 3;
-            materiaSlotSelectorWeapon.DataChanged += WeaponDataChanged;
+            materiaSlotSelectorWeapon.DataChanged += materiaSlotSelectorWeapon_DataChanged;
             materiaSlotSelectorWeapon.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
             // 
             // labelWeaponMateriaGrowth
@@ -3077,7 +2628,7 @@
             materiaSlotSelectorArmor.Name = "materiaSlotSelectorArmor";
             materiaSlotSelectorArmor.Size = new Size(211, 35);
             materiaSlotSelectorArmor.TabIndex = 4;
-            materiaSlotSelectorArmor.DataChanged += ArmorDataChanged;
+            materiaSlotSelectorArmor.DataChanged += materiaSlotSelectorArmor_DataChanged;
             materiaSlotSelectorArmor.MultiLinkEnabled += materiaSlotSelector_MultiLinkEnabled;
             // 
             // labelArmorMateriaGrowth
@@ -3827,7 +3378,7 @@
             // toolStripMain
             // 
             toolStripMain.GripStyle = ToolStripGripStyle.Hidden;
-            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownFile, toolStripDropDownEdit });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownFile, toolStripDropDownEdit, toolStripDropDownTools });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Padding = new Padding(5, 0, 1, 0);
@@ -3911,6 +3462,24 @@
             attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
             // 
+            // toolStripDropDownTools
+            // 
+            toolStripDropDownTools.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownTools.DropDownItems.AddRange(new ToolStripItem[] { useKernel2StringsToolStripMenuItem });
+            toolStripDropDownTools.Image = (Image)resources.GetObject("toolStripDropDownTools.Image");
+            toolStripDropDownTools.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownTools.Name = "toolStripDropDownTools";
+            toolStripDropDownTools.ShowDropDownArrow = false;
+            toolStripDropDownTools.Size = new Size(38, 22);
+            toolStripDropDownTools.Text = "Tools";
+            // 
+            // useKernel2StringsToolStripMenuItem
+            // 
+            useKernel2StringsToolStripMenuItem.Name = "useKernel2StringsToolStripMenuItem";
+            useKernel2StringsToolStripMenuItem.Size = new Size(172, 22);
+            useKernel2StringsToolStripMenuItem.Text = "Use kernel2 strings";
+            useKernel2StringsToolStripMenuItem.Click += useKernel2StringsToolStripMenuItem_Click;
+            // 
             // KernelForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3930,18 +3499,6 @@
             tabPageCommandData.ResumeLayout(false);
             tabPageCommandData.PerformLayout();
             tabPageAttackData.ResumeLayout(false);
-            tabControlAttacks.ResumeLayout(false);
-            tabPageAttacks1.ResumeLayout(false);
-            tabPageAttacks1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackAttackPercent).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).EndInit();
-            tabPageAttacks2.ResumeLayout(false);
-            tabPageAttacks2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).EndInit();
-            tabPageAttacks3.ResumeLayout(false);
-            tabPageAttacks3.PerformLayout();
-            groupBoxAttackSpecialActions.ResumeLayout(false);
-            groupBoxAttackSpecialActions.PerformLayout();
             tabPageCharacters.ResumeLayout(false);
             tabControlCharacters.ResumeLayout(false);
             tabPageInitCharacterStats.ResumeLayout(false);
@@ -4074,12 +3631,6 @@
         private ListBox listBoxMateria;
         private ListBox listBoxCommands;
         private ListBox listBoxAttacks;
-        private TextBox textBoxAttackName;
-        private Label labelAttackName;
-        private TextBox textBoxAttackDescription;
-        private Label labelAttackDescription;
-        private TextBox textBoxSummonText;
-        private Label labelSummonText;
         private ListBox listBoxKeyItems;
         private TextBox textBoxKeyItemDescription;
         private Label labelKeyItemDescription;
@@ -4197,36 +3748,6 @@
         private Label labelCommandInitialCursorAction;
         private Controls.TargetDataControl targetDataControlCommand;
         private GroupBox groupBoxWeaponSoundIDs;
-        private Label labelAttackMPCost;
-        private NumericUpDown numericAttackMPCost;
-        private NumericUpDown numericAttackAttackPercent;
-        private Label labelAttackAttackPercent;
-        private Label labelAttackCamMovementIDMulti;
-        private ComboBox comboBoxAttackCamMovementIDMulti;
-        private Label labelAttackCamMovementIDSingle;
-        private ComboBox comboBoxAttackCamMovementIDSingle;
-        private Controls.DamageCalculationControl damageCalculationControlAttack;
-        private TabControl tabControlAttacks;
-        private TabPage tabPageAttacks1;
-        private TabPage tabPageAttacks2;
-        private Controls.StatusesControl statusesControlAttack;
-        private Controls.ElementsControl elementsControlAttack;
-        private Label labelAttackStatusChange;
-        private ComboBox comboBoxAttackStatusChange;
-        private NumericUpDown numericAttackStatusChangeChance;
-        private Label labelAttackStatusChangeChance;
-        private Label labelAttackImpactEffectID;
-        private ComboBox comboBoxAttackImpactEffectID;
-        private Label labelAttackAttackEffectID;
-        private ComboBox comboBoxAttackAttackEffectID;
-        private Label labelAttackHurtActionIndex;
-        private ComboBox comboBoxAttackHurtActionIndex;
-        private ComboBox comboBoxAttackConditionSubMenu;
-        private Label labelAttackConditionSubMenu;
-        private Shared.SpecialAttackFlagsControl specialAttackFlagsControlAttack;
-        private GroupBox groupBoxAttackSpecialActions;
-        private CheckBox checkBoxAttackSyncWithSceneBin;
-        private Button buttonAttackSyncAll;
         private TabPage tabPageItems3;
         private Shared.SpecialAttackFlagsControl specialAttackFlagsControlItem;
         private TabPage tabPageInitCharacterStats;
@@ -4308,8 +3829,6 @@
         private TabPage tabPageBattleText;
         private TabPage tabPageBattleRNGTable;
         private Controls.RNGTableControl rngTableControl;
-        private TabPage tabPageAttacks3;
-        private Controls.TargetDataControl targetDataControlAttack;
         private ToolStrip toolStripMain;
         private ToolStripDropDownButton toolStripDropDownFile;
         private ToolStripDropDownButton toolStripDropDownEdit;
@@ -4327,7 +3846,6 @@
         private ComboBox comboBoxParty1;
         private Label labelStartingGil;
         private NumericUpDown numericStartingGil;
-        private CheckBox checkBoxAttackIsLimit;
         private Button buttonMateriaAttributes;
         private TabPage tabPageLimitBreaks;
         private TextBox textBoxLimitDescription;
@@ -4358,11 +3876,7 @@
         private Button buttonEditBaseCurve;
         private Label labelCurveExplanation;
         private Label labelInaccurateCurve;
-        private Label labelMagicType;
-        private ComboBox comboBoxMagicType;
-        private Button buttonMagicOrder;
         private Label labelCommandID;
-        private Label labelAttackId;
         private Label labelItemID;
         private Label labelWeaponID;
         private Label labelArmorID;
@@ -4374,5 +3888,12 @@
         private Controls.LimitRequirementControl limitRequirementControl4;
         private Controls.LimitRequirementControl limitRequirementControl3;
         private Controls.LimitRequirementControl limitRequirementControl2;
+        private Label labelCurveMax;
+        private Label labelCurveMin;
+        private Label labelCurveLevel;
+        private ComboBox comboBoxAttackType;
+        private ToolStripDropDownButton toolStripDropDownTools;
+        private ToolStripMenuItem useKernel2StringsToolStripMenuItem;
+        private Shared.Controls.AttackFormControl attackFormControl;
     }
 }

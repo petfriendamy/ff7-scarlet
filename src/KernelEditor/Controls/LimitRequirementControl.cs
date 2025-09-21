@@ -1,4 +1,5 @@
-﻿using Shojy.FF7.Elena.Characters;
+﻿using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Characters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -175,7 +176,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         {
             if (!loading && chara != null)
             {
-                ushort kills = HexParser.NULL_OFFSET_16_BIT;
+                var kills = (ushort)numericKillRequirement.Value;
                 switch (level)
                 {
                     case 2:
@@ -193,7 +194,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         {
             if (!loading && chara != null)
             {
-                ushort uses = HexParser.NULL_OFFSET_16_BIT;
+                var uses = (ushort)numericUses.Value;
                 switch (level)
                 {
                     case 1:
@@ -214,7 +215,7 @@ namespace FF7Scarlet.KernelEditor.Controls
         {
             if (!loading && chara != null)
             {
-                uint divisor = HexParser.NULL_OFFSET_32_BIT;
+                var divisor = (uint)numericHPDivisor.Value;
                 switch (level)
                 {
                     case 1:

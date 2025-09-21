@@ -2,9 +2,8 @@
 using System.Globalization;
 using System.Text;
 using FF7Scarlet.AIEditor;
-using FF7Scarlet.Shared;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.Shared
 {
     public enum TextCommands : byte
     {
@@ -157,7 +156,7 @@ namespace FF7Scarlet
 
         public bool IsEmpty()
         {
-            return (ToString() == string.Empty);
+            return ToString() == string.Empty;
         }
 
         public override string ToString()
@@ -241,9 +240,9 @@ namespace FF7Scarlet
                     Array.Copy(BitConverter.GetBytes(ToInt()), threeByteInt, 3);
                     return threeByteInt;
                 case ParameterTypes.Debug:
-                    var temp = ToString();
-                    if (temp == string.Empty) { return Array.Empty<byte>(); }
-                    return Encoding.ASCII.GetBytes(temp);
+                    var str = ToString();
+                    if (str == string.Empty) { return Array.Empty<byte>(); }
+                    return Encoding.ASCII.GetBytes(str);
                 default:
                     var copy = new byte[data.Length];
                     Array.Copy(data, copy, data.Length);

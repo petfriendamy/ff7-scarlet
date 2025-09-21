@@ -1,4 +1,5 @@
-﻿using Shojy.FF7.Elena.Materias;
+﻿using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Materias;
 using System.Collections.ObjectModel;
 
 namespace FF7Scarlet.KernelEditor
@@ -110,80 +111,6 @@ namespace FF7Scarlet.KernelEditor
         }.AsReadOnly();
 
         public const int ATTRIBUTE_COUNT = 6, MAX_AP = HexParser.NULL_OFFSET_16_BIT * 100;
-        /*public MateriaType MateriaType { get; private set; }
-
-
-        public byte BaseType
-        {
-            get
-            {
-                return HexParser.GetLowerNybble(MateriaTypeByte);
-            }
-        }
-
-        public byte SubType
-        {
-            get
-            {
-                return HexParser.GetUpperNybble(MateriaTypeByte);
-            }
-        }
-
-        public bool IsMaster
-        {
-            get
-            {
-                var type = (MateriaByteValues)MateriaTypeByte;
-                return (type == MateriaByteValues.MasterMagic || type == MateriaByteValues.MasterSummon
-                    || type == MateriaByteValues.MasterCommand);
-            }
-        }
-
-        public bool HasEditableAttributes
-        {
-            get
-            {
-                if (IsMaster) { return false; }
-                else if (MateriaType == MateriaType.Command)
-                {
-                    if (BaseType != 2 && BaseType != 6) { return false; }
-                }
-                else if (MateriaType == MateriaType.Independent)
-                {
-                    if (MateriaTypeByte == 0 || SubType == 3) { return false; }
-                }
-                return true;
-            }
-        }
-
-        public MateriaExt(byte[] data)
-        {
-            int i;
-
-            using (var ms = new MemoryStream(data))
-            using (var reader = new BinaryReader(ms))
-            {
-                Level2AP = reader.ReadUInt16() * 100;
-                Level3AP = reader.ReadUInt16() * 100;
-                Level4AP = reader.ReadUInt16() * 100;
-                Level5AP = reader.ReadUInt16() * 100;
-                EquipEffect = reader.ReadByte();
-
-                var temp = reader.ReadBytes(3);
-                var convert = new byte[4];
-                Array.Copy(temp, convert, 3);
-                Status = (Statuses)BitConverter.ToInt32(convert, 0);
-
-                Element = (MateriaElements)reader.ReadByte();
-                MateriaTypeByte = reader.ReadByte();
-                MateriaType = GetMateriaType(MateriaTypeByte);
-
-                for (i = 0; i < ATTRIBUTE_COUNT; ++i)
-                {
-                    Attributes[i] = reader.ReadByte();
-                }
-            }
-        }*/
 
         public static byte GetBaseType(Materia mat)
         {

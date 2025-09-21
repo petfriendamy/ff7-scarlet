@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using FF7Scarlet.Shared;
+using System.Globalization;
 using System.Text;
 
 namespace FF7Scarlet.AIEditor
@@ -294,6 +295,15 @@ namespace FF7Scarlet.AIEditor
                 }
             }
             headersAreCorrect = false;
+        }
+
+        public void InsertCodeAtPosition(int pos, IEnumerable<Code> code)
+        {
+            var c = code.ToArray();
+            for (int i = 0; i < c.Length; ++i)
+            {
+                InsertCodeAtPosition(pos + i, c[i]);
+            }
         }
 
         public void ReplaceCodeAtPosition(int pos, Code newCode)

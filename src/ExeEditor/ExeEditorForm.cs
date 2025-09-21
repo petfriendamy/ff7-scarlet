@@ -21,6 +21,7 @@ namespace FF7Scarlet.ExeEditor
         private ExeData editor;
         private List<StatusChangeType> statusChangeTypes = new();
         private TextBox[] nameTextBoxes;
+        private NumericUpDown[] materiaNumerics;
         private ComboBox[] ShopItemList;
         private bool
             loading = true,
@@ -86,6 +87,14 @@ namespace FF7Scarlet.ExeEditor
                 textBoxCaitSith, textBoxVincent, textBoxCid, textBoxChocobo
             ];
 
+            //get materia equip effect numerics as array
+            materiaNumerics =
+            [
+                numericMateriaEffectStrength, numericMateriaEffectVitality, numericMateriaEffectMagic,
+                numericMateriaEffectSpirit, numericMateriaEffectDexterity, numericMateriaEffectLuck,
+                numericMateriaEffectHP, numericMateriaEffectMP
+            ];
+
             //get shop comboboxes as array
             ShopItemList =
             [
@@ -94,8 +103,17 @@ namespace FF7Scarlet.ExeEditor
             ];
 
             //set max values
+            attackFormControlLimit.SetIsKernel(false);
+            attackFormControlLimit.NameEnabled = false;
+            attackFormControlLimit.DescriptionEnabled = false;
             numericItemPrice.Maximum = uint.MaxValue;
             numericMateriaPrice.Maximum = uint.MaxValue;
+
+            foreach (var n in materiaNumerics)
+            {
+                n.Minimum = -99;
+                n.Maximum = 99;
+            }
 
             textBoxMainMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
             textBoxItemMenuText.MaxLength = ExeData.ITEM_MENU_TEXT_LENGTH - 1;
@@ -131,33 +149,12 @@ namespace FF7Scarlet.ExeEditor
             listBoxLimits.EndUpdate();
 
             //populate comboboxes
-            SuspendOrResumeComboBoxes(tabControlMain, false);
+            SuspendOrResumeComboAndListBoxes(tabControlMain, false);
 
             //character flags
             foreach (var f in Enum.GetNames<CharacterFlags>())
             {
                 comboBoxCharacterFlags.Items.Add(f);
-            }
-
-            //limit status change
-            comboBoxLimitStatusChange.Items.Add("None");
-            foreach (var s in Enum.GetValues<StatusChangeType>())
-            {
-                if (s != StatusChangeType.None)
-                {
-                    comboBoxLimitStatusChange.Items.Add(s);
-                    statusChangeTypes.Add(s);
-                }
-            }
-
-            //limit condition submenu
-            comboBoxLimitConditionSubMenu.Items.Add("None");
-            foreach (var c in Enum.GetValues<AttackConditions>())
-            {
-                if (c != AttackConditions.None)
-                {
-                    comboBoxLimitConditionSubMenu.Items.Add(c);
-                }
             }
 
             //add shop data
@@ -171,6 +168,13 @@ namespace FF7Scarlet.ExeEditor
                 {
                     comboBoxShopIndex.Items.Add($"[Shop ID {i}]");
                 }
+            }
+
+            //add world map data
+            for (i = 0; i < ExeData.NUM_WALKABILITY_MODELS; ++i)
+            {
+                var name = StringParser.AddSpaces(Enum.GetName((WorldMapModels)i));
+                listBoxModels.Items.Add(name);
             }
 
             //English-only stuff
@@ -289,7 +293,7 @@ namespace FF7Scarlet.ExeEditor
             }
 
             //resume combo boxes
-            SuspendOrResumeComboBoxes(tabControlMain, true);
+            SuspendOrResumeComboAndListBoxes(tabControlMain, true);
 
             UpdateFormData();
             loading = false;
@@ -348,52 +352,26 @@ namespace FF7Scarlet.ExeEditor
             int i;
 
             //suspend layouts
-            SuspendOrResumeExeTextListBoxes(false);
-            listBoxItemPrices.SuspendLayout();
-            listBoxMateriaPrices.SuspendLayout();
-            comboBoxShopType.SuspendLayout();
-            comboBoxShopDialogueSet.SuspendLayout();
-            listBoxChocoboNames.SuspendLayout();
-            listBoxSortItemName.SuspendLayout();
-            listBoxAudioVolume.SuspendLayout();
+            SuspendOrResumeComboAndListBoxes(tabControlMain, false);
 
             //clear items
             int shopType = comboBoxShopType.SelectedIndex;
             if (shopType < 0) { shopType = 0; }
             comboBoxShopType.Items.Clear();
-            foreach (TabPage p in tabControlMenus.TabPages)
-            {
-                foreach (Control c in p.Controls)
-                {
-                    if (c is GroupBox)
-                    {
-                        foreach (Control c2 in c.Controls)
-                        {
-                            if (c2 is ListBox)
-                            {
-                                var lb = c2 as ListBox;
-                                if (lb != null) { lb.Items.Clear(); }
-                            }
-                        }
-                    }
-                    else if (c is ListBox)
-                    {
-                        var lb = c as ListBox;
-                        if (lb != null) { lb.Items.Clear(); }
-                    }
-                }
-            }
-            listBoxStatusEffects.Items.Clear();
+            ClearListBoxes(tabControlMenus);
+            ClearListBoxes(tabControlOtherText);
+            listBoxAffectedMateria.Items.Clear();
             listBoxItemPrices.Items.Clear();
             listBoxMateriaPrices.Items.Clear();
-            listBoxShopNames.Items.Clear();
-            listBoxShopText.Items.Clear();
             listBoxSortItemName.Items.Clear();
-            listBoxChocoboNames.Items.Clear();
             listBoxAudioVolume.Items.Clear();
+            listBoxAudioPan.Items.Clear();
 
             //set AP price multiplier
             numericMateriaAPPriceMultiplier.Value = editor.APPriceMultiplier;
+
+            //set materia data
+            UpdateMateriaData((int)numericMateriaEffectCurrent.Value);
 
             //set character names
             for (i = 0; i < 10; ++i)
@@ -601,18 +579,12 @@ namespace FF7Scarlet.ExeEditor
             SetLimitText();
 
             //resume layouts
-            SuspendOrResumeExeTextListBoxes(true);
-            listBoxItemPrices.ResumeLayout();
-            listBoxMateriaPrices.ResumeLayout();
-            comboBoxShopType.ResumeLayout();
-            comboBoxShopDialogueSet.ResumeLayout();
-            listBoxSortItemName.ResumeLayout();
-            listBoxChocoboNames.ResumeLayout();
+            SuspendOrResumeComboAndListBoxes(tabControlMain, true);
             loading = false;
         }
 
-        //suspend comboboxes so we can add stuff to them (or resume when done)
-        private void SuspendOrResumeComboBoxes(Control control, bool resume)
+        //suspend combo and listboxes so we can add stuff to them (or resume when done)
+        private void SuspendOrResumeComboAndListBoxes(Control control, bool resume)
         {
             if (control is TabControl)
             {
@@ -621,7 +593,7 @@ namespace FF7Scarlet.ExeEditor
                 {
                     for (int i = 0; i < tc.TabCount; ++i)
                     {
-                        SuspendOrResumeComboBoxes(tc.TabPages[i], resume);
+                        SuspendOrResumeComboAndListBoxes(tc.TabPages[i], resume);
                     }
                 }
             }
@@ -629,7 +601,7 @@ namespace FF7Scarlet.ExeEditor
             {
                 for (int i = 0; i < control.Controls.Count; ++i)
                 {
-                    SuspendOrResumeComboBoxes(control.Controls[i], resume);
+                    SuspendOrResumeComboAndListBoxes(control.Controls[i], resume);
                 }
             }
             else if (control is ComboBox)
@@ -638,13 +610,20 @@ namespace FF7Scarlet.ExeEditor
                 if (resume) { cb?.ResumeLayout(); }
                 else { cb?.SuspendLayout(); }
             }
+            else if (control is ListBox)
+            {
+                var lb = control as ListBox;
+                if (resume) { lb?.ResumeLayout(); }
+                else { lb?.SuspendLayout(); }
+            }
         }
 
-        private void SuspendOrResumeExeTextListBoxes(bool resume)
+        //clear listboxes
+        private void ClearListBoxes(TabControl tabs)
         {
-            foreach (TabPage t in tabControlMenus.TabPages)
+            foreach (TabPage p in tabs.TabPages)
             {
-                foreach (Control c in t.Controls)
+                foreach (Control c in p.Controls)
                 {
                     if (c is GroupBox)
                     {
@@ -652,61 +631,68 @@ namespace FF7Scarlet.ExeEditor
                         {
                             if (c2 is ListBox)
                             {
-                                if (resume) { c2.ResumeLayout(); }
-                                else { c2.SuspendLayout(); }
+                                var lb = c2 as ListBox;
+                                if (lb != null) { lb.Items.Clear(); }
                             }
                         }
                     }
                     else if (c is ListBox)
                     {
-                        if (resume) { c.ResumeLayout(); }
-                        else { c.SuspendLayout(); }
-                    }
-                }
-            }
-            foreach (TabPage t in tabControlOtherText.TabPages)
-            {
-                foreach (Control c in t.Controls)
-                {
-                    if (c is GroupBox)
-                    {
-                        foreach (Control c2 in c.Controls)
-                        {
-                            if (c2 is ListBox)
-                            {
-                                if (resume) { c2.ResumeLayout(); }
-                                else { c2.SuspendLayout(); }
-                            }
-                        }
-                    }
-                    else if (c is ListBox)
-                    {
-                        if (resume) { c.ResumeLayout(); }
-                        else { c.SuspendLayout(); }
+                        var lb = c as ListBox;
+                        if (lb != null) { lb.Items.Clear(); }
                     }
                 }
             }
         }
-        private void SyncLimitData(Attack limit)
-        {
-            limit.AccuracyRate = (byte)numericLimitAttackPercent.Value;
-            limit.MPCost = (ushort)numericLimitMPCost.Value;
-            limit.TargetFlags = targetDataControlLimit.GetTargetData();
-            limit.DamageCalculationID = damageCalculationControlLimit.ActualValue;
-            limit.AttackStrength = damageCalculationControlLimit.AttackPower;
-            if (comboBoxLimitConditionSubMenu.SelectedIndex == 0)
-            {
-                limit.ConditionSubmenu = ConditionSubmenu.None;
-            }
-            else
-            {
-                limit.ConditionSubmenu = (ConditionSubmenu)(comboBoxLimitConditionSubMenu.SelectedIndex - 1);
-            }
-            limit.Statuses = statusesControlLimit.GetStatuses();
-            limit.Elements = elementsControlLimit.GetElements();
-            limit.SpecialAttackFlags = specialAttackFlagsControlLimit.GetFlags();
 
-            limitNeedsSync = false;
+        //update materia data
+        private void UpdateMateriaData(int i)
+        {
+            if (i >= 0 && i < MateriaEquipEffect.COUNT)
+            {
+                bool wasAlreadyLoading = loading;
+                loading = true;
+                numericMateriaEffectStrength.Value = editor.MateriaEquipEffects[i].StatChanges[0];
+                numericMateriaEffectVitality.Value = editor.MateriaEquipEffects[i].StatChanges[1];
+                numericMateriaEffectMagic.Value = editor.MateriaEquipEffects[i].StatChanges[2];
+                numericMateriaEffectSpirit.Value = editor.MateriaEquipEffects[i].StatChanges[3];
+                numericMateriaEffectDexterity.Value = editor.MateriaEquipEffects[i].StatChanges[4];
+                numericMateriaEffectLuck.Value = editor.MateriaEquipEffects[i].StatChanges[5];
+                numericMateriaEffectHP.Value = editor.MateriaEquipEffects[i].StatChanges[6];
+                numericMateriaEffectMP.Value = editor.MateriaEquipEffects[i].StatChanges[7];
+
+                if (DataManager.Kernel != null)
+                {
+                    listBoxAffectedMateria.Enabled = true;
+                    listBoxAffectedMateria.SuspendLayout();
+                    listBoxAffectedMateria.Items.Clear();
+                    foreach (var m in DataManager.Kernel.MateriaData.Materias)
+                    {
+                        if (m.EquipEffect == i)
+                        {
+                            listBoxAffectedMateria.Items.Add(m.Name);
+                        }
+                    }
+                    listBoxAffectedMateria.ResumeLayout();
+                }
+                loading = wasAlreadyLoading;
+            }
+        }
+
+        //get the index of the recently changed materia equip effect numeric
+        private int GetEquipEffectIndex(NumericUpDown? numeric)
+        {
+            if (numeric != null)
+            {
+                for (int i = 0; i < materiaNumerics.Length; ++i)
+                {
+                    if (materiaNumerics[i] == numeric)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return -1;
         }
 
         //update a character's name
@@ -1150,7 +1136,7 @@ namespace FF7Scarlet.ExeEditor
                 if (slot != -1)
                 {
                     var mat = DataParser.CopyMateria(SelectedCharacter.WeaponMateria[slot]);
-                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData))
+                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData, DataManager.Kernel.GetEnemySkillNames()))
                     {
                         if (edit.ShowDialog() == DialogResult.OK)
                         {
@@ -1171,7 +1157,7 @@ namespace FF7Scarlet.ExeEditor
                 if (slot != -1)
                 {
                     var mat = DataParser.CopyMateria(SelectedCharacter.ArmorMateria[slot]);
-                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData))
+                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData, DataManager.Kernel.GetEnemySkillNames()))
                     {
                         if (edit.ShowDialog() == DialogResult.OK)
                         {
@@ -1227,7 +1213,7 @@ namespace FF7Scarlet.ExeEditor
                     var limit = editor.Limits[prevLimit];
                     if (limit != null)
                     {
-                        SyncLimitData(limit);
+                        attackFormControlLimit.SyncAttackData(limit);
                     }
                 }
 
@@ -1235,47 +1221,16 @@ namespace FF7Scarlet.ExeEditor
 
                 if (i >= 0 && i < ExeData.NUM_LIMITS)
                 {
-                    var attack = editor.Limits[i];
-                    if (attack != null)
+                    var limit = editor.Limits[i];
+                    if (limit != null)
                     {
-                        tabControlLimits.Enabled = true;
-
-                        //page 1
-                        labelLimitID.Text = $"ID: {i:X2}";
-                        numericLimitAttackPercent.Value = attack.AccuracyRate;
-                        numericLimitMPCost.Value = attack.MPCost;
-                        comboBoxLimitAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
-                        comboBoxLimitImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
-                        elementsControlLimit.SetElements(attack.Elements);
-                        comboBoxLimitCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
-                        comboBoxLimitCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
-                        comboBoxLimitHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
-                        damageCalculationControlLimit.AttackPower = attack.AttackStrength;
-                        damageCalculationControlLimit.ActualValue = attack.DamageCalculationID;
-
-                        //page 2
-                        specialAttackFlagsControlLimit.SetFlags(attack.SpecialAttackFlags);
-                        statusesControlLimit.SetStatuses(attack.Statuses);
-                        if (attack.ConditionSubmenu == ConditionSubmenu.None)
+                        string name = limit.Name, desc = limit.Description;
+                        if (DataManager.Kernel != null)
                         {
-                            comboBoxLimitConditionSubMenu.SelectedIndex = 0;
+                            name = DataManager.Kernel.GetLimitName(i);
+                            desc = DataManager.Kernel.GetLimitDescription(i);
                         }
-                        else
-                        {
-                            comboBoxLimitConditionSubMenu.SelectedIndex = (int)attack.ConditionSubmenu + 1;
-                        }
-                        numericLimitStatusChangeChance.Value = attack.StatusChange.Amount;
-                        if (attack.StatusChange.Type == StatusChangeType.None)
-                        {
-                            comboBoxLimitStatusChange.SelectedIndex = 0;
-                        }
-                        else
-                        {
-                            comboBoxLimitStatusChange.SelectedIndex = statusChangeTypes.IndexOf(attack.StatusChange.Type) + 1;
-                        }
-
-                        //page 3
-                        targetDataControlLimit.SetTargetData(attack.TargetFlags);
+                        attackFormControlLimit.UpdateForm(limit, i, name, desc);
                     }
                 }
                 prevLimit = i;
@@ -1293,121 +1248,26 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        private void comboBoxLimitAttackEffectID_SelectedIndexChanged(object sender, EventArgs e)
+        #endregion
+
+        #region Materia Data
+
+        private void numericMateriaEffectCurrent_ValueChanged(object sender, EventArgs e)
         {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitAttackEffectID.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.AttackEffectID = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
+            UpdateMateriaData((int)numericMateriaEffectCurrent.Value);
         }
 
-        private void comboBoxLimitImpactEffectID_SelectedIndexChanged(object sender, EventArgs e)
+        private void numericMateriaEffect_ValueChanged(object sender, EventArgs e)
         {
-            if (!loading && SelectedLimit != null)
+            if (!loading)
             {
-                var text = comboBoxLimitImpactEffectID.Text;
-                if (text.Length == 2)
+                int curr = (int)numericMateriaEffectCurrent.Value,
+                    stat = GetEquipEffectIndex(sender as NumericUpDown);
+                if (stat >= 0)
                 {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.ImpactEffectID = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
+                    editor.MateriaEquipEffects[curr].StatChanges[stat] = (short)materiaNumerics[stat].Value;
+                    SetUnsaved(true);
                 }
-            }
-        }
-
-        private void comboBoxLimitCamMovementIDSingle_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitCamMovementIDSingle.Text;
-                if (text.Length == 4)
-                {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.CameraMovementIDSingle = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxLimitCamMovementIDMulti_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitCamMovementIDMulti.Text;
-                if (text.Length == 4)
-                {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.CameraMovementIDMulti = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxLimitHurtActionIndex_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                var text = comboBoxLimitHurtActionIndex.Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        SelectedLimit.TargetHurtActionIndex = newID;
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxLimitStatusChange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int i = comboBoxLimitStatusChange.SelectedIndex;
-            numericLimitStatusChangeChance.Enabled = (i > 0);
-            statusesControlLimit.Enabled = (i > 0);
-            if (!loading && SelectedLimit != null)
-            {
-                if (i == 0)
-                {
-                    SelectedLimit.StatusChange.Type = StatusChangeType.None;
-                }
-                else
-                {
-                    SelectedLimit.StatusChange.Type = statusChangeTypes[i - 1];
-                }
-                SetUnsaved(true);
-            }
-        }
-
-        private void numericLimitStatusChangeChance_ValueChanged(object sender, EventArgs e)
-        {
-            if (!loading && SelectedLimit != null)
-            {
-                SelectedLimit.StatusChange.Amount = (byte)numericLimitStatusChangeChance.Value;
-                SetUnsaved(true);
             }
         }
 
@@ -2289,8 +2149,8 @@ namespace FF7Scarlet.ExeEditor
             {
                 loading = true;
                 var model = (WorldMapModels)i;
-                groupBoxWalkableTriangleTypes.Enabled = model != WorldMapModels.Highwind;
-                groupBoxDisembarkTriangleTypes.Enabled = model != WorldMapModels.Player;
+                groupBoxWalkableTriangleTypes.Enabled = editor.ModelMoveBitmasks[i] != null;
+                groupBoxDisembarkTriangleTypes.Enabled = editor.ModelDisembarkBitmasks[i] != null;
 
                 for (int j = 0; j < 32; ++j)
                 {
@@ -2382,7 +2242,7 @@ namespace FF7Scarlet.ExeEditor
             if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
             if (limitNeedsSync && SelectedLimit != null)
             {
-                SyncLimitData(SelectedLimit);
+                attackFormControlLimit.SyncAttackData(SelectedLimit);
             }
 
             DialogResult result;
@@ -2416,7 +2276,7 @@ namespace FF7Scarlet.ExeEditor
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
                 if (limitNeedsSync && SelectedLimit != null)
                 {
-                    SyncLimitData(SelectedLimit);
+                    attackFormControlLimit.SyncAttackData(SelectedLimit);
                 }
 
                 DialogResult result;
@@ -2498,14 +2358,16 @@ namespace FF7Scarlet.ExeEditor
                 "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
+
+                //sync limit data
                 if (limitNeedsSync && SelectedLimit != null)
                 {
-                    SyncLimitData(SelectedLimit);
+                    attackFormControlLimit.SyncAttackData(SelectedLimit);
                 }
 
                 try
                 {
-                    string backupPath = editor.FilePath + ".bak";
+                    string backupPath = DataManager.GetBackupPath(editor.FilePath);
                     if (editor.IsUnedited && !File.Exists(backupPath)) //ask to make a backup
                     {
                         var result = MessageBox.Show("Make a backup of the EXE before saving?", "Make backup?",
@@ -2513,8 +2375,14 @@ namespace FF7Scarlet.ExeEditor
                         if (result == DialogResult.Cancel) { return; }
                         else if (result == DialogResult.Yes)
                         {
-                            File.Copy(editor.FilePath, backupPath);
-                            DataManager.SetFilePath(FileClass.VanillaExe, backupPath);
+                            DataManager.CreateBackupFile(editor.FilePath);
+
+                            //set vanilla EXE to the newly created backup
+                            if (!DataManager.VanillaExePathExists || DataManager.VanillaExePath == editor.FilePath)
+                            {
+                                DataManager.SetFilePath(FileClass.VanillaExe, backupPath);
+                                DataManager.UpdateSettingsFilePath(FileClass.VanillaExe);
+                            }
                         }
                     }
                     editor.WriteEXE();

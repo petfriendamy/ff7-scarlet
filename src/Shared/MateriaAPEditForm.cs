@@ -1,19 +1,19 @@
 ﻿using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Sections;
+using FF7Scarlet.KernelEditor;
 
 namespace FF7Scarlet.Shared
 {
     public partial class MateriaAPEditForm : Form
     {
-        private const int ENEMY_SKILL_COUNT = 24, MASTERED_AP = 0xFFFFFF, NULL_AP = 0xFFFF * 100;
-        private readonly CheckBox[] enemySkillCheckBoxes = new CheckBox[ENEMY_SKILL_COUNT];
+        private const int MASTERED_AP = 0xFFFFFF, NULL_AP = 0xFFFF * 100;
         private bool loading;
 
         public InventoryMateria Materia { get; }
         private MateriaData MateriaData { get; }
         private EnemySkills[] ESkills { get; }
 
-        public MateriaAPEditForm(InventoryMateria materia, MateriaData materiaData)
+        public MateriaAPEditForm(InventoryMateria materia, MateriaData materiaData, string[] eskills)
         {
             InitializeComponent();
             Materia = materia;
@@ -32,40 +32,9 @@ namespace FF7Scarlet.Shared
             //get enemy skills
             SuspendLayout();
             ESkills = Enum.GetValues<EnemySkills>();
-            int x = 3, y = 3;
-            for (int i = 0; i < ENEMY_SKILL_COUNT; ++i)
+            for (int i = 0; i < Kernel.ESKILL_COUNT; ++i)
             {
-                //create the checkbox
-                var cb = new CheckBox();
-                enemySkillCheckBoxes[i] = cb;
-                panelEnemySkills.Controls.Add(cb);
-
-                //get e.skill name
-                if (ESkills[i] == EnemySkills.QuestionMarks)
-                {
-                    cb.Text = "????";
-                }
-                else
-                {
-                    var name = Enum.GetName(ESkills[i]);
-                    if (name != null)
-                    {
-                        cb.Text = StringParser.AddSpaces(name);
-                    }
-                }
-
-                //position the checkbox
-                cb.AutoSize = true;
-                cb.Location = new Point(x, y);
-                x += 100;
-                if (x >= 300)
-                {
-                    y += 25;
-                    x = 3;
-                }
-
-                //add the event handler
-                cb.CheckedChanged += new EventHandler(EnemySkillCheckBox_CheckedChanged);
+                checkedListBoxESkills.Items.Add(eskills[i]);
             }
             ResumeLayout();
 
@@ -94,9 +63,9 @@ namespace FF7Scarlet.Shared
                     groupBoxEnemySkills.Enabled = true;
 
                     var skills = (EnemySkills)Materia.CurrentAP;
-                    for (int i = 0; i < ENEMY_SKILL_COUNT; ++i)
+                    for (int i = 0; i < Kernel.ESKILL_COUNT; ++i)
                     {
-                        enemySkillCheckBoxes[i].Checked = skills.HasFlag(ESkills[i]);
+                        checkedListBoxESkills.SetItemChecked(i,skills.HasFlag(ESkills[i]));
                     }
                 }
                 else //other materia
@@ -112,25 +81,12 @@ namespace FF7Scarlet.Shared
             loading = false;
         }
 
-        private void EnemySkillCheckBox_CheckedChanged(object? sender, EventArgs e)
+        private void checkedListBoxESkills_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (!loading)
             {
-                if (sender != null && sender is CheckBox)
-                {
-                    var cb = sender as CheckBox;
-                    if (cb != null)
-                    {
-                        int i = Array.IndexOf(enemySkillCheckBoxes, cb);
-                        if (i != -1)
-                        {
-                            if (cb.Checked) { Materia.CurrentAP += (int)ESkills[i]; }
-                            else { Materia.CurrentAP -= (int)ESkills[i]; }
-                            var test = (EnemySkills)Materia.CurrentAP;
-                            MessageBox.Show(test.HasFlag(ESkills[i]).ToString());
-                        }
-                    }
-                }
+                if (e.NewValue == CheckState.Checked) { Materia.CurrentAP += (int)ESkills[e.Index]; }
+                else { Materia.CurrentAP -= (int)ESkills[e.Index]; }
             }
         }
 

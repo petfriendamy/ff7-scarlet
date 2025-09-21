@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using FF7Scarlet.Shared;
+using System.Collections;
 
 namespace FF7Scarlet.SceneEditor
 {

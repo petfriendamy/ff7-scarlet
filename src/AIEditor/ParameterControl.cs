@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Globalization;
 using System.ComponentModel;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.AIEditor
 {

@@ -1,15 +1,12 @@
-﻿using System.IO.Compression;
-using System.Configuration;
-using Shojy.FF7.Elena;
+﻿using System.Configuration;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using FF7Scarlet.Compression;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.ExeEditor;
-using FF7Scarlet.Shared;
 
-namespace FF7Scarlet
+namespace FF7Scarlet.Shared
 {
     public enum FormType { KernelEditor, SceneEditor, ExeEditor }
     public enum FileClass { Exe, VanillaExe, Kernel, Kernel2, Scene, BattleLgp }
@@ -24,6 +21,8 @@ namespace FF7Scarlet
         private static byte[] sceneLookupTable = new byte[64];
         private static Dictionary<ushort, Attack> syncedAttacks = new();
 
+        public static StatusChangeType[] StatusChangeTypes { get; } = Enum.GetValues<StatusChangeType>();
+
         public static string ExePath { get; private set; } = string.Empty;
         public static string VanillaExePath { get; private set; } = string.Empty;
         public static string KernelPath { get; private set; } = string.Empty;
@@ -34,9 +33,10 @@ namespace FF7Scarlet
         public static ExeData? VanillaExe { get; private set; }
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
-        public static bool RememberLastOpened { get; set; }
+        public static bool RememberLastOpened { get; set; } = true;
         public static bool PS3TweaksEnabled { get; set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
+        public static ScarletUpdater Updater { get; } = new ScarletUpdater();
 
         public const string
             REMEMBER_LAST_OPENED_KEY = "RememberLastOpened",
@@ -87,9 +87,9 @@ namespace FF7Scarlet
             startupForm = form;
         }
 
-        public static void SetFilePath(FileClass fileClass, string path, bool suppressRelativeCheck = false)
+        public static void SetFilePath(FileClass fileClass, string path, bool suppressRelativeCheck = false, bool isJPoriginal = false)
         {
-            if (ValidateFile(fileClass, path, suppressRelativeCheck))
+            if (ValidateFile(fileClass, path, isJPoriginal))
             {
                 if (fileClass != FileClass.VanillaExe && fileClass != FileClass.BattleLgp && !suppressRelativeCheck)
                 {
@@ -206,7 +206,7 @@ namespace FF7Scarlet
                                 ValidateFile(FileClass.Kernel2, kernelDir + @"\kernel2.bin");
                             }
                         }
-                        if (battleDir != null &&fileClass != FileClass.Scene)
+                        if (battleDir != null && fileClass != FileClass.Scene)
                         {
                             ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
                         }
@@ -219,7 +219,7 @@ namespace FF7Scarlet
             }
         }
 
-        private static bool ValidateFile(FileClass fileClass, string path, bool suppressRelativeCheck = false)
+        private static bool ValidateFile(FileClass fileClass, string path, bool isJPoriginal = false)
         {
             try
             {
@@ -229,7 +229,7 @@ namespace FF7Scarlet
                     {
                         case FileClass.Exe:
                         case FileClass.VanillaExe:
-                            if (ExeData.ValidateEXE(path, (fileClass == FileClass.VanillaExe)))
+                            if (ExeData.ValidateEXE(path, fileClass == FileClass.VanillaExe))
                             {
                                 if (fileClass == FileClass.VanillaExe)
                                 {
@@ -267,7 +267,7 @@ namespace FF7Scarlet
                         case FileClass.Scene:
                             try
                             {
-                                LoadSceneBin(path);
+                                LoadSceneBin(path, isJPoriginal);
                                 return true;
                             }
                             catch { return false; }
@@ -508,7 +508,7 @@ namespace FF7Scarlet
                 throw new FileNotFoundException("No kernel.bin file is loaded.");
             }
 
-            Gzip.CreateKernel(kernel, KernelPath, (updateKernel2 ? Kernel2Path : null));
+            Gzip.CreateKernel(kernel, KernelPath, updateKernel2 ? Kernel2Path : null);
 
             if (reload) //reload the kernel
             {
@@ -516,9 +516,9 @@ namespace FF7Scarlet
             }
         }
 
-        private static void LoadSceneBin(string path)
+        private static void LoadSceneBin(string path, bool isJPoriginal)
         {
-            sceneList = Gzip.GetSceneList(path, ref sceneLookupTable);
+            sceneList = Gzip.GetSceneList(path, ref sceneLookupTable, isJPoriginal);
             ScenePath = path;
         }
 
@@ -530,6 +530,68 @@ namespace FF7Scarlet
             if (!LookupTableIsCorrect())
             {
                 SyncLookupTable();
+            }
+        }
+
+        public static void UpdateSettingsFilePath(FileClass fileClass)
+        {
+            var config = ConfigurationManager.OpenMappedExeConfiguration(ConfigFile,
+                        ConfigurationUserLevel.None);
+            var settings = config.AppSettings.Settings;
+
+            if (settings == null)
+            {
+                throw new FileLoadException("Config file could not be loaded.");
+            }
+
+            switch (fileClass)
+            {
+                case FileClass.VanillaExe:
+                    if (VanillaExePathExists)
+                    {
+                        UpdateSetting(ref settings, ExeData.VANILLA_CONFIG_KEY, VanillaExePath);
+                    }
+                    break;
+                case FileClass.BattleLgp:
+                    if (BattleLgpPathExists)
+                    {
+                        UpdateSetting(ref settings, BattleLgp.CONFIG_KEY, BattleLgpPath);
+                    }
+                    break;
+            }
+            config.Save();
+        }
+
+        private static void UpdateSetting(ref KeyValueConfigurationCollection settings, string key, string? value)
+        {
+            if (settings[key] == null)
+            {
+                settings.Add(key, value);
+            }
+            else
+            {
+                settings[key].Value = value;
+            }
+        }
+
+        public static string GetBackupPath(string path)
+        {
+            string ext = Path.GetExtension(path);
+            return path.Substring(0, path.LastIndexOf('.')) + $"-bak{ext}";
+        }
+
+        public static void CreateBackupFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                int i = 1;
+                var backup = GetBackupPath(path);
+                while (File.Exists(backup))
+                {
+                    i++;
+                    backup = path.Substring(0, path.LastIndexOf('-')) + $"-bak{i}.bin";
+                }
+                File.Copy(path, backup);
             }
         }
 

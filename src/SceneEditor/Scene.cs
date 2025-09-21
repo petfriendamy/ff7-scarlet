@@ -46,8 +46,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (File.Exists(filePath))
             {
-                rawData = File.ReadAllBytes(filePath);
-                ParseData(rawData);
+                ParseData(File.ReadAllBytes(filePath), false);
             }
             else
             {
@@ -55,16 +54,14 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        public Scene(ref byte[] data) :base()
+        public Scene(ref byte[] data, bool isJPoriginal) :base()
         {
-            rawData = data;
-            ParseData(rawData);
+            ParseData(data, isJPoriginal);
         }
 
         public Scene(Scene other) :base()
         {
-            rawData = other.rawData;
-            ParseData(rawData);
+            ParseData(other.rawData, false);
         }
 
         public bool IsEmpty()
@@ -187,7 +184,7 @@ namespace FF7Scarlet.SceneEditor
             return output.Substring(0, output.LastIndexOf(','));
         }
 
-        private void ParseData(byte[] data)
+        private void ParseData(byte[] data, bool isJPoriginal)
         {
             using (var ms = new MemoryStream(data, false))
             using (var reader = new BinaryReader(ms))
@@ -203,6 +200,7 @@ namespace FF7Scarlet.SceneEditor
                 var attackName = new FFText[ATTACK_COUNT];
                 byte[] temp;
 
+
                 try
                 {
                     //enemy model IDs
@@ -212,7 +210,7 @@ namespace FF7Scarlet.SceneEditor
                     }
 
                     reader.ReadBytes(2); //padding
-                    //battle setup data
+                                            //battle setup data
                     for (i = 0; i < FORMATION_COUNT; ++i)
                     {
                         setupData[i] = new BattleSetupData(reader.ReadBytes(BattleSetupData.BLOCK_SIZE));
@@ -235,10 +233,11 @@ namespace FF7Scarlet.SceneEditor
                     //enemy data
                     for (i = 0; i < ENEMY_COUNT; ++i)
                     {
-                        enemyName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
+                        int length = NAME_LENGTH;
+                        if (isJPoriginal) { length = 16; }
+                        enemyName[i] = new FFText(reader.ReadBytes(length));
                         temp = reader.ReadBytes(Enemy.DATA_BLOCK_SIZE);
-                        //if (!enemyName[i].IsEmpty())
-                        if (enemyModelID[i] < 65535)
+                        if (enemyModelID[i] < HexParser.NULL_OFFSET_16_BIT)
                         {
                             Enemies[i] = new Enemy(this, enemyModelID[i], enemyName[i], temp);
                         }
@@ -281,11 +280,19 @@ namespace FF7Scarlet.SceneEditor
                     //formation offsets
                     for (i = 0; i < FORMATION_COUNT; ++i)
                     {
-                        formationAIoffset[i] = reader.ReadUInt16();
+                        if (isJPoriginal) { formationAIoffset[i] = HexParser.NULL_OFFSET_16_BIT; }
+                        else { formationAIoffset[i] = reader.ReadUInt16(); }
                     }
 
                     //formations
-                    Array.Copy(reader.ReadBytes(Formation.AI_BLOCK_SIZE), formationAIRaw, Formation.AI_BLOCK_SIZE);
+                    if (isJPoriginal)
+                    {
+                        Array.Copy(HexParser.GetNullBlock(Formation.AI_BLOCK_SIZE), formationAIRaw, Formation.AI_BLOCK_SIZE);
+                    }
+                    else
+                    {
+                        Array.Copy(reader.ReadBytes(Formation.AI_BLOCK_SIZE), formationAIRaw, Formation.AI_BLOCK_SIZE);
+                    }
 
                     //enemy A.I. offsets
                     for (i = 0; i < ENEMY_COUNT; ++i)
@@ -297,6 +304,10 @@ namespace FF7Scarlet.SceneEditor
                     Array.Copy(reader.ReadBytes(Enemy.AI_BLOCK_SIZE), enemyAIraw, Enemy.AI_BLOCK_SIZE);
                 }
             }
+
+            //make a copy of the unedited data
+            if (isJPoriginal) { GetRawData(); }
+            else { Array.Copy(data, rawData, UNCOMPRESSED_BLOCK_SIZE); }
         }
 
         public void ParseAIScripts()
@@ -320,7 +331,6 @@ namespace FF7Scarlet.SceneEditor
                         }
                         try
                         {
-                            //formations[i] = new Formation();
                             Formations[i].ParseScripts(formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
                         }
                         catch (Exception ex)
@@ -475,66 +485,68 @@ namespace FF7Scarlet.SceneEditor
                         throw new Exception($"Error in attack data (index {i}): {ex.Message}", ex);
                     }
 
-                    if (ScriptsLoaded) //no need to update script data if it hasn't been changed
+                    //formation data
+                    try
                     {
-                        //formation data
-                        try
+                        if (ScriptsLoaded) // no need to update script data if it isn't loaded
                         {
                             Array.Copy(AIContainer.GetGroupedScriptBlock(FORMATION_COUNT, Formation.AI_BLOCK_SIZE, formations,
                                 ref formationAIoffset), formationAIRaw, Formation.AI_BLOCK_SIZE);
-
-                            foreach (var o in formationAIoffset)
-                            {
-                                writer.Write(o);
-                            }
-                            writer.Write(formationAIRaw);
-                        }
-                        catch (ScriptTooLongException)
-                        {
-                            throw new ScriptTooLongException("Formation A.I. block is too long!");
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception($"Compiler error in formation scripts: {ex.Message}", ex);
                         }
 
-                        //enemy A.I. data
-                        try
+                        foreach (var o in formationAIoffset)
+                        {
+                            writer.Write(o);
+                        }
+                        writer.Write(formationAIRaw);
+                    }
+                    catch (ScriptTooLongException)
+                    {
+                        throw new ScriptTooLongException("Formation A.I. block is too long!");
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Compiler error in formation scripts: {ex.Message}", ex);
+                    }
+
+                    //enemy A.I. data
+                    try
+                    {
+                        if (ScriptsLoaded)
                         {
                             Array.Copy(AIContainer.GetGroupedScriptBlock(ENEMY_COUNT, Enemy.AI_BLOCK_SIZE, enemies,
                                 ref enemyAIoffset), enemyAIraw, Enemy.AI_BLOCK_SIZE);
-
-                            foreach (var o in enemyAIoffset)
-                            {
-                                writer.Write(o);
-                            }
-                            writer.Write(enemyAIraw);
-                        }
-                        catch (ScriptTooLongException)
-                        {
-                            throw new ScriptTooLongException("Enemy A.I. block is too long!");
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception($"Compiler error in enemy scripts: {ex.Message}");
                         }
 
-                        //pad remaining data with 0xFF
-                        bool end = false;
-                        while (!end)
+                        foreach (var o in enemyAIoffset)
                         {
-                            try
-                            {
-                                writer.Write((byte)0xFF);
-                            }
-                            catch
-                            {
-                                end = true;
-                            }
+                            writer.Write(o);
+                        }
+                        writer.Write(enemyAIraw);
+                    }
+                    catch (ScriptTooLongException)
+                    {
+                        throw new ScriptTooLongException("Enemy A.I. block is too long!");
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Compiler error in enemy scripts: {ex.Message}");
+                    }
+
+                    //pad remaining data with 0xFF
+                    bool end = false;
+                    while (!end)
+                    {
+                        try
+                        {
+                            writer.Write((byte)0xFF);
+                        }
+                        catch
+                        {
+                            end = true;
                         }
                     }
                 }
-
                 //return a copy of the newly updated data
                 var copy = new byte[UNCOMPRESSED_BLOCK_SIZE];
                 Array.Copy(rawData, copy, UNCOMPRESSED_BLOCK_SIZE);
