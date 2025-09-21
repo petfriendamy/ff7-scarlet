@@ -352,6 +352,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxItemPrices.SuspendLayout();
             listBoxMateriaPrices.SuspendLayout();
             comboBoxShopType.SuspendLayout();
+            comboBoxShopDialogueSet.SuspendLayout();
             listBoxChocoboNames.SuspendLayout();
             listBoxSortItemName.SuspendLayout();
             listBoxAudioVolume.SuspendLayout();
@@ -604,6 +605,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxItemPrices.ResumeLayout();
             listBoxMateriaPrices.ResumeLayout();
             comboBoxShopType.ResumeLayout();
+            comboBoxShopDialogueSet.ResumeLayout();
             listBoxSortItemName.ResumeLayout();
             listBoxChocoboNames.ResumeLayout();
             loading = false;
@@ -1561,6 +1563,7 @@ namespace FF7Scarlet.ExeEditor
             {
                 loading = true;
                 comboBoxShopType.SelectedIndex = (int)editor.Shops[i].ShopType;
+                comboBoxShopDialogueSet.SelectedIndex = (int)editor.Shops[i].DialogueSet;
                 numericShopItemCount.Value = editor.Shops[i].ItemCount;
 
                 for (int j = 0; j < ShopInventory.SHOP_ITEM_MAX; ++j)
@@ -2543,5 +2546,12 @@ namespace FF7Scarlet.ExeEditor
         }
 
         #endregion
+
+        private void comboBoxShopDialogueSet_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = comboBoxShopIndex.SelectedIndex;
+            editor.Shops[i].DialogueSet = comboBoxShopDialogueSet.SelectedIndex;
+
+        }
     }
 }
