@@ -1423,6 +1423,7 @@ namespace FF7Scarlet.ExeEditor
             {
                 loading = true;
                 comboBoxShopType.SelectedIndex = (int)editor.Shops[i].ShopType;
+                comboBoxShopDialogueSet.SelectedIndex = (int)editor.Shops[i].DialogueSet;
                 numericShopItemCount.Value = editor.Shops[i].ItemCount;
 
                 for (int j = 0; j < ShopInventory.SHOP_ITEM_MAX; ++j)
@@ -1471,6 +1472,17 @@ namespace FF7Scarlet.ExeEditor
                 {
                     shop.RemoveItem();
                 }
+                SetUnsaved(true);
+            }
+        }
+
+        //change shop dialogue set
+        private void comboBoxShopDialogueSet_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && editor != null)
+            {
+                int i = comboBoxShopIndex.SelectedIndex;
+                editor.Shops[i].DialogueSet = comboBoxShopDialogueSet.SelectedIndex;
                 SetUnsaved(true);
             }
         }

@@ -11,12 +11,14 @@ namespace FF7Scarlet.ExeEditor
         public const int SHOP_DATA_LENGTH = 84, SHOP_ITEM_MAX = 10;
 
         public ShopType ShopType { get; set; }
+        public int DialogueSet { get; set; }
         public byte ItemCount { get; private set; }
         public InventoryItem?[] Inventory { get; } = new InventoryItem?[SHOP_ITEM_MAX];
 
-        public ShopInventory(ShopType type, InventoryItem[] items)
+        public ShopInventory(ShopType type, int dialogueSet, InventoryItem[] items)
         {
             ShopType = type;
+            DialogueSet = dialogueSet;
             if (items.Length < 1 || items.Length >= SHOP_ITEM_MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(ItemCount));
@@ -38,7 +40,8 @@ namespace FF7Scarlet.ExeEditor
             using (var ms = new MemoryStream(data))
             using (var reader = new BinaryReader(ms))
             {
-                ShopType = (ShopType)reader.ReadUInt16();
+                ShopType = (ShopType)reader.ReadByte();
+                DialogueSet = reader.ReadByte();
                 ItemCount = reader.ReadByte();
                 if (ItemCount > SHOP_ITEM_MAX) { throw new ArgumentOutOfRangeException(nameof(ItemCount)); }
                 reader.ReadByte(); //padding
@@ -83,7 +86,8 @@ namespace FF7Scarlet.ExeEditor
             using (var ms = new MemoryStream(data))
             using (var writer = new BinaryWriter(ms))
             {
-                writer.Write((ushort)ShopType);
+                writer.Write((byte)ShopType);
+                writer.Write((byte)DialogueSet);
                 writer.Write((ushort)ItemCount);
                 for (int i = 0; i < SHOP_ITEM_MAX; ++i)
                 {

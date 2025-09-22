@@ -128,6 +128,8 @@ namespace FF7Scarlet.ExeEditor
             pictureBoxCloud = new PictureBox();
             tabPageShopData = new TabPage();
             groupBoxShopInventory = new GroupBox();
+            comboBoxShopDialogueSet = new ComboBox();
+            labelShopRegion = new Label();
             comboBoxShopItem10 = new ComboBox();
             comboBoxShopItem9 = new ComboBox();
             comboBoxShopItem8 = new ComboBox();
@@ -434,7 +436,7 @@ namespace FF7Scarlet.ExeEditor
             tabControlMain.Margin = new Padding(4, 3, 4, 3);
             tabControlMain.Name = "tabControlMain";
             tabControlMain.SelectedIndex = 0;
-            tabControlMain.Size = new Size(784, 555);
+            tabControlMain.Size = new Size(784, 596);
             tabControlMain.TabIndex = 1;
             // 
             // tabPageInitialData
@@ -468,7 +470,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageInitialData.Margin = new Padding(4, 3, 4, 3);
             tabPageInitialData.Name = "tabPageInitialData";
             tabPageInitialData.Padding = new Padding(4, 3, 4, 3);
-            tabPageInitialData.Size = new Size(776, 527);
+            tabPageInitialData.Size = new Size(776, 568);
             tabPageInitialData.TabIndex = 0;
             tabPageInitialData.Text = "Cait Sith/Vincent data";
             tabPageInitialData.UseVisualStyleBackColor = true;
@@ -542,7 +544,7 @@ namespace FF7Scarlet.ExeEditor
             labelCharacterBaseMP.AutoSize = true;
             labelCharacterBaseMP.Location = new Point(127, 19);
             labelCharacterBaseMP.Name = "labelCharacterBaseMP";
-            labelCharacterBaseMP.Size = new Size(33, 15);
+            labelCharacterBaseMP.Size = new Size(32, 15);
             labelCharacterBaseMP.TabIndex = 2;
             labelCharacterBaseMP.Text = "Max:";
             // 
@@ -613,7 +615,7 @@ namespace FF7Scarlet.ExeEditor
             labelCharacterBaseHP.AutoSize = true;
             labelCharacterBaseHP.Location = new Point(127, 19);
             labelCharacterBaseHP.Name = "labelCharacterBaseHP";
-            labelCharacterBaseHP.Size = new Size(33, 15);
+            labelCharacterBaseHP.Size = new Size(32, 15);
             labelCharacterBaseHP.TabIndex = 2;
             labelCharacterBaseHP.Text = "Max:";
             // 
@@ -918,7 +920,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageLimitBreaks.Controls.Add(listBoxLimits);
             tabPageLimitBreaks.Location = new Point(4, 24);
             tabPageLimitBreaks.Name = "tabPageLimitBreaks";
-            tabPageLimitBreaks.Size = new Size(776, 527);
+            tabPageLimitBreaks.Size = new Size(776, 568);
             tabPageLimitBreaks.TabIndex = 3;
             tabPageLimitBreaks.Text = "Limit breaks";
             tabPageLimitBreaks.UseVisualStyleBackColor = true;
@@ -1202,7 +1204,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageNames.Margin = new Padding(4, 3, 4, 3);
             tabPageNames.Name = "tabPageNames";
             tabPageNames.Padding = new Padding(4, 3, 4, 3);
-            tabPageNames.Size = new Size(776, 527);
+            tabPageNames.Size = new Size(776, 568);
             tabPageNames.TabIndex = 1;
             tabPageNames.Text = "Character names";
             tabPageNames.UseVisualStyleBackColor = true;
@@ -1422,7 +1424,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageShopData.Controls.Add(listBoxItemPrices);
             tabPageShopData.Location = new Point(4, 24);
             tabPageShopData.Name = "tabPageShopData";
-            tabPageShopData.Size = new Size(776, 527);
+            tabPageShopData.Size = new Size(776, 568);
             tabPageShopData.TabIndex = 2;
             tabPageShopData.Text = "Shop data";
             tabPageShopData.UseVisualStyleBackColor = true;
@@ -1430,6 +1432,8 @@ namespace FF7Scarlet.ExeEditor
             // groupBoxShopInventory
             // 
             groupBoxShopInventory.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxShopInventory.Controls.Add(comboBoxShopDialogueSet);
+            groupBoxShopInventory.Controls.Add(labelShopRegion);
             groupBoxShopInventory.Controls.Add(comboBoxShopItem10);
             groupBoxShopInventory.Controls.Add(comboBoxShopItem9);
             groupBoxShopInventory.Controls.Add(comboBoxShopItem8);
@@ -1449,17 +1453,38 @@ namespace FF7Scarlet.ExeEditor
             groupBoxShopInventory.Controls.Add(labelShopIndex);
             groupBoxShopInventory.Location = new Point(415, 5);
             groupBoxShopInventory.Name = "groupBoxShopInventory";
-            groupBoxShopInventory.Size = new Size(352, 472);
+            groupBoxShopInventory.Size = new Size(352, 513);
             groupBoxShopInventory.TabIndex = 10;
             groupBoxShopInventory.TabStop = false;
             groupBoxShopInventory.Text = "Shop inventories";
+            // 
+            // comboBoxShopDialogueSet
+            // 
+            comboBoxShopDialogueSet.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxShopDialogueSet.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxShopDialogueSet.FormattingEnabled = true;
+            comboBoxShopDialogueSet.Items.AddRange(new object[] { "Set 1", "Set 2" });
+            comboBoxShopDialogueSet.Location = new Point(6, 127);
+            comboBoxShopDialogueSet.Name = "comboBoxShopDialogueSet";
+            comboBoxShopDialogueSet.Size = new Size(340, 23);
+            comboBoxShopDialogueSet.TabIndex = 18;
+            comboBoxShopDialogueSet.SelectedIndexChanged += comboBoxShopDialogueSet_SelectedIndexChanged;
+            // 
+            // labelShopRegion
+            // 
+            labelShopRegion.AutoSize = true;
+            labelShopRegion.Location = new Point(6, 108);
+            labelShopRegion.Name = "labelShopRegion";
+            labelShopRegion.Size = new Size(75, 15);
+            labelShopRegion.TabIndex = 17;
+            labelShopRegion.Text = "Dialogue set:";
             // 
             // comboBoxShopItem10
             // 
             comboBoxShopItem10.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem10.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem10.FormattingEnabled = true;
-            comboBoxShopItem10.Location = new Point(6, 443);
+            comboBoxShopItem10.Location = new Point(6, 484);
             comboBoxShopItem10.Name = "comboBoxShopItem10";
             comboBoxShopItem10.Size = new Size(340, 23);
             comboBoxShopItem10.TabIndex = 16;
@@ -1470,7 +1495,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem9.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem9.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem9.FormattingEnabled = true;
-            comboBoxShopItem9.Location = new Point(6, 414);
+            comboBoxShopItem9.Location = new Point(6, 455);
             comboBoxShopItem9.Name = "comboBoxShopItem9";
             comboBoxShopItem9.Size = new Size(340, 23);
             comboBoxShopItem9.TabIndex = 15;
@@ -1481,7 +1506,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem8.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem8.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem8.FormattingEnabled = true;
-            comboBoxShopItem8.Location = new Point(6, 385);
+            comboBoxShopItem8.Location = new Point(6, 426);
             comboBoxShopItem8.Name = "comboBoxShopItem8";
             comboBoxShopItem8.Size = new Size(340, 23);
             comboBoxShopItem8.TabIndex = 14;
@@ -1492,7 +1517,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem7.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem7.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem7.FormattingEnabled = true;
-            comboBoxShopItem7.Location = new Point(6, 356);
+            comboBoxShopItem7.Location = new Point(6, 397);
             comboBoxShopItem7.Name = "comboBoxShopItem7";
             comboBoxShopItem7.Size = new Size(340, 23);
             comboBoxShopItem7.TabIndex = 13;
@@ -1503,7 +1528,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem6.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem6.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem6.FormattingEnabled = true;
-            comboBoxShopItem6.Location = new Point(6, 327);
+            comboBoxShopItem6.Location = new Point(6, 368);
             comboBoxShopItem6.Name = "comboBoxShopItem6";
             comboBoxShopItem6.Size = new Size(340, 23);
             comboBoxShopItem6.TabIndex = 12;
@@ -1514,7 +1539,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem5.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem5.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem5.FormattingEnabled = true;
-            comboBoxShopItem5.Location = new Point(6, 298);
+            comboBoxShopItem5.Location = new Point(6, 339);
             comboBoxShopItem5.Name = "comboBoxShopItem5";
             comboBoxShopItem5.Size = new Size(340, 23);
             comboBoxShopItem5.TabIndex = 11;
@@ -1525,7 +1550,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem4.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem4.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem4.FormattingEnabled = true;
-            comboBoxShopItem4.Location = new Point(6, 269);
+            comboBoxShopItem4.Location = new Point(6, 310);
             comboBoxShopItem4.Name = "comboBoxShopItem4";
             comboBoxShopItem4.Size = new Size(340, 23);
             comboBoxShopItem4.TabIndex = 10;
@@ -1536,7 +1561,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem3.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem3.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem3.FormattingEnabled = true;
-            comboBoxShopItem3.Location = new Point(6, 240);
+            comboBoxShopItem3.Location = new Point(6, 281);
             comboBoxShopItem3.Name = "comboBoxShopItem3";
             comboBoxShopItem3.Size = new Size(340, 23);
             comboBoxShopItem3.TabIndex = 9;
@@ -1547,7 +1572,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem2.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem2.FormattingEnabled = true;
-            comboBoxShopItem2.Location = new Point(6, 211);
+            comboBoxShopItem2.Location = new Point(6, 252);
             comboBoxShopItem2.Name = "comboBoxShopItem2";
             comboBoxShopItem2.Size = new Size(340, 23);
             comboBoxShopItem2.TabIndex = 8;
@@ -1558,7 +1583,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopItem1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             comboBoxShopItem1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxShopItem1.FormattingEnabled = true;
-            comboBoxShopItem1.Location = new Point(6, 182);
+            comboBoxShopItem1.Location = new Point(6, 223);
             comboBoxShopItem1.Name = "comboBoxShopItem1";
             comboBoxShopItem1.Size = new Size(340, 23);
             comboBoxShopItem1.TabIndex = 7;
@@ -1568,7 +1593,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             labelShopItems.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelShopItems.AutoSize = true;
-            labelShopItems.Location = new Point(6, 164);
+            labelShopItems.Location = new Point(6, 205);
             labelShopItems.Name = "labelShopItems";
             labelShopItems.Size = new Size(39, 15);
             labelShopItems.TabIndex = 6;
@@ -1577,7 +1602,7 @@ namespace FF7Scarlet.ExeEditor
             // numericShopItemCount
             // 
             numericShopItemCount.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            numericShopItemCount.Location = new Point(6, 127);
+            numericShopItemCount.Location = new Point(8, 172);
             numericShopItemCount.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
             numericShopItemCount.Name = "numericShopItemCount";
             numericShopItemCount.Size = new Size(340, 23);
@@ -1587,7 +1612,7 @@ namespace FF7Scarlet.ExeEditor
             // labelShopItemCount
             // 
             labelShopItemCount.AutoSize = true;
-            labelShopItemCount.Location = new Point(6, 108);
+            labelShopItemCount.Location = new Point(8, 153);
             labelShopItemCount.Name = "labelShopItemCount";
             labelShopItemCount.Size = new Size(68, 15);
             labelShopItemCount.TabIndex = 4;
@@ -1628,7 +1653,7 @@ namespace FF7Scarlet.ExeEditor
             labelShopIndex.AutoSize = true;
             labelShopIndex.Location = new Point(6, 19);
             labelShopIndex.Name = "labelShopIndex";
-            labelShopIndex.Size = new Size(69, 15);
+            labelShopIndex.Size = new Size(68, 15);
             labelShopIndex.TabIndex = 0;
             labelShopIndex.Text = "Shop index:";
             // 
@@ -1636,7 +1661,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             numericMateriaPrice.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             numericMateriaPrice.Enabled = false;
-            numericMateriaPrice.Location = new Point(251, 492);
+            numericMateriaPrice.Location = new Point(251, 533);
             numericMateriaPrice.Name = "numericMateriaPrice";
             numericMateriaPrice.Size = new Size(158, 23);
             numericMateriaPrice.TabIndex = 9;
@@ -1646,7 +1671,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             labelMateriaPrice.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelMateriaPrice.AutoSize = true;
-            labelMateriaPrice.Location = new Point(209, 494);
+            labelMateriaPrice.Location = new Point(209, 535);
             labelMateriaPrice.Name = "labelMateriaPrice";
             labelMateriaPrice.Size = new Size(36, 15);
             labelMateriaPrice.TabIndex = 8;
@@ -1667,14 +1692,14 @@ namespace FF7Scarlet.ExeEditor
             listBoxMateriaPrices.FormattingEnabled = true;
             listBoxMateriaPrices.Location = new Point(209, 23);
             listBoxMateriaPrices.Name = "listBoxMateriaPrices";
-            listBoxMateriaPrices.Size = new Size(200, 454);
+            listBoxMateriaPrices.Size = new Size(200, 484);
             listBoxMateriaPrices.TabIndex = 6;
             listBoxMateriaPrices.SelectedIndexChanged += listBoxMateriaPrices_SelectedIndexChanged;
             // 
             // numericMateriaAPPriceMultiplier
             // 
             numericMateriaAPPriceMultiplier.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            numericMateriaAPPriceMultiplier.Location = new Point(647, 492);
+            numericMateriaAPPriceMultiplier.Location = new Point(647, 533);
             numericMateriaAPPriceMultiplier.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             numericMateriaAPPriceMultiplier.Name = "numericMateriaAPPriceMultiplier";
             numericMateriaAPPriceMultiplier.Size = new Size(120, 23);
@@ -1685,7 +1710,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             labelMateriaAPPriceMultiplier.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             labelMateriaAPPriceMultiplier.AutoSize = true;
-            labelMateriaAPPriceMultiplier.Location = new Point(490, 494);
+            labelMateriaAPPriceMultiplier.Location = new Point(490, 535);
             labelMateriaAPPriceMultiplier.Name = "labelMateriaAPPriceMultiplier";
             labelMateriaAPPriceMultiplier.Size = new Size(151, 15);
             labelMateriaAPPriceMultiplier.TabIndex = 4;
@@ -1695,7 +1720,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             numericItemPrice.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             numericItemPrice.Enabled = false;
-            numericItemPrice.Location = new Point(45, 492);
+            numericItemPrice.Location = new Point(45, 533);
             numericItemPrice.Name = "numericItemPrice";
             numericItemPrice.Size = new Size(158, 23);
             numericItemPrice.TabIndex = 3;
@@ -1705,7 +1730,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             labelItemPrice.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelItemPrice.AutoSize = true;
-            labelItemPrice.Location = new Point(3, 494);
+            labelItemPrice.Location = new Point(3, 535);
             labelItemPrice.Name = "labelItemPrice";
             labelItemPrice.Size = new Size(36, 15);
             labelItemPrice.TabIndex = 2;
@@ -1726,7 +1751,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxItemPrices.FormattingEnabled = true;
             listBoxItemPrices.Location = new Point(3, 23);
             listBoxItemPrices.Name = "listBoxItemPrices";
-            listBoxItemPrices.Size = new Size(200, 454);
+            listBoxItemPrices.Size = new Size(200, 484);
             listBoxItemPrices.TabIndex = 0;
             listBoxItemPrices.SelectedIndexChanged += listBoxItemPrices_SelectedIndexChanged;
             // 
@@ -1735,7 +1760,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageMenus.Controls.Add(tabControlMenus);
             tabPageMenus.Location = new Point(4, 24);
             tabPageMenus.Name = "tabPageMenus";
-            tabPageMenus.Size = new Size(776, 527);
+            tabPageMenus.Size = new Size(776, 568);
             tabPageMenus.TabIndex = 6;
             tabPageMenus.Text = "Menus";
             tabPageMenus.UseVisualStyleBackColor = true;
@@ -1754,7 +1779,7 @@ namespace FF7Scarlet.ExeEditor
             tabControlMenus.Location = new Point(0, 0);
             tabControlMenus.Name = "tabControlMenus";
             tabControlMenus.SelectedIndex = 0;
-            tabControlMenus.Size = new Size(776, 527);
+            tabControlMenus.Size = new Size(776, 568);
             tabControlMenus.TabIndex = 0;
             // 
             // tabPageMainMenu
@@ -1764,7 +1789,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageMainMenu.Location = new Point(4, 24);
             tabPageMainMenu.Name = "tabPageMainMenu";
             tabPageMainMenu.Padding = new Padding(3);
-            tabPageMainMenu.Size = new Size(768, 499);
+            tabPageMainMenu.Size = new Size(768, 540);
             tabPageMainMenu.TabIndex = 0;
             tabPageMainMenu.Text = "Main menu";
             tabPageMainMenu.UseVisualStyleBackColor = true;
@@ -1775,7 +1800,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxQuitMenu.Controls.Add(listBoxQuitTexts);
             groupBoxQuitMenu.Controls.Add(textBoxQuitText);
             groupBoxQuitMenu.Controls.Add(labelQuitText);
-            groupBoxQuitMenu.Location = new Point(5, 376);
+            groupBoxQuitMenu.Location = new Point(5, 417);
             groupBoxQuitMenu.Name = "groupBoxQuitMenu";
             groupBoxQuitMenu.Size = new Size(758, 117);
             groupBoxQuitMenu.TabIndex = 7;
@@ -1818,7 +1843,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxMainMenu.Controls.Add(labelMainMenuText);
             groupBoxMainMenu.Location = new Point(5, 3);
             groupBoxMainMenu.Name = "groupBoxMainMenu";
-            groupBoxMainMenu.Size = new Size(758, 367);
+            groupBoxMainMenu.Size = new Size(758, 408);
             groupBoxMainMenu.TabIndex = 6;
             groupBoxMainMenu.TabStop = false;
             groupBoxMainMenu.Text = "Main Menu";
@@ -1857,7 +1882,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageItemMagicMenu.Controls.Add(groupBoxItemMenu);
             tabPageItemMagicMenu.Location = new Point(4, 24);
             tabPageItemMagicMenu.Name = "tabPageItemMagicMenu";
-            tabPageItemMagicMenu.Size = new Size(768, 499);
+            tabPageItemMagicMenu.Size = new Size(768, 540);
             tabPageItemMagicMenu.TabIndex = 9;
             tabPageItemMagicMenu.Text = "Item/Magic menu";
             tabPageItemMagicMenu.UseVisualStyleBackColor = true;
@@ -1870,7 +1895,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxMagicMenu.Controls.Add(textBoxMagicMenuText);
             groupBoxMagicMenu.Location = new Point(5, 210);
             groupBoxMagicMenu.Name = "groupBoxMagicMenu";
-            groupBoxMagicMenu.Size = new Size(756, 286);
+            groupBoxMagicMenu.Size = new Size(756, 327);
             groupBoxMagicMenu.TabIndex = 10;
             groupBoxMagicMenu.TabStop = false;
             groupBoxMagicMenu.Text = "Magic menu";
@@ -1950,7 +1975,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageMateriaMenu.Controls.Add(groupBoxMateriaText);
             tabPageMateriaMenu.Location = new Point(4, 24);
             tabPageMateriaMenu.Name = "tabPageMateriaMenu";
-            tabPageMateriaMenu.Size = new Size(768, 499);
+            tabPageMateriaMenu.Size = new Size(768, 540);
             tabPageMateriaMenu.TabIndex = 6;
             tabPageMateriaMenu.Text = "Materia menu";
             tabPageMateriaMenu.UseVisualStyleBackColor = true;
@@ -2045,7 +2070,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageEquipMenu.Controls.Add(listBoxEquipMenu);
             tabPageEquipMenu.Location = new Point(4, 24);
             tabPageEquipMenu.Name = "tabPageEquipMenu";
-            tabPageEquipMenu.Size = new Size(768, 499);
+            tabPageEquipMenu.Size = new Size(768, 540);
             tabPageEquipMenu.TabIndex = 7;
             tabPageEquipMenu.Text = "Equip menu";
             tabPageEquipMenu.UseVisualStyleBackColor = true;
@@ -2084,7 +2109,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageStatusMenu.Controls.Add(groupBoxElements);
             tabPageStatusMenu.Location = new Point(4, 24);
             tabPageStatusMenu.Name = "tabPageStatusMenu";
-            tabPageStatusMenu.Size = new Size(768, 499);
+            tabPageStatusMenu.Size = new Size(768, 540);
             tabPageStatusMenu.TabIndex = 8;
             tabPageStatusMenu.Text = "Status menu";
             tabPageStatusMenu.UseVisualStyleBackColor = true;
@@ -2097,7 +2122,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxStatusMenu.Controls.Add(listBoxStatusMenuText);
             groupBoxStatusMenu.Location = new Point(5, 3);
             groupBoxStatusMenu.Name = "groupBoxStatusMenu";
-            groupBoxStatusMenu.Size = new Size(758, 316);
+            groupBoxStatusMenu.Size = new Size(758, 357);
             groupBoxStatusMenu.TabIndex = 7;
             groupBoxStatusMenu.TabStop = false;
             groupBoxStatusMenu.Text = "Menu text";
@@ -2127,7 +2152,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxStatusMenuText.FormattingEnabled = true;
             listBoxStatusMenuText.Location = new Point(6, 22);
             listBoxStatusMenuText.Name = "listBoxStatusMenuText";
-            listBoxStatusMenuText.Size = new Size(242, 274);
+            listBoxStatusMenuText.Size = new Size(242, 304);
             listBoxStatusMenuText.TabIndex = 0;
             listBoxStatusMenuText.SelectedIndexChanged += listBoxStatusMenuText_SelectedIndexChanged;
             // 
@@ -2137,7 +2162,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxElements.Controls.Add(labelElements);
             groupBoxElements.Controls.Add(textBoxElements);
             groupBoxElements.Controls.Add(listBoxElements);
-            groupBoxElements.Location = new Point(5, 325);
+            groupBoxElements.Location = new Point(5, 366);
             groupBoxElements.Name = "groupBoxElements";
             groupBoxElements.Size = new Size(758, 171);
             groupBoxElements.TabIndex = 6;
@@ -2179,7 +2204,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageLimitMenu.Controls.Add(listBoxLimitMenu);
             tabPageLimitMenu.Location = new Point(4, 24);
             tabPageLimitMenu.Name = "tabPageLimitMenu";
-            tabPageLimitMenu.Size = new Size(768, 499);
+            tabPageLimitMenu.Size = new Size(768, 540);
             tabPageLimitMenu.TabIndex = 10;
             tabPageLimitMenu.Text = "Limit menu";
             tabPageLimitMenu.UseVisualStyleBackColor = true;
@@ -2220,7 +2245,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageConfigMenu.Location = new Point(4, 24);
             tabPageConfigMenu.Name = "tabPageConfigMenu";
             tabPageConfigMenu.Padding = new Padding(3);
-            tabPageConfigMenu.Size = new Size(768, 499);
+            tabPageConfigMenu.Size = new Size(768, 540);
             tabPageConfigMenu.TabIndex = 1;
             tabPageConfigMenu.Text = "Config menu";
             tabPageConfigMenu.UseVisualStyleBackColor = true;
@@ -2250,7 +2275,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxConfigMenu.FormattingEnabled = true;
             listBoxConfigMenu.Location = new Point(6, 6);
             listBoxConfigMenu.Name = "listBoxConfigMenu";
-            listBoxConfigMenu.Size = new Size(249, 484);
+            listBoxConfigMenu.Size = new Size(249, 514);
             listBoxConfigMenu.TabIndex = 1;
             listBoxConfigMenu.SelectedIndexChanged += listBoxConfigMenu_SelectedIndexChanged;
             // 
@@ -2261,7 +2286,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageSaveMenu.Controls.Add(listBoxSaveMenu);
             tabPageSaveMenu.Location = new Point(4, 24);
             tabPageSaveMenu.Name = "tabPageSaveMenu";
-            tabPageSaveMenu.Size = new Size(768, 499);
+            tabPageSaveMenu.Size = new Size(768, 540);
             tabPageSaveMenu.TabIndex = 11;
             tabPageSaveMenu.Text = "Save menu";
             tabPageSaveMenu.UseVisualStyleBackColor = true;
@@ -2291,7 +2316,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxSaveMenu.FormattingEnabled = true;
             listBoxSaveMenu.Location = new Point(6, 6);
             listBoxSaveMenu.Name = "listBoxSaveMenu";
-            listBoxSaveMenu.Size = new Size(249, 484);
+            listBoxSaveMenu.Size = new Size(249, 514);
             listBoxSaveMenu.TabIndex = 5;
             listBoxSaveMenu.SelectedIndexChanged += listBoxSaveMenu_SelectedIndexChanged;
             // 
@@ -2300,7 +2325,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageOtherText.Controls.Add(tabControlOtherText);
             tabPageOtherText.Location = new Point(4, 24);
             tabPageOtherText.Name = "tabPageOtherText";
-            tabPageOtherText.Size = new Size(776, 527);
+            tabPageOtherText.Size = new Size(776, 568);
             tabPageOtherText.TabIndex = 4;
             tabPageOtherText.Text = "Other text";
             tabPageOtherText.UseVisualStyleBackColor = true;
@@ -2316,7 +2341,7 @@ namespace FF7Scarlet.ExeEditor
             tabControlOtherText.Location = new Point(0, 0);
             tabControlOtherText.Name = "tabControlOtherText";
             tabControlOtherText.SelectedIndex = 0;
-            tabControlOtherText.Size = new Size(776, 527);
+            tabControlOtherText.Size = new Size(776, 568);
             tabControlOtherText.TabIndex = 0;
             // 
             // tabPageStatusEffects
@@ -2328,7 +2353,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageStatusEffects.Controls.Add(listBoxStatusEffects);
             tabPageStatusEffects.Location = new Point(4, 24);
             tabPageStatusEffects.Name = "tabPageStatusEffects";
-            tabPageStatusEffects.Size = new Size(768, 499);
+            tabPageStatusEffects.Size = new Size(768, 540);
             tabPageStatusEffects.TabIndex = 2;
             tabPageStatusEffects.Text = "Status effects";
             tabPageStatusEffects.UseVisualStyleBackColor = true;
@@ -2338,7 +2363,7 @@ namespace FF7Scarlet.ExeEditor
             labelStatusEffectMenu.AutoSize = true;
             labelStatusEffectMenu.Location = new Point(261, 6);
             labelStatusEffectMenu.Name = "labelStatusEffectMenu";
-            labelStatusEffectMenu.Size = new Size(99, 15);
+            labelStatusEffectMenu.Size = new Size(98, 15);
             labelStatusEffectMenu.TabIndex = 6;
             labelStatusEffectMenu.Text = "Status menu text:";
             // 
@@ -2357,7 +2382,7 @@ namespace FF7Scarlet.ExeEditor
             labelStatusEffectTextBattle.AutoSize = true;
             labelStatusEffectTextBattle.Location = new Point(261, 50);
             labelStatusEffectTextBattle.Name = "labelStatusEffectTextBattle";
-            labelStatusEffectTextBattle.Size = new Size(78, 15);
+            labelStatusEffectTextBattle.Size = new Size(77, 15);
             labelStatusEffectTextBattle.TabIndex = 4;
             labelStatusEffectTextBattle.Text = "In-battle text:";
             // 
@@ -2387,7 +2412,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageL4Limits.Controls.Add(pictureBoxL4Char);
             tabPageL4Limits.Location = new Point(4, 24);
             tabPageL4Limits.Name = "tabPageL4Limits";
-            tabPageL4Limits.Size = new Size(768, 499);
+            tabPageL4Limits.Size = new Size(768, 540);
             tabPageL4Limits.TabIndex = 4;
             tabPageL4Limits.Text = "L4 Limits";
             tabPageL4Limits.UseVisualStyleBackColor = true;
@@ -2403,7 +2428,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxL4Limit.Controls.Add(labelL4Success);
             groupBoxL4Limit.Location = new Point(6, 108);
             groupBoxL4Limit.Name = "groupBoxL4Limit";
-            groupBoxL4Limit.Size = new Size(757, 347);
+            groupBoxL4Limit.Size = new Size(757, 388);
             groupBoxL4Limit.TabIndex = 2;
             groupBoxL4Limit.TabStop = false;
             groupBoxL4Limit.Text = "Text when teaching a L4 limit";
@@ -2487,7 +2512,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageBattleArena.Controls.Add(groupBoxBattleArenaBattle);
             tabPageBattleArena.Location = new Point(4, 24);
             tabPageBattleArena.Name = "tabPageBattleArena";
-            tabPageBattleArena.Size = new Size(768, 499);
+            tabPageBattleArena.Size = new Size(768, 540);
             tabPageBattleArena.TabIndex = 7;
             tabPageBattleArena.Text = "Battle arena + Bizarro";
             tabPageBattleArena.UseVisualStyleBackColor = true;
@@ -2498,7 +2523,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxBattleArenaMenu.Controls.Add(listBoxBizarroMenu);
             groupBoxBattleArenaMenu.Controls.Add(labelBizarroMenu);
             groupBoxBattleArenaMenu.Controls.Add(textBoxBizarroMenu);
-            groupBoxBattleArenaMenu.Location = new Point(5, 367);
+            groupBoxBattleArenaMenu.Location = new Point(5, 408);
             groupBoxBattleArenaMenu.Name = "groupBoxBattleArenaMenu";
             groupBoxBattleArenaMenu.Size = new Size(758, 129);
             groupBoxBattleArenaMenu.TabIndex = 9;
@@ -2541,7 +2566,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxBattleArenaBattle.Controls.Add(textBoxBattleArena);
             groupBoxBattleArenaBattle.Location = new Point(5, 3);
             groupBoxBattleArenaBattle.Name = "groupBoxBattleArenaBattle";
-            groupBoxBattleArenaBattle.Size = new Size(758, 358);
+            groupBoxBattleArenaBattle.Size = new Size(758, 399);
             groupBoxBattleArenaBattle.TabIndex = 8;
             groupBoxBattleArenaBattle.TabStop = false;
             groupBoxBattleArenaBattle.Text = "Battle text";
@@ -2552,7 +2577,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxBattleArena.FormattingEnabled = true;
             listBoxBattleArena.Location = new Point(6, 22);
             listBoxBattleArena.Name = "listBoxBattleArena";
-            listBoxBattleArena.Size = new Size(244, 319);
+            listBoxBattleArena.Size = new Size(244, 349);
             listBoxBattleArena.TabIndex = 5;
             listBoxBattleArena.SelectedIndexChanged += listBoxBattleArena_SelectedIndexChanged;
             // 
@@ -2581,7 +2606,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageShopText.Controls.Add(groupBoxShopNames);
             tabPageShopText.Location = new Point(4, 24);
             tabPageShopText.Name = "tabPageShopText";
-            tabPageShopText.Size = new Size(768, 499);
+            tabPageShopText.Size = new Size(768, 540);
             tabPageShopText.TabIndex = 5;
             tabPageShopText.Text = "Shop text";
             tabPageShopText.UseVisualStyleBackColor = true;
@@ -2594,7 +2619,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxShopText.Controls.Add(listBoxShopText);
             groupBoxShopText.Location = new Point(5, 180);
             groupBoxShopText.Name = "groupBoxShopText";
-            groupBoxShopText.Size = new Size(758, 316);
+            groupBoxShopText.Size = new Size(758, 357);
             groupBoxShopText.TabIndex = 2;
             groupBoxShopText.TabStop = false;
             groupBoxShopText.Text = "Shop text";
@@ -2624,7 +2649,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxShopText.FormattingEnabled = true;
             listBoxShopText.Location = new Point(6, 22);
             listBoxShopText.Name = "listBoxShopText";
-            listBoxShopText.Size = new Size(244, 274);
+            listBoxShopText.Size = new Size(244, 304);
             listBoxShopText.TabIndex = 0;
             listBoxShopText.SelectedIndexChanged += listBoxShopText_SelectedIndexChanged;
             // 
@@ -2675,7 +2700,7 @@ namespace FF7Scarlet.ExeEditor
             tabPageChocoboRacing.Controls.Add(groupBoxChocoboNames);
             tabPageChocoboRacing.Location = new Point(4, 24);
             tabPageChocoboRacing.Name = "tabPageChocoboRacing";
-            tabPageChocoboRacing.Size = new Size(768, 499);
+            tabPageChocoboRacing.Size = new Size(768, 540);
             tabPageChocoboRacing.TabIndex = 6;
             tabPageChocoboRacing.Text = "Chocobo racing";
             tabPageChocoboRacing.UseVisualStyleBackColor = true;
@@ -2689,7 +2714,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxChocoboRacePrizes.Controls.Add(labelPrizeNote);
             groupBoxChocoboRacePrizes.Location = new Point(374, 3);
             groupBoxChocoboRacePrizes.Name = "groupBoxChocoboRacePrizes";
-            groupBoxChocoboRacePrizes.Size = new Size(389, 493);
+            groupBoxChocoboRacePrizes.Size = new Size(389, 534);
             groupBoxChocoboRacePrizes.TabIndex = 42;
             groupBoxChocoboRacePrizes.TabStop = false;
             groupBoxChocoboRacePrizes.Text = "Prize list";
@@ -2741,7 +2766,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxChocoboNames.Controls.Add(listBoxChocoboNames);
             groupBoxChocoboNames.Location = new Point(8, 3);
             groupBoxChocoboNames.Name = "groupBoxChocoboNames";
-            groupBoxChocoboNames.Size = new Size(360, 493);
+            groupBoxChocoboNames.Size = new Size(360, 534);
             groupBoxChocoboNames.TabIndex = 41;
             groupBoxChocoboNames.TabStop = false;
             groupBoxChocoboNames.Text = "Chocobo names";
@@ -2772,7 +2797,7 @@ namespace FF7Scarlet.ExeEditor
             listBoxChocoboNames.Location = new Point(7, 22);
             listBoxChocoboNames.Margin = new Padding(4, 3, 4, 3);
             listBoxChocoboNames.Name = "listBoxChocoboNames";
-            listBoxChocoboNames.Size = new Size(186, 454);
+            listBoxChocoboNames.Size = new Size(186, 484);
             listBoxChocoboNames.TabIndex = 40;
             listBoxChocoboNames.SelectedIndexChanged += listBoxChocoboNames_SelectedIndexChanged;
             // 
@@ -3159,7 +3184,7 @@ namespace FF7Scarlet.ExeEditor
             panelButtons.Controls.Add(buttonSaveFile);
             panelButtons.Controls.Add(buttonSaveEXE);
             panelButtons.Dock = DockStyle.Bottom;
-            panelButtons.Location = new Point(0, 555);
+            panelButtons.Location = new Point(0, 596);
             panelButtons.Name = "panelButtons";
             panelButtons.Size = new Size(784, 46);
             panelButtons.TabIndex = 6;
@@ -3168,7 +3193,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(784, 601);
+            ClientSize = new Size(784, 642);
             Controls.Add(tabControlMain);
             Controls.Add(panelButtons);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -3538,6 +3563,8 @@ namespace FF7Scarlet.ExeEditor
         private CheckedListBox checkedListBoxWalkableTriangleTypes;
         private GroupBox groupBoxDisembarkTriangleTypes;
         private CheckedListBox checkedListBoxDisembarkTriangleTypes;
+        private ComboBox comboBoxShopDialogueSet;
+        private Label labelShopRegion;
         private TabPage tabPageMisc;
         private TabControl tabControlMisc;
         private TabPage tabPageMateria;
