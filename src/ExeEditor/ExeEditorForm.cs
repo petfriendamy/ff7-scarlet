@@ -1476,6 +1476,17 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        //change shop dialogue set
+        private void comboBoxShopDialogueSet_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && editor != null)
+            {
+                int i = comboBoxShopIndex.SelectedIndex;
+                editor.Shops[i].DialogueSet = comboBoxShopDialogueSet.SelectedIndex;
+                SetUnsaved(true);
+            }
+        }
+
         //change shop item
         private void comboBoxShopItem_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -2414,12 +2425,5 @@ namespace FF7Scarlet.ExeEditor
         }
 
         #endregion
-
-        private void comboBoxShopDialogueSet_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int i = comboBoxShopIndex.SelectedIndex;
-            editor.Shops[i].DialogueSet = comboBoxShopDialogueSet.SelectedIndex;
-
-        }
     }
 }
