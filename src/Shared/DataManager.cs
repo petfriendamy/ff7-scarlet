@@ -518,7 +518,7 @@ namespace FF7Scarlet.Shared
 
         private static void LoadSceneBin(string path, bool isJPoriginal)
         {
-            sceneList = Gzip.GetSceneList(path, ref sceneLookupTable, isJPoriginal);
+            sceneList = Gzip.GetDecompressedSceneList(path, ref sceneLookupTable, isJPoriginal);
             ScenePath = path;
         }
 

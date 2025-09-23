@@ -1,11 +1,15 @@
-﻿using FF7Scarlet.KernelEditor;
+﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
+using SharpDX.DirectSound;
 using Shojy.FF7.Elena;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -68,9 +72,9 @@ namespace FF7Scarlet.Compression
             }
         }
 
-        public static Scene[] GetSceneList(string path, ref byte[] sceneLookupTable, bool isJPoriginal)
+        //based on code from SegaChief; thanks!
+        public static Scene[] GetDecompressedSceneList(string path, ref byte[] sceneLookupTable, bool isJPoriginal)
         {
-            //based on code from SegaChief; thanks!
             var fileData = File.ReadAllBytes(path);
 
             int i, j, currScene = 0, currBlock = 0;
@@ -98,7 +102,7 @@ namespace FF7Scarlet.Compression
                     if (currHeader != HexParser.NULL_OFFSET_32_BIT) //check if offset exists first
                     {
                         //determine if the next offset exists or not
-                        if (i < 15)
+                        if (i < Scene.HEADER_COUNT - 1)
                         {
                             Array.Copy(fileData, currOffset + j + 4, headerBytes, 0, 4);
                             nextHeader = BitConverter.ToUInt32(headerBytes, 0);
@@ -145,88 +149,116 @@ namespace FF7Scarlet.Compression
             return sceneList;
         }
 
+        private static byte[][] GetCompressedScenes(ref Scene[] sceneList, int start, int count)
+        {
+            if (start + count > Scene.SCENE_COUNT)
+            {
+                count = Scene.SCENE_COUNT - start;
+            }
+            var compressed = new byte[count][];
+            for (int i = start; i < start + count; ++i)
+            {
+                var temp = GetCompressedData(sceneList[i].GetRawData());
+                if (temp.Length % 4 != 0) //must be a multiple of 4
+                {
+                    int len = temp.Length + 1;
+                    while (len % 4 != 0) { len++; }
+                    var temp2 = HexParser.GetNullBlock(len);
+                    Array.Copy(temp, temp2, temp.Length);
+                    temp = temp2;
+                }
+                compressed[i - start] = temp.ToArray();
+            }
+            return compressed;
+        }
+
+        private static int GetTrimmedLength(ref byte[][] compressedScenes, int start = 0)
+        {
+            uint mergedSize = Scene.HEADER_COUNT * 4;
+            int count = compressedScenes.Length,
+                newLength = 0;
+
+            for (int i = start; i < count && i < start + Scene.HEADER_COUNT && i < Scene.SCENE_COUNT; ++i)
+            {
+                if (compressedScenes[i] != null)
+                {
+                    mergedSize += (uint)compressedScenes[i].Length;
+                    if (mergedSize < Scene.COMPRESSED_BLOCK_SIZE)
+                    {
+                        newLength++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            return newLength;
+        }
+
+        private static byte[] MergeCompressedScenes(ref byte[][] compressedScenes, int start, int count)
+        {
+            //get the headers
+            uint currHeader = Scene.HEADER_COUNT * 4;
+            var merged = new List<byte> { };
+            for (int i = 0; i < Scene.HEADER_COUNT; ++i)
+            {
+                if (i < count)
+                {
+                    merged.AddRange(BitConverter.GetBytes(currHeader / 4));
+                    currHeader += (uint)compressedScenes[start + i].Length;
+                }
+                else
+                {
+                    merged.AddRange(HexParser.GetNullBlock(4));
+                }
+            }
+
+            //output the compressed scenes
+            for (int i = start; i < start + count; ++i)
+            {
+                merged.AddRange(compressedScenes[i]);
+            }
+
+            //pad with FF until chunk is correct length
+            while (merged.Count < Scene.COMPRESSED_BLOCK_SIZE)
+            {
+                merged.Add(0xFF);
+            }
+            return merged.ToArray();
+        }
+
         public static void CreateSceneBin(Scene[] sceneList, string path, ref byte[] sceneLookupTable)
         {
-            //again, based on code from SegaChief
-            var compressedScenes = new List<byte[]> { };
-            byte[] compressedData;
-            var headers = new uint[Scene.SCENE_COUNT];
-            var sceneBlock = new int[Scene.SCENE_COUNT];
-            var blockSize = new List<uint> { };
-            int i, j, n = 0, currBlock = 0, currScene = 0;
-            uint currHeader = Scene.HEADER_COUNT * 4, calculatedSize;
-
             //fill the scene lookup table with 0xFF
-            for (i = 0; i < 64; ++i)
+            for (int i = 0; i < Scene.BLOCK_COUNT; ++i)
             {
                 sceneLookupTable[i] = 0xFF;
             }
-            sceneLookupTable[0] = 0; //always 0
 
-            //create the scene.bin
-            for (i = 0; i < Scene.SCENE_COUNT; ++i)
-            {
-                compressedData = GetCompressedData(sceneList[i].GetRawData());
-
-                if (compressedData.Length % 4 != 0) //must be a multiple of 4
-                {
-                    var temp = compressedData.ToList();
-                    do
-                    {
-                        temp.Add(0xFF);
-                        j = temp.Count;
-                    } while (j % 4 != 0);
-                    compressedData = temp.ToArray();
-                }
-                compressedScenes.Add(compressedData);
-
-                //calculate position of this scene
-                n++;
-                calculatedSize = currHeader + (uint)compressedData.Length;
-                if (n >= Scene.HEADER_COUNT || calculatedSize >= Scene.COMPRESSED_BLOCK_SIZE)
-                {
-                    n = 0;
-                    blockSize.Add(calculatedSize);
-                    currBlock++;
-                    currHeader = Scene.HEADER_COUNT * 4;
-                    sceneLookupTable[currBlock] = (byte)i;
-                }
-                headers[i] = currHeader / 4;
-                currHeader += (uint)compressedData.Length;
-                sceneBlock[i] = currBlock;
-            }
-            blockSize.Add(currHeader);
-
-            //write the compressed data to a file
+            //write the compressed data to a file and update lookup table
+            int currScene = 0, currBlock = 0;
             using (var fs = new FileStream(path, FileMode.Create))
             using (var writer = new BinaryWriter(fs))
             {
-                for (i = 0; i < blockSize.Count; ++i)
+                var compressedScenes = GetCompressedScenes(ref sceneList, 0, Scene.SCENE_COUNT);
+                while (currScene < Scene.SCENE_COUNT && currBlock < Scene.BLOCK_COUNT)
                 {
-                    //write headers for this block
-                    for (j = 0; j < Scene.HEADER_COUNT; ++j)
-                    {
-                        if (currScene + j < Scene.SCENE_COUNT && sceneBlock[currScene + j] == i)
-                        {
-                            writer.Write(headers[currScene + j]);
-                        }
-                        else { writer.Write(HexParser.NULL_OFFSET_32_BIT); }
-                    }
-
-                    //write the scenes assigned to this block
-                    while (currScene < Scene.SCENE_COUNT && sceneBlock[currScene] == i)
-                    {
-                        writer.Write(compressedScenes[currScene]);
-                        currScene++;
-                    }
-
-                    //add padding until the block is full
-                    while (fs.Length % Scene.COMPRESSED_BLOCK_SIZE != 0)
-                    {
-                        writer.Write((byte)0xFF);
-                    }
+                    int len = GetTrimmedLength(ref compressedScenes, currScene);
+                    writer.Write(MergeCompressedScenes(ref compressedScenes, currScene, len));
+                    sceneLookupTable[currBlock] = (byte)currScene;
+                    currScene += len;
+                    currBlock++;
                 }
             }
+        }
+
+        public static int CreateSceneChunk(Scene[] sceneList, string path, int start, int count)
+        {
+            var compressed = GetCompressedScenes(ref sceneList, start, count);
+            int newCount = GetTrimmedLength(ref compressed);
+            File.WriteAllBytes(path, MergeCompressedScenes(ref compressed, 0, newCount));
+            return newCount;
         }
 
         private static byte[] GetCompressedData(byte[] uncompressedData)

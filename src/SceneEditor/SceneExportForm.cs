@@ -1,4 +1,8 @@
-﻿namespace FF7Scarlet.SceneEditor
+﻿using FF7Scarlet.Compression;
+using FF7Scarlet.KernelEditor;
+using FF7Scarlet.Shared;
+
+namespace FF7Scarlet.SceneEditor
 {
     public partial class SceneExportForm : Form
     {
@@ -12,6 +16,7 @@
             scenes = sceneList;
             selectedScene = selected;
 
+            //scene data
             for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
                 listBoxSceneList.Items.Add($"{i}: {scenes[i].GetEnemyNames()}");
@@ -25,6 +30,17 @@
             {
                 radioButtonSelected.Checked = true;
                 listBoxSceneList.SelectedIndices.Add(selected);
+            }
+
+            //chunk data
+            if (DataManager.Kernel == null)
+            {
+                checkBoxCalculateFromLookup.Checked = false;
+                checkBoxCalculateFromLookup.Enabled = false;
+            }
+            else
+            {
+                UpdateChunkData(0);
             }
         }
 
@@ -49,84 +65,158 @@
             listBoxSceneList.SelectedIndices.Clear();
         }
 
+        private void checkBoxCalculateFromLookup_CheckedChanged(object sender, EventArgs e)
+        {
+            bool check = checkBoxCalculateFromLookup.Checked;
+            labelStartingAt.Enabled = numericStartingAt.Enabled =
+                labelNumScenes.Enabled = numericNumScenes.Enabled = !check;
+        }
+
+        private void numericChunkID_ValueChanged(object sender, EventArgs e)
+        {
+            if (checkBoxCalculateFromLookup.Checked)
+            {
+                UpdateChunkData((int)numericChunkID.Value);
+            }
+        }
+
+        private void UpdateChunkData(int chunk)
+        {
+            if (DataManager.Kernel != null)
+            {
+                var lookup = DataManager.Kernel.BattleAndGrowthData.SceneLookupTable;
+                int start = lookup[chunk], next = 255, count;
+                if (chunk < 63) { next = lookup[chunk + 1]; }
+                count = next - start;
+
+                numericStartingAt.Value = start;
+                numericNumScenes.Value = count;
+            }
+        }
+
         private async void buttonExport_Click(object sender, EventArgs e)
         {
-            if (listBoxSceneList.SelectedIndices.Count == 0)
+            //export scene(s)
+            if (tabControlExportType.SelectedTab == tabPageScenes)
             {
-                MessageBox.Show("No scenes selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                try
+                if (listBoxSceneList.SelectedIndices.Count == 0)
                 {
-                    DialogResult result;
-                    string path;
-                    bool success = false;
-
-                    if (radioButtonSelected.Checked) //single scene
+                    MessageBox.Show("No scenes selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    try
                     {
-                        using (var save = new SaveFileDialog())
-                        {
-                            save.FileName = $"scene.{selectedScene}.bin";
-                            save.Filter = "Scene file|*.bin";
-                            result = save.ShowDialog();
-                            path = save.FileName;
-                        }
+                        DialogResult result;
+                        string path;
+                        bool success = false;
 
-                        if (result == DialogResult.OK)
+                        if (radioButtonSelected.Checked) //single scene
                         {
-                            groupBoxExport.Enabled = false;
-                            buttonExport.Enabled = false;
-                            processing = true;
-                            await ExportScene(selectedScene, path);
-                            progressBarSaving.Value = 100;
-                            success = true;
-                        }
-                    }
-                    else //multiple scenes
-                    {
-                        using (var save = new FolderBrowserDialog())
-                        {
-                            result = save.ShowDialog();
-                            path = save.SelectedPath;
-                        }
-
-                        if (result == DialogResult.OK)
-                        {
-                            if (!Directory.Exists(path))
+                            using (var save = new SaveFileDialog())
                             {
-                                MessageBox.Show("Invalid path.", "Error", MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
+                                save.FileName = $"scene.{selectedScene}.bin";
+                                save.Filter = "Scene file|*.bin";
+                                result = save.ShowDialog();
+                                path = save.FileName;
                             }
-                            else
+
+                            if (result == DialogResult.OK)
                             {
                                 groupBoxExport.Enabled = false;
                                 buttonExport.Enabled = false;
                                 processing = true;
-                                var selected = new int[listBoxSceneList.SelectedIndices.Count];
-                                for (int i = 0; i < selected.Length; ++i)
-                                {
-                                    selected[i] = listBoxSceneList.SelectedIndices[i];
-                                }
-                                success = await ExportMulti(path, selected);
+                                await ExportScene(selectedScene, path);
+                                progressBarSaving.Value = 100;
+                                success = true;
                             }
                         }
+                        else //multiple scenes
+                        {
+                            using (var save = new FolderBrowserDialog())
+                            {
+                                result = save.ShowDialog();
+                                path = save.SelectedPath;
+                            }
+
+                            if (result == DialogResult.OK)
+                            {
+                                if (!Directory.Exists(path))
+                                {
+                                    MessageBox.Show("Invalid path.", "Error", MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                                }
+                                else
+                                {
+                                    groupBoxExport.Enabled = false;
+                                    buttonExport.Enabled = false;
+                                    processing = true;
+                                    var selected = new int[listBoxSceneList.SelectedIndices.Count];
+                                    for (int i = 0; i < selected.Length; ++i)
+                                    {
+                                        selected[i] = listBoxSceneList.SelectedIndices[i];
+                                    }
+                                    success = await ExportMulti(path, selected);
+                                }
+                            }
+                        }
+                        if (success)
+                        {
+                            MessageBox.Show("Scene(s) exported successfully.", "Done!", MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                            processing = false;
+                            Close();
+                        }
                     }
-                    if (success)
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Scene(s) exported successfully.", "Done!", MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        groupBoxExport.Enabled = true;
+                        buttonExport.Enabled = true;
+                        progressBarSaving.Value = 0;
+                        processing = false;
+                    }
+                }
+            }
+            else //export chunk(s)
+            {
+                int chunkID = (int)numericChunkID.Value,
+                    start = (int)numericStartingAt.Value,
+                    count = (int)numericNumScenes.Value;
+
+                if (count == 0)
+                {
+                    MessageBox.Show("Can't export 0 scenes.", "No scenes", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    DialogResult result;
+                    string path;
+                    using (var save = new SaveFileDialog())
+                    {
+                        save.FileName = $"scene.bin.chunk.{chunkID}";
+                        save.Filter = "Scene chunk file|scene.bin.chunk.*";
+                        result = save.ShowDialog();
+                        path = save.FileName;
+                    }
+
+                    if (result == DialogResult.OK)
+                    {
+                        processing = true;
+                        int finalCount = await ExportChunk(scenes, path, start, count);
+                        progressBarSaving.Value = 100;
+                        if (finalCount < count)
+                        {
+                            MessageBox.Show($"{finalCount} scenes were exported, because the compressed {count} scenes were too large.",
+                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Chunk successfully exported.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                         processing = false;
                         Close();
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    groupBoxExport.Enabled = true;
-                    buttonExport.Enabled = true;
-                    progressBarSaving.Value = 0;
-                    processing = false;
                 }
             }
         }
@@ -135,12 +225,12 @@
         {
             try
             {
-                await Task.Run((() =>
+                await Task.Run(() =>
                 {
                     var data = scenes[scene].GetRawData();
                     File.WriteAllBytes(path, data);
-                }));
-                
+                });
+
             }
             catch (AggregateException ex)
             {
@@ -150,10 +240,9 @@
 
         private async Task<bool> ExportMulti(string folderPath, int[] selected)
         {
-            int index = 0;
             try
             {
-                int count = selected.Length;
+                int index = 0, count = selected.Length;
                 for (int i = 0; i < count; ++i)
                 {
                     index = selected[i];
@@ -168,6 +257,22 @@
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
+        }
+        private async Task<int> ExportChunk(Scene[] sceneList, string path, int start, int count)
+        {
+            int result = 0;
+            try
+            {
+                result = await Task.Run(() =>
+                {
+                    return Gzip.CreateSceneChunk(sceneList, path, start, count);
+                });
+            }
+            catch (AggregateException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return result;
         }
 
         private void SceneExportForm_FormClosing(object sender, FormClosingEventArgs e)
