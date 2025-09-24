@@ -8,8 +8,6 @@ using System.Text;
 
 namespace FF7Scarlet.ExeEditor
 {
-    public enum Language { English, Spanish, French, German }
-
     public struct MultiStringLength
     {
         public readonly int Length;
