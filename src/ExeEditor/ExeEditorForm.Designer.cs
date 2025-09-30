@@ -282,7 +282,7 @@ namespace FF7Scarlet.ExeEditor
             labelAuidioVolume = new Label();
             trackBarAudioVolume = new TrackBar();
             listBoxAudioVolume = new ListBox();
-            tabWorldmapWalkability = new TabPage();
+            tabPageWorldMapWalkability = new TabPage();
             groupBoxDisembarkTriangleTypes = new GroupBox();
             checkedListBoxDisembarkTriangleTypes = new CheckedListBox();
             groupBoxWalkableTriangleTypes = new GroupBox();
@@ -381,7 +381,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxAudioVolume.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericAudioVolume).BeginInit();
             ((System.ComponentModel.ISupportInitialize)trackBarAudioVolume).BeginInit();
-            tabWorldmapWalkability.SuspendLayout();
+            tabPageWorldMapWalkability.SuspendLayout();
             groupBoxDisembarkTriangleTypes.SuspendLayout();
             groupBoxWalkableTriangleTypes.SuspendLayout();
             panelButtons.SuspendLayout();
@@ -2429,7 +2429,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxL4Limit.Controls.Add(labelL4Success);
             groupBoxL4Limit.Location = new Point(6, 108);
             groupBoxL4Limit.Name = "groupBoxL4Limit";
-            groupBoxL4Limit.Size = new Size(757, 347);
+            groupBoxL4Limit.Size = new Size(757, 388);
             groupBoxL4Limit.TabIndex = 2;
             groupBoxL4Limit.TabStop = false;
             groupBoxL4Limit.Text = "Text when teaching a L4 limit";
@@ -2816,7 +2816,7 @@ namespace FF7Scarlet.ExeEditor
             // 
             tabControlMisc.Controls.Add(tabPageSortOrder);
             tabControlMisc.Controls.Add(tabPageAudio);
-            tabControlMisc.Controls.Add(tabWorldmapWalkability);
+            tabControlMisc.Controls.Add(tabPageWorldMapWalkability);
             tabControlMisc.Dock = DockStyle.Fill;
             tabControlMisc.Location = new Point(0, 0);
             tabControlMisc.Name = "tabControlMisc";
@@ -3096,18 +3096,18 @@ namespace FF7Scarlet.ExeEditor
             listBoxAudioVolume.TabIndex = 0;
             listBoxAudioVolume.SelectedIndexChanged += listBoxAudioVolume_SelectedIndexChanged;
             // 
-            // tabWorldmapWalkability
+            // tabPageWorldMapWalkability
             // 
-            tabWorldmapWalkability.Controls.Add(groupBoxDisembarkTriangleTypes);
-            tabWorldmapWalkability.Controls.Add(groupBoxWalkableTriangleTypes);
-            tabWorldmapWalkability.Controls.Add(listBoxModels);
-            tabWorldmapWalkability.Location = new Point(4, 24);
-            tabWorldmapWalkability.Name = "tabWorldmapWalkability";
-            tabWorldmapWalkability.Padding = new Padding(3);
-            tabWorldmapWalkability.Size = new Size(768, 499);
-            tabWorldmapWalkability.TabIndex = 8;
-            tabWorldmapWalkability.Text = "Worldmap Walkability";
-            tabWorldmapWalkability.UseVisualStyleBackColor = true;
+            tabPageWorldMapWalkability.Controls.Add(groupBoxDisembarkTriangleTypes);
+            tabPageWorldMapWalkability.Controls.Add(groupBoxWalkableTriangleTypes);
+            tabPageWorldMapWalkability.Controls.Add(listBoxModels);
+            tabPageWorldMapWalkability.Location = new Point(4, 24);
+            tabPageWorldMapWalkability.Name = "tabPageWorldMapWalkability";
+            tabPageWorldMapWalkability.Padding = new Padding(3);
+            tabPageWorldMapWalkability.Size = new Size(768, 499);
+            tabPageWorldMapWalkability.TabIndex = 8;
+            tabPageWorldMapWalkability.Text = "Worldmap Walkability";
+            tabPageWorldMapWalkability.UseVisualStyleBackColor = true;
             // 
             // groupBoxDisembarkTriangleTypes
             // 
@@ -3332,7 +3332,7 @@ namespace FF7Scarlet.ExeEditor
             groupBoxAudioVolume.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericAudioVolume).EndInit();
             ((System.ComponentModel.ISupportInitialize)trackBarAudioVolume).EndInit();
-            tabWorldmapWalkability.ResumeLayout(false);
+            tabPageWorldMapWalkability.ResumeLayout(false);
             groupBoxDisembarkTriangleTypes.ResumeLayout(false);
             groupBoxWalkableTriangleTypes.ResumeLayout(false);
             panelButtons.ResumeLayout(false);
@@ -3566,7 +3566,7 @@ namespace FF7Scarlet.ExeEditor
         private Button buttonAudioVolumeTest;
         private Button buttonAudioPanTest;
 
-        private TabPage tabWorldmapWalkability;
+        private TabPage tabPageWorldMapWalkability;
         private GroupBox groupBoxWalkableTriangleTypes;
         private ListBox listBoxModels;
         private CheckedListBox checkedListBoxWalkableTriangleTypes;

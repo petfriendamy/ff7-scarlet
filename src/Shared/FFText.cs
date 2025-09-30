@@ -58,6 +58,15 @@ namespace FF7Scarlet.Shared
             else
             {
                 this.data = new byte[length];
+                if (data.Length > length) //truncate the string if it's too long
+                {
+                    var temp = new FFText(data);
+                    data = temp.GetBytesTruncated();
+                    if (data.Length > length) //still too long
+                    {
+                        data[length - 1] = 0xFF;
+                    }
+                }
                 Array.Copy(data, this.data, Math.Min(length, data.Length));
             }
         }

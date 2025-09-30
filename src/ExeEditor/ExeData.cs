@@ -22,13 +22,30 @@ namespace FF7Scarlet.ExeEditor
 
     public class ExeData
     {
+        private struct ArrayInfo
+        {
+            public readonly long Offset;
+            public readonly int Count;
+            public readonly int Length;
+            public readonly bool KernelSynced;
+
+            public ArrayInfo(long offset, int count, int length, bool kernelSynced = false)
+            {
+                Offset = offset;
+                Count = count;
+                Length = length;
+                KernelSynced = kernelSynced;
+            }
+        }
+
         //constants
         private static readonly int[] EXE_HEADER = { 0x4D, 0x5A, 0x90 };
         public const string
             CONFIG_KEY = "ExePath",
             VANILLA_CONFIG_KEY = "VanillaExePath";
 
-        public static readonly MultiStringLength[] BATTLE_ARENA_TEXT_LENGTHS =
+        //battle arena texts
+        private static readonly MultiStringLength[] BATTLE_ARENA_TEXT_LENGTHS_EN =
         {
             new MultiStringLength(16, 1),
             new MultiStringLength(24, 1),
@@ -36,6 +53,34 @@ namespace FF7Scarlet.ExeEditor
             new MultiStringLength(32, 25),
             new MultiStringLength(34, 3)
         };
+        private static readonly MultiStringLength[] BATTLE_ARENA_TEXT_LENGTHS_ES =
+        {
+            new MultiStringLength(8, 1),
+            new MultiStringLength(32, 1),
+            new MultiStringLength(27, 3),
+            new MultiStringLength(31, 1),
+            new MultiStringLength(39, 24),
+            new MultiStringLength(40, 1),
+            new MultiStringLength(36, 3)
+        };
+        private static readonly MultiStringLength[] BATTLE_ARENA_TEXT_LENGTHS_FR =
+        {
+            new MultiStringLength(16, 1),
+            new MultiStringLength(32, 1),
+            new MultiStringLength(36, 4),
+            new MultiStringLength(32, 25),
+            new MultiStringLength(34, 3)
+        };
+        private static readonly MultiStringLength[] BATTLE_ARENA_TEXT_LENGTHS_DE =
+        {
+            new MultiStringLength(8, 1),
+            new MultiStringLength(16, 1),
+            new MultiStringLength(26, 4),
+            new MultiStringLength(31, 24),
+            new MultiStringLength(32, 1),
+            new MultiStringLength(35, 3)
+        };
+
         public const int
             NUM_MENU_TEXTS = 23,
             NUM_ITEM_MENU_TEXTS = 11,
@@ -57,25 +102,13 @@ namespace FF7Scarlet.ExeEditor
             NUM_SHOPS = 80,
             NUM_SHOP_NAMES = 9,
             NUM_SHOP_TEXTS = 18,
-            NUM_CHOCOBO_NAMES = 46,
             NUM_CHOCOBO_RACE_ITEMS = 24,
             NUM_AUDIO_VALUES = 128,
             NUM_WALKABILITY_MODELS = 12,
-            
+
             MENU_TEXT_LENGTH = 20,
-            ITEM_MENU_TEXT_LENGTH = 12,
-            EQUIP_MENU_TEXT_LENGTH = 12,
-            UNEQUIP_TEXT_LENGTH = 36,
-            ELEMENT_NAME_LENGTH = 10,
-            STATUS_MENU_TEXT_LENGTH = 15,
-            LIMIT_MENU_TEXT_LENGTH = 36,
-            SAVE_MENU_TEXT_LENGTH = 36,
             QUIT_TEXT_LENGTH_1 = 30,
-            QUIT_TEXT_LENGTH_2 = 4,
-            SHOP_TEXT_LENGTH = 46,
-            BIZARRO_MENU_TEXT_LENGTH = 38,
-            CHOCOBO_NAME_LENGTH = 7,
-            ITEM_NAME_LENGTH = 16;
+            SHOP_TEXT_LENGTH = 46;
 
         private const long
             HEXT_OFFSET_TEXT = 0x400C00,
@@ -84,7 +117,7 @@ namespace FF7Scarlet.ExeEditor
 
             TEST_BYTE_POS = 0x94,
             AP_MULTIPLIER_POS = 0x31F14F,
-            AP_MASTER_OFFSET = 0x4F,
+            AP_MASTER_OFFSET = 0x4E,
             MATERIA_EQUIP_EFFECT_POS = 0x4FD8C8,
             QUIT_TEXT_POS_1 = 0x518370,
             QUIT_TEXT_POS_2 = 0x5183D0,
@@ -96,7 +129,7 @@ namespace FF7Scarlet.ExeEditor
             LIMIT_MENU_TEXT_POS = 0x51DED8,
             LIMIT_BREAK_POS = 0x51E0D4,
             STATUS_MENU_ELEMENT_POS = 0x51EF40,
-            STATUS_MENU_EFFECTS_POS = 0x51EFA0,
+            STATUS_EFFECTS_MENU_POS = 0x51EFA0,
             STATUS_MENU_TEXT_POS = 0x51F1C0,
             EQUIP_MENU_TEXT_POS = 0x51F3A8,
             UNEQUIP_TEXT_POS = 0x51F518,
@@ -106,7 +139,7 @@ namespace FF7Scarlet.ExeEditor
             LIMIT_TEXT_POS = 0x51FBF0,
             ITEM_SORT_POS = 0x51FF48,
             MATERIA_PRIORITY_POS = 0x5201C8,
-            NAME_DATA_POS = 0x5206B8,
+            CHARACTER_NAMES_POS = 0x5206B8,
             CAIT_SITH_DATA_POS = 0x520C10,
             VINCENT_DATA_POS = CAIT_SITH_DATA_POS + DataParser.CHARACTER_RECORD_LENGTH,
             SHOP_NAME_POS = 0x5219C8,
@@ -121,11 +154,14 @@ namespace FF7Scarlet.ExeEditor
             CHOCOBO_RACE_ITEMS_POS = 0x57B3D0,
             CHOCOBO_NAMES_POS = 0x57B658;
 
-        private static readonly int[] MODEL_CAN_WALK_POS = { 0x34c356, 0, 0x34c383, 0x34c4cc, 0x34c57e, 0x34c5c9, 0x568440, 0x568444, 0x568448, 0x56844c, 0x568450, 0x34bbdb };
-        private static readonly int[] MODEL_CAN_DISEMBARK_POS = { 0, 0x34c45f, 0x34c3c1, 0x34c518, 0x34c54c, 0x34c59a, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0 };
-        private static readonly int[] MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS = { 0x34c4f3, 0x34c52d };
+        private const long MODELS_POS = 0x34c356;
+        private static readonly long[] MODEL_CAN_WALK_POS = { MODELS_POS, 0, 0x34c383, 0x34c4cc, 0x34c57e, 0x34c5c9, 0x568440, 0x568444, 0x568448, 0x56844c, 0x568450, 0x34bbdb };
+        private static readonly long[] MODEL_CAN_DISEMBARK_POS = { 0, 0x34c45f, 0x34c3c1, 0x34c518, 0x34c54c, 0x34c59a, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0 };
+        private static readonly long[] MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS = { 0x34c4f3, 0x34c52d };
 
         //properties
+        private Dictionary<long, ArrayInfo> ArrayInfoList { get; }
+
         public string FilePath { get; private set; } = string.Empty;
         public Language Language { get; private set; }
         public Attack[] Limits { get; } = new Attack[NUM_LIMITS];
@@ -150,7 +186,7 @@ namespace FF7Scarlet.ExeEditor
         public FFText[] BattleArenaTexts { get; }
         public FFText[] BizarroMenuTexts { get; } = new FFText[NUM_BIZARRO_MENU_TEXTS];
         public FFText[] CharacterNames { get; } = new FFText[NUM_CHARACTER_NAMES];
-        public FFText[] ChocoboNames { get; } = new FFText[NUM_CHOCOBO_NAMES + 1]; //extra slot for Teioh
+        public FFText[] ChocoboNames { get; }
         public FFText[] ChocoboRacePrizes { get; } = new FFText[NUM_CHOCOBO_RACE_ITEMS];
         public Character? CaitSith { get; private set; }
         public Character? Vincent { get; private set; }
@@ -174,7 +210,47 @@ namespace FF7Scarlet.ExeEditor
 
         public ExeData(string path)
         {
+            Language = GetLanguage(path);
             BattleArenaTexts = new FFText[GetNumBattleArenaTexts()];
+            ChocoboNames = new FFText[GetNumChocoboNames(Language) + 1];
+
+            //get info about arrays within the EXE
+            ArrayInfoList = new Dictionary<long, ArrayInfo> {
+                { CAIT_SITH_DATA_POS, new ArrayInfo(GetCaitOffset(), 2, DataParser.CHARACTER_RECORD_LENGTH) },
+                { LIMIT_BREAK_POS, new ArrayInfo(GetLimitOffset(), NUM_LIMITS, DataParser.ATTACK_BLOCK_SIZE) },
+                { MAIN_MENU_TEXT_POS, new ArrayInfo(GetMainMenuOffset(), NUM_MENU_TEXTS, MENU_TEXT_LENGTH) },
+                { ITEM_MENU_TEXT_POS, new ArrayInfo(GetItemMenuOffset(), NUM_ITEM_MENU_TEXTS, GetItemMenuTextLength()) },
+                { MAGIC_MENU_TEXT_POS, new ArrayInfo(GetMagicMenuOffset(), NUM_MAGIC_MENU_TEXTS, GetMagicMenuTextLength()) },
+                { MATERIA_MENU_TEXT_POS, new ArrayInfo(GetMateriaMenuOffset(), NUM_MATERIA_MENU_TEXTS, GetMateriaMenuTextLength()) },
+                { UNEQUIP_TEXT_POS, new ArrayInfo(GetUnequipOffset(), NUM_UNEQUIP_TEXTS, GetUnequipTextLength()) },
+                { EQUIP_MENU_TEXT_POS, new ArrayInfo(GetEquipMenuOffset(), NUM_EQUIP_MENU_TEXTS, GetEquipMenuTextLength()) },
+                { STATUS_MENU_ELEMENT_POS, new ArrayInfo(GetElementOffset(), NUM_ELEMENTS, GetElementNameLength()) },
+                { STATUS_EFFECT_BATTLE_POS, new ArrayInfo(GetStatusEffectBattleOffset(), NUM_STATUS_EFFECTS, GetStatusEffectBattleLength()) },
+                { STATUS_EFFECTS_MENU_POS, new ArrayInfo(GetStatusEffectMenuOffset(), NUM_STATUS_EFFECTS, MENU_TEXT_LENGTH) },
+                { STATUS_MENU_TEXT_POS, new ArrayInfo(GetStatusMenuOffset(), NUM_STATUS_EFFECTS, GetStatusMenuTextLength()) },
+                { LIMIT_MENU_TEXT_POS, new ArrayInfo(GetLimitMenuOffset(), NUM_LIMIT_MENU_TEXTS, GetLimitMenuTextLength()) },
+                { LIMIT_TEXT_POS, new ArrayInfo(GetLimitTextOffset(), Kernel.PLAYABLE_CHARACTER_COUNT * 3, GetLimitTextLength()) },
+                { CONFIG_MENU_TEXT_POS, new ArrayInfo(GetConfigOffset(), NUM_CONFIG_MENU_TEXTS, GetConfigTextLength()) },
+                { SAVE_MENU_TEXT_POS, new ArrayInfo(GetSaveOffset(), NUM_SAVE_MENU_TEXTS, GetSaveTextLength()) },
+                { QUIT_TEXT_POS_1, new ArrayInfo(GetQuitOffset(), NUM_QUIT_TEXTS_1, QUIT_TEXT_LENGTH_1) },
+                { QUIT_TEXT_POS_2, new ArrayInfo(GetQuitOffset(), NUM_QUIT_TEXTS_2, GetQuitTextLength()) },
+                { BATTLE_ARENA_TEXT_POS, new ArrayInfo(GetBattleArenaOffset(), GetNumBattleArenaTexts(), -1) },
+                { BIZARRO_MENU_TEXT_POS, new ArrayInfo(GetBizarroOffset(), NUM_BIZARRO_MENU_TEXTS, GetBizarroTextLength()) },
+                { CHARACTER_NAMES_POS, new ArrayInfo(GetNameOffset(), NUM_CHARACTER_NAMES, DataParser.CHARACTER_NAME_LENGTH) },
+                { CHOCOBO_NAMES_POS, new ArrayInfo(GetChocoboNameOffset(), -1, GetChocoboNameLength()) },
+                { CHOCOBO_RACE_ITEMS_POS, new ArrayInfo(GetChocoboRaceOffset(), NUM_CHOCOBO_RACE_ITEMS, GetItemNameLength()) },
+                { SHOP_NAME_POS, new ArrayInfo(GetShopNameOffset(), NUM_SHOP_NAMES, GetShopNameLength()) },
+                { SHOP_TEXT_POS, new ArrayInfo(GetShopTextOffset(), NUM_SHOP_TEXTS, SHOP_TEXT_LENGTH) },
+                { SHOP_INVENTORY_POS, new ArrayInfo(GetShopOffset(), NUM_SHOPS, ShopInventory.SHOP_DATA_LENGTH, true) },
+                { ITEM_PRICE_DATA_POS, new ArrayInfo(GetShopOffset(), DataParser.MATERIA_START, 4, true) },
+                { MATERIA_PRICE_DATA_POS, new ArrayInfo(GetShopOffset(), Kernel.MATERIA_COUNT, 4, true) },
+                { MATERIA_PRIORITY_POS, new ArrayInfo(GetMateriaPriorityOffset(), Kernel.MATERIA_COUNT, 1, true) },
+                { MATERIA_EQUIP_EFFECT_POS, new ArrayInfo(GetEquipEffectOffset(), MateriaEquipEffect.COUNT, MateriaEquipEffect.DATA_LENGTH) },
+                { AUDIO_VOLUME_POS, new ArrayInfo(GetAudioOffset(), NUM_AUDIO_VALUES, 4) },
+                { AUDIO_PAN_POS, new ArrayInfo(GetAudioOffset(), NUM_AUDIO_VALUES, 4) }
+            };
+
+            //read the data
             ReadEXE(path);
 
             //make chocobos use the same bitmask
@@ -185,6 +261,22 @@ namespace FF7Scarlet.ExeEditor
                 j++;
             }
         }
+
+        private int GetBattleArenaBlockLength()
+        {
+            int result = 0, curr = 0;
+            for (int i = 0; i < GetBattleArenaTextLengths(Language).Length; ++i)
+            {
+                for (int j = 0; j < GetBattleArenaTextLengths(Language)[i].Count; ++j)
+                {
+                    result += GetBattleArenaTextLengths(Language)[i].Length;
+                    curr++;
+                }
+            }
+            return result;
+        }
+
+        #region Offsets
 
         private long GetAPPriceMultiplierOffset()
         {
@@ -216,6 +308,21 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        private long GetEquipEffectOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0xA60;
+                case Language.French:
+                    return 0x860;
+                case Language.German:
+                    return 0x480;
+                default:
+                    return 0;
+            }
+        }
+
         private long GetMainMenuOffset()
         {
             switch (Language)
@@ -231,7 +338,112 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        private long GetStatusOffset()
+        private long GetItemMenuOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x77FD0;
+                case Language.French:
+                    return 0x77BB8;
+                case Language.German:
+                    return 0x772A0;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetMagicMenuOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x77EB8;
+                case Language.French:
+                    return 0x77B68;
+                case Language.German:
+                    return 0x77288;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetMateriaMenuOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x77D00;
+                case Language.French:
+                    return 0x77A68;
+                case Language.German:
+                    return 0x77138;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetUnequipOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x77CF0;
+                case Language.French:
+                    return 0x77A70;
+                case Language.German:
+                    return 0x77138;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetEquipMenuOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x77B58;
+                case Language.French:
+                    return 0x7782E;
+                case Language.German:
+                    return 0x76FD8;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetStatusMenuOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x76228;
+                case Language.French:
+                    return 0x761F0;
+                case Language.German:
+                    return 0x75958;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetElementOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x779D8;
+                case Language.French:
+                    return 0x777C0;
+                case Language.German:
+                    return 0x776A0;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetStatusEffectBattleOffset()
         {
             switch (Language)
             {
@@ -244,6 +456,12 @@ namespace FF7Scarlet.ExeEditor
                 default:
                     return 0;
             }
+        }
+
+        private long GetStatusEffectMenuOffset()
+        {
+            if (Language == Language.German) { return 0x76EC8; }
+            else { return GetElementOffset(); }
         }
 
         private long GetLimitOffset()
@@ -261,6 +479,21 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        private long GetLimitMenuOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x779A0;
+                case Language.French:
+                    return 0x77788;
+                case Language.German:
+                    return 0x76EF0;
+                default:
+                    return 0;
+            }
+        }
+
         private long GetLimitTextOffset()
         {
             switch (Language)
@@ -271,6 +504,36 @@ namespace FF7Scarlet.ExeEditor
                     return 0x77BE8;
                 case Language.German:
                     return 0x772E0;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetSaveOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x784A0;
+                case Language.French:
+                    return 0x78A10;
+                case Language.German:
+                    return 0x77700;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetQuitOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x77240;
+                case Language.French:
+                    return 0x770B8;
+                case Language.German:
+                    return 0x76C40;
                 default:
                     return 0;
             }
@@ -351,19 +614,190 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        public int GetConfigTextLength()
+        private long GetBattleArenaOffset()
         {
             switch (Language)
             {
                 case Language.Spanish:
-                    return 70;
+                    return 0x776E8;
                 case Language.French:
-                    return 60;
+                    return 0x77738;
                 case Language.German:
-                    return 54;
+                    return 0x76EF0;
                 default:
-                    return 48;
+                    return 0;
             }
+        }
+
+        private long GetBizarroOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x777B8;
+                case Language.French:
+                    return 0x77788;
+                case Language.German:
+                    return 0x76EF0;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetMateriaPriorityOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 0x780E0;
+                case Language.French:
+                    return 0x77E70;
+                case Language.German:
+                    return 0x77370;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetChocoboRaceOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return -0xBEE8;
+                case Language.French:
+                    return -0xC0D0;
+                case Language.German:
+                    return -0xC4E8;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetChocoboNameOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return -0xBED0;
+                case Language.French:
+                    return -0xC0A0;
+                case Language.German:
+                    return -0xC4D0;
+                default:
+                    return 0;
+            }
+        }
+
+        private long GetAudioOffset()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return -0xBF08;
+                case Language.French:
+                    return -0xC0F0;
+                case Language.German:
+                    return -0xC508;
+                default:
+                    return 0;
+            }
+        }
+
+        #endregion
+
+        #region Text Length
+
+        public int GetItemMenuTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 20;
+                case Language.French:
+                    return 14;
+                case Language.German:
+                    return 18;
+                default:
+                    return 12;
+            }
+        }
+
+        public int GetMagicMenuTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 40;
+                case Language.French:
+                    return 26;
+                case Language.German:
+                    return 22;
+                default:
+                    return MENU_TEXT_LENGTH;
+            }
+        }
+
+        public int GetMateriaMenuTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 30;
+                case Language.French:
+                    return 26;
+                case Language.German:
+                    return 28;
+                default:
+                    return MENU_TEXT_LENGTH;
+            }
+        }
+
+        public int GetUnequipTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 40;
+                case Language.French:
+                    return 34;
+                default:
+                    return 36;
+            }
+        }
+
+        public int GetEquipMenuTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                case Language.French:
+                    return 26;
+                case Language.German:
+                    return 22;
+                default:
+                    return 12;
+            }
+        }
+
+        public int GetStatusMenuTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 40;
+                case Language.French:
+                case Language.German:
+                    return 22;
+                default:
+                    return 15;
+            }
+        }
+
+        public int GetElementNameLength()
+        {
+            if (Language == Language.German) { return 12; }
+            else { return 10; }
         }
 
         public int GetStatusEffectBattleLength()
@@ -381,6 +815,35 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        public int GetLimitMenuTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                case Language.French:
+                    return 40;
+                case Language.German:
+                    return 32;
+                default:
+                    return 36;
+            }
+        }
+
+        public int GetConfigTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 70;
+                case Language.French:
+                    return 60;
+                case Language.German:
+                    return 54;
+                default:
+                    return 48;
+            }
+        }
+
         public int GetLimitTextLength()
         {
             switch (Language)
@@ -395,14 +858,53 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        public static int GetNumBattleArenaTexts()
+        public int GetSaveTextLength()
         {
-            int temp = 0;
-            foreach (var l in BATTLE_ARENA_TEXT_LENGTHS)
+            switch (Language)
             {
-                temp += l.Count;
+                case Language.Spanish:
+                    return 60;
+                case Language.French:
+                    return 50;
+                case Language.German:
+                    return 40;
+                default:
+                    return 36;
             }
-            return temp;
+        }
+
+        public int GetQuitTextLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                    return 3;
+                case Language.German:
+                    return 5;
+                default:
+                    return 4;
+            }
+        }
+
+        public MultiStringLength[] GetBattleArenaTextLengths(Language lang)
+        {
+            switch (lang)
+            {
+                case Language.Spanish:
+                    return BATTLE_ARENA_TEXT_LENGTHS_ES;
+                case Language.French:
+                    return BATTLE_ARENA_TEXT_LENGTHS_FR;
+                case Language.German:
+                    return BATTLE_ARENA_TEXT_LENGTHS_DE;
+                default:
+                    return BATTLE_ARENA_TEXT_LENGTHS_EN;
+            }
+        }
+
+        public int GetBizarroTextLength()
+        {
+            if (Language == Language.Spanish) { return 40; }
+            else { return 38; }
         }
 
         public int GetShopNameLength()
@@ -413,6 +915,60 @@ namespace FF7Scarlet.ExeEditor
                 length *= 2;
             }
             return length;
+        }
+
+        public int GetItemNameLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                case Language.German:
+                    return 17;
+                case Language.French:
+                    return 18;
+                default:
+                    return 16;
+            }
+        }
+
+        public int GetChocoboNameLength()
+        {
+            switch (Language)
+            {
+                case Language.Spanish:
+                case Language.German:
+                    return 8;
+                case Language.French:
+                    return 10;
+                default:
+                    return 7;
+            }
+        }
+
+        #endregion
+
+        public static int GetNumBattleArenaTexts()
+        {
+            int temp = 0;
+            foreach (var l in BATTLE_ARENA_TEXT_LENGTHS_EN)
+            {
+                temp += l.Count;
+            }
+            return temp;
+        }
+
+        public int GetNumChocoboNames(Language lang)
+        {
+            switch (lang)
+            {
+                case Language.Spanish:
+                case Language.German:
+                    return 41;
+                case Language.French:
+                    return 40;
+                default:
+                    return 46;
+            }
         }
 
         public static bool ValidateEXE(string path, bool unedited)
@@ -524,6 +1080,558 @@ namespace FF7Scarlet.ExeEditor
             return fileName.Contains('_');
         }
 
+        //private function to read items from an array
+        private int ReadArrayItems(byte[] data, long offset, int count, int length, bool isExe, Language lang)
+        {
+            int result = 0;
+            int internalCount = ArrayInfoList[offset].Count;
+            if (offset == CHOCOBO_NAMES_POS)
+            {
+                internalCount = GetNumChocoboNames(Language);
+                if (!isExe)
+                {
+                    internalCount++;
+                }
+            }
+            int maxCount = Math.Min(count, internalCount);
+
+            using (var stream = new MemoryStream(data))
+            using (var reader = new BinaryReader(stream))
+            {
+                if (offset == CAIT_SITH_DATA_POS)
+                {
+                    CaitSith = DataParser.ReadCharacter(reader.ReadBytes(length));
+                    Vincent = DataParser.ReadCharacter(reader.ReadBytes(length));
+                }
+                else if (offset == LIMIT_BREAK_POS)
+                {
+                    for (int i = 0; i < maxCount; ++i)
+                    {
+                        Limits[i] = DataParser.ReadAttack((ushort)i, $"(Limit #{i})", reader.ReadBytes(length));
+                    }
+                }
+                else if (offset == LIMIT_TEXT_POS)
+                {
+                    for (int i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
+                    {
+                        if (i == Kernel.PLAYABLE_CHARACTER_COUNT - 1)
+                        {
+                            if (!isExe)
+                            {
+                                stream.Seek(length * 2, SeekOrigin.Current);
+                            }
+                        }
+                        else
+                        {
+                            LimitSuccess[i] = new FFText(reader.ReadBytes(length));
+                            LimitFail[i] = new FFText(reader.ReadBytes(length));
+                        }
+                        LimitWrong[i] = new FFText(reader.ReadBytes(length));
+                    }
+                }
+                else if (offset == MATERIA_EQUIP_EFFECT_POS)
+                {
+                    for (int i = 0; i < maxCount; ++i)
+                    {
+                        MateriaEquipEffects[i] = new MateriaEquipEffect(reader.ReadBytes(length));
+                    }
+                }
+                else if (offset == MATERIA_PRIORITY_POS)
+                {
+                    MateriaPriority.Clear();
+                    for (int i = 0; i < maxCount; ++i)
+                    {
+                        MateriaPriority.Add((byte)i, reader.ReadByte());
+                    }
+                }
+                else if (offset == SHOP_INVENTORY_POS)
+                {
+                    for (int i = 0; i < maxCount; ++i)
+                    {
+                        Shops[i] = new ShopInventory(reader.ReadBytes(ShopInventory.SHOP_DATA_LENGTH));
+                    }
+                }
+                else if (offset == ITEM_PRICE_DATA_POS)
+                {
+                    int i;
+                    for (i = 0; i < ItemPrices.Length; ++i)
+                    {
+                        ItemPrices[i] = reader.ReadUInt32();
+                    }
+                    for (i = 0; i < WeaponPrices.Length; ++i)
+                    {
+                        WeaponPrices[i] = reader.ReadUInt32();
+                    }
+                    for (i = 0; i < ArmorPrices.Length; ++i)
+                    {
+                        ArmorPrices[i] = reader.ReadUInt32();
+                    }
+                    for (i = 0; i < AccessoryPrices.Length; ++i)
+                    {
+                        AccessoryPrices[i] = reader.ReadUInt32();
+                    }
+                }
+                else if (offset == MATERIA_PRICE_DATA_POS)
+                {
+                    for (int i = 0; i < maxCount; ++i)
+                    {
+                        MateriaPrices[i] = reader.ReadUInt32();
+                    }
+                }
+                else if (offset == AUDIO_VOLUME_POS)
+                {
+                    for (int i = 0; i < maxCount; ++i)
+                    {
+                        AudioVolume[i] = reader.ReadInt32();
+                    }
+                }
+                else if (offset == AUDIO_PAN_POS)
+                {
+                    for (int i = 0; i < maxCount; ++i)
+                    {
+                        AudioPan[i] = reader.ReadInt32();
+                    }
+                }
+                else //strings
+                {
+                    FFText[] str;
+                    if (offset == BATTLE_ARENA_TEXT_POS) //special case for battle arena texts
+                    {
+                        maxCount = GetNumBattleArenaTexts();
+                        str = new FFText[maxCount];
+                        int i, j;
+
+                        int curr = 0;
+                        var lengths = GetBattleArenaTextLengths(lang);
+                        while (curr < maxCount)
+                        {
+                            for (i = 0; i < lengths.Length; ++i)
+                            {
+                                for (j = 0; j < lengths[i].Count; ++j)
+                                {
+                                    str[curr] = new FFText(reader.ReadBytes(lengths[i].Length));
+                                    curr++;
+                                }
+                            }
+                        }
+
+                        if (lang != Language) //truncate any strings that are too long
+                        {
+                            curr = 0;
+                            lengths = GetBattleArenaTextLengths(Language);
+                            while (curr < maxCount)
+                            {
+                                for (i = 0; i < lengths.Length; ++i)
+                                {
+                                    for (j = 0; j < lengths[i].Count; ++j)
+                                    {
+                                        int newLength = lengths[i].Length;
+                                        if (str[curr].Length > newLength)
+                                        {
+                                            result = 1;
+                                            var temp = str[curr].GetBytes();
+                                            str[curr] = new FFText(temp, newLength);
+                                        }
+                                        curr++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else //everything else
+                    {
+                        str = new FFText[count];
+
+                        for (int i = 0; i < count; ++i)
+                        {
+                            if (isExe && offset == STATUS_EFFECTS_MENU_POS && Language == Language.Spanish && i == 19)
+                            {
+                                //silly Spanish bug
+                                str[i] = new FFText();
+                            }
+                            else
+                            {
+                                str[i] = new FFText(reader.ReadBytes(length), ArrayInfoList[offset].Length);
+                                if (length > ArrayInfoList[offset].Length)
+                                {
+                                    result = 1;
+                                }
+                            }
+                        }
+                    }
+
+                    //copy them to the associated array
+                    switch (offset)
+                    {
+                        case MAIN_MENU_TEXT_POS:
+                            Array.Copy(str, MainMenuTexts, maxCount);
+                            break;
+                        case ITEM_MENU_TEXT_POS:
+                            Array.Copy(str, ItemMenuTexts, maxCount);
+                            break;
+                        case MAGIC_MENU_TEXT_POS:
+                            Array.Copy(str, MagicMenuTexts, maxCount);
+                            break;
+                        case MATERIA_MENU_TEXT_POS:
+                            Array.Copy(str, MateriaMenuTexts, maxCount);
+                            break;
+                        case UNEQUIP_TEXT_POS:
+                            Array.Copy(str, UnequipTexts, maxCount);
+                            break;
+                        case EQUIP_MENU_TEXT_POS:
+                            Array.Copy(str, EquipMenuTexts, maxCount);
+                            break;
+                        case STATUS_MENU_ELEMENT_POS:
+                            Array.Copy(str, ElementNames, maxCount);
+                            break;
+                        case STATUS_EFFECTS_MENU_POS:
+                            Array.Copy(str, StatusEffectsMenu, maxCount);
+                            break;
+                        case STATUS_EFFECT_BATTLE_POS:
+                            Array.Copy(str, StatusEffectsBattle, maxCount);
+                            break;
+                        case STATUS_MENU_TEXT_POS:
+                            Array.Copy(str, StatusMenuTexts, maxCount);
+                            break;
+                        case LIMIT_MENU_TEXT_POS:
+                            Array.Copy(str, LimitMenuTexts, maxCount);
+                            break;
+                        case CONFIG_MENU_TEXT_POS:
+                            Array.Copy(str, ConfigMenuTexts, maxCount);
+                            break;
+                        case SAVE_MENU_TEXT_POS:
+                            Array.Copy(str, SaveMenuTexts, maxCount);
+                            break;
+                        case QUIT_TEXT_POS_1:
+                            Array.Copy(str, QuitMenuTexts, maxCount);
+                            break;
+                        case QUIT_TEXT_POS_2:
+                            Array.Copy(str, 0, QuitMenuTexts, NUM_QUIT_TEXTS_1, maxCount);
+                            break;
+                        case BATTLE_ARENA_TEXT_POS:
+                            Array.Copy(str, BattleArenaTexts, maxCount);
+                            break;
+                        case BIZARRO_MENU_TEXT_POS:
+                            Array.Copy(str, BizarroMenuTexts, maxCount);
+                            break;
+                        case CHARACTER_NAMES_POS:
+                            Array.Copy(str, CharacterNames, maxCount);
+                            break;
+                        case CHOCOBO_NAMES_POS:
+                            if (isExe)
+                            {
+                                Array.Copy(str, ChocoboNames, maxCount);
+                            }
+                            else
+                            {
+                                Array.Copy(str, ChocoboNames, maxCount - 1);
+                                ChocoboNames[internalCount - 1] = str[count - 1];
+                            }
+                            break;
+                        case CHOCOBO_RACE_ITEMS_POS:
+                            Array.Copy(str, ChocoboRacePrizes, maxCount);
+                            break;
+                        case SHOP_NAME_POS:
+                            Array.Copy(str, ShopNames, maxCount);
+                            break;
+                        case SHOP_TEXT_POS:
+                            Array.Copy(str, ShopText, maxCount);
+                            break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        //private function to write data to an array
+        private byte[] WriteData(long pos, bool isExe = false)
+        {
+            var output = new List<byte>();
+            int i;
+
+            switch (pos)
+            {
+                case AP_MULTIPLIER_POS:
+                    output.Add(APPriceMultiplier);
+                    break;
+
+                case MATERIA_EQUIP_EFFECT_POS:
+                    foreach (var e in MateriaEquipEffects)
+                    {
+                        output.AddRange(e.GetBytes());
+                    }
+                    break;
+
+                case QUIT_TEXT_POS_1:
+                    for (i = 0; i < NUM_QUIT_TEXTS_1; ++i)
+                    {
+                        output.AddRange(QuitMenuTexts[i].GetBytes(QUIT_TEXT_LENGTH_1, false, true));
+                    }
+                    break;
+
+                case QUIT_TEXT_POS_2:
+                    for (i = 0; i < NUM_QUIT_TEXTS_2; ++i)
+                    {
+                        output.AddRange(QuitMenuTexts[i + NUM_QUIT_TEXTS_1].GetBytes(GetQuitTextLength(),
+                            false, true));
+                    }
+                    break;
+
+                case CONFIG_MENU_TEXT_POS:
+                    foreach (var t in ConfigMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetConfigTextLength(), false, true));
+                    }
+                    break;
+
+                case MAIN_MENU_TEXT_POS:
+                    foreach (var t in MainMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(MENU_TEXT_LENGTH, false, true));
+                    }
+                    break;
+
+                case STATUS_EFFECT_BATTLE_POS:
+                    foreach (var s in StatusEffectsBattle)
+                    {
+                        output.AddRange(s.GetBytes(GetStatusEffectBattleLength(), false, true));
+                    }
+                    break;
+
+                case BATTLE_ARENA_TEXT_POS:
+                    int curr = 0;
+                    for (i = 0; i < GetBattleArenaTextLengths(Language).Length; ++i)
+                    {
+                        for (int j = 0; j < GetBattleArenaTextLengths(Language)[i].Count; ++j)
+                        {
+                            output.AddRange(BattleArenaTexts[curr].GetBytes(GetBattleArenaTextLengths(Language)[i].Length,
+                                false, true));
+                            curr++;
+                        }
+                    }
+                    break;
+
+                case BIZARRO_MENU_TEXT_POS:
+                    foreach (var t in BizarroMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetBizarroTextLength(), false, true));
+                    }
+                    break;
+
+                case LIMIT_MENU_TEXT_POS:
+                    foreach (var t in LimitMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetLimitMenuTextLength(), false, true));
+                    }
+                    break;
+
+                case LIMIT_BREAK_POS:
+                    foreach (var l in Limits)
+                    {
+                        output.AddRange(DataParser.GetAttackBytes(l));
+                    }
+                    break;
+
+                case LIMIT_TEXT_POS:
+                    for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
+                    {
+                        if (i < Kernel.PLAYABLE_CHARACTER_COUNT - 1)
+                        {
+                            output.AddRange(LimitSuccess[i].GetBytes(GetLimitTextLength(), false, true));
+                            output.AddRange(LimitFail[i].GetBytes(GetLimitTextLength(), false, true));
+                        }
+                        else if (!isExe) //empty strings
+                        {
+                            output.AddRange(HexParser.GetNullBlock(GetLimitTextLength() * 2));
+                        }
+                        output.AddRange(LimitWrong[i].GetBytes(GetLimitTextLength(), false, true));
+                    }
+                    break;
+
+                case STATUS_MENU_ELEMENT_POS:
+                    foreach (var n in ElementNames)
+                    {
+                        output.AddRange(n.GetBytes(GetElementNameLength(), false, true));
+                    }
+                    break;
+
+                case STATUS_EFFECTS_MENU_POS:
+                    for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
+                    {
+                        if (!(isExe && Language == Language.Spanish && i == 19))
+                        {
+                            output.AddRange(StatusEffectsMenu[i].GetBytes(MENU_TEXT_LENGTH, false, true));
+                        }
+                    }
+                    break;
+
+                case STATUS_MENU_TEXT_POS:
+                    foreach (var t in StatusMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetStatusMenuTextLength(), false, true));
+                    }
+                    break;
+
+                case EQUIP_MENU_TEXT_POS:
+                    foreach (var t in EquipMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetEquipMenuTextLength(), false, true));
+                    }
+                    break;
+
+                case UNEQUIP_TEXT_POS:
+                    foreach (var t in UnequipTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetUnequipTextLength(), false, true));
+                    }
+                    break;
+
+                case MATERIA_MENU_TEXT_POS:
+                    foreach (var t in MateriaMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetMateriaMenuTextLength(), false, true));
+                    }
+                    break;
+
+                case MAGIC_MENU_TEXT_POS:
+                    foreach (var t in MagicMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetMagicMenuTextLength(), false, true));
+                    }
+                    break;
+
+                case ITEM_MENU_TEXT_POS:
+                    foreach (var t in ItemMenuTexts)
+                    {
+                        output.AddRange(t.GetBytes(GetItemMenuTextLength(), false, true));
+                    }
+                    break;
+
+                case ITEM_SORT_POS:
+                    var itemPositions =
+                        from item in ItemsSortedByName
+                        orderby item.Key
+                        select item.Value;
+                    foreach (var p in itemPositions)
+                    {
+                        output.AddRange(BitConverter.GetBytes(p));
+                    }
+                    break;
+
+                case MATERIA_PRIORITY_POS:
+                    var materiaPositions =
+                        from mat in MateriaPriority
+                        orderby mat.Key
+                        select mat.Value;
+                    foreach (var p in materiaPositions)
+                    {
+                        output.Add(p);
+                    }
+                    break;
+
+                case CHARACTER_NAMES_POS:
+                    foreach (var n in CharacterNames)
+                    {
+                        output.AddRange(n.GetBytes(DataParser.CHARACTER_NAME_LENGTH, false, true));
+                    }
+                    break;
+
+                case CAIT_SITH_DATA_POS:
+                    if (CaitSith != null && Vincent != null)
+                    {
+                        output.AddRange(DataParser.GetCharacterInitialDataBytes(CaitSith));
+                        output.AddRange(DataParser.GetCharacterInitialDataBytes(Vincent));
+                    }
+                    break;
+
+                case SHOP_NAME_POS:
+                    foreach (var n in ShopNames)
+                    {
+                        output.AddRange(n.GetBytes(GetShopNameLength(), false, true));
+                    }
+                    break;
+
+                case SHOP_TEXT_POS:
+                    foreach (var t in ShopText)
+                    {
+                        output.AddRange(t.GetBytes(SHOP_TEXT_LENGTH, false, true));
+                    }
+                    break;
+
+                case SHOP_INVENTORY_POS:
+                    foreach (var s in Shops)
+                    {
+                        output.AddRange(s.GetByteArray());
+                    }
+                    break;
+
+                case ITEM_PRICE_DATA_POS:
+                    foreach (var p in ItemPrices)
+                    {
+                        output.AddRange(BitConverter.GetBytes(p));
+                    }
+                    foreach (var p in WeaponPrices)
+                    {
+                        output.AddRange(BitConverter.GetBytes(p));
+                    }
+                    foreach (var p in ArmorPrices)
+                    {
+                        output.AddRange(BitConverter.GetBytes(p));
+                    }
+                    foreach (var p in AccessoryPrices)
+                    {
+                        output.AddRange(BitConverter.GetBytes(p));
+                    }
+                    break;
+
+                case MATERIA_PRICE_DATA_POS:
+                    foreach (var p in MateriaPrices)
+                    {
+                        output.AddRange(BitConverter.GetBytes(p));
+                    }
+                    break;
+
+                case SAVE_MENU_TEXT_POS:
+                    foreach (var s in SaveMenuTexts)
+                    {
+                        output.AddRange(s.GetBytes(GetSaveTextLength(), false, true));
+                    }
+                    break;
+
+                case AUDIO_VOLUME_POS:
+                    foreach (var a in AudioVolume)
+                    {
+                        output.AddRange(BitConverter.GetBytes(a));
+                    }
+                    break;
+
+                case AUDIO_PAN_POS:
+                    foreach (var a in AudioPan)
+                    {
+                        output.AddRange(BitConverter.GetBytes(a));
+                    }
+                    break;
+
+                case CHOCOBO_RACE_ITEMS_POS:
+                    foreach (var t in ChocoboRacePrizes)
+                    {
+                        output.AddRange(t.GetBytes(GetItemNameLength()));
+                    }
+                    break;
+
+                case CHOCOBO_NAMES_POS:
+                    int count = GetNumChocoboNames(Language);
+                    if (!isExe) { count++; }
+                    for (i = 0; i < count; ++i)
+                    {
+                        output.AddRange(ChocoboNames[i].GetBytes(GetChocoboNameLength(), true));
+                    }
+                    break;
+            }
+            return output.ToArray();
+        }
+
+        //read data from the EXE
         public void ReadEXE(string path)
         {
             try
@@ -566,262 +1674,40 @@ namespace FF7Scarlet.ExeEditor
                                 }
                             }
 
-                            //get materia equip effects
-                            stream.Seek(MATERIA_EQUIP_EFFECT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < MateriaEquipEffect.COUNT; ++i)
-                            {
-                                MateriaEquipEffects[i] = new MateriaEquipEffect(reader.ReadBytes(MateriaEquipEffect.DATA_LENGTH));
-                            }
-
-                            //get quit menu text
-                            stream.Seek(QUIT_TEXT_POS_1, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_QUIT_TEXTS_1; ++i)
-                            {
-                                QuitMenuTexts[i] = new FFText(reader.ReadBytes(QUIT_TEXT_LENGTH_1));
-                            }
-                            stream.Seek(QUIT_TEXT_POS_2, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_QUIT_TEXTS_2; ++i)
-                            {
-                                QuitMenuTexts[i + NUM_QUIT_TEXTS_1] = new FFText(reader.ReadBytes(QUIT_TEXT_LENGTH_2));
-                            }
-
-                            //get element names
-                            stream.Seek(STATUS_MENU_ELEMENT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_ELEMENTS; ++i)
-                            {
-                                ElementNames[i] = new FFText(reader.ReadBytes(ELEMENT_NAME_LENGTH));
-                            }
-
-                            //get status effects (stats menu)
-                            stream.Seek(STATUS_MENU_EFFECTS_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
-                            {
-                                StatusEffectsMenu[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
-                            }
-
-                            //get battle arena text
-                            stream.Seek(BATTLE_ARENA_TEXT_POS, SeekOrigin.Begin);
-                            int curr = 0;
-                            for (i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
-                            {
-                                for (int j = 0; j < BATTLE_ARENA_TEXT_LENGTHS[i].Count; ++j)
-                                {
-                                    BattleArenaTexts[curr] = new FFText(reader.ReadBytes(BATTLE_ARENA_TEXT_LENGTHS[i].Length));
-                                    curr++;
-                                }
-                            }
-
-                            //get Bizarro menu text
-                            stream.Seek(BIZARRO_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_BIZARRO_MENU_TEXTS; ++i)
-                            {
-                                BizarroMenuTexts[i] = new FFText(reader.ReadBytes(BIZARRO_MENU_TEXT_LENGTH));
-                            }
-
-                            //get limit menu text
-                            stream.Seek(LIMIT_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_LIMIT_MENU_TEXTS; ++i)
-                            {
-                                LimitMenuTexts[i] = new FFText(reader.ReadBytes(LIMIT_MENU_TEXT_LENGTH));
-                            }
-
-                            //get status menu text
-                            stream.Seek(STATUS_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_STATUS_MENU_TEXTS; ++i)
-                            {
-                                StatusMenuTexts[i] = new FFText(reader.ReadBytes(STATUS_MENU_TEXT_LENGTH));
-                            }
-
-                            //get equip menu text
-                            stream.Seek(EQUIP_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_EQUIP_MENU_TEXTS; ++i)
-                            {
-                                EquipMenuTexts[i] = new FFText(reader.ReadBytes(EQUIP_MENU_TEXT_LENGTH));
-                            }
-
-                            //get unequip text
-                            stream.Seek(UNEQUIP_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_UNEQUIP_TEXTS; ++i)
-                            {
-                                UnequipTexts[i] = new FFText(reader.ReadBytes(UNEQUIP_TEXT_LENGTH));
-                            }
-
-                            //get materia menu text
-                            stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
-                            {
-                                MateriaMenuTexts[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
-                            }
-
-                            //get magic menu text
-                            stream.Seek(MAGIC_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_MAGIC_MENU_TEXTS; ++i)
-                            {
-                                MagicMenuTexts[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
-                            }
-
-                            //get item menu text
-                            stream.Seek(ITEM_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_ITEM_MENU_TEXTS; ++i)
-                            {
-                                ItemMenuTexts[i] = new FFText(reader.ReadBytes(ITEM_MENU_TEXT_LENGTH));
-                            }
-
                             //get item sort values
                             stream.Seek(ITEM_SORT_POS, SeekOrigin.Begin);
                             for (i = 0; i < DataParser.MATERIA_START; ++i)
                             {
                                 ItemsSortedByName.Add((ushort)i, reader.ReadUInt16());
                             }
+                        }
 
-                            //get materia priority values
-                            stream.Seek(MATERIA_PRIORITY_POS, SeekOrigin.Begin);
-                            for (i = 0; i < DataParser.MATERIA_COUNT; ++i)
+                        //get arrays
+                        foreach (var arr in ArrayInfoList)
+                        {
+                            byte[] temp;
+                            int count = arr.Value.Count,
+                                length = arr.Value.Length;
+                            stream.Seek(arr.Key + arr.Value.Offset, SeekOrigin.Begin);
+                            if (arr.Key == BATTLE_ARENA_TEXT_POS)
                             {
-                                MateriaPriority.Add((byte)i, reader.ReadByte());
+                                length = GetBattleArenaBlockLength();
                             }
-
-                            //get save menu text
-                            stream.Seek(SAVE_MENU_TEXT_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_SAVE_MENU_TEXTS; ++i)
+                            else if (arr.Key == CHOCOBO_NAMES_POS)
                             {
-                                SaveMenuTexts[i] = new FFText(reader.ReadBytes(SAVE_MENU_TEXT_LENGTH));
+                                count = GetNumChocoboNames(Language);
                             }
-
-                            //get audio volume
-                            stream.Seek(AUDIO_VOLUME_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_AUDIO_VALUES; ++i)
-                            {
-                                AudioVolume[i] = reader.ReadInt32();
-                            }
-
-                            //get audio pan
-                            stream.Seek(AUDIO_PAN_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_AUDIO_VALUES; ++i)
-                            {
-                                AudioPan[i] = reader.ReadInt32();
-                            }
-
-                            //get Teioh's name
-                            stream.Seek(TEIOH_POS, SeekOrigin.Begin);
-                            ChocoboNames[NUM_CHOCOBO_NAMES] = new FFText(reader.ReadBytes(CHOCOBO_NAME_LENGTH));
-
-                            //get chocobo race prizes
-                            stream.Seek(CHOCOBO_RACE_ITEMS_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_CHOCOBO_RACE_ITEMS; ++i)
-                            {
-                                ChocoboRacePrizes[i] = new FFText(reader.ReadBytes(ITEM_NAME_LENGTH));
-                            }
-
-                            //get other chocobo names
-                            stream.Seek(CHOCOBO_NAMES_POS, SeekOrigin.Begin);
-                            for (i = 0; i < NUM_CHOCOBO_NAMES; ++i)
-                            {
-                                ChocoboNames[i] = new FFText(reader.ReadBytes(CHOCOBO_NAME_LENGTH));
-                            }
+                            temp = reader.ReadBytes(count * length);
+                            ReadArrayItems(temp, arr.Key, count, length, true, Language);
                         }
 
                         //get AP multiplier
                         stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
                         APPriceMultiplier = reader.ReadByte();
 
-                        //get config menu text
-                        stream.Seek(CONFIG_MENU_TEXT_POS + GetConfigOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_CONFIG_MENU_TEXTS; ++i)
-                        {
-                            ConfigMenuTexts[i] = new FFText(reader.ReadBytes(GetConfigTextLength()));
-                        }
-
-                        //get main menu text
-                        stream.Seek(MAIN_MENU_TEXT_POS + GetMainMenuOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_MENU_TEXTS; ++i)
-                        {
-                            MainMenuTexts[i] = new FFText(reader.ReadBytes(MENU_TEXT_LENGTH));
-                        }
-
-                        //get status effects (in-battle)
-                        stream.Seek(STATUS_EFFECT_BATTLE_POS + GetStatusOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
-                        {
-                            StatusEffectsBattle[i] = new FFText(reader.ReadBytes(GetStatusEffectBattleLength()));
-                        }
-
-                        //get limit breaks
-                        stream.Seek(LIMIT_BREAK_POS + GetLimitOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_LIMITS; ++i)
-                        {
-                            Limits[i] = DataParser.ReadAttack((ushort)i, $"(Limit #{i})", reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
-                        }
-
-                        //get L4 limit text
-                        stream.Seek(LIMIT_TEXT_POS + GetLimitTextOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT - 1; ++i)
-                        {
-                            LimitSuccess[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
-                            LimitFail[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
-                            LimitWrong[i] = new FFText(reader.ReadBytes(GetLimitTextLength()));
-                        }
-                        LimitWrong[Kernel.PLAYABLE_CHARACTER_COUNT - 1] =
-                            new FFText(reader.ReadBytes(GetLimitTextLength()));
-
-                        //get character names
-                        stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_CHARACTER_NAMES; ++i)
-                        {
-                            CharacterNames[i] = new FFText(reader.ReadBytes(DataParser.CHARACTER_NAME_LENGTH));
-                        }
-
-                        //get Cait Sith + Vincent data
-                        stream.Seek(CAIT_SITH_DATA_POS + GetCaitOffset(), SeekOrigin.Begin);
-                        CaitSith = DataParser.ReadCharacter(reader.ReadBytes(DataParser.CHARACTER_RECORD_LENGTH));
-                        Vincent = DataParser.ReadCharacter(reader.ReadBytes(DataParser.CHARACTER_RECORD_LENGTH));
-
-                        //get shop names
-                        stream.Seek(SHOP_NAME_POS + GetShopNameOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_SHOP_NAMES; ++i)
-                        {
-                            ShopNames[i] = new FFText(reader.ReadBytes(GetShopNameLength()));
-                        }
-
-                        //get shop texts
-                        stream.Seek(SHOP_TEXT_POS + GetShopTextOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_SHOP_TEXTS; ++i)
-                        {
-                            ShopText[i] = new FFText(reader.ReadBytes(SHOP_TEXT_LENGTH));
-                        }
-
-                        //get shop inventories
-                        stream.Seek(SHOP_INVENTORY_POS + GetShopOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < NUM_SHOPS; ++i)
-                        {
-                            Shops[i] = new ShopInventory(reader.ReadBytes(ShopInventory.SHOP_DATA_LENGTH));
-                        }
-
-                        //get item prices
-                        stream.Seek(ITEM_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < ItemPrices.Length; ++i)
-                        {
-                            ItemPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < WeaponPrices.Length; ++i)
-                        {
-                            WeaponPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < ArmorPrices.Length; ++i)
-                        {
-                            ArmorPrices[i] = reader.ReadUInt32();
-                        }
-                        for (i = 0; i < AccessoryPrices.Length; ++i)
-                        {
-                            AccessoryPrices[i] = reader.ReadUInt32();
-                        }
-
-                        //get materia prices
-                        stream.Seek(MATERIA_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
-                        for (i = 0; i < MateriaPrices.Length; ++i)
-                        {
-                            MateriaPrices[i] = reader.ReadUInt32();
-                        }
+                        //get Teioh's name
+                        stream.Seek(TEIOH_POS + GetChocoboRaceOffset(), SeekOrigin.Begin);
+                        ChocoboNames[GetNumChocoboNames(Language)] = new FFText(reader.ReadBytes(GetChocoboNameLength()));
                     }
                     FilePath = path;
                 }
@@ -841,7 +1727,6 @@ namespace FF7Scarlet.ExeEditor
 
             if (File.Exists(path))
             {
-                IsUnedited = false;
                 try
                 {
                     using (var stream = new FileStream(path, FileMode.Open, FileAccess.Write))
@@ -878,291 +1763,32 @@ namespace FF7Scarlet.ExeEditor
                                 }
                             }
 
-                            //write materia equip effects
-                            stream.Seek(MATERIA_EQUIP_EFFECT_POS, SeekOrigin.Begin);
-                            foreach (var e in MateriaEquipEffects)
-                            {
-                                writer.Write(e.GetBytes());
-                            }
-
-                            //write quit text
-                            stream.Seek(QUIT_TEXT_POS_1, SeekOrigin.Begin);
-                            for (int i = 0; i < NUM_QUIT_TEXTS_1; ++i)
-                            {
-                                writer.Write(QuitMenuTexts[i].GetBytes(QUIT_TEXT_LENGTH_1, false, true));
-                            }
-                            stream.Seek(QUIT_TEXT_POS_2, SeekOrigin.Begin);
-                            for (int i = 0; i < NUM_QUIT_TEXTS_2; ++i)
-                            {
-                                writer.Write(QuitMenuTexts[i + NUM_QUIT_TEXTS_1].GetBytes(QUIT_TEXT_LENGTH_2,
-                                    false, true));
-                            }
-
-                            //write element names
-                            stream.Seek(STATUS_MENU_ELEMENT_POS, SeekOrigin.Begin);
-                            foreach (var n in ElementNames)
-                            {
-                                writer.Write(n.GetBytes(ELEMENT_NAME_LENGTH, false, true));
-                            }
-
-                            //write status effects (menu)
-                            stream.Seek(STATUS_MENU_EFFECTS_POS, SeekOrigin.Begin);
-                            foreach (var t in StatusEffectsMenu)
-                            {
-                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write battle arena text
-                            stream.Seek(BATTLE_ARENA_TEXT_POS, SeekOrigin.Begin);
-                            int curr = 0;
-                            for (int i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
-                            {
-                                for (int j = 0; j < BATTLE_ARENA_TEXT_LENGTHS[i].Count; ++j)
-                                {
-                                    writer.Write(BattleArenaTexts[curr].GetBytes(BATTLE_ARENA_TEXT_LENGTHS[i].Length,
-                                        false, true));
-                                    curr++;
-                                }
-                            }
-
-                            //write Bizarro menu text
-                            stream.Seek(BIZARRO_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in BizarroMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(BIZARRO_MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write limit menu text
-                            stream.Seek(LIMIT_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in LimitMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(LIMIT_MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write status menu text
-                            stream.Seek(STATUS_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in StatusMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(STATUS_MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write equip menu text
-                            stream.Seek(EQUIP_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in EquipMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(EQUIP_MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write unequip text
-                            stream.Seek(UNEQUIP_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in UnequipTexts)
-                            {
-                                writer.Write(t.GetBytes(UNEQUIP_TEXT_LENGTH, false, true));
-                            }
-
-                            //write materia menu text
-                            stream.Seek(MATERIA_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in MateriaMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write magic menu text
-                            stream.Seek(MAGIC_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in MagicMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write item menu text
-                            stream.Seek(ITEM_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var t in ItemMenuTexts)
-                            {
-                                writer.Write(t.GetBytes(ITEM_MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write item sort values
-                            stream.Seek(ITEM_SORT_POS, SeekOrigin.Begin);
-                            foreach (var i in ItemsSortedByName)
-                            {
-                                writer.Write(i.Value);
-                            }
-
                             //write item sort list
                             stream.Seek(ITEM_SORT_POS, SeekOrigin.Begin);
-                            var itemPositions =
-                                from item in ItemsSortedByName
-                                orderby item.Key
-                                select item.Value;
-                            foreach (var p in itemPositions)
-                            {
-                                writer.Write(p);
-                            }
+                            writer.Write(WriteData(ITEM_SORT_POS, true));
+                        }
 
-                            //write materia priority list
-                            stream.Seek(MATERIA_PRIORITY_POS, SeekOrigin.Begin);
-                            var materiaPositions =
-                                from mat in MateriaPriority
-                                orderby mat.Key
-                                select mat.Value;
-                            foreach (var p in materiaPositions)
+                        //write arrays
+                        foreach (var str in ArrayInfoList)
+                        {
+                            if (!str.Value.KernelSynced || (DataManager.KernelFilePathExists && DataManager.Kernel != null))
                             {
-                                writer.Write(p);
-                            }
-
-                            //write save menu text
-                            stream.Seek(SAVE_MENU_TEXT_POS, SeekOrigin.Begin);
-                            foreach (var s in SaveMenuTexts)
-                            {
-                                writer.Write(s.GetBytes(SAVE_MENU_TEXT_LENGTH, false, true));
-                            }
-
-                            //write audio volume
-                            stream.Seek(AUDIO_VOLUME_POS, SeekOrigin.Begin);
-                            foreach (var a in AudioVolume)
-                            {
-                                writer.Write(BitConverter.GetBytes(a));
-                            }
-
-                            //write audio pan
-                            stream.Seek(AUDIO_PAN_POS, SeekOrigin.Begin);
-                            foreach (var a in AudioPan)
-                            {
-                                writer.Write(BitConverter.GetBytes(a));
-                            }
-
-                            //write Teioh's name
-                            stream.Seek(TEIOH_POS, SeekOrigin.Begin);
-                            writer.Write(ChocoboNames[NUM_CHOCOBO_NAMES].GetBytes(CHOCOBO_NAME_LENGTH));
-
-                            //write chocobo race prizes
-                            stream.Seek(CHOCOBO_RACE_ITEMS_POS, SeekOrigin.Begin);
-                            foreach (var t in ChocoboRacePrizes)
-                            {
-                                writer.Write(t.GetBytes(ITEM_NAME_LENGTH));
-                            }
-
-                            //write chocobo names (besides Teioh)
-                            stream.Seek(CHOCOBO_NAMES_POS, SeekOrigin.Begin);
-                            for (int i = 0; i < NUM_CHOCOBO_NAMES - 1; ++i)
-                            {
-                                writer.Write(ChocoboNames[i].GetBytes(CHOCOBO_NAME_LENGTH, true));
+                                stream.Seek(str.Key + str.Value.Offset, SeekOrigin.Begin);
+                                writer.Write(WriteData(str.Key, true));
                             }
                         }
 
                         //write AP multiplier
                         stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
                         writer.Write(APPriceMultiplier);
-                        stream.Seek(AP_MULTIPLIER_POS + AP_MASTER_OFFSET + GetAPPriceMultiplierOffset(),
-                            SeekOrigin.Begin);
+                        stream.Seek(AP_MASTER_OFFSET, SeekOrigin.Current);
                         writer.Write(APPriceMultiplier);
 
-                        //write config menu text
-                        stream.Seek(CONFIG_MENU_TEXT_POS + GetConfigOffset(), SeekOrigin.Begin);
-                        foreach (var t in ConfigMenuTexts)
-                        {
-                            writer.Write(t.GetBytes(GetConfigTextLength(), false, true));
-                        }
-
-                        //write main menu text
-                        stream.Seek(MAIN_MENU_TEXT_POS + GetMainMenuOffset(), SeekOrigin.Begin);
-                        foreach (var t in MainMenuTexts)
-                        {
-                            writer.Write(t.GetBytes(MENU_TEXT_LENGTH, false, true));
-                        }
-
-                        //write status effects
-                        stream.Seek(STATUS_EFFECT_BATTLE_POS + GetStatusOffset(), SeekOrigin.Begin);
-                        foreach (var s in StatusEffectsBattle)
-                        {
-                            writer.Write(s.GetBytes(GetStatusEffectBattleLength(), false, true));
-                        }
-
-                        //write limit breaks
-                        stream.Seek(LIMIT_BREAK_POS + GetLimitOffset(), SeekOrigin.Begin);
-                        foreach (var l in Limits)
-                        {
-                            writer.Write(DataParser.GetAttackBytes(l));
-                        }
-
-                        //write L4 limit text
-                        stream.Seek(LIMIT_TEXT_POS + GetLimitTextOffset(), SeekOrigin.Begin);
-                        for (int i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
-                        {
-                            if (i < Kernel.PLAYABLE_CHARACTER_COUNT - 1)
-                            {
-                                writer.Write(LimitSuccess[i].GetBytes(GetLimitTextLength(), false, true));
-                                writer.Write(LimitFail[i].GetBytes(GetLimitTextLength(), false, true));
-                            }
-                            writer.Write(LimitWrong[i].GetBytes(GetLimitTextLength(), false, true));
-                        }
-
-                        //write character names
-                        stream.Seek(NAME_DATA_POS + GetNameOffset(), SeekOrigin.Begin);
-                        foreach (var n in CharacterNames)
-                        {
-                            writer.Write(n.GetBytes(DataParser.CHARACTER_NAME_LENGTH, false, true));
-                        }
-
-                        //write Cait Sith/Vincent data
-                        if (CaitSith != null && Vincent != null)
-                        {
-                            stream.Seek(CAIT_SITH_DATA_POS + GetCaitOffset(), SeekOrigin.Begin);
-                            writer.Write(DataParser.GetCharacterInitialDataBytes(CaitSith));
-                            writer.Write(DataParser.GetCharacterInitialDataBytes(Vincent));
-                        }
-
-                        //write shop names
-                        stream.Seek(SHOP_NAME_POS + GetShopNameOffset(), SeekOrigin.Begin);
-                        foreach (var n in ShopNames)
-                        {
-                            writer.Write(n.GetBytes(GetShopNameLength(), false, true));
-                        }
-
-                        //write shop text
-                        stream.Seek(SHOP_TEXT_POS + GetShopTextOffset(), SeekOrigin.Begin);
-                        foreach (var t in ShopText)
-                        {
-                            writer.Write(t.GetBytes(SHOP_TEXT_LENGTH, false, true));
-                        }
-
-                        if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
-                        {
-                            //write shop inventories
-                            stream.Seek(SHOP_INVENTORY_POS + GetShopOffset(), SeekOrigin.Begin);
-                            foreach (var s in Shops)
-                            {
-                                writer.Write(s.GetByteArray());
-                            }
-
-                            //write item prices
-                            stream.Seek(ITEM_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
-                            foreach (var i in ItemPrices)
-                            {
-                                writer.Write(i);
-                            }
-                            foreach (var p in WeaponPrices)
-                            {
-                                writer.Write(p);
-                            }
-                            foreach (var p in ArmorPrices)
-                            {
-                                writer.Write(p);
-                            }
-                            foreach (var p in AccessoryPrices)
-                            {
-                                writer.Write(p);
-                            }
-
-                            //write materia prices
-                            stream.Seek(MATERIA_PRICE_DATA_POS + GetShopOffset(), SeekOrigin.Begin);
-                            foreach (var p in MateriaPrices)
-                            {
-                                writer.Write(p);
-                            }
-                        }
+                        //write Teioh's name
+                        stream.Seek(TEIOH_POS - GetChocoboRaceOffset(), SeekOrigin.Begin);
+                        writer.Write(ChocoboNames[GetNumChocoboNames(Language)].GetBytes(GetChocoboNameLength()));
                     }
-                    IsUnedited = true;
+                    IsUnedited = false;
                 }
                 catch (Exception ex)
                 {
@@ -1172,7 +1798,289 @@ namespace FF7Scarlet.ExeEditor
         }
 
         //read data from a byte array
-        public void ReadBytes(byte[] bytes)
+        public int ReadByteArray(byte[] data)
+        {
+            int result = 0;
+            try
+            {
+                //check header
+                var header = new byte[8];
+                Array.Copy(data, header, 8);
+                var txt = new FFText(header).ToString();
+                if (txt != "SCARLET") //invalid header, might be the old format
+                {
+                    ReadBytesOld(data);
+                }
+                else
+                {
+                    int length, count, size;
+                    long pos;
+                    bool isEnd = false;
+                    using (var stream = new MemoryStream(data))
+                    using (var reader = new BinaryReader(stream))
+                    {
+                        stream.Seek(8, SeekOrigin.Begin); //skip header
+                        var lang = (Language)reader.ReadByte();
+
+                        while (!isEnd)
+                        {
+                            try
+                            {
+                                pos = reader.ReadUInt32();
+                                length = reader.ReadInt32();
+                                count = reader.ReadInt32();
+                                size = length * count;
+
+                                if (ArrayInfoList.ContainsKey(pos)) //strings
+                                {
+                                    int temp = ReadArrayItems(reader.ReadBytes(size), pos, count, length, false, lang);
+                                    if (temp == 1) { result = 1; }
+                                }
+                                else //other stuff
+                                {
+                                    switch (pos)
+                                    {
+                                        case AP_MULTIPLIER_POS:
+                                            APPriceMultiplier = reader.ReadByte();
+                                            break;
+
+                                        case MODELS_POS:
+                                            for (int i = 0; i < NUM_WALKABILITY_MODELS; i++)
+                                            {
+                                                int temp = reader.ReadInt32();
+                                                var bytes = BitConverter.GetBytes(temp);
+                                                ModelMoveBitmasks[i] = new BitArray(bytes);
+
+                                                temp = reader.ReadInt32();
+                                                bytes = BitConverter.GetBytes(temp);
+                                                ModelDisembarkBitmasks[i] = new BitArray(bytes);
+                                            }
+                                            break;
+
+                                        case ITEM_SORT_POS:
+                                            ItemsSortedByName.Clear();
+                                            for (int i = 0; i < DataParser.MATERIA_START; ++i)
+                                            {
+                                                ItemsSortedByName.Add((ushort)i, reader.ReadUInt16());
+                                            }
+                                            break;
+
+                                        default: //unknown data
+                                            stream.Seek(size, SeekOrigin.Current);
+                                            break;
+                                    }
+                                }
+                            }
+                            catch (EndOfStreamException)
+                            {
+                                isEnd = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            return result;
+        }
+
+        //output a header for byte array data
+        private byte[] GetDataHeader(long pos, int length, int count)
+        {
+            var output = new byte[12];
+            Array.Copy(BitConverter.GetBytes(pos), output, 4);
+            Array.Copy(BitConverter.GetBytes(length), 0, output, 4, 4);
+            Array.Copy(BitConverter.GetBytes(count), 0, output, 8, 4);
+            return output;
+        }
+
+        //write data to a byte array
+        public byte[] GetByteArray()
+        {
+            var output = new List<byte>();
+            int i;
+
+            //header
+            output.AddRange(new FFText("SCARLET").GetBytes());
+            output.Add((byte)Language);
+
+            if (Language == Language.English)
+            {
+                //write walkability data
+                output.AddRange(GetDataHeader(MODEL_CAN_WALK_POS[0], 8, NUM_WALKABILITY_MODELS));
+                for (i = 0; i < NUM_WALKABILITY_MODELS; i++)
+                {
+                    if (ModelMoveBitmasks[i] != null)
+                    {
+                        var temp = new byte[4];
+                        ModelMoveBitmasks[i].CopyTo(temp, 0);
+                        output.AddRange(temp);
+                    }
+                    else { output.AddRange(HexParser.GetNullBlock(4)); }
+
+                    if (ModelDisembarkBitmasks[i] != null)
+                    {
+                        var temp = new byte[4];
+                        ModelDisembarkBitmasks[i].CopyTo(temp, 0);
+                        output.AddRange(temp);
+                    }
+                    else { output.AddRange(HexParser.GetNullBlock(4)); }
+                }
+
+                //write item sort values
+                output.AddRange(GetDataHeader(ITEM_SORT_POS, 4, DataParser.MATERIA_START));
+                output.AddRange(WriteData(ITEM_SORT_POS));
+            }
+
+            //write AP multiplier
+            output.AddRange(GetDataHeader(AP_MULTIPLIER_POS, 1,1));
+            output.Add(APPriceMultiplier);
+
+            //write materia equip effects
+            output.AddRange(GetDataHeader(MATERIA_EQUIP_EFFECT_POS, MateriaEquipEffect.DATA_LENGTH,
+                MateriaEquipEffect.COUNT));
+            output.AddRange(WriteData(MATERIA_EQUIP_EFFECT_POS));
+
+            //write quit text
+            output.AddRange(GetDataHeader(QUIT_TEXT_POS_1, QUIT_TEXT_LENGTH_1, NUM_QUIT_TEXTS_1));
+            output.AddRange(WriteData(QUIT_TEXT_POS_1));
+            output.AddRange(GetDataHeader(QUIT_TEXT_POS_2, GetQuitTextLength(), NUM_QUIT_TEXTS_2));
+            output.AddRange(WriteData(QUIT_TEXT_POS_2));
+
+            //write config menu text
+            output.AddRange(GetDataHeader(CONFIG_MENU_TEXT_POS, GetConfigTextLength(), NUM_CONFIG_MENU_TEXTS));
+            output.AddRange(WriteData(CONFIG_MENU_TEXT_POS));
+
+            //write main menu text
+            output.AddRange(GetDataHeader(MAIN_MENU_TEXT_POS, MENU_TEXT_LENGTH, NUM_MENU_TEXTS));
+            output.AddRange(WriteData(MAIN_MENU_TEXT_POS));
+
+            //write status effects
+            output.AddRange(GetDataHeader(STATUS_EFFECT_BATTLE_POS, GetStatusEffectBattleLength(),
+                NUM_STATUS_EFFECTS));
+            output.AddRange(WriteData(STATUS_EFFECT_BATTLE_POS));
+
+            //write battle arena text
+            output.AddRange(GetDataHeader(BATTLE_ARENA_TEXT_POS, GetBattleArenaBlockLength(), 1));
+            output.AddRange(WriteData(BATTLE_ARENA_TEXT_POS));
+
+            //write Bizarro menu text
+            output.AddRange(GetDataHeader(BIZARRO_MENU_TEXT_POS, GetBizarroTextLength(),
+                NUM_BIZARRO_MENU_TEXTS));
+            output.AddRange(WriteData(BIZARRO_MENU_TEXT_POS));
+
+            //write limit menu text
+            output.AddRange(GetDataHeader(LIMIT_MENU_TEXT_POS, GetLimitMenuTextLength(), NUM_LIMIT_MENU_TEXTS));
+            output.AddRange(WriteData(LIMIT_MENU_TEXT_POS));
+
+            //write limit breaks
+            output.AddRange(GetDataHeader(LIMIT_BREAK_POS, DataParser.ATTACK_BLOCK_SIZE, NUM_LIMITS));
+            output.AddRange(WriteData(LIMIT_BREAK_POS));
+
+            //write element names
+            output.AddRange(GetDataHeader(STATUS_MENU_ELEMENT_POS, GetElementNameLength(), NUM_ELEMENTS));
+            output.AddRange(WriteData(STATUS_MENU_ELEMENT_POS));
+
+            //write status effects (menu)
+            output.AddRange(GetDataHeader(STATUS_EFFECTS_MENU_POS, MENU_TEXT_LENGTH, NUM_STATUS_EFFECTS));
+            output.AddRange(WriteData(STATUS_EFFECTS_MENU_POS));
+
+            //write status menu text
+            output.AddRange(GetDataHeader(STATUS_MENU_TEXT_POS, GetStatusMenuTextLength(), NUM_STATUS_MENU_TEXTS));
+            output.AddRange(WriteData(STATUS_MENU_TEXT_POS));
+
+            //write equip menu text
+            output.AddRange(GetDataHeader(EQUIP_MENU_TEXT_POS, GetEquipMenuTextLength(), NUM_EQUIP_MENU_TEXTS));
+            output.AddRange(WriteData(EQUIP_MENU_TEXT_POS));
+
+            //write unequip text
+            output.AddRange(GetDataHeader(UNEQUIP_TEXT_POS, GetUnequipTextLength(), NUM_UNEQUIP_TEXTS));
+            output.AddRange(WriteData(UNEQUIP_TEXT_POS));
+
+            //write materia menu text
+            output.AddRange(GetDataHeader(MATERIA_MENU_TEXT_POS, GetMateriaMenuTextLength(), NUM_MATERIA_MENU_TEXTS));
+            output.AddRange(WriteData(MATERIA_MENU_TEXT_POS));
+
+            //write magic menu text
+            output.AddRange(GetDataHeader(MAGIC_MENU_TEXT_POS, GetMagicMenuTextLength(), NUM_MAGIC_MENU_TEXTS));
+            output.AddRange(WriteData(MAGIC_MENU_TEXT_POS));
+
+            //write item menu text
+            output.AddRange(GetDataHeader(ITEM_MENU_TEXT_POS, GetItemMenuTextLength(), NUM_ITEM_MENU_TEXTS));
+            output.AddRange(WriteData(ITEM_MENU_TEXT_POS));
+
+            //write L4 limit text
+            output.AddRange(GetDataHeader(LIMIT_TEXT_POS, GetLimitTextLength(),
+                Kernel.PLAYABLE_CHARACTER_COUNT * 3));
+            output.AddRange(WriteData(LIMIT_TEXT_POS));
+
+            //write materia priority list
+            output.AddRange(GetDataHeader(MATERIA_PRIORITY_POS, 1, Kernel.MATERIA_COUNT));
+            output.AddRange(WriteData(MATERIA_PRIORITY_POS));
+
+            //write character names
+            output.AddRange(GetDataHeader(CHARACTER_NAMES_POS, DataParser.CHARACTER_NAME_LENGTH,
+                NUM_CHARACTER_NAMES));
+            output.AddRange(WriteData(CHARACTER_NAMES_POS));
+
+            //write Cait Sith/Vincent data
+            if (CaitSith != null && Vincent != null)
+            {
+                output.AddRange(GetDataHeader(CAIT_SITH_DATA_POS, DataParser.CHARACTER_RECORD_LENGTH, 2));
+                output.AddRange(WriteData(CAIT_SITH_DATA_POS));
+            }
+
+            //write shop names
+            output.AddRange(GetDataHeader(SHOP_NAME_POS, GetShopNameLength(), NUM_SHOP_NAMES));
+            output.AddRange(WriteData(SHOP_NAME_POS));
+
+            //write shop text
+            output.AddRange(GetDataHeader(SHOP_TEXT_POS, SHOP_TEXT_LENGTH, NUM_SHOP_TEXTS));
+            output.AddRange(WriteData(SHOP_TEXT_POS));
+
+            //write save menu text
+            output.AddRange(GetDataHeader(SAVE_MENU_TEXT_POS, GetSaveTextLength(), NUM_SAVE_MENU_TEXTS));
+            output.AddRange(WriteData(SAVE_MENU_TEXT_POS));
+
+            //write audio volume
+            output.AddRange(GetDataHeader(AUDIO_VOLUME_POS, 4, NUM_AUDIO_VALUES));
+            output.AddRange(WriteData(AUDIO_VOLUME_POS));
+
+            //write audio pan
+            output.AddRange(GetDataHeader(AUDIO_PAN_POS, 4, NUM_AUDIO_VALUES));
+            output.AddRange(WriteData(AUDIO_PAN_POS));
+
+            //write chocobo race prizes
+            output.AddRange(GetDataHeader(CHOCOBO_RACE_ITEMS_POS, GetItemNameLength(), NUM_CHOCOBO_RACE_ITEMS));
+            output.AddRange(WriteData(CHOCOBO_RACE_ITEMS_POS));
+
+            //write chocobo names
+            output.AddRange(GetDataHeader(CHOCOBO_NAMES_POS, GetChocoboNameLength(), GetNumChocoboNames(Language) + 1));
+            output.AddRange(WriteData(CHOCOBO_NAMES_POS));
+
+            //kernel-synced stuff
+            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+            {
+                //write shop inventories
+                output.AddRange(GetDataHeader(SHOP_INVENTORY_POS, ShopInventory.SHOP_DATA_LENGTH,
+                    NUM_SHOPS));
+                output.AddRange(WriteData(SHOP_INVENTORY_POS));
+
+                //write item prices
+                output.AddRange(GetDataHeader(ITEM_PRICE_DATA_POS, 4, DataParser.MATERIA_START));
+                output.AddRange(WriteData(ITEM_PRICE_DATA_POS));
+
+                //write materia prices
+                output.AddRange(GetDataHeader(MATERIA_PRICE_DATA_POS, 4, Kernel.MATERIA_COUNT));
+                output.AddRange(WriteData(MATERIA_PRICE_DATA_POS));
+            }
+            return output.ToArray();
+        }
+
+        //read data from a byte array (old version)
+        private void ReadBytesOld(byte[] bytes)
         {
             try
             {
@@ -1306,7 +2214,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
                         {
                             MateriaMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                MENU_TEXT_LENGTH);
+                                GetMateriaMenuTextLength());
                             stream.Seek(MateriaMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1314,7 +2222,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_EQUIP_MENU_TEXTS; ++i)
                         {
                             EquipMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                EQUIP_MENU_TEXT_LENGTH);
+                                GetEquipMenuTextLength());
                             stream.Seek(EquipMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1322,7 +2230,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_ELEMENTS; ++i)
                         {
                             ElementNames[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                ELEMENT_NAME_LENGTH);
+                                GetElementNameLength());
                             stream.Seek(ElementNames[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1338,31 +2246,31 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_STATUS_MENU_TEXTS; ++i)
                         {
                             StatusMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                STATUS_MENU_TEXT_LENGTH);
+                                GetStatusMenuTextLength());
                             stream.Seek(StatusMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
                         //read chocobo names
-                        for (i = 0; i < NUM_CHOCOBO_NAMES + 1; ++i)
+                        for (i = 0; i < GetNumChocoboNames(Language) + 1; ++i)
                         {
                             ChocoboNames[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                CHOCOBO_NAME_LENGTH);
-                            stream.Seek(CHOCOBO_NAME_LENGTH, SeekOrigin.Current);
+                                GetChocoboNameLength());
+                            stream.Seek(GetChocoboNameLength(), SeekOrigin.Current);
                         }
 
                         //read item names
                         for (i = 0; i < NUM_CHOCOBO_RACE_ITEMS; ++i)
                         {
                             ChocoboRacePrizes[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                ITEM_NAME_LENGTH);
-                            stream.Seek(ITEM_NAME_LENGTH, SeekOrigin.Current);
+                                GetItemNameLength());
+                            stream.Seek(GetItemNameLength(), SeekOrigin.Current);
                         }
 
                         //read item menu text
                         for (i = 0; i < NUM_ITEM_MENU_TEXTS; ++i)
                         {
                             ItemMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                ITEM_MENU_TEXT_LENGTH);
+                                GetItemMenuTextLength());
                             stream.Seek(ItemMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1370,7 +2278,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_MAGIC_MENU_TEXTS; ++i)
                         {
                             MagicMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                MENU_TEXT_LENGTH);
+                                GetMagicMenuTextLength());
                             stream.Seek(MagicMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1378,7 +2286,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_UNEQUIP_TEXTS; ++i)
                         {
                             UnequipTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                UNEQUIP_TEXT_LENGTH);
+                                GetUnequipTextLength());
                             stream.Seek(UnequipTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1386,7 +2294,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_LIMIT_MENU_TEXTS; ++i)
                         {
                             LimitMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                LIMIT_MENU_TEXT_LENGTH);
+                                GetLimitMenuTextLength());
                             stream.Seek(LimitMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1394,7 +2302,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_SAVE_MENU_TEXTS; ++i)
                         {
                             SaveMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                SAVE_MENU_TEXT_LENGTH);
+                                GetSaveTextLength());
                             stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1402,16 +2310,17 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_QUIT_TEXTS_1 + NUM_QUIT_TEXTS_2; ++i)
                         {
                             SaveMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                SAVE_MENU_TEXT_LENGTH);
+                                QUIT_TEXT_LENGTH_1);
                             stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
                         //read battle arena text
                         int curr = 0;
-                        for (i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
+                        var lengths = GetBattleArenaTextLengths(Language);
+                        for (i = 0; i < lengths.Length; ++i)
                         {
-                            int len = BATTLE_ARENA_TEXT_LENGTHS[i].Length;
-                            for (int j = 0; j < BATTLE_ARENA_TEXT_LENGTHS[i].Count; ++j)
+                            int len = lengths[i].Length;
+                            for (int j = 0; j < lengths[i].Count; ++j)
                             {
                                 BattleArenaTexts[curr] = FFText.GetTextFromByteArray(bytes, (int)stream.Position, len);
                                 stream.Seek(BattleArenaTexts[curr].ToString().Length + 1, SeekOrigin.Current);
@@ -1423,7 +2332,7 @@ namespace FF7Scarlet.ExeEditor
                         for (i = 0; i < NUM_BIZARRO_MENU_TEXTS; ++i)
                         {
                             BizarroMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
-                                BIZARRO_MENU_TEXT_LENGTH);
+                                GetBizarroTextLength());
                             stream.Seek(BizarroMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
@@ -1474,265 +2383,13 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        //write data to a byte array
-        public byte[] GetBytes()
-        {
-            if (CaitSith == null) { throw new ArgumentNullException(nameof(CaitSith)); }
-            if (Vincent == null) { throw new ArgumentNullException(nameof(Vincent)); }
-
-            var output = new List<byte>();
-
-            //write character names
-            foreach (var n in CharacterNames)
-            {
-                output.AddRange(n.GetBytes(DataParser.CHARACTER_NAME_LENGTH));
-            }
-
-            //write character data
-            output.AddRange(DataParser.GetCharacterInitialDataBytes(CaitSith));
-            output.AddRange(DataParser.GetCharacterInitialDataBytes(Vincent));
-
-            //write item prices
-            output.Add(APPriceMultiplier);
-            foreach (var i in ItemPrices)
-            {
-                output.AddRange(BitConverter.GetBytes(i));
-            }
-            foreach (var p in WeaponPrices)
-            {
-                output.AddRange(BitConverter.GetBytes(p));
-            }
-            foreach (var p in ArmorPrices)
-            {
-                output.AddRange(BitConverter.GetBytes(p));
-            }
-            foreach (var p in AccessoryPrices)
-            {
-                output.AddRange(BitConverter.GetBytes(p));
-            }
-            foreach (var p in MateriaPrices)
-            {
-                output.AddRange(BitConverter.GetBytes(p));
-            }
-
-            //write shop inventories
-            foreach (var s in Shops)
-            {
-                output.AddRange(s.GetByteArray());
-            }
-
-            //write limits
-            foreach (var l in Limits)
-            {
-                output.AddRange(DataParser.GetAttackBytes(l));
-            }
-
-            //write main menu text
-            foreach (var t in MainMenuTexts)
-            {
-                output.AddRange(t.GetBytes(MENU_TEXT_LENGTH));
-            }
-
-            //write config menu text
-            foreach (var t in ConfigMenuTexts)
-            {
-                output.AddRange(t.GetBytesTruncated());
-            }
-
-            //write status effects
-            foreach (var s in StatusEffectsBattle)
-            {
-                output.AddRange(s.GetBytesTruncated());
-            }
-
-            //write shop names
-            foreach (var n in ShopNames)
-            {
-                output.AddRange(n.GetBytesTruncated());
-            }
-
-            //write shop texts
-            foreach (var t in ShopText)
-            {
-                output.AddRange(t.GetBytes(SHOP_TEXT_LENGTH));
-            }
-
-            //write L4 success text
-            foreach (var t in LimitSuccess)
-            {
-                output.AddRange(t.GetBytesTruncated());
-            }
-
-            //write L4 fail text
-            foreach (var t in LimitFail)
-            {
-                output.AddRange(t.GetBytesTruncated());
-            }
-
-            //write L4 wrong text
-            foreach (var t in LimitWrong)
-            {
-                output.AddRange(t.GetBytesTruncated());
-            }
-
-            //English-only stuff (for now)
-            if (Language == Language.English)
-            {
-                //write item sort list
-                var itemPositions =
-                    from item in ItemsSortedByName
-                    orderby item.Key
-                    select item.Value;
-                foreach (var p in itemPositions)
-                {
-                    output.AddRange(BitConverter.GetBytes(p));
-                }
-
-                //write materia priority list
-                var materiaPositions =
-                    from mat in MateriaPriority
-                    orderby mat.Key
-                    select mat.Value;
-                foreach (var p in materiaPositions)
-                {
-                    output.Add(p);
-                }
-
-                //write materia menu text
-                foreach (var m in MateriaMenuTexts)
-                {
-                    output.AddRange(m.GetBytesTruncated());
-                }
-
-                //write equip menu text
-                foreach (var e in EquipMenuTexts)
-                {
-                    output.AddRange(e.GetBytesTruncated());
-                }
-
-                //write element names
-                foreach (var e in ElementNames)
-                {
-                    output.AddRange(e.GetBytesTruncated());
-                }
-
-                //write status effects (menu)
-                foreach (var s in StatusEffectsMenu)
-                {
-                    output.AddRange(s.GetBytesTruncated());
-                }
-
-                //write status menu text
-                foreach (var s in StatusMenuTexts)
-                {
-                    output.AddRange(s.GetBytesTruncated());
-                }
-
-                //write chocobo racer names
-                foreach (var n in ChocoboNames)
-                {
-                    output.AddRange(n.GetBytes(CHOCOBO_NAME_LENGTH));
-                }
-
-                //write chocobo race prizes
-                foreach (var p in ChocoboRacePrizes)
-                {
-                    output.AddRange(p.GetBytes(ITEM_NAME_LENGTH));
-                }
-
-                //write item menu text
-                foreach (var i in ItemMenuTexts)
-                {
-                    output.AddRange(i.GetBytesTruncated());
-                }
-
-                //write magic menu text
-                foreach (var m in MagicMenuTexts)
-                {
-                    output.AddRange(m.GetBytesTruncated());
-                }
-
-                //write unequip text
-                foreach (var u in UnequipTexts)
-                {
-                    output.AddRange(u.GetBytesTruncated());
-                }
-
-                //write limit menu text
-                foreach (var l in LimitMenuTexts)
-                {
-                    output.AddRange(l.GetBytesTruncated());
-                }
-
-                //write save menu text
-                foreach (var s in SaveMenuTexts)
-                {
-                    output.AddRange(s.GetBytesTruncated());
-                }
-
-                //write quit text
-                foreach (var q in QuitMenuTexts)
-                {
-                    output.AddRange(q.GetBytesTruncated());
-                }
-
-                //write battle arena text
-                foreach (var b in BattleArenaTexts)
-                {
-                    output.AddRange(b.GetBytesTruncated());
-                }
-
-                //write Bizarro menu text
-                foreach (var b in BizarroMenuTexts)
-                {
-                    output.AddRange(b.GetBytesTruncated());
-                }
-
-                //write audio volume
-                foreach (var a in AudioVolume)
-                {
-                    output.AddRange(BitConverter.GetBytes(a));
-                }
-
-                //write audio pan
-                foreach (var a in AudioPan)
-                {
-                    output.AddRange(BitConverter.GetBytes(a));
-                }
-
-                //write walkability data
-                for (int i = 0; i < NUM_WALKABILITY_MODELS; i++)
-                {
-                    if (ModelMoveBitmasks[i] != null)
-                    {
-                        var temp = new byte[4];
-                        ModelMoveBitmasks[i].CopyTo(temp, 0);
-                        output.AddRange(temp);
-                    }
-                    if (ModelDisembarkBitmasks[i] != null && i < (int)WorldMapModels.YellowChocobo)
-                    {
-                        var temp = new byte[4];
-                        ModelDisembarkBitmasks[i].CopyTo(temp, 0);
-                        output.AddRange(temp);
-                    }
-                }
-
-                //write materia equip effects
-                foreach (var e in MateriaEquipEffects)
-                {
-                    output.AddRange(e.GetBytes());
-                }
-            }
-
-            return output.ToArray();
-        }
-
         //read data from a file
-        public void ReadFile(string path)
+        public int ReadFile(string path)
         {
             try
             {
-                ReadBytes(File.ReadAllBytes(path));
+                var result = ReadByteArray(File.ReadAllBytes(path));
+                return result;
             }
             catch (EndOfStreamException ex)
             {
@@ -1749,7 +2406,7 @@ namespace FF7Scarlet.ExeEditor
         {
             try
             {
-                File.WriteAllBytes(path, GetBytes());
+                File.WriteAllBytes(path, GetByteArray());
             }
             catch (Exception ex)
             {
@@ -1974,7 +2631,7 @@ namespace FF7Scarlet.ExeEditor
                         QUIT_TEXT_POS_1, QUIT_TEXT_LENGTH_1, NUM_QUIT_TEXTS_1));
 
                     writer.Write(WriteHextStrings(QuitMenuTexts, original.QuitMenuTexts,
-                        QUIT_TEXT_POS_2, QUIT_TEXT_LENGTH_2, NUM_QUIT_TEXTS_2, NUM_QUIT_TEXTS_1));
+                        QUIT_TEXT_POS_2, GetQuitTextLength(), NUM_QUIT_TEXTS_2, NUM_QUIT_TEXTS_1));
 
                     //write config menu text
                     writer.Write(WriteHextStrings(ConfigMenuTexts, original.ConfigMenuTexts,
@@ -1991,21 +2648,22 @@ namespace FF7Scarlet.ExeEditor
                     //write battle arena text
                     int offset = 0;
                     pos = BATTLE_ARENA_TEXT_POS;
-                    for (i = 0; i < BATTLE_ARENA_TEXT_LENGTHS.Length; ++i)
+                    var lengths = GetBattleArenaTextLengths(Language);
+                    for (i = 0; i < lengths.Length; ++i)
                     {
                         writer.Write(WriteHextStrings(BattleArenaTexts, original.BattleArenaTexts,
-                            pos, BATTLE_ARENA_TEXT_LENGTHS[i].Length, BATTLE_ARENA_TEXT_LENGTHS[i].Count, offset));
-                        offset += BATTLE_ARENA_TEXT_LENGTHS[i].Count;
-                        pos += (BATTLE_ARENA_TEXT_LENGTHS[i].Length * BATTLE_ARENA_TEXT_LENGTHS[i].Count);
+                            pos, lengths[i].Length, lengths[i].Count, offset));
+                        offset += lengths[i].Count;
+                        pos += (lengths[i].Length * lengths[i].Count);
                     }
 
                     //write Bizarro menu text
                     writer.Write(WriteHextStrings(BizarroMenuTexts, original.BizarroMenuTexts,
-                        BIZARRO_MENU_TEXT_POS, BIZARRO_MENU_TEXT_LENGTH, NUM_BIZARRO_MENU_TEXTS));
+                        BIZARRO_MENU_TEXT_POS, GetBizarroTextLength(), NUM_BIZARRO_MENU_TEXTS));
 
                     //write limit menu text
                     writer.Write(WriteHextStrings(LimitMenuTexts, original.LimitMenuTexts,
-                        LIMIT_MENU_TEXT_POS, LIMIT_MENU_TEXT_LENGTH, NUM_LIMIT_MENU_TEXTS));
+                        LIMIT_MENU_TEXT_POS, GetLimitMenuTextLength(), NUM_LIMIT_MENU_TEXTS));
 
                     //compare limits
                     for (i = 0; i < NUM_LIMITS; ++i)
@@ -2023,35 +2681,35 @@ namespace FF7Scarlet.ExeEditor
 
                     //write element names
                     writer.Write(WriteHextStrings(ElementNames, original.ElementNames,
-                        STATUS_MENU_ELEMENT_POS, ELEMENT_NAME_LENGTH, NUM_ELEMENTS));
+                        STATUS_MENU_ELEMENT_POS, GetElementNameLength(), NUM_ELEMENTS));
 
                     //write status effects (menu)
                     writer.Write(WriteHextStrings(StatusEffectsMenu, original.StatusEffectsMenu,
-                        STATUS_MENU_EFFECTS_POS, MENU_TEXT_LENGTH, NUM_STATUS_EFFECTS));
+                        STATUS_EFFECTS_MENU_POS, MENU_TEXT_LENGTH, NUM_STATUS_EFFECTS));
 
                     //write status menu text
                     writer.Write(WriteHextStrings(StatusMenuTexts, original.StatusMenuTexts,
-                        STATUS_MENU_TEXT_POS, STATUS_MENU_TEXT_LENGTH, NUM_STATUS_MENU_TEXTS));
+                        STATUS_MENU_TEXT_POS, GetStatusMenuTextLength(), NUM_STATUS_MENU_TEXTS));
 
                     //write equip menu text
                     writer.Write(WriteHextStrings(EquipMenuTexts, original.EquipMenuTexts,
-                        EQUIP_MENU_TEXT_POS, EQUIP_MENU_TEXT_LENGTH, NUM_EQUIP_MENU_TEXTS));
+                        EQUIP_MENU_TEXT_POS, GetEquipMenuTextLength(), NUM_EQUIP_MENU_TEXTS));
 
                     //write unequip text
                     writer.Write(WriteHextStrings(UnequipTexts, original.UnequipTexts,
-                        UNEQUIP_TEXT_POS, UNEQUIP_TEXT_LENGTH, NUM_UNEQUIP_TEXTS));
+                        UNEQUIP_TEXT_POS, GetUnequipTextLength(), NUM_UNEQUIP_TEXTS));
 
                     //write materia menu text
                     writer.Write(WriteHextStrings(MateriaMenuTexts, original.MateriaMenuTexts,
-                        MATERIA_MENU_TEXT_POS, MENU_TEXT_LENGTH, NUM_MATERIA_MENU_TEXTS));
+                        MATERIA_MENU_TEXT_POS, GetMateriaMenuTextLength(), NUM_MATERIA_MENU_TEXTS));
 
                     //write magic menu text
                     writer.Write(WriteHextStrings(MagicMenuTexts, original.MagicMenuTexts,
-                        MAGIC_MENU_TEXT_POS, MENU_TEXT_LENGTH, NUM_MAGIC_MENU_TEXTS));
+                        MAGIC_MENU_TEXT_POS, GetMagicMenuTextLength(), NUM_MAGIC_MENU_TEXTS));
 
                     //write item menu text
                     writer.Write(WriteHextStrings(ItemMenuTexts, original.ItemMenuTexts,
-                        ITEM_MENU_TEXT_POS, ITEM_MENU_TEXT_LENGTH, NUM_ITEM_MENU_TEXTS));
+                        ITEM_MENU_TEXT_POS, GetItemMenuTextLength(), NUM_ITEM_MENU_TEXTS));
 
                     //compare limit text
                     j = 0;
@@ -2171,7 +2829,7 @@ namespace FF7Scarlet.ExeEditor
 
                     //write character names
                     writer.Write(WriteHextStrings(CharacterNames, original.CharacterNames,
-                        NAME_DATA_POS, DataParser.CHARACTER_NAME_LENGTH, NUM_CHARACTER_NAMES));
+                        CHARACTER_NAMES_POS, DataParser.CHARACTER_NAME_LENGTH, NUM_CHARACTER_NAMES));
 
                     //compare materia priority list
                     var p1 =
@@ -2338,17 +2996,17 @@ namespace FF7Scarlet.ExeEditor
 
                         //write save menu text
                         writer.Write(WriteHextStrings(SaveMenuTexts, original.SaveMenuTexts,
-                            SAVE_MENU_TEXT_POS, SAVE_MENU_TEXT_LENGTH, NUM_SAVE_MENU_TEXTS));
+                            SAVE_MENU_TEXT_POS, GetSaveTextLength(), NUM_SAVE_MENU_TEXTS));
 
                         //compare Teioh's name
-                        string name1 = ChocoboNames[NUM_CHOCOBO_NAMES].ToString(),
-                            name2 = original.ChocoboNames[NUM_CHOCOBO_NAMES].ToString();
+                        string name1 = ChocoboNames[GetNumChocoboNames(Language)].ToString(),
+                            name2 = original.ChocoboNames[GetNumChocoboNames(Language)].ToString();
 
                         if (name1 != name2)
                         {
                             checker = true;
                             writer.WriteLine($"# {name2} -> {name1}");
-                            var temp = ChocoboNames[NUM_CHOCOBO_NAMES].GetBytes();
+                            var temp = ChocoboNames[GetNumChocoboNames(Language)].GetBytes();
                             writer.Write($"{GetHextPosition(TEIOH_POS):X2} = ");
                             foreach (var x in temp)
                             {
@@ -2410,11 +3068,11 @@ namespace FF7Scarlet.ExeEditor
 
                         //write chocobo race prizes
                         writer.Write(WriteHextStrings(ChocoboRacePrizes, original.ChocoboRacePrizes,
-                            CHOCOBO_RACE_ITEMS_POS, ITEM_NAME_LENGTH, NUM_CHOCOBO_RACE_ITEMS));
+                            CHOCOBO_RACE_ITEMS_POS, GetItemNameLength(), NUM_CHOCOBO_RACE_ITEMS));
 
                         //write chocobo racer names (besides Teioh)
                         writer.Write(WriteHextStrings(ChocoboNames, original.ChocoboNames,
-                            CHOCOBO_NAMES_POS, CHOCOBO_NAME_LENGTH, NUM_CHOCOBO_NAMES));
+                            CHOCOBO_NAMES_POS, GetChocoboNameLength(), GetNumChocoboNames(Language)));
                     }
                 }
             }

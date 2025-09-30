@@ -116,24 +116,26 @@ namespace FF7Scarlet.ExeEditor
             }
 
             textBoxMainMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
-            textBoxItemMenuText.MaxLength = ExeData.ITEM_MENU_TEXT_LENGTH - 1;
-            textBoxMagicMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
-            textBoxMateriaMenuText.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
-            textBoxUnequipText.MaxLength = ExeData.UNEQUIP_TEXT_LENGTH - 1;
-            textBoxEquipMenuText.MaxLength = ExeData.EQUIP_MENU_TEXT_LENGTH - 1;
-            textBoxStatusMenuText.MaxLength = ExeData.STATUS_MENU_TEXT_LENGTH - 1;
+            textBoxItemMenuText.MaxLength = editor.GetItemMenuTextLength() - 1;
+            textBoxMagicMenuText.MaxLength = editor.GetMagicMenuTextLength() - 1;
+            textBoxMateriaMenuText.MaxLength = editor.GetMateriaMenuTextLength() - 1;
+            textBoxUnequipText.MaxLength = editor.GetUnequipTextLength() - 1;
+            textBoxEquipMenuText.MaxLength = editor.GetEquipMenuTextLength() - 1;
+            textBoxStatusMenuText.MaxLength = editor.GetStatusMenuTextLength() - 1;
             textBoxConfigMenuText.MaxLength = editor.GetConfigTextLength() - 1;
+            textBoxSaveMenuText.MaxLength = editor.GetSaveTextLength() - 1;
 
-            textBoxElements.MaxLength = ExeData.ELEMENT_NAME_LENGTH - 1;
+            textBoxElements.MaxLength = editor.GetElementNameLength() - 1;
             textBoxStatusEffectTextBattle.MaxLength = editor.GetStatusEffectBattleLength() - 1;
-            textBoxStatusEffectMenu.MaxLength = ExeData.STATUS_MENU_TEXT_LENGTH - 1;
+            textBoxStatusEffectMenu.MaxLength = ExeData.MENU_TEXT_LENGTH - 1;
             textBoxL4Success.MaxLength = editor.GetLimitTextLength() - 1;
             textBoxL4Fail.MaxLength = editor.GetLimitTextLength() - 1;
             textBoxL4Wrong.MaxLength = editor.GetLimitTextLength() - 1;
-            textBoxBizarroMenu.MaxLength = ExeData.BIZARRO_MENU_TEXT_LENGTH - 1;
+            textBoxBizarroMenu.MaxLength = editor.GetBizarroTextLength() - 1;
             textBoxShopNameText.MaxLength = editor.GetShopNameLength() - 1;
             textBoxShopText.MaxLength = ExeData.SHOP_TEXT_LENGTH - 1;
-            textBoxChocoboName.MaxLength = ExeData.CHOCOBO_NAME_LENGTH - 1;
+            textBoxChocoboName.MaxLength = editor.GetChocoboNameLength() - 1;
+            comboBoxChocoboRacePrizes.MaxLength = editor.GetItemNameLength() - 1;
 
             //add limit breaks
             listBoxLimits.BeginUpdate();
@@ -180,34 +182,11 @@ namespace FF7Scarlet.ExeEditor
             //English-only stuff
             if (editor.Language != Language.English)
             {
-                foreach (Control c in tabPageItemMagicMenu.Controls)
+                foreach (Control c in tabPageWorldMapWalkability.Controls)
                 {
                     c.Enabled = false;
                 }
-                foreach (Control c in tabPageMateriaMenu.Controls)
-                {
-                    c.Enabled = false;
-                }
-                foreach (Control c in tabPageEquipMenu.Controls)
-                {
-                    c.Enabled = false;
-                }
-                foreach (Control c in tabPageStatusMenu.Controls)
-                {
-                    c.Enabled = false;
-                }
-                foreach (Control c in tabPageSortOrder.Controls)
-                {
-                    c.Enabled = false;
-                }
-                foreach (Control c in tabPageChocoboRacing.Controls)
-                {
-                    c.Enabled = false;
-                }
-                foreach (Control c in tabPageAudio.Controls)
-                {
-                    c.Enabled = false;
-                }
+                groupBoxSortItemName.Enabled = false;
             }
 
             //kernel-synced data
@@ -384,6 +363,65 @@ namespace FF7Scarlet.ExeEditor
             {
                 listBoxMainMenu.Items.Add(editor.MainMenuTexts[i].ToString());
             }
+            //set item menu text
+            for (i = 0; i < ExeData.NUM_ITEM_MENU_TEXTS; ++i)
+            {
+                listBoxItemMenu.Items.Add(editor.ItemMenuTexts[i].ToString());
+            }
+
+            //set magic menu text
+            for (i = 0; i < ExeData.NUM_MAGIC_MENU_TEXTS; ++i)
+            {
+                listBoxMagicMenu.Items.Add(editor.MagicMenuTexts[i].ToString());
+            }
+
+            //set materia menu text
+            for (i = 0; i < ExeData.NUM_MATERIA_MENU_TEXTS; ++i)
+            {
+                listBoxMateriaMenu.Items.Add(editor.MateriaMenuTexts[i].ToString());
+            }
+
+            //set unequip text
+            for (i = 0; i < ExeData.NUM_UNEQUIP_TEXTS; ++i)
+            {
+                listBoxUnequipText.Items.Add(editor.UnequipTexts[i].ToString());
+            }
+
+            //set equip menu text
+            for (i = 0; i < ExeData.NUM_EQUIP_MENU_TEXTS; ++i)
+            {
+                listBoxEquipMenu.Items.Add(editor.EquipMenuTexts[i].ToString());
+            }
+
+            //set status menu text
+            for (i = 0; i < ExeData.NUM_STATUS_MENU_TEXTS; ++i)
+            {
+                listBoxStatusMenuText.Items.Add(editor.StatusMenuTexts[i].ToString());
+            }
+
+            //set status effects
+            for (i = 0; i < ExeData.NUM_STATUS_EFFECTS; ++i)
+            {
+                string se = editor.StatusEffectsBattle[i].ToString(),
+                    m = editor.StatusEffectsMenu[i].ToString();
+                if (!string.IsNullOrEmpty(m))
+                {
+                    se = m;
+                }
+                listBoxStatusEffects.Items.Add(se);
+            }
+
+            //set element names
+            for (i = 0; i < ExeData.NUM_ELEMENTS; ++i)
+            {
+                listBoxElements.Items.Add(editor.ElementNames[i].ToString());
+            }
+
+            //set limit menu text
+            for (i = 0; i < ExeData.NUM_LIMIT_MENU_TEXTS; ++i)
+            {
+                listBoxLimitMenu.Items.Add(editor.LimitMenuTexts[i].ToString());
+            }
 
             //set config menu text
             for (i = 0; i < ExeData.NUM_CONFIG_MENU_TEXTS; ++i)
@@ -391,19 +429,69 @@ namespace FF7Scarlet.ExeEditor
                 listBoxConfigMenu.Items.Add(editor.ConfigMenuTexts[i].ToString());
             }
 
-            //set status effects
-            for (i = 0; i < ExeData.NUM_STATUS_EFFECTS; ++i)
+            //set save menu text
+            for (i = 0; i < ExeData.NUM_SAVE_MENU_TEXTS; ++i)
             {
-                string se = editor.StatusEffectsBattle[i].ToString();
-                if (editor.Language == Language.English)
-                {
-                    string temp = editor.StatusEffectsMenu[i].ToString();
-                    if (!string.IsNullOrEmpty(temp))
-                    {
-                        se = temp;
-                    }
-                }
-                listBoxStatusEffects.Items.Add(se);
+                listBoxSaveMenu.Items.Add(editor.SaveMenuTexts[i].ToString());
+            }
+
+            //set quit menu text
+            for (i = 0; i < ExeData.NUM_QUIT_TEXTS_1 + ExeData.NUM_QUIT_TEXTS_2; ++i)
+            {
+                listBoxQuitTexts.Items.Add(editor.QuitMenuTexts[i].ToString());
+            }
+
+            //set shop names
+            foreach (var s in editor.ShopNames)
+            {
+                comboBoxShopType.Items.Add(s.ToString());
+                listBoxShopNames.Items.Add(s.ToString());
+            }
+            comboBoxShopType.SelectedIndex = shopType;
+
+            //set shop text
+            foreach (var s in editor.ShopText)
+            {
+                listBoxShopText.Items.Add(s.ToString());
+            }
+
+            //set battle arena text
+            for (i = 0; i < ExeData.GetNumBattleArenaTexts(); ++i)
+            {
+                listBoxBattleArena.Items.Add(editor.BattleArenaTexts[i].ToString());
+            }
+
+            //set Bizarro menu text
+            for (i = 0; i < ExeData.NUM_BIZARRO_MENU_TEXTS; ++i)
+            {
+                listBoxBizarroMenu.Items.Add(editor.BizarroMenuTexts[i].ToString());
+            }
+
+            //set chocobo names
+            foreach (var c in editor.ChocoboNames)
+            {
+                listBoxChocoboNames.Items.Add(c.ToString());
+            }
+
+            //set chocobo race prizes
+            for (i = 0; i < ExeData.NUM_CHOCOBO_RACE_ITEMS; ++i)
+            {
+                listBoxChocoboRacePrizes.Items.Add(editor.ChocoboRacePrizes[i].ToString());
+            }
+
+            //set L4 text
+            SetLimitText();
+
+            //set audio volume
+            for (i = 0; i < ExeData.NUM_AUDIO_VALUES; ++i)
+            {
+                listBoxAudioVolume.Items.Add($"{i}: {editor.AudioVolume[i]}");
+            }
+
+            //set audio pan
+            for (i = 0; i < ExeData.NUM_AUDIO_VALUES; ++i)
+            {
+                listBoxAudioPan.Items.Add($"{i}: {editor.AudioPan[i]}");
             }
 
             //kernel-synced data
@@ -443,6 +531,9 @@ namespace FF7Scarlet.ExeEditor
                     listBoxMateriaPrices.Items.Add($"{name} - {editor.MateriaPrices[i]}");
                 }
 
+                //materia priority list
+                LoadMateriaPriorityList();
+
                 //English-only stuff (kernel-specific)
                 if (editor.Language == Language.English)
                 {
@@ -455,128 +546,8 @@ namespace FF7Scarlet.ExeEditor
                     {
                         listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(item.Key));
                     }
-
-                    //materia priority list
-                    LoadMateriaPriorityList();
                 }
             }
-
-            //English-only stuff (not kernel-specific)
-            if (editor.Language == Language.English)
-            {
-                //set item menu text
-                for (i = 0; i < ExeData.NUM_ITEM_MENU_TEXTS; ++i)
-                {
-                    listBoxItemMenu.Items.Add(editor.ItemMenuTexts[i].ToString());
-                }
-
-                //set magic menu text
-                for (i = 0; i < ExeData.NUM_MAGIC_MENU_TEXTS; ++i)
-                {
-                    listBoxMagicMenu.Items.Add(editor.MagicMenuTexts[i].ToString());
-                }
-
-                //set materia menu text
-                for (i = 0; i < ExeData.NUM_MATERIA_MENU_TEXTS; ++i)
-                {
-                    listBoxMateriaMenu.Items.Add(editor.MateriaMenuTexts[i].ToString());
-                }
-
-                //set unequip text
-                for (i = 0; i < ExeData.NUM_UNEQUIP_TEXTS; ++i)
-                {
-                    listBoxUnequipText.Items.Add(editor.UnequipTexts[i].ToString());
-                }
-
-                //set equip menu text
-                for (i = 0; i < ExeData.NUM_EQUIP_MENU_TEXTS; ++i)
-                {
-                    listBoxEquipMenu.Items.Add(editor.EquipMenuTexts[i].ToString());
-                }
-
-                //set status menu text
-                for (i = 0; i < ExeData.NUM_STATUS_MENU_TEXTS; ++i)
-                {
-                    listBoxStatusMenuText.Items.Add(editor.StatusMenuTexts[i].ToString());
-                }
-
-                //set element names
-                for (i = 0; i < ExeData.NUM_ELEMENTS; ++i)
-                {
-                    listBoxElements.Items.Add(editor.ElementNames[i].ToString());
-                }
-
-                //set limit menu text
-                for (i = 0; i < ExeData.NUM_LIMIT_MENU_TEXTS; ++i)
-                {
-                    listBoxLimitMenu.Items.Add(editor.LimitMenuTexts[i].ToString());
-                }
-
-                //set save menu text
-                for (i = 0; i < ExeData.NUM_SAVE_MENU_TEXTS; ++i)
-                {
-                    listBoxSaveMenu.Items.Add(editor.SaveMenuTexts[i].ToString());
-                }
-
-                //set quit menu text
-                for (i = 0; i < ExeData.NUM_QUIT_TEXTS_1 + ExeData.NUM_QUIT_TEXTS_2; ++i)
-                {
-                    listBoxQuitTexts.Items.Add(editor.QuitMenuTexts[i].ToString());
-                }
-
-                //set battle arena text
-                for (i = 0; i < ExeData.GetNumBattleArenaTexts(); ++i)
-                {
-                    listBoxBattleArena.Items.Add(editor.BattleArenaTexts[i].ToString());
-                }
-
-                //set Bizarro menu text
-                for (i = 0; i < ExeData.NUM_BIZARRO_MENU_TEXTS; ++i)
-                {
-                    listBoxBizarroMenu.Items.Add(editor.BizarroMenuTexts[i].ToString());
-                }
-
-                //set chocobo names
-                for (i = 0; i <= ExeData.NUM_CHOCOBO_NAMES; ++i)
-                {
-                    listBoxChocoboNames.Items.Add(editor.ChocoboNames[i].ToString());
-                }
-
-                //set chocobo race prizes
-                for (i = 0; i < ExeData.NUM_CHOCOBO_RACE_ITEMS; ++i)
-                {
-                    listBoxChocoboRacePrizes.Items.Add(editor.ChocoboRacePrizes[i].ToString());
-                }
-
-                //set audio volume
-                for (i = 0; i < ExeData.NUM_AUDIO_VALUES; ++i)
-                {
-                    listBoxAudioVolume.Items.Add($"{i}: {editor.AudioVolume[i]}");
-                }
-
-                //set audio pan
-                for (i = 0; i < ExeData.NUM_AUDIO_VALUES; ++i)
-                {
-                    listBoxAudioPan.Items.Add($"{i}: {editor.AudioPan[i]}");
-                }
-            }
-
-            //set shop names
-            foreach (var s in editor.ShopNames)
-            {
-                comboBoxShopType.Items.Add(s.ToString());
-                listBoxShopNames.Items.Add(s.ToString());
-            }
-            comboBoxShopType.SelectedIndex = shopType;
-
-            //set shop text
-            foreach (var s in editor.ShopText)
-            {
-                listBoxShopText.Items.Add(s.ToString());
-            }
-
-            //set L4 text
-            SetLimitText();
 
             //resume layouts
             SuspendOrResumeComboAndListBoxes(tabControlMain, true);
@@ -1717,7 +1688,7 @@ namespace FF7Scarlet.ExeEditor
             }
             else
             {
-                textBoxQuitText.MaxLength = ExeData.QUIT_TEXT_LENGTH_2 - 1;
+                textBoxQuitText.MaxLength = editor.GetQuitTextLength() - 1;
             }
         }
 
@@ -1788,7 +1759,12 @@ namespace FF7Scarlet.ExeEditor
                 int i = listBoxStatusEffects.SelectedIndex;
                 if (i >= 0 && i < ExeData.NUM_STATUS_EFFECTS)
                 {
-                    if (editor.Language == Language.English)
+                    if (editor.Language == Language.Spanish && i == 19)
+                    {
+                        textBoxStatusEffectMenu.Clear();
+                        textBoxStatusEffectMenu.Enabled = false;
+                    }
+                    else
                     {
                         textBoxStatusEffectMenu.Enabled = true;
                         textBoxStatusEffectMenu.Text = editor.StatusEffectsMenu[i].ToString();
@@ -1807,21 +1783,24 @@ namespace FF7Scarlet.ExeEditor
 
         private void listBoxBattleArena_SelectedIndexChanged(object sender, EventArgs e)
         {
+            int numTexts = ExeData.GetNumBattleArenaTexts();
+            var lengths = editor.GetBattleArenaTextLengths(editor.Language);
+
             ListBoxIndexChanged(listBoxBattleArena, textBoxBattleArena, editor.BattleArenaTexts,
-                ExeData.GetNumBattleArenaTexts());
+                numTexts);
 
             //special handling for battle arena text length
             int i = listBoxBattleArena.SelectedIndex;
             if (i < ExeData.GetNumBattleArenaTexts())
             {
                 int pos = 0;
-                int count = ExeData.BATTLE_ARENA_TEXT_LENGTHS[pos].Count;
+                int count = lengths[pos].Count;
                 while (i >= count)
                 {
                     pos++;
-                    count += ExeData.BATTLE_ARENA_TEXT_LENGTHS[pos].Count;
+                    count += lengths[pos].Count;
                 }
-                textBoxBattleArena.MaxLength = ExeData.BATTLE_ARENA_TEXT_LENGTHS[pos].Length - 1;
+                textBoxBattleArena.MaxLength = lengths[pos].Length - 1;
             }
         }
 
@@ -1844,7 +1823,7 @@ namespace FF7Scarlet.ExeEditor
         private void listBoxChocoboNames_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListBoxIndexChanged(listBoxChocoboNames, textBoxChocoboName, editor.ChocoboNames,
-                ExeData.NUM_CHOCOBO_NAMES + 1);
+                editor.GetNumChocoboNames(editor.Language) + 1);
         }
 
         private void listBoxChocoboRacePrizes_SelectedIndexChanged(object sender, EventArgs e)
@@ -2224,7 +2203,12 @@ namespace FF7Scarlet.ExeEditor
                     {
                         try
                         {
-                            editor.ReadFile(path);
+                            var notice = editor.ReadFile(path);
+                            if (notice == 1)
+                            {
+                                MessageBox.Show("Some text in this file was too long, and has been truncated.",
+                                    "Truncated Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                         catch (EndOfStreamException ex)
                         {
@@ -2399,7 +2383,7 @@ namespace FF7Scarlet.ExeEditor
                     editor.WriteEXE();
                     if (DataManager.ExeData != null) //sync with DataManager
                     {
-                        DataManager.ExeData.ReadBytes(editor.GetBytes());
+                        DataManager.ExeData.ReadByteArray(editor.GetByteArray());
                     }
                     SetUnsaved(false);
                 }
