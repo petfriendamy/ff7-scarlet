@@ -259,7 +259,7 @@ namespace FF7Scarlet.Shared
             }
         }
 
-        public byte[] GetBytes(int length, bool terminatedWithZero = false, bool padWithZero = false)
+        public byte[] GetBytes(int length, bool terminatedWithZero = false, bool padWithZero = false, bool addSpace = false)
         {
             var bytes = new byte[length];
             if (!terminatedWithZero && !padWithZero) //pad with null terminators
@@ -274,7 +274,13 @@ namespace FF7Scarlet.Shared
             Array.Copy(temp, bytes, maxLength);
             if (!terminatedWithZero)
             {
-                bytes[maxLength] = 0xFF;
+                int pos = maxLength;
+                if (addSpace && maxLength < length - 1)
+                {
+                    bytes[pos] = 0;
+                    pos++;
+                }
+                bytes[pos] = 0xFF;
             }
             return bytes;
         }

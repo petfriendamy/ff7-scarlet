@@ -420,9 +420,10 @@ namespace FF7Scarlet.SceneEditor
             if (clearLoadingWhenDone) { loading = false; }
         }
 
-        private void LoadEnemyData(Enemy? enemy, bool clearLoadingWhenDone, bool ignoreNull)
+        private bool LoadEnemyData(Enemy? enemy, bool clearLoadingWhenDone, bool ignoreNull)
         {
             loading = true;
+            bool success = true;
             if (enemy == null) //no enemy data to load
             {
                 var result = DialogResult.None;
@@ -564,9 +565,11 @@ namespace FF7Scarlet.SceneEditor
                 catch
                 {
                     MessageBox.Show("This enemy data appears corrupt.", "Corrupt Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    success = false;
                 }
             }
             if (clearLoadingWhenDone) { loading = false; }
+            return success;
         }
 
         private void CreateNewEnemy(int sceneIndex, int enemyIndex, int formationIndex)
@@ -631,7 +634,10 @@ namespace FF7Scarlet.SceneEditor
                             }
                         }
                         int j = validEnemies.IndexOf(e);
-                        comboBoxFormationSelectedEnemy.Items[j] = name;
+                        if (j >= 0)
+                        {
+                            comboBoxFormationSelectedEnemy.Items[j] = name;
+                        }
                     }
                     loading = false;
                 }
@@ -1991,12 +1997,16 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedEnemyIndex != -1 && SelectedScene != null && DataManager.CopiedEnemy != null)
             {
-                SelectedScene.Enemies[SelectedEnemyIndex] = new Enemy(DataManager.CopiedEnemy);
-                LoadEnemyData(SelectedEnemy, true, true);
-                UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
-                tabControlMain.SelectedTab = tabPageEnemyData;
-                enemyNeedsSync = false;
-                SetUnsaved(true);
+                var temp = new Enemy(DataManager.CopiedEnemy);
+                bool result = LoadEnemyData(temp, true, true);
+                if (result)
+                {
+                    SelectedScene.Enemies[SelectedEnemyIndex] = temp;
+                    UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
+                    tabControlMain.SelectedTab = tabPageEnemyData;
+                    enemyNeedsSync = false;
+                    SetUnsaved(true);
+                }
             }
         }
 

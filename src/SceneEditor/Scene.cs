@@ -446,7 +446,7 @@ namespace FF7Scarlet.SceneEditor
                             {
                                 writer.Write(HexParser.GetNullBlock(Enemy.DATA_BLOCK_SIZE + NAME_LENGTH));
                             }
-                            else { writer.Write(e.GetRawEnemyData()); }
+                            else { writer.Write(e.GetRawEnemyData(true)); }
                         }
                     }
                     catch (Exception ex)

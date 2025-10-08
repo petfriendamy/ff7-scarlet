@@ -2,6 +2,7 @@
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Battle;
 using System;
+using System.CodeDom.Compiler;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -109,7 +110,7 @@ namespace FF7Scarlet.SceneEditor
         {
             ModelID = other.ModelID;
             Name = other.Name;
-            ParseData(other.GetRawEnemyData());
+            ParseData(other.GetRawEnemyData(false));
             for (int i = 0; i < SCRIPT_NUMBER; ++i)
             {
                 Scripts[i] = new Script(other.Scripts[i]);
@@ -217,13 +218,21 @@ namespace FF7Scarlet.SceneEditor
             return true;
         }
 
-        public byte[] GetRawEnemyData()
+        public byte[] GetRawEnemyData(bool includeName)
         {
-            var data = new byte[DATA_BLOCK_SIZE + Scene.NAME_LENGTH];
+            int length = DATA_BLOCK_SIZE;
+            if (includeName)
+            {
+                length += Scene.NAME_LENGTH;
+            }
+            var data = new byte[length];
             using (var ms = new MemoryStream(data, true))
             using (var writer = new BinaryWriter(ms))
             {
-                writer.Write(Name.GetBytes(Scene.NAME_LENGTH));
+                if (includeName)
+                {
+                    writer.Write(Name.GetBytes(Scene.NAME_LENGTH, addSpace:true));
+                }
                 writer.Write(Level);
                 writer.Write(Speed);
                 writer.Write(Luck);
