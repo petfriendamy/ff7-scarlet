@@ -28,171 +28,169 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBoxCurrScript = new System.Windows.Forms.GroupBox();
-            this.listBoxCurrScript = new System.Windows.Forms.ListBox();
-            this.toolStripScript = new System.Windows.Forms.ToolStrip();
-            this.toolStripButtonAdd = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonEdit = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonCut = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonCopy = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonPaste = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonDelete = new System.Windows.Forms.ToolStripButton();
-            this.groupBoxCurrScript.SuspendLayout();
-            this.toolStripScript.SuspendLayout();
-            this.SuspendLayout();
+            groupBoxCurrScript = new GroupBox();
+            listBoxCurrScript = new ListBox();
+            toolStripScript = new ToolStrip();
+            toolStripButtonAdd = new ToolStripButton();
+            toolStripButtonEdit = new ToolStripButton();
+            toolStripButtonCut = new ToolStripButton();
+            toolStripButtonCopy = new ToolStripButton();
+            toolStripButtonPaste = new ToolStripButton();
+            toolStripButtonMoveUp = new ToolStripButton();
+            toolStripButtonMoveDown = new ToolStripButton();
+            toolStripButtonDelete = new ToolStripButton();
+            groupBoxCurrScript.SuspendLayout();
+            toolStripScript.SuspendLayout();
+            SuspendLayout();
             // 
             // groupBoxCurrScript
             // 
-            this.groupBoxCurrScript.Controls.Add(this.listBoxCurrScript);
-            this.groupBoxCurrScript.Controls.Add(this.toolStripScript);
-            this.groupBoxCurrScript.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxCurrScript.Location = new System.Drawing.Point(0, 0);
-            this.groupBoxCurrScript.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.groupBoxCurrScript.Name = "groupBoxCurrScript";
-            this.groupBoxCurrScript.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.groupBoxCurrScript.Size = new System.Drawing.Size(498, 401);
-            this.groupBoxCurrScript.TabIndex = 7;
-            this.groupBoxCurrScript.TabStop = false;
-            this.groupBoxCurrScript.Text = "Current script";
+            groupBoxCurrScript.Controls.Add(listBoxCurrScript);
+            groupBoxCurrScript.Controls.Add(toolStripScript);
+            groupBoxCurrScript.Dock = DockStyle.Fill;
+            groupBoxCurrScript.Location = new Point(0, 0);
+            groupBoxCurrScript.Margin = new Padding(4, 3, 4, 3);
+            groupBoxCurrScript.Name = "groupBoxCurrScript";
+            groupBoxCurrScript.Padding = new Padding(4, 3, 4, 3);
+            groupBoxCurrScript.Size = new Size(498, 401);
+            groupBoxCurrScript.TabIndex = 7;
+            groupBoxCurrScript.TabStop = false;
+            groupBoxCurrScript.Text = "Current script";
             // 
             // listBoxCurrScript
             // 
-            this.listBoxCurrScript.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBoxCurrScript.FormattingEnabled = true;
-            this.listBoxCurrScript.HorizontalScrollbar = true;
-            this.listBoxCurrScript.ItemHeight = 15;
-            this.listBoxCurrScript.Location = new System.Drawing.Point(4, 86);
-            this.listBoxCurrScript.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.listBoxCurrScript.Name = "listBoxCurrScript";
-            this.listBoxCurrScript.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxCurrScript.Size = new System.Drawing.Size(490, 312);
-            this.listBoxCurrScript.TabIndex = 7;
-            this.listBoxCurrScript.DoubleClick += new System.EventHandler(this.toolStripButtonEdit_Click);
-            this.listBoxCurrScript.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBoxCurrScript_KeyDown);
+            listBoxCurrScript.Dock = DockStyle.Fill;
+            listBoxCurrScript.FormattingEnabled = true;
+            listBoxCurrScript.HorizontalScrollbar = true;
+            listBoxCurrScript.Location = new Point(4, 44);
+            listBoxCurrScript.Margin = new Padding(4, 3, 4, 3);
+            listBoxCurrScript.Name = "listBoxCurrScript";
+            listBoxCurrScript.SelectionMode = SelectionMode.MultiExtended;
+            listBoxCurrScript.Size = new Size(490, 354);
+            listBoxCurrScript.TabIndex = 7;
+            listBoxCurrScript.SelectedIndexChanged += listBoxCurrScript_SelectedIndexChanged;
+            listBoxCurrScript.DoubleClick += toolStripButtonEdit_Click;
+            listBoxCurrScript.KeyDown += listBoxCurrScript_KeyDown;
             // 
             // toolStripScript
             // 
-            this.toolStripScript.AllowMerge = false;
-            this.toolStripScript.Enabled = false;
-            this.toolStripScript.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStripScript.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButtonAdd,
-            this.toolStripButtonEdit,
-            this.toolStripButtonCut,
-            this.toolStripButtonCopy,
-            this.toolStripButtonPaste,
-            this.toolStripButtonMoveUp,
-            this.toolStripButtonMoveDown,
-            this.toolStripButtonDelete});
-            this.toolStripScript.Location = new System.Drawing.Point(4, 19);
-            this.toolStripScript.Name = "toolStripScript";
-            this.toolStripScript.Size = new System.Drawing.Size(490, 67);
-            this.toolStripScript.TabIndex = 6;
-            this.toolStripScript.Text = "toolStripScript";
+            toolStripScript.AllowMerge = false;
+            toolStripScript.Enabled = false;
+            toolStripScript.GripStyle = ToolStripGripStyle.Hidden;
+            toolStripScript.Items.AddRange(new ToolStripItem[] { toolStripButtonAdd, toolStripButtonEdit, toolStripButtonCut, toolStripButtonCopy, toolStripButtonPaste, toolStripButtonMoveUp, toolStripButtonMoveDown, toolStripButtonDelete });
+            toolStripScript.Location = new Point(4, 19);
+            toolStripScript.Name = "toolStripScript";
+            toolStripScript.Size = new Size(490, 25);
+            toolStripScript.TabIndex = 6;
+            toolStripScript.Text = "toolStripScript";
             // 
             // toolStripButtonAdd
             // 
-            this.toolStripButtonAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonAdd.Image = global::FF7Scarlet.Properties.Resources.menu_add;
-            this.toolStripButtonAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonAdd.Name = "toolStripButtonAdd";
-            this.toolStripButtonAdd.Size = new System.Drawing.Size(64, 64);
-            this.toolStripButtonAdd.Text = "Add";
-            this.toolStripButtonAdd.Click += new System.EventHandler(this.toolStripButtonAdd_Click);
+            toolStripButtonAdd.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonAdd.Image = Properties.Resources.menu_add;
+            toolStripButtonAdd.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonAdd.ImageTransparentColor = Color.Magenta;
+            toolStripButtonAdd.Name = "toolStripButtonAdd";
+            toolStripButtonAdd.Size = new Size(23, 22);
+            toolStripButtonAdd.Text = "Add";
+            toolStripButtonAdd.Click += toolStripButtonAdd_Click;
             // 
             // toolStripButtonEdit
             // 
-            this.toolStripButtonEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonEdit.Image = global::FF7Scarlet.Properties.Resources.menu_edit;
-            this.toolStripButtonEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonEdit.Name = "toolStripButtonEdit";
-            this.toolStripButtonEdit.Size = new System.Drawing.Size(64, 64);
-            this.toolStripButtonEdit.Text = "Edit";
-            this.toolStripButtonEdit.Click += new System.EventHandler(this.toolStripButtonEdit_Click);
+            toolStripButtonEdit.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonEdit.Enabled = false;
+            toolStripButtonEdit.Image = Properties.Resources.menu_edit;
+            toolStripButtonEdit.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonEdit.ImageTransparentColor = Color.Magenta;
+            toolStripButtonEdit.Name = "toolStripButtonEdit";
+            toolStripButtonEdit.Size = new Size(23, 22);
+            toolStripButtonEdit.Text = "Edit";
+            toolStripButtonEdit.Click += toolStripButtonEdit_Click;
             // 
             // toolStripButtonCut
             // 
-            this.toolStripButtonCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonCut.Image = global::FF7Scarlet.Properties.Resources.menu_cut;
-            this.toolStripButtonCut.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonCut.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonCut.Name = "toolStripButtonCut";
-            this.toolStripButtonCut.Size = new System.Drawing.Size(64, 64);
-            this.toolStripButtonCut.Text = "Cut";
-            this.toolStripButtonCut.Click += new System.EventHandler(this.toolStripButtonCut_Click);
+            toolStripButtonCut.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonCut.Enabled = false;
+            toolStripButtonCut.Image = Properties.Resources.menu_cut;
+            toolStripButtonCut.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonCut.ImageTransparentColor = Color.Magenta;
+            toolStripButtonCut.Name = "toolStripButtonCut";
+            toolStripButtonCut.Size = new Size(23, 22);
+            toolStripButtonCut.Text = "Cut";
+            toolStripButtonCut.Click += toolStripButtonCut_Click;
             // 
             // toolStripButtonCopy
             // 
-            this.toolStripButtonCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonCopy.Image = global::FF7Scarlet.Properties.Resources.menu_copy;
-            this.toolStripButtonCopy.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonCopy.Name = "toolStripButtonCopy";
-            this.toolStripButtonCopy.Size = new System.Drawing.Size(64, 64);
-            this.toolStripButtonCopy.Text = "Copy";
-            this.toolStripButtonCopy.Click += new System.EventHandler(this.toolStripButtonCopy_Click);
+            toolStripButtonCopy.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonCopy.Enabled = false;
+            toolStripButtonCopy.Image = Properties.Resources.menu_copy;
+            toolStripButtonCopy.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonCopy.ImageTransparentColor = Color.Magenta;
+            toolStripButtonCopy.Name = "toolStripButtonCopy";
+            toolStripButtonCopy.Size = new Size(23, 22);
+            toolStripButtonCopy.Text = "Copy";
+            toolStripButtonCopy.Click += toolStripButtonCopy_Click;
             // 
             // toolStripButtonPaste
             // 
-            this.toolStripButtonPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonPaste.Enabled = false;
-            this.toolStripButtonPaste.Image = global::FF7Scarlet.Properties.Resources.menu_paste;
-            this.toolStripButtonPaste.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPaste.Name = "toolStripButtonPaste";
-            this.toolStripButtonPaste.Size = new System.Drawing.Size(64, 64);
-            this.toolStripButtonPaste.Text = "Paste";
-            this.toolStripButtonPaste.Click += new System.EventHandler(this.toolStripButtonPaste_Click);
+            toolStripButtonPaste.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonPaste.Enabled = false;
+            toolStripButtonPaste.Image = Properties.Resources.menu_paste;
+            toolStripButtonPaste.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonPaste.ImageTransparentColor = Color.Magenta;
+            toolStripButtonPaste.Name = "toolStripButtonPaste";
+            toolStripButtonPaste.Size = new Size(23, 22);
+            toolStripButtonPaste.Text = "Paste";
+            toolStripButtonPaste.Click += toolStripButtonPaste_Click;
             // 
             // toolStripButtonMoveUp
             // 
-            this.toolStripButtonMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonMoveUp.Image = global::FF7Scarlet.Properties.Resources.menu_up;
-            this.toolStripButtonMoveUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonMoveUp.Name = "toolStripButtonMoveUp";
-            this.toolStripButtonMoveUp.Size = new System.Drawing.Size(64, 64);
-            this.toolStripButtonMoveUp.Text = "Move Up";
-            this.toolStripButtonMoveUp.Click += new System.EventHandler(this.toolStripButtonMoveUp_Click);
+            toolStripButtonMoveUp.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonMoveUp.Enabled = false;
+            toolStripButtonMoveUp.Image = Properties.Resources.menu_up;
+            toolStripButtonMoveUp.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonMoveUp.ImageTransparentColor = Color.Magenta;
+            toolStripButtonMoveUp.Name = "toolStripButtonMoveUp";
+            toolStripButtonMoveUp.Size = new Size(23, 22);
+            toolStripButtonMoveUp.Text = "Move Up";
+            toolStripButtonMoveUp.Click += toolStripButtonMoveUp_Click;
             // 
             // toolStripButtonMoveDown
             // 
-            this.toolStripButtonMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonMoveDown.Image = global::FF7Scarlet.Properties.Resources.menu_down;
-            this.toolStripButtonMoveDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonMoveDown.Name = "toolStripButtonMoveDown";
-            this.toolStripButtonMoveDown.Size = new System.Drawing.Size(64, 64);
-            this.toolStripButtonMoveDown.Text = "Move Down";
-            this.toolStripButtonMoveDown.Click += new System.EventHandler(this.toolStripButtonMoveDown_Click);
+            toolStripButtonMoveDown.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonMoveDown.Enabled = false;
+            toolStripButtonMoveDown.Image = Properties.Resources.menu_down;
+            toolStripButtonMoveDown.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonMoveDown.ImageTransparentColor = Color.Magenta;
+            toolStripButtonMoveDown.Name = "toolStripButtonMoveDown";
+            toolStripButtonMoveDown.Size = new Size(23, 22);
+            toolStripButtonMoveDown.Text = "Move Down";
+            toolStripButtonMoveDown.Click += toolStripButtonMoveDown_Click;
             // 
             // toolStripButtonDelete
             // 
-            this.toolStripButtonDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonDelete.Image = global::FF7Scarlet.Properties.Resources.menu_delete;
-            this.toolStripButtonDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonDelete.Name = "toolStripButtonDelete";
-            this.toolStripButtonDelete.Size = new System.Drawing.Size(64, 64);
-            this.toolStripButtonDelete.Text = "Delete";
-            this.toolStripButtonDelete.Click += new System.EventHandler(this.toolStripButtonDelete_Click);
+            toolStripButtonDelete.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonDelete.Enabled = false;
+            toolStripButtonDelete.Image = Properties.Resources.menu_delete;
+            toolStripButtonDelete.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonDelete.ImageTransparentColor = Color.Magenta;
+            toolStripButtonDelete.Name = "toolStripButtonDelete";
+            toolStripButtonDelete.Size = new Size(23, 22);
+            toolStripButtonDelete.Text = "Delete";
+            toolStripButtonDelete.Click += toolStripButtonDelete_Click;
             // 
             // ScriptControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBoxCurrScript);
-            this.Name = "ScriptControl";
-            this.Size = new System.Drawing.Size(498, 401);
-            this.groupBoxCurrScript.ResumeLayout(false);
-            this.groupBoxCurrScript.PerformLayout();
-            this.toolStripScript.ResumeLayout(false);
-            this.toolStripScript.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(groupBoxCurrScript);
+            Name = "ScriptControl";
+            Size = new Size(498, 401);
+            groupBoxCurrScript.ResumeLayout(false);
+            groupBoxCurrScript.PerformLayout();
+            toolStripScript.ResumeLayout(false);
+            toolStripScript.PerformLayout();
+            ResumeLayout(false);
 
         }
 

@@ -50,7 +50,7 @@ namespace FF7Scarlet.AIEditor
                 int count = listBoxCurrScript.SelectedIndices.Count;
                 if (count == 0)
                 {
-                    return [-1];
+                    return Array.Empty<int>();
                 }
                 else
                 {
@@ -102,12 +102,24 @@ namespace FF7Scarlet.AIEditor
                 }
             }
             listBoxCurrScript.EndUpdate();
+            UpdateToolStrip();
         }
 
         private void ReloadScript(int selected)
         {
             DisplayScript(SelectedScriptIndex);
             listBoxCurrScript.SelectedIndex = selected;
+        }
+
+        private void UpdateToolStrip()
+        {
+            foreach (ToolStripItem b in toolStripScript.Items)
+            {
+                if (b != toolStripButtonAdd)
+                {
+                    b.Enabled = SelectedCodeIndices.Length > 0;
+                }
+            }
         }
 
         private void SetClipboard(bool cut)
@@ -161,7 +173,7 @@ namespace FF7Scarlet.AIEditor
                         SelectedScript.RemoveCodeAtPosition(i);
                         listBoxCurrScript.Items.RemoveAt(i);
                     }
-                    
+
                     if (listBoxCurrScript.Items.Count == 0)
                     {
                         InvokeScriptRemoved();
@@ -204,6 +216,11 @@ namespace FF7Scarlet.AIEditor
                 }
                 SelectedScript.AddLabel(label.ToInt());
             }
+        }
+
+        private void listBoxCurrScript_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateToolStrip();
         }
 
         private void toolStripButtonAdd_Click(object sender, EventArgs e)
@@ -329,6 +346,13 @@ namespace FF7Scarlet.AIEditor
             {
                 switch (e.KeyCode)
                 {
+                    case Keys.A:
+                        e.SuppressKeyPress = true;
+                        for (int i = 0; i < listBoxCurrScript.Items.Count; ++i)
+                        {
+                            listBoxCurrScript.SetSelected(i, true);
+                        }
+                        break;
                     case Keys.C:
                         e.SuppressKeyPress = true;
                         SetClipboard(false);
