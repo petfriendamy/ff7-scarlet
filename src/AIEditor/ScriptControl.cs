@@ -39,7 +39,10 @@ namespace FF7Scarlet.AIEditor
         {
             get
             {
-                if (AIContainer == null || SelectedScript == null) { return null; }
+                if (AIContainer == null || SelectedScript == null || SelectedCodeIndices.Length == 0)
+                {
+                    return null;
+                }
                 return SelectedScript.GetCodeAtPosition(SelectedCodeIndices[0]);
             }
         }
@@ -65,6 +68,11 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
+        public bool CodeIsSelected
+        {
+            get { return SelectedCode != null; }
+        }
+
         public ScriptControl()
         {
             InitializeComponent();
@@ -86,7 +94,7 @@ namespace FF7Scarlet.AIEditor
                 {
                     var script = AIContainer.Scripts[scriptID];
                     toolStripScript.Enabled = true;
-                    if (script == null)
+                    if (script == null || script.IsEmpty)
                     {
                         listBoxCurrScript.Enabled = false;
                         listBoxCurrScript.Items.Add("(Script is empty)");
@@ -115,7 +123,7 @@ namespace FF7Scarlet.AIEditor
         {
             foreach (ToolStripItem b in toolStripScript.Items)
             {
-                if (b != toolStripButtonAdd)
+                if (b != toolStripButtonAdd && b != toolStripButtonPaste)
                 {
                     b.Enabled = SelectedCodeIndices.Length > 0;
                 }
@@ -148,8 +156,11 @@ namespace FF7Scarlet.AIEditor
         {
             if (SelectedScript != null && clipboard != null)
             {
-                int pos = SelectedCodeIndices[0] + 1;
-                if (pos == 0) { pos = SelectedScript.Length; }
+                int pos = 0;
+                if (SelectedCodeIndices.Length > 0)
+                {
+                    pos = SelectedCodeIndices[SelectedCodeIndices.Length - 1];
+                }
 
                 SelectedScript.InsertCodeAtPosition(pos, clipboard);
                 ReloadScript(pos);

@@ -12,7 +12,6 @@ using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Materias;
 
-using FF7Scarlet.SceneEditor;
 using FF7Scarlet.KernelEditor.Controls;
 using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
@@ -2901,14 +2900,22 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private void scriptControlCharacterAI_DataChanged(object? sender, EventArgs e)
+        private void listBoxCharacterAI_KeyDown(object sender, KeyEventArgs e)
         {
-            SetUnsaved(true);
+            if (!scriptControlCharacterAI.CodeIsSelected)
+            {
+                if (e.Modifiers == Keys.Control && e.KeyCode == Keys.V)
+                {
+                    e.SuppressKeyPress = true;
+                    scriptControlCharacterAI.PasteFromClipboard();
+                }
+            }
         }
 
-        private void scriptControlCharacterAI_ScriptAddedOrRemoved(object? sender, EventArgs e)
+        private void scriptControlCharacterAI_DataChanged(object? sender, EventArgs e)
         {
             UpdateCharacterAIScripts(listBoxCharacterAI.SelectedIndex);
+            SetUnsaved(true);
         }
 
         private void comboBoxParty1_SelectedIndexChanged(object sender, EventArgs e)

@@ -330,7 +330,7 @@ namespace FF7Scarlet.SceneEditor
         private void LoadSceneData(int sceneIndex, bool clearLoadingWhenDone, bool ignoreNull)
         {
             loading = true;
-            
+
             var scene = sceneList[sceneIndex];
             if (!scene.ScriptsLoaded)
             {
@@ -365,8 +365,8 @@ namespace FF7Scarlet.SceneEditor
 
             validAttacks =
                 (from a in scene.AttackList
-                    where a != null
-                    select a).ToList();
+                 where a != null
+                 select a).ToList();
 
             comboBoxEnemyAttackID.BeginUpdate();
             comboBoxEnemyAttackID.Items.Clear();
@@ -383,8 +383,8 @@ namespace FF7Scarlet.SceneEditor
             //get enemies
             validEnemies =
                 (from e in scene.Enemies
-                    where e != null
-                    select e).ToList();
+                 where e != null
+                 select e).ToList();
 
             comboBoxEnemy.BeginUpdate();
             comboBoxFormationSelectedEnemy.BeginUpdate();
@@ -1634,14 +1634,22 @@ namespace FF7Scarlet.SceneEditor
             scriptControlEnemyAI.SelectedScriptIndex = listBoxEnemyScripts.SelectedIndex;
         }
 
-        private void scriptControl_DataChanged(object sender, EventArgs e)
+        private void listBoxEnemyScripts_KeyDown(object sender, KeyEventArgs e)
         {
-            SetUnsaved(true);
+            if (!scriptControlEnemyAI.CodeIsSelected)
+            {
+                if (e.Modifiers == Keys.Control && e.KeyCode == Keys.V)
+                {
+                    e.SuppressKeyPress = true;
+                    scriptControlEnemyAI.PasteFromClipboard();
+                }
+            }
         }
 
-        private void scriptControlEnemyAI_ScriptAddedOrRemoved(object sender, EventArgs e)
+        private void scriptControlEnemyAI_DataChanged(object sender, EventArgs e)
         {
             UpdateScripts(SelectedEnemy, listBoxEnemyScripts);
+            SetUnsaved(true);
         }
 
         private void EnemyDataChanged(object? sender, EventArgs e)
@@ -1696,12 +1704,12 @@ namespace FF7Scarlet.SceneEditor
                     }
                     else
                         comboBoxFormationSelectedEnemy.SelectedIndex = validEnemies.IndexOf(enemy) + 1;
-                        numericFormationEnemyX.Value = SelectedFormationEnemy.Location.X;
-                        numericFormationEnemyY.Value = SelectedFormationEnemy.Location.Y;
-                        numericFormationEnemyZ.Value = SelectedFormationEnemy.Location.Z;
-                        numericFormationEnemyRow.Value = SelectedFormationEnemy.Row;
-                        coverFlagsControlFormationEnemy.SetFlags(SelectedFormationEnemy.CoverFlags);
-                        initialConditionControlEnemy.SetConditions(SelectedFormationEnemy.InitialConditionFlags);
+                    numericFormationEnemyX.Value = SelectedFormationEnemy.Location.X;
+                    numericFormationEnemyY.Value = SelectedFormationEnemy.Location.Y;
+                    numericFormationEnemyZ.Value = SelectedFormationEnemy.Location.Z;
+                    numericFormationEnemyRow.Value = SelectedFormationEnemy.Row;
+                    coverFlagsControlFormationEnemy.SetFlags(SelectedFormationEnemy.CoverFlags);
+                    initialConditionControlEnemy.SetConditions(SelectedFormationEnemy.InitialConditionFlags);
                 }
                 loading = false;
             }
@@ -1778,9 +1786,22 @@ namespace FF7Scarlet.SceneEditor
             scriptControlFormations.SelectedScriptIndex = listBoxFormationScripts.SelectedIndex;
         }
 
-        private void scriptControlFormations_ScriptAddedOrRemoved(object sender, EventArgs e)
+        private void listBoxFormationScripts_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!scriptControlFormations.CodeIsSelected)
+            {
+                if (e.Modifiers == Keys.Control && e.KeyCode == Keys.V)
+                {
+                    e.SuppressKeyPress = true;
+                    scriptControlFormations.PasteFromClipboard();
+                }
+            }
+        }
+
+        private void scriptControlFormations_DataChanged(object sender, EventArgs e)
         {
             UpdateScripts(SelectedFormation, listBoxFormationScripts);
+            SetUnsaved(true);
         }
 
         private void FormationDataChanged(object? sender, EventArgs e)

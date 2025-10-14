@@ -966,9 +966,9 @@
             scriptControlEnemyAI.Name = "scriptControlEnemyAI";
             scriptControlEnemyAI.Size = new Size(581, 439);
             scriptControlEnemyAI.TabIndex = 5;
-            scriptControlEnemyAI.DataChanged += scriptControl_DataChanged;
-            scriptControlEnemyAI.ScriptAdded += scriptControlEnemyAI_ScriptAddedOrRemoved;
-            scriptControlEnemyAI.ScriptRemoved += scriptControlEnemyAI_ScriptAddedOrRemoved;
+            scriptControlEnemyAI.DataChanged += scriptControlEnemyAI_DataChanged;
+            scriptControlEnemyAI.ScriptAdded += scriptControlEnemyAI_DataChanged;
+            scriptControlEnemyAI.ScriptRemoved += scriptControlEnemyAI_DataChanged;
             // 
             // labelEnemyScripts
             // 
@@ -989,6 +989,7 @@
             listBoxEnemyScripts.Size = new Size(167, 244);
             listBoxEnemyScripts.TabIndex = 3;
             listBoxEnemyScripts.SelectedIndexChanged += listBoxEnemyScripts_SelectedIndexChanged;
+            listBoxEnemyScripts.KeyDown += listBoxEnemyScripts_KeyDown;
             // 
             // tabPageAttackData
             // 
@@ -1436,9 +1437,9 @@
             scriptControlFormations.Name = "scriptControlFormations";
             scriptControlFormations.Size = new Size(584, 439);
             scriptControlFormations.TabIndex = 8;
-            scriptControlFormations.DataChanged += scriptControl_DataChanged;
-            scriptControlFormations.ScriptAdded += scriptControlFormations_ScriptAddedOrRemoved;
-            scriptControlFormations.ScriptRemoved += scriptControlFormations_ScriptAddedOrRemoved;
+            scriptControlFormations.DataChanged += scriptControlFormations_DataChanged;
+            scriptControlFormations.ScriptAdded += scriptControlFormations_DataChanged;
+            scriptControlFormations.ScriptRemoved += scriptControlFormations_DataChanged;
             // 
             // labelFormationScripts
             // 
@@ -1459,6 +1460,7 @@
             listBoxFormationScripts.Size = new Size(167, 244);
             listBoxFormationScripts.TabIndex = 6;
             listBoxFormationScripts.SelectedIndexChanged += listBoxFormationScripts_SelectedIndexChanged;
+            listBoxFormationScripts.KeyDown += listBoxFormationScripts_KeyDown;
             // 
             // panelTop
             // 

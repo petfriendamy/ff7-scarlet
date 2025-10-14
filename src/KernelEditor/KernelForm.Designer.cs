@@ -1502,8 +1502,8 @@
             scriptControlCharacterAI.Size = new Size(575, 424);
             scriptControlCharacterAI.TabIndex = 5;
             scriptControlCharacterAI.DataChanged += scriptControlCharacterAI_DataChanged;
-            scriptControlCharacterAI.ScriptAdded += scriptControlCharacterAI_ScriptAddedOrRemoved;
-            scriptControlCharacterAI.ScriptRemoved += scriptControlCharacterAI_ScriptAddedOrRemoved;
+            scriptControlCharacterAI.ScriptAdded += scriptControlCharacterAI_DataChanged;
+            scriptControlCharacterAI.ScriptRemoved += scriptControlCharacterAI_DataChanged;
             // 
             // groupBoxCharacterAI
             // 
@@ -1524,6 +1524,7 @@
             listBoxCharacterAI.Size = new Size(166, 189);
             listBoxCharacterAI.TabIndex = 1;
             listBoxCharacterAI.SelectedIndexChanged += listBoxCharacterAI_SelectedIndexChanged;
+            listBoxCharacterAI.KeyDown += listBoxCharacterAI_KeyDown;
             // 
             // groupBoxCharacterScripts
             // 
@@ -1547,6 +1548,7 @@
             listBoxCharacterScripts.Size = new Size(169, 216);
             listBoxCharacterScripts.TabIndex = 2;
             listBoxCharacterScripts.SelectedIndexChanged += listBoxCharacterScripts_SelectedIndexChanged;
+            listBoxCharacterScripts.KeyDown += listBoxCharacterAI_KeyDown;
             // 
             // tabPageInitData
             // 
