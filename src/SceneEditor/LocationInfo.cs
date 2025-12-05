@@ -9,7 +9,7 @@
     {
         public static readonly LocationInfo[] LOCATION_LIST = new LocationInfo[]
         {
-            new LocationInfo(0x00, "Blank 1", Locations.Misc),
+            new LocationInfo(0x00, "Debug Room", Locations.Misc),
             new LocationInfo(0x01, "Bizarro Sephiroth Battle (Center)", Locations.NorthernCrater),
             new LocationInfo(0x02, "Grassland", Locations.Misc),
             new LocationInfo(0x03, "Mt. Nibel", Locations.Nibelheim),
@@ -69,7 +69,7 @@
             new LocationInfo(0x39, "Safer Sephiroth Battle", Locations.NorthernCrater),
             new LocationInfo(0x3A, "Kalm Flashback Dragon Battle", Locations.Misc),
             new LocationInfo(0x3B, "Junon Underwater Pipe", Locations.Junon),
-            new LocationInfo(0x3C, "Blank 2", Locations.Misc),
+            new LocationInfo(0x3C, "Corel Reactor, Cliff (unused)", Locations.Misc),
             new LocationInfo(0x3D, "Corel Railway Canyon", Locations.Corel),
             new LocationInfo(0x3E, "Whirlwind Maze Crater", Locations.Misc),
             new LocationInfo(0x3F, "Corel Railway Roller Coaster", Locations.Corel),
@@ -91,7 +91,7 @@
             new LocationInfo(0x4F, "Jungle", Locations.Misc),
             new LocationInfo(0x50, "Highwind Deck", Locations.Misc),
             new LocationInfo(0x51, "Corel Reactor", Locations.Corel),
-            new LocationInfo(0x52, "Blank 3", Locations.Misc),
+            new LocationInfo(0x52, "Unused", Locations.Misc),
             new LocationInfo(0x53, "Don Corneo's Mansion", Locations.Midgar),
             new LocationInfo(0x54, "Underwater", Locations.Misc),
             new LocationInfo(0x55, "Reactor 5", Locations.Midgar),
