@@ -1,5 +1,6 @@
 ﻿using Shojy.FF7.Elena.Characters;
 using System.ComponentModel;
+using System.Linq;
 
 namespace FF7Scarlet.Shared.Controls
 {
@@ -7,6 +8,8 @@ namespace FF7Scarlet.Shared.Controls
     {
         private byte limitLevel, limitBar;
         private LearnedLimits learnedLimits;
+        private LearnedLimits[] limitFlags;
+        private CheckBox[] checkBoxes;
         public event EventHandler? DataChanged;
         private bool loading;
 
@@ -43,20 +46,41 @@ namespace FF7Scarlet.Shared.Controls
             {
                 loading = true;
                 learnedLimits = value;
-                checkBoxCharacterLimit1_1.Checked = learnedLimits.HasFlag(LearnedLimits.LimitLv1_1);
-                checkBoxCharacterLimit1_2.Checked = learnedLimits.HasFlag(LearnedLimits.LimitLv1_2);
-                checkBoxCharacterLimit2_1.Checked = learnedLimits.HasFlag(LearnedLimits.LimitLv2_1);
-                checkBoxCharacterLimit2_2.Checked = learnedLimits.HasFlag(LearnedLimits.LimitLv2_2);
-                checkBoxCharacterLimit3_1.Checked = learnedLimits.HasFlag(LearnedLimits.LimitLv3_1);
-                checkBoxCharacterLimit3_2.Checked = learnedLimits.HasFlag(LearnedLimits.LimitLv3_2);
-                checkBoxCharacterLimit4.Checked = learnedLimits.HasFlag(LearnedLimits.LimitLv4);
+                for (int i = 0; i < limitFlags.Length; ++i)
+                {
+                    checkBoxes[i].Checked = learnedLimits.HasFlag(limitFlags[i]);
+                }
                 loading = false;
             }
         }
-        
+
         public CharacterLimitControl()
         {
             InitializeComponent();
+            limitFlags = Enum.GetValues<LearnedLimits>();
+            checkBoxes = [
+                checkBoxCharacterLimit1_1, checkBoxCharacterLimit1_2, checkBoxCharacterLimit2_1,
+                checkBoxCharacterLimit2_2, checkBoxCharacterLimit3_1, checkBoxCharacterLimit3_2,
+                checkBoxCharacterLimit4
+            ];
+        }
+
+        private void checkBoxCharacterLimit_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                var list = checkBoxes.ToList();
+                var cb = sender as CheckBox;
+                if (cb != null)
+                {
+                    int i = list.IndexOf(cb);
+                    if (i >= 0)
+                    {
+                        LearnedLimits |= limitFlags[i];
+                        InvokeDataChanged(sender, e);
+                    }
+                }
+            }
         }
 
         private void InvokeDataChanged(object? sender, EventArgs e)

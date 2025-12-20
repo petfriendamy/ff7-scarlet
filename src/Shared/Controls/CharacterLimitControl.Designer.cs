@@ -79,7 +79,7 @@
             checkBoxCharacterLimit4.TabIndex = 31;
             checkBoxCharacterLimit4.Text = "4";
             checkBoxCharacterLimit4.UseVisualStyleBackColor = true;
-            checkBoxCharacterLimit4.CheckedChanged += ValueChanged;
+            checkBoxCharacterLimit4.CheckedChanged += checkBoxCharacterLimit_CheckedChanged;
             // 
             // checkBoxCharacterLimit3_2
             // 
@@ -91,7 +91,7 @@
             checkBoxCharacterLimit3_2.TabIndex = 30;
             checkBoxCharacterLimit3_2.Text = "3-2";
             checkBoxCharacterLimit3_2.UseVisualStyleBackColor = true;
-            checkBoxCharacterLimit3_2.CheckedChanged += ValueChanged;
+            checkBoxCharacterLimit3_2.CheckedChanged += checkBoxCharacterLimit_CheckedChanged;
             // 
             // checkBoxCharacterLimit3_1
             // 
@@ -103,7 +103,7 @@
             checkBoxCharacterLimit3_1.TabIndex = 29;
             checkBoxCharacterLimit3_1.Text = "3-1";
             checkBoxCharacterLimit3_1.UseVisualStyleBackColor = true;
-            checkBoxCharacterLimit3_1.CheckedChanged += ValueChanged;
+            checkBoxCharacterLimit3_1.CheckedChanged += checkBoxCharacterLimit_CheckedChanged;
             // 
             // checkBoxCharacterLimit2_2
             // 
@@ -115,7 +115,7 @@
             checkBoxCharacterLimit2_2.TabIndex = 28;
             checkBoxCharacterLimit2_2.Text = "2-2";
             checkBoxCharacterLimit2_2.UseVisualStyleBackColor = true;
-            checkBoxCharacterLimit2_2.CheckedChanged += ValueChanged;
+            checkBoxCharacterLimit2_2.CheckedChanged += checkBoxCharacterLimit_CheckedChanged;
             // 
             // checkBoxCharacterLimit2_1
             // 
@@ -127,7 +127,7 @@
             checkBoxCharacterLimit2_1.TabIndex = 27;
             checkBoxCharacterLimit2_1.Text = "2-1";
             checkBoxCharacterLimit2_1.UseVisualStyleBackColor = true;
-            checkBoxCharacterLimit2_1.CheckedChanged += ValueChanged;
+            checkBoxCharacterLimit2_1.CheckedChanged += checkBoxCharacterLimit_CheckedChanged;
             // 
             // checkBoxCharacterLimit1_2
             // 
@@ -139,7 +139,7 @@
             checkBoxCharacterLimit1_2.TabIndex = 26;
             checkBoxCharacterLimit1_2.Text = "1-2";
             checkBoxCharacterLimit1_2.UseVisualStyleBackColor = true;
-            checkBoxCharacterLimit1_2.CheckedChanged += ValueChanged;
+            checkBoxCharacterLimit1_2.CheckedChanged += checkBoxCharacterLimit_CheckedChanged;
             // 
             // checkBoxCharacterLimit1_1
             // 
@@ -151,7 +151,7 @@
             checkBoxCharacterLimit1_1.TabIndex = 25;
             checkBoxCharacterLimit1_1.Text = "1-1";
             checkBoxCharacterLimit1_1.UseVisualStyleBackColor = true;
-            checkBoxCharacterLimit1_1.CheckedChanged += ValueChanged;
+            checkBoxCharacterLimit1_1.CheckedChanged += checkBoxCharacterLimit_CheckedChanged;
             // 
             // labelCharacterLimitsKnown
             // 
