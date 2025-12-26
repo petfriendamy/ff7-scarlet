@@ -60,7 +60,6 @@ namespace FF7Scarlet.KernelEditor
         private readonly Dictionary<KernelSection, Label> idLabels = new();
         private readonly Dictionary<KernelSection, ComboBox> cameraMovementSingle = new();
         private readonly Dictionary<KernelSection, ComboBox> cameraMovementMulti = new();
-        private readonly Dictionary<KernelSection, ComboBox> attackEffectIDs = new();
         private readonly Dictionary<KernelSection, StatIncreaseControl> statIncreases = new();
         private readonly Dictionary<KernelSection, TargetDataControl> targetData = new();
         private readonly Dictionary<KernelSection, DamageCalculationControl> damageCalculationControls = new();
@@ -403,7 +402,6 @@ namespace FF7Scarlet.KernelEditor
             descriptionTextBoxes.Add(KernelSection.ItemData, textBoxItemDescription);
             idLabels.Add(KernelSection.ItemData, labelItemID);
             cameraMovementSingle.Add(KernelSection.ItemData, comboBoxItemCamMovementID);
-            attackEffectIDs.Add(KernelSection.ItemData, comboBoxItemAttackEffectID);
             targetData.Add(KernelSection.ItemData, targetDataControlItem);
             damageCalculationControls.Add(KernelSection.ItemData, damageCalculationControlItem);
             itemRestrictionLists.Add(KernelSection.ItemData, itemRestrictionsItem);
@@ -2352,38 +2350,6 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        private void comboBoxAttackEffectID_TextChanged(object sender, EventArgs e)
-        {
-            if (!loading && attackEffectIDs.ContainsKey(CurrentSection))
-            {
-                var text = attackEffectIDs[CurrentSection].Text;
-                if (text.Length == 2)
-                {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        switch (CurrentSection)
-                        {
-                            case KernelSection.AttackData:
-                                if (SelectedAttack != null)
-                                {
-                                    SelectedAttack.AttackEffectID = newID;
-                                }
-                                break;
-                            case KernelSection.ItemData:
-                                if (SelectedItem != null)
-                                {
-                                    SelectedItem.AttackEffectId = newID;
-                                }
-                                break;
-                        }
-                        SetUnsaved(true);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
         private void comboBoxStatusChange_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (statusChangeComboBoxes.ContainsKey(CurrentSection))
@@ -3207,6 +3173,27 @@ namespace FF7Scarlet.KernelEditor
         #endregion
 
         #region Other Controls
+
+        private void comboBoxItemAttackEffectID_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                var text = comboBoxItemAttackEffectID.Text;
+                if (text.Length == 2)
+                {
+                    byte newID;
+                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        if (SelectedItem != null)
+                        {
+                            SelectedItem.AttackEffectId = newID;
+                        }
+                        SetUnsaved(true);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
 
         private void comboBoxWeaponMateriaGrowth_SelectedIndexChanged(object sender, EventArgs e)
         {

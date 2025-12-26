@@ -1939,6 +1939,7 @@
             comboBoxItemAttackEffectID.Name = "comboBoxItemAttackEffectID";
             comboBoxItemAttackEffectID.Size = new Size(126, 23);
             comboBoxItemAttackEffectID.TabIndex = 28;
+            comboBoxItemAttackEffectID.TextUpdate += comboBoxItemAttackEffectID_TextChanged;
             // 
             // labelItemCamMovementID
             // 
