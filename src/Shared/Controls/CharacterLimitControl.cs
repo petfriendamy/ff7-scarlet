@@ -6,7 +6,6 @@ namespace FF7Scarlet.Shared.Controls
 {
     public partial class CharacterLimitControl : UserControl
     {
-        private byte limitLevel, limitBar;
         private LearnedLimits learnedLimits;
         private LearnedLimits[] limitFlags;
         private CheckBox[] checkBoxes;
@@ -16,24 +15,22 @@ namespace FF7Scarlet.Shared.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte LimitLevel
         {
-            get { return limitLevel; }
+            get { return (byte)numericCharacterLimitLevel.Value; }
             set
             {
                 loading = true;
-                limitLevel = value;
-                numericCharacterLimitLevel.Value = limitLevel;
+                numericCharacterLimitLevel.Value = value;
                 loading = false;
             }
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte LimitBar
         {
-            get { return limitBar; }
+            get { return (byte)trackBarCharacterLimitBar.Value; }
             set
             {
                 loading = true;
-                limitBar = value;
-                trackBarCharacterLimitBar.Value = limitBar;
+                trackBarCharacterLimitBar.Value = value;
                 loading = false;
             }
         }
@@ -76,7 +73,7 @@ namespace FF7Scarlet.Shared.Controls
                     int i = list.IndexOf(cb);
                     if (i >= 0)
                     {
-                        LearnedLimits |= limitFlags[i];
+                        LearnedLimits ^= limitFlags[i];
                         InvokeDataChanged(sender, e);
                     }
                 }
