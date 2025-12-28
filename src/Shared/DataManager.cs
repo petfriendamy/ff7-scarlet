@@ -391,6 +391,15 @@ namespace FF7Scarlet.Shared
             }
         }
 
+        public static byte GetChunkStart(int chunk)
+        {
+            if (chunk >= 0 && chunk < Scene.BLOCK_COUNT)
+            {
+                return sceneLookupTable[chunk];
+            }
+            return 0;
+        }
+
         public static bool LookupTableIsCorrect()
         {
             if (KernelFilePathExists && SceneFilePathExists && Kernel != null)

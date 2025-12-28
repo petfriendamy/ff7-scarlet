@@ -73,78 +73,97 @@ namespace FF7Scarlet.Compression
         }
 
         //based on code from SegaChief; thanks!
+        private static Scene DecompressScene(byte[] compressedData, bool isJPoriginal)
+        {
+            var uncompressedData = new byte[Scene.UNCOMPRESSED_BLOCK_SIZE];
+            int decompressedSize;
+
+            using (var inputStream = new MemoryStream(compressedData))
+            using (var outputStream = new MemoryStream())
+            using (var gzipper = new GZipStream(inputStream, CompressionMode.Decompress))
+            {
+                while ((decompressedSize = gzipper.Read(uncompressedData, 0, Scene.UNCOMPRESSED_BLOCK_SIZE)) != 0)
+                {
+                    outputStream.Write(uncompressedData, 0, decompressedSize);
+                }
+            }
+            return new Scene(ref uncompressedData, isJPoriginal);
+        }
+
+        public static Scene[] GetDecompressedSceneChunk(string path)
+        {
+            return GetDecompressedSceneChunk(File.ReadAllBytes(path), false);
+        }
+
+        private static Scene[] GetDecompressedSceneChunk(byte[] data, bool isJPoriginal)
+        {
+            uint
+                currHeader,
+                nextHeader,
+                sceneOffset,
+                sceneSize;
+            var sceneList = new List<Scene> { };
+            byte[] compressedData, headerBytes = new byte[4];
+
+            //get headers for each of the scene files
+            for (int i = 0; i < Scene.HEADER_COUNT; ++i)
+            {
+                Array.Copy(data, i * 4, headerBytes, 0, 4);
+                currHeader = BitConverter.ToUInt32(headerBytes, 0);
+                if (currHeader != HexParser.NULL_OFFSET_32_BIT) //check if offset exists first
+                {
+                    //determine if the next offset exists or not
+                    if (i < Scene.HEADER_COUNT - 1)
+                    {
+                        Array.Copy(data, (i * 4) + 4, headerBytes, 0, 4);
+                        nextHeader = BitConverter.ToUInt32(headerBytes, 0);
+                    }
+                    else { nextHeader = HexParser.NULL_OFFSET_32_BIT; }
+
+                    //get the offset and size of this compressed file
+                    sceneOffset = currHeader * 4;
+                    if (nextHeader == HexParser.NULL_OFFSET_32_BIT)
+                    {
+                        sceneSize = Scene.COMPRESSED_BLOCK_SIZE - (currHeader * 4);
+                    }
+                    else
+                    {
+                        sceneSize = (nextHeader - currHeader) * 4;
+                    }
+
+                    //decompress the scene
+                    compressedData = new byte[sceneSize];
+                    Array.Copy(data, sceneOffset, compressedData, 0, sceneSize);
+                    sceneList.Add(DecompressScene(compressedData, isJPoriginal));
+                }
+            }
+            return sceneList.ToArray();
+        }
+
         public static Scene[] GetDecompressedSceneList(string path, ref byte[] sceneLookupTable, bool isJPoriginal)
         {
             var fileData = File.ReadAllBytes(path);
-
-            int i, j, currScene = 0, currBlock = 0;
-            uint currHeader, nextHeader, currOffset = 0;
-            var sceneOffset = new uint[Scene.SCENE_COUNT];
-            var sceneSize = new uint[Scene.SCENE_COUNT];
             var sceneList = new Scene[Scene.SCENE_COUNT];
-            byte[] compressedData, headerBytes = new byte[4];
+            var compressedData = new byte[Scene.COMPRESSED_BLOCK_SIZE];
+            int currScene = 0, currBlock = 0;
+            uint currOffset = 0;
 
             //fill the scene lookup table with 0xFF
-            for (i = 0; i < 64; ++i)
+            for (int i = 0; i < 64; ++i)
             {
                 sceneLookupTable[i] = 0xFF;
             }
 
-            //get headers for each of the scene files
+            //get the scene files
             while (currScene < Scene.SCENE_COUNT)
             {
                 sceneLookupTable[currBlock] = (byte)currScene;
-                j = 0;
-                for (i = 0; i < Scene.HEADER_COUNT; ++i)
-                {
-                    Array.Copy(fileData, currOffset + j, headerBytes, 0, 4);
-                    currHeader = BitConverter.ToUInt32(headerBytes, 0);
-                    if (currHeader != HexParser.NULL_OFFSET_32_BIT) //check if offset exists first
-                    {
-                        //determine if the next offset exists or not
-                        if (i < Scene.HEADER_COUNT - 1)
-                        {
-                            Array.Copy(fileData, currOffset + j + 4, headerBytes, 0, 4);
-                            nextHeader = BitConverter.ToUInt32(headerBytes, 0);
-                        }
-                        else { nextHeader = HexParser.NULL_OFFSET_32_BIT; }
-
-                        //get the offset and size of this compressed file
-                        sceneOffset[currScene] = (currHeader * 4) + currOffset;
-                        if (nextHeader == HexParser.NULL_OFFSET_32_BIT)
-                        {
-                            sceneSize[currScene] = Scene.COMPRESSED_BLOCK_SIZE - (currHeader * 4);
-                        }
-                        else
-                        {
-                            sceneSize[currScene] = (nextHeader - currHeader) * 4;
-                        }
-                        currScene++;
-                    }
-                    j += 4;
-                }
+                Array.Copy(fileData, currOffset, compressedData, 0, Scene.COMPRESSED_BLOCK_SIZE);
+                var scenes = GetDecompressedSceneChunk(compressedData, isJPoriginal);
+                Array.Copy(scenes, 0, sceneList, currScene, scenes.Length);
+                currScene += scenes.Length;
                 currOffset += Scene.COMPRESSED_BLOCK_SIZE;
                 currBlock++;
-            }
-
-            //get and decompress each of the scene files
-            int decompressedSize;
-            for (i = 0; i < Scene.SCENE_COUNT; ++i)
-            {
-                compressedData = new byte[sceneSize[i]];
-                Array.Copy(fileData, sceneOffset[i], compressedData, 0, sceneSize[i]);
-                var uncompressedData = new byte[Scene.UNCOMPRESSED_BLOCK_SIZE];
-
-                using (var inputStream = new MemoryStream(compressedData))
-                using (var outputStream = new MemoryStream())
-                using (var gzipper = new GZipStream(inputStream, CompressionMode.Decompress))
-                {
-                    while ((decompressedSize = gzipper.Read(uncompressedData, 0, Scene.UNCOMPRESSED_BLOCK_SIZE)) != 0)
-                    {
-                        outputStream.Write(uncompressedData, 0, decompressedSize);
-                    }
-                }
-                sceneList[i] = new Scene(ref uncompressedData, isJPoriginal);
             }
             return sceneList;
         }

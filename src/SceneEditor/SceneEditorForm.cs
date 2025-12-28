@@ -1,4 +1,5 @@
 ﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.Compression;
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
@@ -6,6 +7,7 @@ using Shojy.FF7.Elena.Inventory;
 
 using System.Globalization;
 using System.Media;
+using System.Xml.Linq;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -1834,7 +1836,7 @@ namespace FF7Scarlet.SceneEditor
             string[] paths;
             using (var import = new OpenFileDialog())
             {
-                import.Filter = "Scene files|scene.*.bin";
+                import.Filter = "Scene files|scene.*.bin;scene.bin.chunk.*";
                 import.Multiselect = true;
                 result = import.ShowDialog();
                 paths = import.FileNames;
@@ -1847,43 +1849,77 @@ namespace FF7Scarlet.SceneEditor
 
                 foreach (var path in paths)
                 {
-                    //attempt to get the scene's number
-                    string temp = Path.GetFileNameWithoutExtension(path);
-                    temp = temp.Substring(temp.IndexOf('.') + 1);
-                    int sceneIndex;
-                    if (!int.TryParse(temp, out sceneIndex))
+                    if (path.Contains(".chunk.")) //chunk file
                     {
-                        MessageBox.Show($"Invalid scene file: {Path.GetFileName(path)}", "Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
-                        //if only one file is selected, prompt to import into the current scene
-                        if (paths.Length == 1 && SelectedSceneIndex != sceneIndex && SelectedSceneIndex >= 0)
+                        Dictionary<int, Scene> importScenes;
+                        using (var dialog = new SceneImportForm(path))
                         {
-                            result = MessageBox.Show("Import into the currently selected scene? Otherwise, the scene will be imported into the scene matching the file name.",
-                                "Import Selected?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                            switch (result)
-                            {
-                                case DialogResult.Cancel:
-                                    return;
-                                case DialogResult.Yes:
-                                    sceneIndex = SelectedSceneIndex;
-                                    break;
-                            }
+                            result = dialog.ShowDialog();
+                            importScenes = dialog.ImportScenes;
                         }
 
-                        //attempt to insert the scene at the correct place
-                        try
+                        //attempt to import the scenes
+                        foreach (var scene in importScenes)
                         {
-                            var newScene = new Scene(path);
-                            sceneList[sceneIndex] = newScene;
-                            comboBoxSceneList.Items[sceneIndex] = $"{sceneIndex}: {newScene.GetEnemyNames()}";
-                            successfulImports.Add(sceneIndex);
+                            if (successfulImports.Contains(scene.Key))
+                            {
+                                unsuccessfulImports.Add(scene.Key);
+                            }
+                            else
+                            {
+                                sceneList[scene.Key] = scene.Value;
+                                comboBoxSceneList.Items[scene.Key] = $"{scene.Key}: {scene.Value.GetEnemyNames()}";
+                                successfulImports.Add(scene.Key);
+                            }
                         }
-                        catch
+                    }
+                    else //individual scene
+                    {
+                        //attempt to get the scene's number
+                        string temp = Path.GetFileNameWithoutExtension(path);
+                        temp = temp.Substring(temp.IndexOf('.') + 1);
+                        int sceneIndex;
+                        if (!int.TryParse(temp, out sceneIndex))
                         {
-                            unsuccessfulImports.Add(sceneIndex);
+                            MessageBox.Show($"Invalid scene file: {Path.GetFileName(path)}", "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            //if only one file is selected, prompt to import into the current scene
+                            if (paths.Length == 1 && SelectedSceneIndex != sceneIndex && SelectedSceneIndex >= 0)
+                            {
+                                result = MessageBox.Show("Import into the currently selected scene? Otherwise, the scene will be imported into the scene matching the file name.",
+                                    "Import Selected?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                switch (result)
+                                {
+                                    case DialogResult.Cancel:
+                                        return;
+                                    case DialogResult.Yes:
+                                        sceneIndex = SelectedSceneIndex;
+                                        break;
+                                }
+                            }
+
+                            //attempt to insert the scene at the correct place
+                            try
+                            {
+                                if (successfulImports.Contains(sceneIndex))
+                                {
+                                    unsuccessfulImports.Add(sceneIndex);
+                                }
+                                else
+                                {
+                                    var newScene = new Scene(path);
+                                    sceneList[sceneIndex] = newScene;
+                                    comboBoxSceneList.Items[sceneIndex] = $"{sceneIndex}: {newScene.GetEnemyNames()}";
+                                    successfulImports.Add(sceneIndex);
+                                }
+                            }
+                            catch
+                            {
+                                unsuccessfulImports.Add(sceneIndex);
+                            }
                         }
                     }
                 }
