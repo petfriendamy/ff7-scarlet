@@ -180,6 +180,92 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        /// <summary>
+        /// Compresses text section data using FF7's 0xF9 LZS-style compression.
+        /// This reduces the size of text sections by referencing repeated byte sequences.
+        /// </summary>
+        private static byte[] CompressTextSection(byte[] data)
+        {
+            var output = new List<byte>();
+            var isLiteral = new List<bool>();
+            int i = 0;
+
+            while (i < data.Length)
+            {
+                byte b = data[i];
+
+                // Don't compress null terminators or if too early in the stream
+                if (b == 0xFF || output.Count < 4)
+                {
+                    output.Add(b);
+                    isLiteral.Add(true);
+                    i++;
+                    continue;
+                }
+
+                // Find best match in the output buffer (only in literal positions)
+                int bestLength = 0;
+                int bestMatchStart = 0;
+
+                // Max lookback is 64 bytes (offset 0-63 encoded in 6 bits)
+                int minMatchStart = Math.Max(0, output.Count - 64);
+
+                for (int matchStart = minMatchStart; matchStart < output.Count; matchStart++)
+                {
+                    // Skip non-literal positions
+                    if (!isLiteral[matchStart]) continue;
+
+                    int matchLen = 0;
+
+                    // Count matching bytes (max 10, all must be literals, stop at 0xFF)
+                    while (matchLen < 10 &&
+                           i + matchLen < data.Length &&
+                           matchStart + matchLen < output.Count &&
+                           isLiteral[matchStart + matchLen] &&
+                           data[i + matchLen] != 0xFF &&
+                           output[matchStart + matchLen] == data[i + matchLen])
+                    {
+                        matchLen++;
+                    }
+
+                    // Valid lengths are 4, 6, 8, 10 only
+                    int validLen = (matchLen / 2) * 2;
+                    if (validLen > 10) validLen = 10;
+                    if (validLen < 4) validLen = 0;
+
+                    if (validLen > bestLength)
+                    {
+                        bestLength = validLen;
+                        bestMatchStart = matchStart;
+                    }
+                }
+
+                if (bestLength >= 4)
+                {
+                    // Encode the reference
+                    // Length bits: ((L/2 - 2) << 6) encodes 4,6,8,10 as 0,1,2,3
+                    // Offset bits: distance from current position - 1
+                    byte lengthBits = (byte)(((bestLength / 2) - 2) << 6);
+                    byte offsetBits = (byte)(output.Count - bestMatchStart - 1);
+                    byte args = (byte)(lengthBits | offsetBits);
+
+                    output.Add(0xF9);
+                    isLiteral.Add(false);
+                    output.Add(args);
+                    isLiteral.Add(false);
+                    i += bestLength;
+                }
+                else
+                {
+                    output.Add(b);
+                    isLiteral.Add(true);
+                    i++;
+                }
+            }
+
+            return output.ToArray();
+        }
+
         public void ReloadBattleText()
         {
             bool wasAlreadyLoaded = loaded;
@@ -1200,16 +1286,42 @@ namespace FF7Scarlet.KernelEditor
                         
                     }
 
-                    //generate headers
+                    //build compressed strings first to calculate correct offsets
+                    var compressedStrings = new List<byte[]>();
+                    for (i = 0; i < text.Length; ++i)
+                    {
+                        var stringBytes = new List<byte>();
+
+                        //add limit function marker if needed
+                        if (isAttacks && text[i].Length > 1)
+                        {
+                            if ((i < ATTACK_COUNT && AttackIsLimit[i]) || i >= ATTACK_COUNT)
+                            {
+                                stringBytes.Add(0xF8);
+                                stringBytes.Add(0x02);
+                            }
+                        }
+
+                        //add the string bytes
+                        if (text[i].Length > 1 || i == 0)
+                        {
+                            stringBytes.AddRange(text[i].GetBytes());
+                        }
+
+                        //compress and store
+                        compressedStrings.Add(CompressTextSection(stringBytes.ToArray()));
+                    }
+
+                    //generate headers using compressed lengths
                     var offset = (ushort)(text.Length * 2); //starts just after headers
                     ushort length;
                     bool empty = false;
                     for (i = 0; i < text.Length; ++i)
                     {
-                        length = (ushort)text[i].Length;
+                        length = (ushort)compressedStrings[i].Length;
                         if (i > 0) //offset for empty strings
                         {
-                            if (length > 1)
+                            if (text[i].Length > 1)
                             {
                                 if (empty) { offset++; }
                                 empty = false;
@@ -1224,31 +1336,16 @@ namespace FF7Scarlet.KernelEditor
                                 }
                             }
                         }
-                        if (isAttacks && length > 1) //offset for limit header
-                        {
-                            if ((i < ATTACK_COUNT && AttackIsLimit[i]) || i >= ATTACK_COUNT)
-                            {
-                                length += 2;
-                            }
-                        }
                         bytes.AddRange(BitConverter.GetBytes(offset));
                         offset += length;
                     }
 
-                    //write the strings
-                    for (i = 0; i < text.Length; ++i)
+                    //write the compressed strings
+                    for (i = 0; i < compressedStrings.Count; ++i)
                     {
-                        if (isAttacks && text[i].Length > 1) //add limit function
-                        {
-                            if ((i < ATTACK_COUNT && AttackIsLimit[i]) || i >= ATTACK_COUNT)
-                            {
-                                bytes.Add(0xF8);
-                                bytes.Add(0x02);
-                            }
-                        }
                         if (text[i].Length > 1 || i == 0) //don't add empty strings
                         {
-                            bytes.AddRange(text[i].GetBytes());
+                            bytes.AddRange(compressedStrings[i]);
                         }
                     }
 
