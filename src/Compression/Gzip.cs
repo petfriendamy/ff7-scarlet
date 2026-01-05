@@ -1,17 +1,9 @@
-﻿using FF7Scarlet.AIEditor;
-using FF7Scarlet.KernelEditor;
+﻿using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
-using SharpDX.DirectSound;
 using Shojy.FF7.Elena;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using LibZopfliStandard;
 using System.IO.Compression;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FF7Scarlet.Compression
 {
@@ -282,9 +274,10 @@ namespace FF7Scarlet.Compression
 
         private static byte[] GetCompressedData(byte[] uncompressedData)
         {
+            var options = new ZopfliOptions { verbose = 0 };
             using (var outputStream = new MemoryStream())
             {
-                using (var gzipper = new GZipStream(outputStream, CompressionLevel.SmallestSize))
+                using (var gzipper = new ZopfliStream(outputStream, ZopfliFormat.ZOPFLI_FORMAT_GZIP, options))
                 {
                     gzipper.Write(uncompressedData, 0, uncompressedData.Length);
                     gzipper.Flush();
