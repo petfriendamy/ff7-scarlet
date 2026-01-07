@@ -1722,8 +1722,8 @@ namespace FF7Scarlet.SceneEditor
             int newEnemy = comboBoxFormationSelectedEnemy.SelectedIndex,
                 selectedEnemy = listBoxFormationEnemies.SelectedIndex;
 
-            if (!loading && newEnemy >= 0 && newEnemy < Scene.ENEMY_COUNT && selectedEnemy >= 0
-                && selectedEnemy < validEnemies.Count && SelectedFormation != null)
+            if (!loading && newEnemy >= 0 && newEnemy <= validEnemies.Count && selectedEnemy >= 0
+                && selectedEnemy < Formation.ENEMY_COUNT && SelectedFormation != null)
             {
                 if (newEnemy == 0)
                 {

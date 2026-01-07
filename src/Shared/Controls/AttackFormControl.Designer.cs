@@ -197,6 +197,7 @@
             comboBoxAttackAttackEffectID.Name = "comboBoxAttackAttackEffectID";
             comboBoxAttackAttackEffectID.Size = new Size(100, 23);
             comboBoxAttackAttackEffectID.TabIndex = 39;
+            comboBoxAttackAttackEffectID.TextUpdate += comboBoxAttackAttackEffectID_TextUpdate;
             comboBoxAttackAttackEffectID.TextChanged += ValueChanged;
             // 
             // labelAttackImpactEffectID

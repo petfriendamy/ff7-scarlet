@@ -703,6 +703,7 @@ namespace FF7Scarlet.ExeEditor
             characterLimitControl.Name = "characterLimitControl";
             characterLimitControl.Size = new Size(378, 148);
             characterLimitControl.TabIndex = 22;
+            characterLimitControl.DataChanged += LimitDataChanged;
             // 
             // numericCharacterCurrentEXP
             // 
@@ -1627,6 +1628,7 @@ namespace FF7Scarlet.ExeEditor
             comboBoxShopType.Name = "comboBoxShopType";
             comboBoxShopType.Size = new Size(340, 23);
             comboBoxShopType.TabIndex = 3;
+            comboBoxShopType.SelectedIndexChanged += comboBoxShopType_SelectedIndexChanged;
             // 
             // labelShopType
             // 

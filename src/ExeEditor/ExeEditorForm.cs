@@ -890,6 +890,7 @@ namespace FF7Scarlet.ExeEditor
                     var temp = Enum.GetValues<CharacterFlags>().ToList();
                     comboBoxCharacterFlags.SelectedIndex = temp.IndexOf(character.CharacterFlags);
                     checkBoxCharacterBackRow.Checked = character.IsBackRow;
+                    numericCharacterKillCount.Value = character.KillCount;
                     characterLimitControl.LimitLevel = character.LimitLevel;
                     characterLimitControl.LearnedLimits = character.LearnedLimits;
                     characterLimitControl.LimitBar = character.CurrentLimitBar;
@@ -1418,6 +1419,17 @@ namespace FF7Scarlet.ExeEditor
                     }
                 }
                 loading = false;
+            }
+        }
+
+        //change shop type
+        private void comboBoxShopType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && editor != null)
+            {
+                int i = comboBoxShopIndex.SelectedIndex;
+                editor.Shops[i].ShopType = (ShopType)comboBoxShopType.SelectedIndex;
+                SetUnsaved(true);
             }
         }
 

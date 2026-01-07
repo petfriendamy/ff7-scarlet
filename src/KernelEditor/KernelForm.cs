@@ -1164,6 +1164,7 @@ namespace FF7Scarlet.KernelEditor
                 var temp = Enum.GetValues<CharacterFlags>().ToList();
                 comboBoxCharacterFlags.SelectedIndex = temp.IndexOf(character.CharacterFlags);
                 checkBoxCharacterBackRow.Checked = character.IsBackRow;
+                numericCharacterKillCount.Value = character.KillCount;
                 characterLimitControl.LimitLevel = character.LimitLevel;
                 characterLimitControl.LearnedLimits = character.LearnedLimits;
                 characterLimitControl.LimitBar = character.CurrentLimitBar;
@@ -2298,12 +2299,6 @@ namespace FF7Scarlet.KernelEditor
                                     SelectedCommand.CameraMovementIDSingle = newID;
                                 }
                                 break;
-                            case KernelSection.AttackData:
-                                if (SelectedAttack != null)
-                                {
-                                    SelectedAttack.CameraMovementIDSingle = newID;
-                                }
-                                break;
                             case KernelSection.ItemData:
                                 if (SelectedItem != null)
                                 {
@@ -2334,12 +2329,6 @@ namespace FF7Scarlet.KernelEditor
                                 if (SelectedCommand != null)
                                 {
                                     SelectedCommand.CameraMovementIDMulti = newID;
-                                }
-                                break;
-                            case KernelSection.AttackData:
-                                if (SelectedAttack != null)
-                                {
-                                    SelectedAttack.CameraMovementIDMulti = newID;
                                 }
                                 break;
                         }
@@ -3214,6 +3203,8 @@ namespace FF7Scarlet.KernelEditor
                     {
                         materiaSlotSelectorCharacterWeapon.GrowthRate = rate;
                     }
+
+                    SetUnsaved(true);
                 }
             }
         }
@@ -3258,6 +3249,8 @@ namespace FF7Scarlet.KernelEditor
                     {
                         materiaSlotSelectorCharacterArmor.GrowthRate = rate;
                     }
+
+                    SetUnsaved(true);
                 }
             }
         }
@@ -3290,6 +3283,7 @@ namespace FF7Scarlet.KernelEditor
                 if (i >= 0 && i < listBoxBattleText.Items.Count)
                 {
                     kernel.BattleText.Strings[i] = textBoxBattleText.Text;
+                    kernel.BattleTextFF[i] = new FFText(textBoxBattleText.Text);
                     listBoxBattleText.Items[i] = textBoxBattleText.Text;
                     SetUnsaved(true);
                 }

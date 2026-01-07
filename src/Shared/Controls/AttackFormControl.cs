@@ -303,7 +303,7 @@ namespace FF7Scarlet.Shared.Controls
             {
                 int i = comboBoxAttackStatusChange.SelectedIndex;
                 var status = DataManager.StatusChangeTypes[i];
-                statusesControlAttack.Enabled = numericAttackStatusChangeChance.Enabled = 
+                statusesControlAttack.Enabled = numericAttackStatusChangeChance.Enabled =
                     (status != StatusChangeType.None);
 
                 if (attack != null)
@@ -311,6 +311,24 @@ namespace FF7Scarlet.Shared.Controls
                     attack.StatusChange.Type = status;
                 }
                 InvokeDataChanged(sender, e);
+            }
+        }
+
+        private void comboBoxAttackAttackEffectID_TextUpdate(object sender, EventArgs e)
+        {
+            if (!loading && attack != null)
+            {
+                var text = comboBoxAttackAttackEffectID.Text;
+                if (text.Length == 2)
+                {
+                    byte newID;
+                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        attack.AttackEffectID = newID;
+                        InvokeDataChanged(sender, e);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
             }
         }
 
@@ -325,6 +343,42 @@ namespace FF7Scarlet.Shared.Controls
                     if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
                     {
                         attack.ImpactEffectID = newID;
+                        InvokeDataChanged(sender, e);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxCamMovementIDSingle_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && attack != null)
+            {
+                var text = comboBoxAttackCamMovementIDSingle.Text;
+                if (text.Length == 4)
+                {
+                    ushort newID;
+                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        attack.CameraMovementIDSingle = newID;
+                        InvokeDataChanged(sender, e);
+                    }
+                    else { SystemSounds.Exclamation.Play(); }
+                }
+            }
+        }
+
+        private void comboBoxCamMovementIDMulti_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && attack != null)
+            {
+                var text = comboBoxAttackCamMovementIDMulti.Text;
+                if (text.Length == 4)
+                {
+                    ushort newID;
+                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                    {
+                        attack.CameraMovementIDMulti = newID;
                         InvokeDataChanged(sender, e);
                     }
                     else { SystemSounds.Exclamation.Play(); }
