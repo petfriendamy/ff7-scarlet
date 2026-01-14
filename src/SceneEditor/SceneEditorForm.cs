@@ -1,5 +1,4 @@
 ﻿using FF7Scarlet.AIEditor;
-using FF7Scarlet.Compression;
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
@@ -7,7 +6,6 @@ using Shojy.FF7.Elena.Inventory;
 
 using System.Globalization;
 using System.Media;
-using System.Xml.Linq;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -324,7 +322,7 @@ namespace FF7Scarlet.SceneEditor
                 comboBoxEnemyModelID.DropDownStyle = ComboBoxStyle.DropDownList;
                 foreach (var m in DataManager.BattleLgp.Models)
                 {
-                    comboBoxEnemyModelID.Items.Add(m);
+                    comboBoxEnemyModelID.Items.Add(m.Name);
                 }
             }
         }
@@ -551,13 +549,18 @@ namespace FF7Scarlet.SceneEditor
                     }
 
                     //model ID
-                    if (DataManager.BattleLgpPathExists)
+                    if (DataManager.BattleLgp != null)
                     {
                         comboBoxEnemyModelID.SelectedIndex = enemy.ModelID;
+                        if (enemyModelPreviewControl.Loaded) //don't load the model if the control isn't visible
+                        {
+                            enemyModelPreviewControl.LoadModel(enemy.ModelID);
+                        }
                     }
                     else
                     {
                         comboBoxEnemyModelID.Text = enemy.ModelID.ToString("X4");
+                        enemyModelPreviewControl.Visible = false;
                     }
 
                     //A.I. scripts
@@ -1154,6 +1157,15 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
+        private void tabControlEnemyData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControlEnemyData.SelectedTab == tabPageEnemyPage2 && DataManager.BattleLgp != null
+                && !enemyModelPreviewControl.ModelLoaded && SelectedEnemy != null)
+            {
+                enemyModelPreviewControl.LoadModel(SelectedEnemy.ModelID);
+            }
+        }
+
         private void textBoxEnemyName_TextChanged(object sender, EventArgs e)
         {
             if (!loading && SelectedEnemy != null)
@@ -1592,9 +1604,13 @@ namespace FF7Scarlet.SceneEditor
                     try
                     {
                         SelectedEnemy.ModelID = newID;
+                        if (DataManager.BattleLgp != null)
+                        {
+                            enemyModelPreviewControl.LoadModel(newID);
+                        }
                         SetUnsaved(true);
                     }
-                    catch (ArgumentException ex)
+                    catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         comboBoxEnemyModelID.SelectedIndex = oldID;
@@ -2157,6 +2173,11 @@ namespace FF7Scarlet.SceneEditor
 
                 e.Cancel = result == DialogResult.No;
             }
+        }
+
+        private void SceneEditorForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            enemyModelPreviewControl.Unload();
         }
 
         #endregion

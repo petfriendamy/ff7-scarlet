@@ -73,6 +73,7 @@
             textBoxEnemyName = new TextBox();
             labelEnemyName = new Label();
             tabPageEnemyPage2 = new TabPage();
+            enemyModelPreviewControl = new FF7Scarlet.SceneEditor.Controls.ModelPreviewControl();
             comboBoxEnemyModelID = new ComboBox();
             labelEnemyModelID = new Label();
             comboBoxEnemyMorphItem = new ComboBox();
@@ -282,6 +283,7 @@
             tabControlEnemyData.SelectedIndex = 0;
             tabControlEnemyData.Size = new Size(776, 478);
             tabControlEnemyData.TabIndex = 0;
+            tabControlEnemyData.SelectedIndexChanged += tabControlEnemyData_SelectedIndexChanged;
             // 
             // tabPageEnemyPage1
             // 
@@ -680,6 +682,7 @@
             // 
             // tabPageEnemyPage2
             // 
+            tabPageEnemyPage2.Controls.Add(enemyModelPreviewControl);
             tabPageEnemyPage2.Controls.Add(comboBoxEnemyModelID);
             tabPageEnemyPage2.Controls.Add(labelEnemyModelID);
             tabPageEnemyPage2.Controls.Add(comboBoxEnemyMorphItem);
@@ -695,14 +698,22 @@
             tabPageEnemyPage2.Text = "Page 2";
             tabPageEnemyPage2.UseVisualStyleBackColor = true;
             // 
+            // enemyModelPreviewControl
+            // 
+            enemyModelPreviewControl.BorderStyle = BorderStyle.FixedSingle;
+            enemyModelPreviewControl.Location = new Point(609, 242);
+            enemyModelPreviewControl.Name = "enemyModelPreviewControl";
+            enemyModelPreviewControl.Size = new Size(150, 150);
+            enemyModelPreviewControl.TabIndex = 51;
+            // 
             // comboBoxEnemyModelID
             // 
             comboBoxEnemyModelID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             comboBoxEnemyModelID.FormattingEnabled = true;
-            comboBoxEnemyModelID.Location = new Point(378, 379);
+            comboBoxEnemyModelID.Location = new Point(609, 213);
             comboBoxEnemyModelID.MaxLength = 4;
             comboBoxEnemyModelID.Name = "comboBoxEnemyModelID";
-            comboBoxEnemyModelID.Size = new Size(121, 23);
+            comboBoxEnemyModelID.Size = new Size(150, 23);
             comboBoxEnemyModelID.TabIndex = 50;
             comboBoxEnemyModelID.SelectedIndexChanged += comboBoxEnemyModelID_SelectedIndexChanged;
             comboBoxEnemyModelID.TextChanged += comboBoxEnemyModelID_TextChanged;
@@ -711,7 +722,7 @@
             // 
             labelEnemyModelID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelEnemyModelID.AutoSize = true;
-            labelEnemyModelID.Location = new Point(378, 361);
+            labelEnemyModelID.Location = new Point(609, 195);
             labelEnemyModelID.Name = "labelEnemyModelID";
             labelEnemyModelID.Size = new Size(58, 15);
             labelEnemyModelID.TabIndex = 49;
@@ -1772,6 +1783,7 @@
             Name = "SceneEditorForm";
             Text = "Scarlet - Scene Editor";
             FormClosing += SceneEditorForm_FormClosing;
+            FormClosed += SceneEditorForm_FormClosed;
             tabControlMain.ResumeLayout(false);
             tabPageEnemyData.ResumeLayout(false);
             tabControlEnemyData.ResumeLayout(false);
@@ -1988,5 +2000,6 @@
         private ToolStripMenuItem formationClearToolStripMenuItem;
         private Controls.CameraPositionControl cameraPositionControlExtra3;
         private Shared.Controls.AttackFormControl attackFormControl;
+        private Controls.ModelPreviewControl enemyModelPreviewControl;
     }
 }

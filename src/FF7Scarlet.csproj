@@ -14,17 +14,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Shared\Controls\haefrjjy.aju~" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="scarlet_icon.ico" />
+    <Content Include="Shaders\*.vert" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Shaders\*.frag" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
     <PackageReference Include="libzopfli-standard" Version="1.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1" />
+    <PackageReference Include="OpenTK" Version="5.0.0-pre.15" />
+    <PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
     <PackageReference Include="SharpDX.DirectSound" Version="4.2.0" />
     <PackageReference Include="Shojy.FF7.Elena" Version="0.7.0-pre" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />

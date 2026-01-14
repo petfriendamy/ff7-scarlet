@@ -102,59 +102,105 @@ namespace FF7Scarlet
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            string vanillaExePath = textBoxVanillaExe.Text,
+            try
+            {
+                string vanillaExePath = textBoxVanillaExe.Text,
                 battleLgpPath = textBoxBattleLgp.Text;
-            var config = ConfigurationManager.OpenMappedExeConfiguration(DataManager.ConfigFile,
-                        ConfigurationUserLevel.None);
-            var settings = config.AppSettings.Settings;
+                var config = ConfigurationManager.OpenMappedExeConfiguration(DataManager.ConfigFile,
+                            ConfigurationUserLevel.None);
+                var settings = config.AppSettings.Settings;
 
-            if (settings == null) //failed to load config file
-            {
-                MessageBox.Show("Config file could not be loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                //check EXE
-                if (!string.IsNullOrEmpty(vanillaExePath) && vanillaExePath != DataManager.VanillaExePath)
+                if (settings == null) //failed to load config file
                 {
-                    DataManager.SetFilePath(FileClass.VanillaExe, vanillaExePath);
-                    if (DataManager.VanillaExePathExists) //add the path to the App.config
-                    {
-                        UpdateSetting(ref settings, ExeData.VANILLA_CONFIG_KEY, vanillaExePath);
-                    }
+                    MessageBox.Show("Config file could not be loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                //check battle.lgp
-                if (!string.IsNullOrEmpty(battleLgpPath) && battleLgpPath != DataManager.BattleLgpPath)
+                else
                 {
-                    DataManager.SetFilePath(FileClass.BattleLgp, battleLgpPath);
-                    if (DataManager.BattleLgpPathExists) //add the path to App.config
+                    //check EXE
+                    if (!string.IsNullOrEmpty(vanillaExePath))
                     {
-                        UpdateSetting(ref settings, BattleLgp.CONFIG_KEY, battleLgpPath);
+                        if (vanillaExePath != DataManager.VanillaExePath)
+                        {
+                            DataManager.SetFilePath(FileClass.VanillaExe, vanillaExePath);
+                            if (DataManager.VanillaExePathExists) //add the path to the App.config
+                            {
+                                UpdateSetting(ref settings, ExeData.VANILLA_CONFIG_KEY, vanillaExePath);
+                            }
+                        }
                     }
+                    else if (DataManager.VanillaExePathExists)
+                    {
+                        var result = MessageBox.Show("Invalid EXE path. Keep existing path?",
+                            "Invalid Path", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                        switch (result)
+                        {
+                            case DialogResult.Cancel:
+                                return;
+
+                            case DialogResult.No:
+                                DataManager.SetFilePath(FileClass.VanillaExe, string.Empty);
+                                UpdateSetting(ref settings, ExeData.VANILLA_CONFIG_KEY, string.Empty);
+                                break;
+                        }
+                    }
+
+                    //check battle.lgp
+                    if (!string.IsNullOrEmpty(battleLgpPath))
+                    {
+                        if (battleLgpPath != DataManager.BattleLgpPath)
+                        {
+                            DataManager.SetFilePath(FileClass.BattleLgp, battleLgpPath);
+                            if (DataManager.BattleLgpPathExists) //add the path to App.config
+                            {
+                                UpdateSetting(ref settings, BattleLgp.CONFIG_KEY, battleLgpPath);
+                            }
+                        }
+
+                    }
+                    else if (DataManager.BattleLgpPathExists)
+                    {
+                        var result = MessageBox.Show("Invalid battle.lgp path. Keep existing path?",
+                            "Invalid Path", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                        switch (result)
+                        {
+                            case DialogResult.Cancel:
+                                return;
+
+                            case DialogResult.No:
+                                DataManager.SetFilePath(FileClass.BattleLgp, string.Empty);
+                                UpdateSetting(ref settings, BattleLgp.CONFIG_KEY, string.Empty);
+                                break;
+                        }
+                    }
+
+                    //set update channel
+                    DataManager.Updater.UpdateChannel = (UpdateChannel)comboBoxUpdateChannel.SelectedIndex;
+                    UpdateSetting(ref settings, ScarletUpdater.UPDATE_CHANNEL_KEY, Enum.GetName(DataManager.Updater.UpdateChannel));
+
+                    //enable/disable update on startup
+                    DataManager.Updater.UpdateOnStartup = checkBoxUpdateOnLaunch.Checked;
+                    UpdateSetting(ref settings, ScarletUpdater.UPDATE_ON_STARTUP_KEY, $"{DataManager.Updater.UpdateOnStartup}");
+
+                    //enable/disable remembering previously opened files
+                    DataManager.RememberLastOpened = checkBoxRemeberLastOpened.Checked;
+                    UpdateSetting(ref settings, DataManager.REMEMBER_LAST_OPENED_KEY, $"{DataManager.RememberLastOpened}");
+
+                    //enable/disable PS3 tweaks
+                    DataManager.PS3TweaksEnabled = checkBoxPS3Tweaks.Checked;
+                    UpdateSetting(ref settings, DataManager.PS3_TWEAKS_KEY, $"{DataManager.PS3TweaksEnabled}");
+
+                    config.Save();
+
                 }
-
-                //set update channel
-                DataManager.Updater.UpdateChannel = (UpdateChannel)comboBoxUpdateChannel.SelectedIndex;
-                UpdateSetting(ref settings, ScarletUpdater.UPDATE_CHANNEL_KEY, Enum.GetName(DataManager.Updater.UpdateChannel));
-
-                //enable/disable update on startup
-                DataManager.Updater.UpdateOnStartup = checkBoxUpdateOnLaunch.Checked;
-                UpdateSetting(ref settings, ScarletUpdater.UPDATE_ON_STARTUP_KEY, $"{DataManager.Updater.UpdateOnStartup}");
-
-                //enable/disable remembering previously opened files
-                DataManager.RememberLastOpened = checkBoxRemeberLastOpened.Checked;
-                UpdateSetting(ref settings, DataManager.REMEMBER_LAST_OPENED_KEY, $"{DataManager.RememberLastOpened}");
-
-                //enable/disable PS3 tweaks
-                DataManager.PS3TweaksEnabled = checkBoxPS3Tweaks.Checked;
-                UpdateSetting(ref settings, DataManager.PS3_TWEAKS_KEY, $"{DataManager.PS3TweaksEnabled}");
-
-                config.Save();
-
+                DialogResult = DialogResult.OK;
+                Close();
             }
-            DialogResult = DialogResult.OK;
-            Close();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
 
         private void UpdateSetting(ref KeyValueConfigurationCollection settings, string key, string? value)
