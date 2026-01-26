@@ -8,7 +8,8 @@ namespace FF7Scarlet.SceneEditor
     {
         public const int SCENE_COUNT = 256, COMPRESSED_BLOCK_SIZE = 0x2000, UNCOMPRESSED_BLOCK_SIZE = 7808,
             HEADER_COUNT = 16, BLOCK_COUNT = 64, ENEMY_COUNT = 3, FORMATION_COUNT = 4,
-            ALL_FORMATIONS_COUNT = 1024, ATTACK_COUNT = 32, NAME_LENGTH = 32;
+            BATTLE_ARENA_FORMATIONS_COUNT = 4, ALL_FORMATIONS_COUNT = 1024, ATTACK_COUNT = 32,
+            NAME_LENGTH = 32;
         private readonly Enemy?[] enemies = new Enemy[ENEMY_COUNT];
         private readonly Formation[] formations = new Formation[FORMATION_COUNT];
         private readonly Attack?[] attackList = new Attack?[ATTACK_COUNT];
