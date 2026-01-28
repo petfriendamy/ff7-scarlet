@@ -12,6 +12,7 @@
 .idea
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+.\CLAUDE.md
 
 # Mono auto generated files
 mono_crash.*

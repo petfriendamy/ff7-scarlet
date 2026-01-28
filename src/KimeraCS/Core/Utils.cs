@@ -459,7 +459,7 @@ namespace KimeraCS.Core
 
         ///////////////////////////////////////////
         // Camera things
-        public static void SetCameraModelView(float cX, float cY, float cZ, 
+        public static void SetCameraModelView(float cX, float cY, float cZ,
                                               float alpha, float beta, float gamma,
                                               float rszX, float rszY, float rszZ)
         {
@@ -469,11 +469,9 @@ namespace KimeraCS.Core
             GL.LoadIdentity();
 
             GL.Translated(cX, cY, cZ);
-
             BuildRotationMatrixWithQuaternionsXYZ(alpha, beta, gamma, ref rot_mat);
 
             GL.MultMatrixd(rot_mat);
-
             GL.Scaled(rszX, rszY, rszZ);
         }
 
@@ -487,11 +485,9 @@ namespace KimeraCS.Core
             GL.LoadIdentity();
 
             GL.Translated(cX, cY, cZ);
-
             BuildMatrixFromQuaternion(quat, ref rot_mat);
 
             GL.MultMatrixd(rot_mat);
-
             GL.Scaled(rszX, rszY, rszZ);
         }
 

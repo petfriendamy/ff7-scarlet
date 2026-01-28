@@ -56,22 +56,23 @@ namespace FF7Scarlet.SceneEditor.Controls
 
                 if (dragButton == MouseButtons.Left)
                 {
-                    // Left-click drag: Pan the model
+                    // Left-click drag: Rotate the model
+                    // deltaX (horizontal) rotates around Y-axis, deltaY (vertical) rotates around X-axis
+                    float rotationSensitivity = 0.5f;
+                    renderContext.Camera = renderContext.Camera.WithRotation(
+                        renderContext.Camera.Alpha + deltaY * rotationSensitivity,
+                        renderContext.Camera.Beta - deltaX * rotationSensitivity,
+                        renderContext.Camera.Gamma);
+                }
+                else if (dragButton == MouseButtons.Right)
+                {
+                    // Right-click drag: Pan the model
                     // Scale pan movement relative to camera distance for consistent screen-space movement
                     float panScale = Math.Abs(renderContext.Camera.Distance) * 0.002f;
                     renderContext.Camera = renderContext.Camera.WithPan(
                         renderContext.Camera.PanX + deltaX * panScale,
                         renderContext.Camera.PanY - deltaY * panScale,
                         renderContext.Camera.PanZ);
-                }
-                else if (dragButton == MouseButtons.Right)
-                {
-                    // Right-click drag: Rotate the model
-                    float rotationSensitivity = 0.5f;
-                    renderContext.Camera = renderContext.Camera.WithRotation(
-                        renderContext.Camera.Alpha + deltaX * rotationSensitivity,
-                        renderContext.Camera.Beta - deltaY * rotationSensitivity,
-                        renderContext.Camera.Gamma);
                 }
 
                 lastMousePosition = e.Location;
@@ -153,10 +154,14 @@ namespace FF7Scarlet.SceneEditor.Controls
                         // Only calculate camera if this is a different model
                         if (modelID != currentModelId)
                         {
-                            // Use CameraUtils to reset camera based on model's bounding box
+                            // Use CameraUtils to reset camera based on model's bounding box and viewport size
                             var firstFrame = modelData.BattleAnimations.SkeletonAnimations[0].frames[0];
-                            var camera = CameraUtils.ResetCameraForSkeleton(modelData.BattleSkeleton, firstFrame);
-                            
+                            var camera = CameraUtils.ResetCameraForSkeleton(
+                                modelData.BattleSkeleton,
+                                firstFrame,
+                                glControl.ClientRectangle.Width,
+                                glControl.ClientRectangle.Height);
+
                             // Store model diameter for zoom calculations
                             Vector3 p_min = new(), p_max = new();
                             ComputeBattleBoundingBox(modelData.BattleSkeleton, firstFrame, ref p_min, ref p_max);
@@ -197,21 +202,22 @@ namespace FF7Scarlet.SceneEditor.Controls
             GLRenderer.Shutdown();
         }
 
-        private void GlControl_MouseWheel(object? sender, MouseEventArgs e)
+        protected override void OnMouseWheel(MouseEventArgs e)
         {
             if (renderContext != null && ModelLoaded)
             {
                 // Calculate zoom delta based on model diameter
                 float zoomDelta = CameraUtils.CalculateZoomDelta(modelDiameter, e.Delta);
-                
+
                 // Apply zoom to camera distance
                 renderContext.Camera = renderContext.Camera.WithDistance(
                     renderContext.Camera.Distance + zoomDelta);
-                
+
                 // Redraw
                 glControl.Invalidate();
                 this.Invalidate();
             }
+            base.OnMouseWheel(e);
         }
     }
 }

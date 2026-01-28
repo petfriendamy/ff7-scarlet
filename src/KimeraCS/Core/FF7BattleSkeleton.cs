@@ -406,5 +406,87 @@ namespace KimeraCS.Core
                 joint_stack[jsp] = bi;
             }
         }
+
+        /// <summary>
+        /// Computes the bounding box for a battle skeleton in local model space only.
+        /// Unlike ComputeBattleBoundingBox, this ignores the battle frame's start position (startX, startY, startZ).
+        /// This is useful for model viewers where we want to center the model regardless of its battle position.
+        /// </summary>
+        /// <param name="bSkeleton">The battle skeleton</param>
+        /// <param name="bFrame">The animation frame</param>
+        /// <param name="p_min">Output parameter for the minimum bounding box point</param>
+        /// <param name="p_max">Output parameter for the maximum bounding box point</param>
+        public static void ComputeBattleBoundingBoxForViewer(BattleSkeleton bSkeleton, BattleFrame bFrame, ref Vector3 p_min, ref Vector3 p_max)
+        {
+            double[] rot_mat = new double[16];
+            double[] MV_matrix = new double[16];
+
+            Vector3 p_max_bone = new Vector3();
+            Vector3 p_min_bone = new Vector3();
+            Vector3 p_max_bone_trans = new Vector3();
+            Vector3 p_min_bone_trans = new Vector3();
+
+            int[] joint_stack = new int[bSkeleton.nBones * 4];
+            Matrix4[] matrixStack = new Matrix4[bSkeleton.nBones + 2];
+            int matrixStackPtr = 0;
+            int jsp, bi, iframeCnt;
+
+            jsp = 0;
+            joint_stack[jsp] = -1;
+
+            p_max.X = float.NegativeInfinity;
+            p_max.Y = float.NegativeInfinity;
+            p_max.Z = float.NegativeInfinity;
+            p_min.X = float.PositiveInfinity;
+            p_min.Y = float.PositiveInfinity;
+            p_min.Z = float.PositiveInfinity;
+
+            // Build initial transform using pure math - start with Identity (no battle position translation)
+            // This ensures the bounding box is in local model space only
+            Matrix4 currentMatrix = Matrix4.Identity;
+
+            BuildRotationMatrixWithQuaternions(bFrame.bones[0].alpha, bFrame.bones[0].beta, bFrame.bones[0].gamma, ref rot_mat);
+            Matrix4 rotMatrix = DoubleArrayToMatrix4(rot_mat);
+            currentMatrix *= rotMatrix;
+
+            matrixStack[matrixStackPtr++] = currentMatrix;
+
+            for (bi = 0; bi < bSkeleton.nBones; bi++)
+            {
+                while (!(bSkeleton.bones[bi].parentBone == joint_stack[jsp]) && jsp > 0)
+                {
+                    matrixStackPtr--;
+                    currentMatrix = matrixStack[matrixStackPtr];
+                    jsp--;
+                }
+                matrixStack[matrixStackPtr++] = currentMatrix;
+
+                if (bSkeleton.nBones > 1) iframeCnt = 1;
+                else iframeCnt = 0;
+                BuildRotationMatrixWithQuaternions(bFrame.bones[bi + iframeCnt].alpha,
+                                                   bFrame.bones[bi + iframeCnt].beta,
+                                                   bFrame.bones[bi + iframeCnt].gamma, ref rot_mat);
+                rotMatrix = DoubleArrayToMatrix4(rot_mat);
+                currentMatrix *= rotMatrix;
+
+                ComputeBattleBoneBoundingBox(bSkeleton.bones[bi], ref p_min_bone, ref p_max_bone);
+
+                MV_matrix = Matrix4ToDoubleArray(currentMatrix);
+
+                ComputeTransformedBoxBoundingBox(MV_matrix, ref p_min_bone, ref p_max_bone, ref p_min_bone_trans, ref p_max_bone_trans);
+
+                if (p_max.X < p_max_bone_trans.X) p_max.X = p_max_bone_trans.X;
+                if (p_max.Y < p_max_bone_trans.Y) p_max.Y = p_max_bone_trans.Y;
+                if (p_max.Z < p_max_bone_trans.Z) p_max.Z = p_max_bone_trans.Z;
+
+                if (p_min.X > p_min_bone_trans.X) p_min.X = p_min_bone_trans.X;
+                if (p_min.Y > p_min_bone_trans.Y) p_min.Y = p_min_bone_trans.Y;
+                if (p_min.Z > p_min_bone_trans.Z) p_min.Z = p_min_bone_trans.Z;
+
+                currentMatrix *= Matrix4.CreateTranslation(0, 0, bSkeleton.bones[bi].len);
+                jsp++;
+                joint_stack[jsp] = bi;
+            }
+        }
     }
 }

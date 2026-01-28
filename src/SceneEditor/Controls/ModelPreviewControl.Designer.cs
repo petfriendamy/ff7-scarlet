@@ -47,7 +47,6 @@
             glControl.MouseDown += glControl_MouseDown;
             glControl.MouseMove += glControl_MouseMove;
             glControl.MouseUp += glControl_MouseUp;
-            glControl.MouseWheel += GlControl_MouseWheel;
             // 
             // ModelPreviewControl
             // 

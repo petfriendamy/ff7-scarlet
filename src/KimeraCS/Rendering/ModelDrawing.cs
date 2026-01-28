@@ -100,7 +100,9 @@ namespace KimeraCS.Rendering
             GL.PopMatrix();
         }
 
-        private static void DrawBattleSkeleton(RenderingContext renderContext, int weaponIndex, int currFrame = -1)
+        private static void DrawBattleSkeleton(RenderingContext renderContext, int weaponIndex,
+                                               float centerX = 0, float centerY = 0, float centerZ = 0,
+                                               int currFrame = -1, bool ignoreBattlePosition = false)
         {
             var modelData = renderContext.ModelData;
             if (modelData != null)
@@ -130,7 +132,17 @@ namespace KimeraCS.Rendering
 
                 GL.MatrixMode(MatrixMode.Modelview);
                 GL.PushMatrix();
-                GL.Translated(bFrame.startX, bFrame.startY, bFrame.startZ);
+
+                // First position the skeleton at its world location
+                // When ignoreBattlePosition is true, we skip this for model viewer centering
+                if (!ignoreBattlePosition)
+                {
+                    GL.Translated(bFrame.startX, bFrame.startY, bFrame.startZ);
+                }
+
+                // Then apply centering to move the model's center to origin
+                // This ensures rotation happens around the model's center
+                GL.Translated(-centerX, -centerY, -centerZ);
 
                 // Debug.Print bFrame.bones[0].alpha; ", "; bFrame.bones[0].Beta; ", "; bFrame.bones[0].Gamma
                 BuildRotationMatrixWithQuaternions(bFrame.bones[0].alpha, bFrame.bones[0].beta, bFrame.bones[0].gamma, ref rot_mat);
@@ -258,10 +270,32 @@ namespace KimeraCS.Rendering
                         case ModelType.K_P_FIELD_MODEL:
                         case ModelType.K_P_BATTLE_MODEL:
                         case ModelType.K_P_MAGIC_MODEL:
+                        {
                             ComputePModelBoundingBox(pModel, ref p_min, ref p_max);
 
+                            // Calculate model dimensions and center
+                            float modelWidth = p_max.X - p_min.X;
+                            float modelHeight = p_max.Y - p_min.Y;
+                            float modelDepth = p_max.Z - p_min.Z;
+
+                            float centerX = p_min.X + (modelWidth * 0.5f);
+                            float centerY = p_min.Y + (modelHeight * 0.5f);
+                            float centerZ = p_min.Z + (modelDepth * 0.5f);
+
+                            // For P-Model, the bounding box is in local space (before model transforms)
+                            // The camera should look at the center of where the model WILL be after transforms
+                            // Estimated world center = local center + model reposition
+                            float worldCenterX = centerX + pModel.repositionX;
+                            float worldCenterY = centerY + pModel.repositionY;
+                            float worldCenterZ = centerZ + pModel.repositionZ;
+
+                            // Position camera to look at the world center
+                            float cameraX = worldCenterX + ctx.Camera.PanX;
+                            float cameraY = worldCenterY + ctx.Camera.PanY;
+                            float cameraZ = worldCenterZ + ctx.Camera.PanZ + ctx.Camera.Distance;
+
                             SetCameraAroundModel(ref p_min, ref p_max,
-                                                 ctx.Camera.PanX, ctx.Camera.PanY, ctx.Camera.PanZ + ctx.Camera.Distance,
+                                                 cameraX, cameraY, cameraZ,
                                                  ctx.Camera.Alpha, ctx.Camera.Beta, ctx.Camera.Gamma, 1, 1, 1);
 
                             SetLights(ctx.Lighting, (float)(-2 * ComputeSceneRadius(p_min, p_max)));
@@ -269,6 +303,7 @@ namespace KimeraCS.Rendering
                             GL.MatrixMode(MatrixMode.Modelview);
                             GL.PushMatrix();
 
+                            // Apply model's own transformations first
                             GL.Translated(pModel.repositionX,
                                          pModel.repositionY,
                                          pModel.repositionZ);
@@ -283,30 +318,61 @@ namespace KimeraCS.Rendering
                                      pModel.resizeY,
                                      pModel.resizeZ);
 
+                            // After all model transforms, center the model at origin
+                            // The local center (centerX, centerY, centerZ) is now in the transformed space
+                            GL.Translated(-centerX, -centerY, -centerZ);
+
                             DrawPModel(ref pModel, ref texIds, false, ctx);
 
                             GL.PopMatrix();
 
                             break;
+                        }
 
                         case ModelType.K_AA_SKELETON:
                         case ModelType.K_MAGIC_SKELETON:
-                            ComputeBattleBoundingBox(battleSkel, battleAnims.SkeletonAnimations[ctx.Animation.AnimationIndex].frames[ctx.Animation.CurrentFrame],
+                        {
+                            // Use viewer-only bounding box calculation for proper centering
+                            // This ignores battle frame start positions for consistent model centering
+                            ComputeBattleBoundingBoxForViewer(battleSkel, battleAnims.SkeletonAnimations[ctx.Animation.AnimationIndex].frames[ctx.Animation.CurrentFrame],
                                                      ref p_min, ref p_max);
 
+                            // Calculate model dimensions and center
+                            float modelWidth = p_max.X - p_min.X;
+                            float modelHeight = p_max.Y - p_min.Y;
+                            float modelDepth = p_max.Z - p_min.Z;
+
+                            float centerX = p_min.X + (modelWidth * 0.5f);
+                            float centerY = p_min.Y + (modelHeight * 0.5f);
+                            float centerZ = p_min.Z + (modelDepth * 0.5f);
+
+                            // Position camera to look at model center
+                            // Camera position is center + pan offset + distance along Z
+                            float cameraX = centerX + ctx.Camera.PanX;
+                            float cameraY = centerY + ctx.Camera.PanY;
+                            float cameraZ = centerZ + ctx.Camera.PanZ + ctx.Camera.Distance;
+
                             SetCameraAroundModel(ref p_min, ref p_max,
-                                                 ctx.Camera.PanX, ctx.Camera.PanY, ctx.Camera.PanZ + ctx.Camera.Distance,
+                                                 cameraX, cameraY, cameraZ,
                                                  ctx.Camera.Alpha, ctx.Camera.Beta, ctx.Camera.Gamma, 1, 1, 1);
 
                             SetLights(ctx.Lighting, (float)(-2 * ComputeSceneRadius(p_min, p_max)));
 
-                            DrawBattleSkeleton(ctx, 0);
+                            GL.MatrixMode(MatrixMode.Modelview);
+                            GL.PushMatrix();
+
+                            // Draw skeleton with internal centering applied
+                            // ignoreBattlePosition=true ensures we don't apply battle position offset
+                            DrawBattleSkeleton(ctx, 0, centerX, centerY, centerZ, -1, true);
+
+                            GL.PopMatrix();
 
                             GL.Disable(EnableCap.Lighting);
 
                             //SelectBattleBoneAndModel(battleSkel, battleAnims.SkeletonAnimations[ctx.Animation.AnimationIndex].frames[ctx.Animation.CurrentFrame],
                             //    tmpbFrame, ctx.Animation.WeaponAnimationIndex, ctx.Selection.SelectedBone, ctx.Selection.SelectedBonePiece);
                             break;
+                        }
                     }
                 }
                 catch (Exception ex)
