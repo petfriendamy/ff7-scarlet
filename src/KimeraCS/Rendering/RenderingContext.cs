@@ -29,6 +29,40 @@ namespace KimeraCS.Rendering
             PanY = 0,
             PanZ = 0
         };
+
+        /// <summary>
+        /// Creates a copy of this camera state with adjusted distance.
+        /// </summary>
+        public CameraState WithDistance(float newDistance)
+        {
+            var result = this;
+            result.Distance = newDistance;
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a copy of this camera state with adjusted pan values.
+        /// </summary>
+        public CameraState WithPan(float panX, float panY, float panZ)
+        {
+            var result = this;
+            result.PanX = panX;
+            result.PanY = panY;
+            result.PanZ = panZ;
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a copy of this camera state with adjusted rotation angles.
+        /// </summary>
+        public CameraState WithRotation(float alpha, float beta, float gamma)
+        {
+            var result = this;
+            result.Alpha = alpha;
+            result.Beta = beta;
+            result.Gamma = gamma;
+            return result;
+        }
     }
 
     /// <summary>

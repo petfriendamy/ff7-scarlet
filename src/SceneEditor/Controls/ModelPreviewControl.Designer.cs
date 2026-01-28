@@ -44,6 +44,9 @@
             glControl.SharedContext = null;
             glControl.Size = new Size(150, 150);
             glControl.TabIndex = 0;
+            glControl.MouseDown += glControl_MouseDown;
+            glControl.MouseMove += glControl_MouseMove;
+            glControl.MouseUp += glControl_MouseUp;
             // 
             // ModelPreviewControl
             // 

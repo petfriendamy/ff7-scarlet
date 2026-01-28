@@ -13,6 +13,13 @@ namespace FF7Scarlet.SceneEditor.Controls
         private const string CONTEXT_ID = "ModelPreview";
         private readonly Color4<Rgba> CLEAR_COLOR = new Color4<Rgba>(0.4f, 0.4f, 0.65f, 0);
         private RenderingContext? renderContext;
+        private ushort currentModelId;
+        private float modelDiameter;
+
+        // Mouse interaction state
+        private Point lastMousePosition;
+        private bool isDragging;
+        private MouseButtons dragButton;
 
         public bool Loaded { get; private set; }
         public bool ModelLoaded { get; private set; }
@@ -20,6 +27,58 @@ namespace FF7Scarlet.SceneEditor.Controls
         public ModelPreviewControl()
         {
             InitializeComponent();
+        }
+
+        private void glControl_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (renderContext != null && ModelLoaded)
+            {
+                isDragging = true;
+                dragButton = e.Button;
+                lastMousePosition = e.Location;
+                glControl.Capture = true;
+            }
+        }
+
+        private void glControl_MouseUp(object? sender, MouseEventArgs e)
+        {
+            isDragging = false;
+            dragButton = MouseButtons.None;
+            glControl.Capture = false;
+        }
+
+        private void glControl_MouseMove(object? sender, MouseEventArgs e)
+        {
+            if (renderContext != null && ModelLoaded && isDragging)
+            {
+                int deltaX = e.X - lastMousePosition.X;
+                int deltaY = e.Y - lastMousePosition.Y;
+
+                if (dragButton == MouseButtons.Left)
+                {
+                    // Left-click drag: Rotate the model
+                    // deltaX (horizontal) rotates around Y-axis, deltaY (vertical) rotates around X-axis
+                    float rotationSensitivity = 0.5f;
+                    renderContext.Camera = renderContext.Camera.WithRotation(
+                        renderContext.Camera.Alpha + deltaY * rotationSensitivity,
+                        renderContext.Camera.Beta - deltaX * rotationSensitivity,
+                        renderContext.Camera.Gamma);
+                }
+                else if (dragButton == MouseButtons.Right)
+                {
+                    // Right-click drag: Pan the model
+                    // Dragging right should move model right (camera moves left)
+                    float panScale = Math.Abs(renderContext.Camera.Distance) * 0.002f;
+                    renderContext.Camera = renderContext.Camera.WithPan(
+                        renderContext.Camera.PanX + deltaX * panScale,
+                        renderContext.Camera.PanY - deltaY * panScale,
+                        renderContext.Camera.PanZ);
+                }
+
+                lastMousePosition = e.Location;
+                glControl.Invalidate();
+                this.Invalidate();
+            }
         }
 
         private void ModelPreviewControl_Load(object sender, EventArgs e)
@@ -87,32 +146,69 @@ namespace FF7Scarlet.SceneEditor.Controls
                     var anim = DataManager.BattleLgp.GetAnimationData((BattleSkeleton)load, modelID);
                     if (anim != null)
                     {
-                        Vector3 p_min = new(), p_max = new();
                         var modelData = new SkeletonModelData();
                         modelData.BattleSkeleton = (BattleSkeleton)load;
                         modelData.BattleAnimations = (BattleAnimationsPack)anim;
                         modelData.TextureIds = ((BattleSkeleton)load).TexIDS;
-                        ComputeBattleBoundingBox(
-                            modelData.BattleSkeleton,
-                            modelData.BattleAnimations.SkeletonAnimations[0].frames[0],
-                            ref p_min, ref p_max);
 
-                        renderContext = RenderingContext.CreateWithModelData(
-                            ModelType.K_AA_SKELETON,
-                            modelData,
-                            new CameraState
+                        // Only calculate camera if this is a different model
+                        if (modelID != currentModelId)
+                        {
+                            var firstFrame = modelData.BattleAnimations.SkeletonAnimations[0].frames[0];
+
+                            // Compute local model bounding box (without battle position)
+                            Vector3 modelMin = new(), modelMax = new();
+                            ComputeBattleBoundingBoxForViewer(modelData.BattleSkeleton, firstFrame, ref modelMin, ref modelMax);
+
+                            // Calculate model diameter for zoom
+                            modelDiameter = Utils.CalculateDistance(modelMin, modelMax);
+
+                            // Compute scene bounds with model at origin for centered viewing
+                            // The model is conceptually at (0,0,0) for the viewer
+                            var positionedModels = new CameraUtils.PositionedModel[]
                             {
-                                Alpha = 200,
-                                Beta = 45,
-                                Gamma = 0,
-                                Distance = -1.25f * Utils.ComputeSceneRadius(p_min, p_max),
-                                PanX = 0,
-                                PanY = -300,
-                                PanZ = 0
-                            },
-                            AnimationState.Default,
-                            new LightingConfig()
-                        );
+                                new CameraUtils.PositionedModel
+                                {
+                                    Skeleton = modelData.BattleSkeleton,
+                                    Frame = firstFrame,
+                                    PositionX = 0,
+                                    PositionY = 0,
+                                    PositionZ = 0
+                                }
+                            };
+
+                            Vector3 sceneMin = new(), sceneMax = new(), sceneCenter = new();
+                            float sceneRadius = CameraUtils.ComputeSceneBoundingBox(
+                                positionedModels, ref sceneMin, ref sceneMax, ref sceneCenter);
+
+                            // Set camera to look at origin (where model will be centered)
+                            var camera = CameraUtils.ResetCameraForCenteredScene(
+                                sceneMin, sceneMax, sceneCenter,
+                                glControl.ClientRectangle.Width,
+                                glControl.ClientRectangle.Height);
+
+                            renderContext = RenderingContext.CreateWithModelData(
+                                ModelType.K_AA_SKELETON,
+                                modelData,
+                                camera,
+                                AnimationState.Default,
+                                new LightingConfig()
+                            );
+
+                            currentModelId = modelID;
+                        }
+                        else
+                        {
+                            // Reuse existing camera state for the same model
+                            renderContext = RenderingContext.CreateWithModelData(
+                                ModelType.K_AA_SKELETON,
+                                modelData,
+                                renderContext?.Camera ?? CameraState.Default,
+                                AnimationState.Default,
+                                new LightingConfig()
+                            );
+                        }
+
                         ModelLoaded = true;
                     }
                 }
@@ -124,6 +220,24 @@ namespace FF7Scarlet.SceneEditor.Controls
         public void Unload()
         {
             GLRenderer.Shutdown();
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (renderContext != null && ModelLoaded)
+            {
+                // Calculate zoom delta based on model diameter
+                float zoomDelta = CameraUtils.CalculateZoomDelta(modelDiameter, e.Delta);
+
+                // Apply zoom to camera distance
+                renderContext.Camera = renderContext.Camera.WithDistance(
+                    renderContext.Camera.Distance + zoomDelta);
+
+                // Redraw
+                glControl.Invalidate();
+                this.Invalidate();
+            }
+            base.OnMouseWheel(e);
         }
     }
 }

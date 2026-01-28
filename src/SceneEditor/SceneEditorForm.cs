@@ -552,7 +552,7 @@ namespace FF7Scarlet.SceneEditor
                     if (DataManager.BattleLgp != null)
                     {
                         comboBoxEnemyModelID.SelectedIndex = enemy.ModelID;
-                        if (enemyModelPreviewControl.Loaded) //don't load the model if the control isn't visible
+                        if (enemyModelPreviewControl.IsHandleCreated) //don't load the model if the control isn't visible
                         {
                             enemyModelPreviewControl.LoadModel(enemy.ModelID);
                         }
@@ -1159,10 +1159,17 @@ namespace FF7Scarlet.SceneEditor
 
         private void tabControlEnemyData_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControlEnemyData.SelectedTab == tabPageEnemyPage2 && DataManager.BattleLgp != null
-                && !enemyModelPreviewControl.ModelLoaded && SelectedEnemy != null)
+            // Load the model whenever switching to page 2
+            if (tabControlEnemyData.SelectedTab == tabPageEnemyPage2 && DataManager.BattleLgp != null && SelectedEnemy != null)
             {
-                enemyModelPreviewControl.LoadModel(SelectedEnemy.ModelID);
+                // Use BeginInvoke to ensure the control is fully visible and ready
+                this.BeginInvoke(() =>
+                {
+                    if (enemyModelPreviewControl.IsHandleCreated)
+                    {
+                        enemyModelPreviewControl.LoadModel(SelectedEnemy.ModelID);
+                    }
+                });
             }
         }
 
