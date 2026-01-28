@@ -1759,7 +1759,7 @@ namespace FF7Scarlet.SceneEditor
         private void listBoxFormationBattleArena_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = listBoxFormationBattleArena.SelectedIndex;
-            if (!loading && i >= 0 && i < 3 && SelectedFormation != null)
+            if (!loading && i >= 0 && i < Scene.BATTLE_ARENA_FORMATIONS_COUNT && SelectedFormation != null)
             {
                 loading = true;
                 comboBoxFormationBattleArena.Enabled = true;
@@ -1781,7 +1781,7 @@ namespace FF7Scarlet.SceneEditor
             int newForm = comboBoxFormationBattleArena.SelectedIndex,
                 selectedForm = listBoxFormationBattleArena.SelectedIndex;
             if (!loading && newForm >= 0 && newForm <= Scene.ALL_FORMATIONS_COUNT && selectedForm >= 0
-                && selectedForm < 3 && SelectedFormation != null)
+                && selectedForm < Scene.BATTLE_ARENA_FORMATIONS_COUNT && SelectedFormation != null)
             {
                 if (newForm == 0)
                 {
