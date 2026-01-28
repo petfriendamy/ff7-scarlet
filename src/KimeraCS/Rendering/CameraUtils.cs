@@ -216,5 +216,125 @@ namespace KimeraCS.Rendering
 
             return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         }
+
+        /// <summary>
+        /// Represents a positioned model for scene-wide bounding box computation.
+        /// </summary>
+        public struct PositionedModel
+        {
+            public BattleSkeleton Skeleton;
+            public BattleFrame Frame;
+            public float PositionX;
+            public float PositionY;
+            public float PositionZ;
+        }
+
+        /// <summary>
+        /// Computes a scene-wide bounding box that includes all positioned models.
+        /// This is used for model viewers that display multiple enemies in formation.
+        /// </summary>
+        /// <param name="models">Array of positioned models</param>
+        /// <param name="p_min">Output parameter for the minimum bounding box point</param>
+        /// <param name="p_max">Output parameter for the maximum bounding box point</param>
+        /// <param name="sceneCenter">Output parameter for the calculated scene center</param>
+        /// <returns>The scene radius for camera distance calculation</returns>
+        public static float ComputeSceneBoundingBox(PositionedModel[] models, ref Vector3 p_min, ref Vector3 p_max, ref Vector3 sceneCenter)
+        {
+            p_min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            p_max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+
+            if (models.Length == 0)
+            {
+                // Default to origin if no models
+                p_min = new Vector3(-1, -1, -1);
+                p_max = new Vector3(1, 1, 1);
+                sceneCenter = new Vector3(0, 0, 0);
+                return 1.0f;
+            }
+
+            // Aggregate bounding boxes from all positioned models
+            for (int i = 0; i < models.Length; i++)
+            {
+                Vector3 modelMin = new(), modelMax = new();
+                ComputeBattleBoundingBoxAtPosition(
+                    models[i].Skeleton,
+                    models[i].Frame,
+                    models[i].PositionX,
+                    models[i].PositionY,
+                    models[i].PositionZ,
+                    ref modelMin,
+                    ref modelMax);
+
+                // Union with overall bounds
+                if (modelMin.X < p_min.X) p_min.X = modelMin.X;
+                if (modelMin.Y < p_min.Y) p_min.Y = modelMin.Y;
+                if (modelMin.Z < p_min.Z) p_min.Z = modelMin.Z;
+
+                if (modelMax.X > p_max.X) p_max.X = modelMax.X;
+                if (modelMax.Y > p_max.Y) p_max.Y = modelMax.Y;
+                if (modelMax.Z > p_max.Z) p_max.Z = modelMax.Z;
+            }
+
+            // Calculate scene center
+            sceneCenter = new Vector3(
+                (p_min.X + p_max.X) / 2.0f,
+                (p_min.Y + p_max.Y) / 2.0f,
+                (p_min.Z + p_max.Z) / 2.0f);
+
+            // Calculate scene radius
+            float modelRadius = CalculateDistance(p_min, p_max) / 2.0f;
+            Vector3 origin = new Vector3(0, 0, 0);
+            float distanceOrigin = CalculateDistance(sceneCenter, origin);
+
+            return modelRadius + distanceOrigin;
+        }
+
+        /// <summary>
+        /// Resets camera for a centered scene based on scene-wide bounding box.
+        /// The scene is translated so its center is at the origin, ensuring rotations
+        /// happen around the scene center rather than an offset point.
+        /// </summary>
+        /// <param name="sceneMin">Minimum scene bounding box point</param>
+        /// <param name="sceneMax">Maximum scene bounding box point</param>
+        /// <param name="sceneCenter">Center of the scene (for reference)</param>
+        /// <param name="viewportWidth">Width of the viewport</param>
+        /// <param name="viewportHeight">Height of the viewport</param>
+        /// <returns>Camera state configured to fit the scene, centered at origin</returns>
+        public static CameraState ResetCameraForCenteredScene(Vector3 sceneMin, Vector3 sceneMax, Vector3 sceneCenter,
+                                                               int viewportWidth, int viewportHeight)
+        {
+            // Calculate scene dimensions
+            float sceneWidth = sceneMax.X - sceneMin.X;
+            float sceneHeight = sceneMax.Y - sceneMin.Y;
+            float sceneDepth = sceneMax.Z - sceneMin.Z;
+
+            // Use the larger dimension to ensure it fits
+            float maxDimension = Math.Max(sceneWidth, Math.Max(sceneHeight, sceneDepth));
+
+            // Calculate distance to fit the scene in the viewport
+            float distance;
+            if (viewportWidth > 0 && viewportHeight > 0)
+            {
+                float fovFactor = 1.155f; // 2 * tan(30°)
+                distance = -(maxDimension / fovFactor * 1.5f);
+            }
+            else
+            {
+                float sceneRadius = ComputeSceneRadius(sceneMin, sceneMax);
+                distance = -2.0f * sceneRadius;
+            }
+
+            // The scene will be centered at origin during drawing, so camera looks at origin
+            return new CameraState
+            {
+                Alpha = 180,
+                Beta = 0,
+                Gamma = 0,
+                Distance = distance,
+                PanX = 0,
+                PanY = 0,
+                PanZ = 0
+            };
+        }
     }
 }

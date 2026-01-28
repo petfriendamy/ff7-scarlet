@@ -67,7 +67,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                 else if (dragButton == MouseButtons.Right)
                 {
                     // Right-click drag: Pan the model
-                    // Scale pan movement relative to camera distance for consistent screen-space movement
+                    // Dragging right should move model right (camera moves left)
                     float panScale = Math.Abs(renderContext.Camera.Distance) * 0.002f;
                     renderContext.Camera = renderContext.Camera.WithPan(
                         renderContext.Camera.PanX + deltaX * panScale,
@@ -154,19 +154,39 @@ namespace FF7Scarlet.SceneEditor.Controls
                         // Only calculate camera if this is a different model
                         if (modelID != currentModelId)
                         {
-                            // Use CameraUtils to reset camera based on model's bounding box and viewport size
                             var firstFrame = modelData.BattleAnimations.SkeletonAnimations[0].frames[0];
-                            var camera = CameraUtils.ResetCameraForSkeleton(
-                                modelData.BattleSkeleton,
-                                firstFrame,
+
+                            // Compute local model bounding box (without battle position)
+                            Vector3 modelMin = new(), modelMax = new();
+                            ComputeBattleBoundingBoxForViewer(modelData.BattleSkeleton, firstFrame, ref modelMin, ref modelMax);
+
+                            // Calculate model diameter for zoom
+                            modelDiameter = Utils.CalculateDistance(modelMin, modelMax);
+
+                            // Compute scene bounds with model at origin for centered viewing
+                            // The model is conceptually at (0,0,0) for the viewer
+                            var positionedModels = new CameraUtils.PositionedModel[]
+                            {
+                                new CameraUtils.PositionedModel
+                                {
+                                    Skeleton = modelData.BattleSkeleton,
+                                    Frame = firstFrame,
+                                    PositionX = 0,
+                                    PositionY = 0,
+                                    PositionZ = 0
+                                }
+                            };
+
+                            Vector3 sceneMin = new(), sceneMax = new(), sceneCenter = new();
+                            float sceneRadius = CameraUtils.ComputeSceneBoundingBox(
+                                positionedModels, ref sceneMin, ref sceneMax, ref sceneCenter);
+
+                            // Set camera to look at origin (where model will be centered)
+                            var camera = CameraUtils.ResetCameraForCenteredScene(
+                                sceneMin, sceneMax, sceneCenter,
                                 glControl.ClientRectangle.Width,
                                 glControl.ClientRectangle.Height);
 
-                            // Store model diameter for zoom calculations
-                            Vector3 p_min = new(), p_max = new();
-                            ComputeBattleBoundingBox(modelData.BattleSkeleton, firstFrame, ref p_min, ref p_max);
-                            modelDiameter = Utils.CalculateDistance(p_min, p_max);
-                            
                             renderContext = RenderingContext.CreateWithModelData(
                                 ModelType.K_AA_SKELETON,
                                 modelData,
@@ -174,7 +194,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                                 AnimationState.Default,
                                 new LightingConfig()
                             );
-                            
+
                             currentModelId = modelID;
                         }
                         else
@@ -188,7 +208,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                                 new LightingConfig()
                             );
                         }
-                        
+
                         ModelLoaded = true;
                     }
                 }

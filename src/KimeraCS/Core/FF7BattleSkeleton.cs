@@ -488,5 +488,33 @@ namespace KimeraCS.Core
                 joint_stack[jsp] = bi;
             }
         }
+
+        /// <summary>
+        /// Computes the bounding box for a battle skeleton at a specific world position.
+        /// This is used for scene-wide bounding box calculations where enemies are positioned in formations.
+        /// </summary>
+        /// <param name="bSkeleton">The battle skeleton</param>
+        /// <param name="bFrame">The animation frame</param>
+        /// <param name="positionX">World X position offset</param>
+        /// <param name="positionY">World Y position offset</param>
+        /// <param name="positionZ">World Z position offset</param>
+        /// <param name="p_min">Output parameter for the minimum bounding box point</param>
+        /// <param name="p_max">Output parameter for the maximum bounding box point</param>
+        public static void ComputeBattleBoundingBoxAtPosition(BattleSkeleton bSkeleton, BattleFrame bFrame,
+                                                              float positionX, float positionY, float positionZ,
+                                                              ref Vector3 p_min, ref Vector3 p_max)
+        {
+            // First compute the local bounding box
+            ComputeBattleBoundingBoxForViewer(bSkeleton, bFrame, ref p_min, ref p_max);
+
+            // Then apply the position offset
+            p_min.X += positionX;
+            p_min.Y += positionY;
+            p_min.Z += positionZ;
+
+            p_max.X += positionX;
+            p_max.Y += positionY;
+            p_max.Z += positionZ;
+        }
     }
 }

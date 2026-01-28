@@ -332,37 +332,47 @@ namespace KimeraCS.Rendering
                         case ModelType.K_AA_SKELETON:
                         case ModelType.K_MAGIC_SKELETON:
                         {
-                            // Use viewer-only bounding box calculation for proper centering
-                            // This ignores battle frame start positions for consistent model centering
+                            // Compute local model bounding box (without battle position)
+                            // This gives us the model's bounds in its own local space
                             ComputeBattleBoundingBoxForViewer(battleSkel, battleAnims.SkeletonAnimations[ctx.Animation.AnimationIndex].frames[ctx.Animation.CurrentFrame],
                                                      ref p_min, ref p_max);
 
-                            // Calculate model dimensions and center
-                            float modelWidth = p_max.X - p_min.X;
-                            float modelHeight = p_max.Y - p_min.Y;
-                            float modelDepth = p_max.Z - p_min.Z;
+                            // Calculate model center in local space
+                            float centerX = (p_min.X + p_max.X) * 0.5f;
+                            float centerY = (p_min.Y + p_max.Y) * 0.5f;
+                            float centerZ = (p_min.Z + p_max.Z) * 0.5f;
 
-                            float centerX = p_min.X + (modelWidth * 0.5f);
-                            float centerY = p_min.Y + (modelHeight * 0.5f);
-                            float centerZ = p_min.Z + (modelDepth * 0.5f);
+                            // Debug output
+                            System.Diagnostics.Debug.WriteLine($"=== Model Bounds ===");
+                            System.Diagnostics.Debug.WriteLine($"Min: ({p_min.X:F2}, {p_min.Y:F2}, {p_min.Z:F2})");
+                            System.Diagnostics.Debug.WriteLine($"Max: ({p_max.X:F2}, {p_max.Y:F2}, {p_max.Z:F2})");
+                            System.Diagnostics.Debug.WriteLine($"Center: ({centerX:F2}, {centerY:F2}, {centerZ:F2})");
 
-                            // Position camera to look at model center
-                            // Camera position is center + pan offset + distance along Z
+                            // Calculate scene radius for camera distance
+                            float sceneRadius = ComputeSceneRadius(p_min, p_max);
+
+                            // IMPORTANT: The camera must look at where the model's center WILL BE after centering translation
+                            // After we translate by (-centerX, -centerY, -centerZ), the model's center will be at origin
+                            // So we want the camera to look at origin, but we need to account for the initial offset
+                            // Camera position: the model's actual center + pan offset + distance
                             float cameraX = centerX + ctx.Camera.PanX;
                             float cameraY = centerY + ctx.Camera.PanY;
                             float cameraZ = centerZ + ctx.Camera.PanZ + ctx.Camera.Distance;
 
+                            // For the frustum, we use the original bounds (not centered) because the camera
+                            // is positioned relative to the model's actual position
                             SetCameraAroundModel(ref p_min, ref p_max,
                                                  cameraX, cameraY, cameraZ,
                                                  ctx.Camera.Alpha, ctx.Camera.Beta, ctx.Camera.Gamma, 1, 1, 1);
 
-                            SetLights(ctx.Lighting, (float)(-2 * ComputeSceneRadius(p_min, p_max)));
+                            SetLights(ctx.Lighting, -2.0f * sceneRadius);
 
                             GL.MatrixMode(MatrixMode.Modelview);
                             GL.PushMatrix();
 
-                            // Draw skeleton with internal centering applied
-                            // ignoreBattlePosition=true ensures we don't apply battle position offset
+                            // Draw skeleton with centering applied
+                            // The translation moves the model so its center is at origin
+                            // This is AFTER the camera is set up to look at the model's actual position
                             DrawBattleSkeleton(ctx, 0, centerX, centerY, centerZ, -1, true);
 
                             GL.PopMatrix();
