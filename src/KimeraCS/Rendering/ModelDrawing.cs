@@ -342,25 +342,16 @@ namespace KimeraCS.Rendering
                             float centerY = (p_min.Y + p_max.Y) * 0.5f;
                             float centerZ = (p_min.Z + p_max.Z) * 0.5f;
 
-                            // Debug output
-                            System.Diagnostics.Debug.WriteLine($"=== Model Bounds ===");
-                            System.Diagnostics.Debug.WriteLine($"Min: ({p_min.X:F2}, {p_min.Y:F2}, {p_min.Z:F2})");
-                            System.Diagnostics.Debug.WriteLine($"Max: ({p_max.X:F2}, {p_max.Y:F2}, {p_max.Z:F2})");
-                            System.Diagnostics.Debug.WriteLine($"Center: ({centerX:F2}, {centerY:F2}, {centerZ:F2})");
-
                             // Calculate scene radius for camera distance
                             float sceneRadius = ComputeSceneRadius(p_min, p_max);
 
-                            // IMPORTANT: The camera must look at where the model's center WILL BE after centering translation
-                            // After we translate by (-centerX, -centerY, -centerZ), the model's center will be at origin
-                            // So we want the camera to look at origin, but we need to account for the initial offset
-                            // Camera position: the model's actual center + pan offset + distance
-                            float cameraX = centerX + ctx.Camera.PanX;
-                            float cameraY = centerY + ctx.Camera.PanY;
-                            float cameraZ = centerZ + ctx.Camera.PanZ + ctx.Camera.Distance;
+                            // Following the reference implementation pattern:
+                            // Camera position = -center + pan (to bring model to origin) + distance
+                            // This way the model appears at origin and rotations happen around center
+                            float cameraX = -centerX + ctx.Camera.PanX;
+                            float cameraY = -centerY + ctx.Camera.PanY;
+                            float cameraZ = -centerZ + ctx.Camera.PanZ + ctx.Camera.Distance;
 
-                            // For the frustum, we use the original bounds (not centered) because the camera
-                            // is positioned relative to the model's actual position
                             SetCameraAroundModel(ref p_min, ref p_max,
                                                  cameraX, cameraY, cameraZ,
                                                  ctx.Camera.Alpha, ctx.Camera.Beta, ctx.Camera.Gamma, 1, 1, 1);
@@ -370,10 +361,9 @@ namespace KimeraCS.Rendering
                             GL.MatrixMode(MatrixMode.Modelview);
                             GL.PushMatrix();
 
-                            // Draw skeleton with centering applied
-                            // The translation moves the model so its center is at origin
-                            // This is AFTER the camera is set up to look at the model's actual position
-                            DrawBattleSkeleton(ctx, 0, centerX, centerY, centerZ, -1, true);
+                            // Draw skeleton - no additional centering needed since camera handles it
+                            // But we still need to pass the center values for the bone translation
+                            DrawBattleSkeleton(ctx, 0, 0, 0, 0, -1, true);
 
                             GL.PopMatrix();
 
