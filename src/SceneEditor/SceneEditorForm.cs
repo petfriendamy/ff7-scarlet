@@ -1,11 +1,13 @@
-﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Inventory;
 
+using System.Diagnostics;
 using System.Globalization;
 using System.Media;
+using System.Text;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -338,9 +340,18 @@ namespace FF7Scarlet.SceneEditor
                 {
                     scene.ParseAIScripts();
                 }
+                catch (FormatException ex)
+                {
+                    MessageBox.Show($"Invalid script format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Invalid operation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Debug.WriteLine($"Unexpected error parsing AI scripts: {ex}");
+                    MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             int i;
@@ -406,9 +417,10 @@ namespace FF7Scarlet.SceneEditor
                 }
             }
             comboBoxEnemy.EndUpdate();
-            comboBoxFormationSelectedEnemy.EndUpdate();
+             comboBoxFormationSelectedEnemy.EndUpdate();
             comboBoxEnemy.SelectedIndex = 0;
-            LoadEnemyData(scene.Enemies[0], false, ignoreNull);
+            var firstEnemy = scene?.Enemies != null && scene.Enemies.Length > 0 ? scene.Enemies[0] : null;
+            LoadEnemyData(firstEnemy, false, ignoreNull);
 
             //get formations
             UpdateFormations(sceneIndex, false);
@@ -653,7 +665,7 @@ namespace FF7Scarlet.SceneEditor
         {
             //get drop rate
             float percentage = (rate.DropRate / 63F) * 100;
-            string text = $"{percentage:N1}% ";
+            var sb = new StringBuilder($"{percentage:N1}% ");
 
             //get name
             string name = $"Unknown item (ID {rate.ItemID:X4})";
@@ -664,13 +676,13 @@ namespace FF7Scarlet.SceneEditor
                 item.Item = rate.ItemID;
                 name = DataManager.Kernel.GetInventoryItemName(item);
             }
-            text += name;
+            sb.Append(name);
 
             //get steal status
-            if (rate.IsSteal) { text += " steal"; }
-            else { text += " drop"; }
+            if (rate.IsSteal) { sb.Append(" steal"); }
+            else { sb.Append(" drop"); }
 
-            return text;
+            return sb.ToString();
         }
 
         private void SyncEnemyData(Enemy enemy)
@@ -1039,9 +1051,22 @@ namespace FF7Scarlet.SceneEditor
                 DataManager.CreateSceneBin();
                 SetUnsaved(false);
             }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (AggregateException ex)
+            {
+                MessageBox.Show($"Error saving scene: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine($"Unexpected error saving scene: {ex}");
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             progressBarSaving.Value = 0;
             EnableOrDisableForm(true);
@@ -1608,11 +1633,22 @@ namespace FF7Scarlet.SceneEditor
                         {
                             enemyModelPreviewControl.LoadModel(newID);
                         }
-                        SetUnsaved(true);
+                    SetUnsaved(true);
+                    }
+                    catch (FileNotFoundException ex)
+                    {
+                        MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        comboBoxEnemyModelID.SelectedIndex = oldID;
+                    }
+                    catch (IOException ex)
+                    {
+                        MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        comboBoxEnemyModelID.SelectedIndex = oldID;
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Debug.WriteLine($"Unexpected error loading enemy model: {ex}");
+                        MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         comboBoxEnemyModelID.SelectedIndex = oldID;
                     }
                     loading = false;

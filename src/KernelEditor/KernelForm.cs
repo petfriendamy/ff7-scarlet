@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Media;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -1145,8 +1146,8 @@ namespace FF7Scarlet.KernelEditor
                 }
 
                 var character = kernel.CharacterList[charIndex];
-
-                textBoxCharacterName.Text = character.Name.ToString();
+                
+                textBoxCharacterName.Text = character?.Name?.ToString() ?? string.Empty;
                 numericCharacterID.Value = character.ID;
                 numericCharacterLevel.Value = character.Level;
                 numericCharacterCurrentEXP.Value = character.CurrentEXP;
@@ -1420,10 +1421,18 @@ namespace FF7Scarlet.KernelEditor
                         listBoxCharacterScripts.SelectedIndex = 0;
                     }
                 }
+                catch (FormatException ex)
+                {
+                    MessageBox.Show($"Invalid script format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Invalid operation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error in A.I. data: {ex.Message}", "Error", MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    Debug.WriteLine($"Unexpected error parsing AI data: {ex}");
+                    MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -1563,7 +1572,7 @@ namespace FF7Scarlet.KernelEditor
             listBoxBattleText.SelectedIndex = i;
             if (i >= 0 && i < kernel.BattleTextFF.Length)
             {
-                textBoxBattleText.Text = kernel.BattleTextFF[i].ToString();
+                textBoxBattleText.Text = kernel.BattleTextFF[i]?.ToString() ?? string.Empty;
             }
 
             if (!wasAlreadyLoading) { loading = false; }
@@ -2217,7 +2226,7 @@ namespace FF7Scarlet.KernelEditor
                     loading = true;
                     labelBattleText.Enabled = true;
                     textBoxBattleText.Enabled = true;
-                    textBoxBattleText.Text = kernel.BattleTextFF[i].ToString();
+                    textBoxBattleText.Text = kernel.BattleTextFF[i]?.ToString() ?? string.Empty;
                     loading = false;
                 }
             }
@@ -3376,9 +3385,22 @@ namespace FF7Scarlet.KernelEditor
                     DataManager.CreateKernel(true, kernel);
                     SetUnsaved(result);
                 }
+                catch (FileNotFoundException ex)
+                {
+                    MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (ScriptTooLongException ex)
+                {
+                    MessageBox.Show($"Script too long: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Debug.WriteLine($"Unexpected error creating kernel: {ex}");
+                    MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

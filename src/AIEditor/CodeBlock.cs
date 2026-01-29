@@ -1,4 +1,7 @@
-﻿using FF7Scarlet.Shared;
+using FF7Scarlet.Shared;
+using System.Diagnostics;
+using System.Globalization;
+using System.Text;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Equipment;
 
@@ -115,94 +118,94 @@ namespace FF7Scarlet.AIEditor
 
         public override string Disassemble(bool verbose)
         {
-            string output = "";
             var opcode = (Opcodes)GetPrimaryOpcode();
             if (Enum.IsDefined(opcode))
             {
                 CodeLine? pop1, pop2;
+                var sb = new StringBuilder();
                 switch (opcode)
                 {
                     case Opcodes.Add:
-                        output += $"({block[0].Disassemble(false)} + {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} + {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.Subtract:
-                        output += $"({block[0].Disassemble(false)} - {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} - {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.Multiply:
-                        output += $"({block[0].Disassemble(false)} * {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} * {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.Divide:
-                        output += $"({block[0].Disassemble(false)} / {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} / {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.Modulo:
-                        output += $"({block[0].Disassemble(false)} % {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} % {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.BitwiseAnd:
-                        output += $"({block[0].Disassemble(false)} & {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} & {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.BitwiseOr:
-                        output += $"({block[0].Disassemble(false)} | {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} | {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.BitwiseNot:
-                        output += $"~({block[0].Disassemble(false)})";
+                        sb.Append($"~({block[0].Disassemble(false)})");
                         break;
                     case Opcodes.Equal:
-                        output += $"({block[0].Disassemble(false)} == {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} == {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.NotEqual:
-                        output += $"({block[0].Disassemble(false)} != {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} != {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.GreaterOrEqual:
-                        output += $"({block[0].Disassemble(false)} >= {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} >= {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.LessThanOrEqual:
-                        output += $"({block[0].Disassemble(false)} <= {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} <= {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.GreaterThan:
-                        output += $"({block[0].Disassemble(false)} > {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} > {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.LessThan:
-                        output += $"({block[0].Disassemble(false)} < {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} < {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.LogicalAnd:
-                        output += $"({block[0].Disassemble(false)} && {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} && {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.LogicalOr:
-                        output += $"({block[0].Disassemble(false)} || {block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)} || {block[1].Disassemble(false)})");
                         break;
                     case Opcodes.LogicalNot:
-                        output += $"(!{block[0].Disassemble(false)})";
+                        sb.Append($"(!{block[0].Disassemble(false)})");
                         break;
                     case Opcodes.JumpEqual:
                         pop1 = block[1] as CodeLine;
                         if (pop1 != null && pop1.Parameter != null)
                         {
-                            output += $"If ({block[0].Disassemble(false)}) (else goto label {pop1.Parameter.ToInt()})";
+                            sb.Append($"If ({block[0].Disassemble(false)}) (else goto label {pop1.Parameter.ToInt()})");
                         }
                         break;
                     case Opcodes.JumpNotEqual:
                         pop1 = block[1] as CodeLine;
                         if (pop1 != null && pop1.Parameter != null)
                         {
-                            output += $"If (1st in Stack != {block[0].Disassemble(false)})";
-                            output += $" (else goto label {pop1.Parameter.ToInt()})";
+                            sb.Append($"If (1st in Stack != {block[0].Disassemble(false)})");
+                            sb.Append($" (else goto label {pop1.Parameter.ToInt()})");
                         }
                         break;
                     case Opcodes.Mask:
-                        output += $"({block[0].Disassemble(false)}.{block[1].Disassemble(false)})";
+                        sb.Append($"({block[0].Disassemble(false)}.{block[1].Disassemble(false)})");
                         break;
                     case Opcodes.RandomByte:
-                        output += $"RandomBit({block[0].Disassemble(false)})";
+                        sb.Append($"RandomBit({block[0].Disassemble(false)})");
                         break;
                     case Opcodes.MPCost:
                         pop1 = block[0] as CodeLine;
                         if (pop1 != null && pop1.Parameter != null)
                         {
-                            output += $"MPCost({GetAttackName(pop1)})";
+                            sb.Append($"MPCost({GetAttackName(pop1)})");
                         }
                         break;
                     case Opcodes.Assign:
-                        output += $"{block[0].Disassemble(false)} = {block[1].Disassemble(false)}";
+                        sb.Append($"{block[0].Disassemble(false)} = {block[1].Disassemble(false)}");
                         break;
                     case Opcodes.Attack:
                         pop1 = block[0] as CodeLine;
@@ -211,11 +214,11 @@ namespace FF7Scarlet.AIEditor
                         {
                             if (pop1.Parameter?.ToString() == "24")
                             {
-                                output += "Wait";
+                                sb.Append("Wait");
                             }
                             else if (pop2 != null && pop2.Parameter != null)
                             {
-                                output += $"PerformAttack ({pop1.Parameter}, {GetAttackName(pop2)})";
+                                sb.Append($"PerformAttack ({pop1.Parameter}, {GetAttackName(pop2)})");
                             }
                         }
                         break;
@@ -225,11 +228,11 @@ namespace FF7Scarlet.AIEditor
                         {
                             if (pop1.Parameter?.ToInt() == 1)
                             {
-                                output += $"GlobalVar:{block[1].Disassemble(false)} = Var:2010 (TempGlobal)";
+                                sb.Append($"GlobalVar:{block[1].Disassemble(false)} = Var:2010 (TempGlobal)");
                             }
                             else
                             {
-                                output += $"Var:2010 (TempGlobal) = GlobalVar:{block[1].Disassemble(false)}";
+                                sb.Append($"Var:2010 (TempGlobal) = GlobalVar:{block[1].Disassemble(false)}");
                             }
                         }
                         break;
@@ -240,36 +243,38 @@ namespace FF7Scarlet.AIEditor
                             var elementName = Enum.GetName((Elements)parameter.ToInt());
                             if (elementName == null)
                             {
-                                output += $"GetElementDefense({block[0].Disassemble(false)}, Unknown ({block[1].Disassemble(false)}))";
+                                sb.Append($"GetElementDefense({block[0].Disassemble(false)}, Unknown ({block[1].Disassemble(false)}))");
                             }
                             else
                             {
-                                output += $"GetElementDefense({block[0].Disassemble(false)}, {elementName})";
+                                sb.Append($"GetElementDefense({block[0].Disassemble(false)}, {elementName})");
                             }
                         }
                         break;
                     case Opcodes.DebugMessage:
                         pop1 = block[block.Count - 1] as CodeLine;
-                        output += $"DebugMessage \"{pop1?.Parameter}\"";
+                        sb.Append($"DebugMessage \"{pop1?.Parameter}\"");
                         break;
                     default:
-                        output += $"{Enum.GetName(typeof(Opcodes), opcode)}({block[0].Disassemble(false)}";
+                        sb.Append($"{Enum.GetName(typeof(Opcodes), opcode)}({block[0].Disassemble(false)}");
                         if (block.Count > 2)
                         {
-                            output += $", {block[1].Disassemble(false)}";
+                            sb.Append($", {block[1].Disassemble(false)}");
                         }
-                        output += ")";
+                        sb.Append(")");
                         break;
                 }
+                return sb.ToString();
             }
             else
             {
+                var sb = new StringBuilder();
                 foreach (var c in block)
                 {
-                    output += c.Disassemble(verbose);
+                    sb.Append(c.Disassemble(verbose));
                 }
+                return sb.ToString();
             }
-            return output;
         }
 
         private string GetAttackName(CodeLine parameter)

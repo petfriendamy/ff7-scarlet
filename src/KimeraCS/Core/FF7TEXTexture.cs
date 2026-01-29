@@ -205,7 +205,7 @@ namespace KimeraCS.Core
         }
 
         //  Get a 32 bits BGRA (or BGR for 24 bits) version of the image
-        public static void GetTEXTexturev(ref TEX inTEXTexture, ref byte[] textureImg)
+        public static void GetTEXTexturev(ref TEX inTEXTexture, ref byte[]? textureImg)
         {
             int imageBytesSize, imageSize, offsetBit, ti, color_offset;
             int col16, b1, b2;
@@ -285,7 +285,7 @@ namespace KimeraCS.Core
         //  Create the OpenGL Texture object
         public static void LoadTEXTexture(ref TEX inTEXTexture)
         {
-            byte[] textureImg = Array.Empty<byte>();
+            byte[]? textureImg = null;
 
             OpenTK.Graphics.OpenGL.Compatibility.PixelFormat format = 0x0;
             InternalFormat internalformat = 0x0;
@@ -324,9 +324,12 @@ namespace KimeraCS.Core
 
             GetTEXTexturev(ref inTEXTexture, ref textureImg);
 
-            GL.TexImage2D(TextureTarget.Texture2d, 0, internalformat,
-                inTEXTexture.width, inTEXTexture.height, 0, format,
-                PixelType.UnsignedByte, textureImg);
+            if (textureImg != null)
+            {
+                GL.TexImage2D(TextureTarget.Texture2d, 0, internalformat,
+                    inTEXTexture.width, inTEXTexture.height, 0, format,
+                    PixelType.UnsignedByte, textureImg);
+            }
         }
 
 
@@ -335,7 +338,7 @@ namespace KimeraCS.Core
             try
             {
                 // Get 32-bit BGRA pixel data using existing conversion function
-                byte[] textureImg = null;
+                byte[]? textureImg = null;
                 GetTEXTexturev(ref inTEXTexture, ref textureImg);
 
                 // Create managed bitmap
@@ -355,7 +358,7 @@ namespace KimeraCS.Core
                 {
                     int srcOffset = y * rowBytes;
                     IntPtr dstRow = bmpData.Scan0 + y * stride;
-                    Marshal.Copy(textureImg, srcOffset, dstRow, rowBytes);
+                    Marshal.Copy(textureImg!, srcOffset, dstRow, rowBytes);
                 }
 
                 inTEXTexture.bitmap.UnlockBits(bmpData);

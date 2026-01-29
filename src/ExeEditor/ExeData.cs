@@ -1,7 +1,8 @@
-﻿using FF7Scarlet.KernelEditor;
+using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
+using System.Diagnostics;
 using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
@@ -1790,9 +1791,25 @@ namespace FF7Scarlet.ExeEditor
                     }
                     IsUnedited = false;
                 }
+                catch (IOException ex)
+                {
+                    Debug.WriteLine($"I/O error editing EXE: {ex}");
+                    throw new IOException($"I/O error editing EXE: {ex.Message}", ex);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    Debug.WriteLine($"Unauthorized access editing EXE: {ex}");
+                    throw new UnauthorizedAccessException($"Unauthorized access editing EXE: {ex.Message}", ex);
+                }
+                catch (FormatException ex)
+                {
+                    Debug.WriteLine($"Format error editing EXE: {ex}");
+                    throw new FormatException($"Format error editing EXE: {ex.Message}", ex);
+                }
                 catch (Exception ex)
                 {
-                    throw new IOException("There was a problem editing the EXE.", ex);
+                    Debug.WriteLine($"Unexpected error editing EXE: {ex}");
+                    throw new IOException($"Unexpected error editing EXE: {ex.Message}", ex);
                 }
             }
         }
@@ -1806,7 +1823,7 @@ namespace FF7Scarlet.ExeEditor
                 //check header
                 var header = new byte[8];
                 Array.Copy(data, header, 8);
-                var txt = new FFText(header).ToString();
+                var txt = header != null && header.Length > 0 ? new FFText(header).ToString() : string.Empty;
                 if (txt != "SCARLET") //invalid header, might be the old format
                 {
                     ReadBytesOld(data);
@@ -1879,9 +1896,20 @@ namespace FF7Scarlet.ExeEditor
                     }
                 }
             }
+            catch (FormatException ex)
+            {
+                Debug.WriteLine($"Format error reading byte array: {ex}");
+                throw new FormatException($"Format error reading byte array: {ex.Message}", ex);
+            }
+            catch (EndOfStreamException ex)
+            {
+                Debug.WriteLine($"Unexpected end of stream reading byte array: {ex}");
+                throw new EndOfStreamException($"Unexpected end of stream: {ex.Message}", ex);
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex);
+                Debug.WriteLine($"Unexpected error reading byte array: {ex}");
+                throw new Exception($"Unexpected error: {ex.Message}", ex);
             }
             return result;
         }
@@ -2393,11 +2421,18 @@ namespace FF7Scarlet.ExeEditor
             }
             catch (EndOfStreamException ex)
             {
-                throw new EndOfStreamException(ex.Message);
+                Debug.WriteLine($"Unexpected end of stream reading file: {ex}");
+                throw new EndOfStreamException($"Unexpected end of stream: {ex.Message}", ex);
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"I/O error reading file: {ex}");
+                throw new IOException($"I/O error reading file: {ex.Message}", ex);
             }
             catch (Exception ex)
             {
-                throw new IOException($"There was a problem reading the file.", ex);
+                Debug.WriteLine($"Unexpected error reading file: {ex}");
+                throw new IOException($"Unexpected error reading file: {ex.Message}", ex);
             }
         }
 

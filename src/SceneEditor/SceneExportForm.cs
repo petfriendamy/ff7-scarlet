@@ -1,4 +1,5 @@
-﻿using FF7Scarlet.Compression;
+using FF7Scarlet.Compression;
+using System.Diagnostics;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 
@@ -168,9 +169,34 @@ namespace FF7Scarlet.SceneEditor
                             Close();
                         }
                     }
+                    catch (FileNotFoundException ex)
+                    {
+                        MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        groupBoxExport.Enabled = true;
+                        buttonExport.Enabled = true;
+                        progressBarSaving.Value = 0;
+                        processing = false;
+                    }
+                    catch (IOException ex)
+                    {
+                        MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        groupBoxExport.Enabled = true;
+                        buttonExport.Enabled = true;
+                        progressBarSaving.Value = 0;
+                        processing = false;
+                    }
+                    catch (AggregateException ex)
+                    {
+                        MessageBox.Show($"Error exporting scenes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        groupBoxExport.Enabled = true;
+                        buttonExport.Enabled = true;
+                        progressBarSaving.Value = 0;
+                        processing = false;
+                    }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Debug.WriteLine($"Unexpected error exporting scene: {ex}");
+                        MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         groupBoxExport.Enabled = true;
                         buttonExport.Enabled = true;
                         progressBarSaving.Value = 0;
@@ -252,9 +278,22 @@ namespace FF7Scarlet.SceneEditor
                 }
                 return true;
             }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (AggregateException ex)
+            {
+                MessageBox.Show($"Error exporting: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine($"Unexpected error in ExportChunk: {ex}");
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
         }

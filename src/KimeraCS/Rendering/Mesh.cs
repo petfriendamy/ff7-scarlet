@@ -133,7 +133,7 @@ namespace KimeraCS.Rendering
 
     public class PModelMesh : IDisposable
     {
-        public GroupMesh[] Groups { get; private set; }
+        public GroupMesh[] Groups { get; private set; } = Array.Empty<GroupMesh>();
         private bool _disposed;
 
         public static PModelMesh FromPModel(PModel model, bool usePolygonColors = false)
@@ -299,7 +299,7 @@ namespace KimeraCS.Rendering
                     {
                         group?.Dispose();
                     }
-                    Groups = null;
+                    Groups = Array.Empty<GroupMesh>();
                 }
                 _disposed = true;
             }

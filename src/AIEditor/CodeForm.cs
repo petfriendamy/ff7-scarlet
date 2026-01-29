@@ -1,4 +1,5 @@
-﻿using System.Data;
+using System.Data;
+using System.Diagnostics;
 using System.ComponentModel;
 using FF7Scarlet.Shared;
 
@@ -389,10 +390,22 @@ namespace FF7Scarlet.AIEditor
                     }
                 }
             }
+            catch (ArgumentNullException ex)
+            {
+                MessageBox.Show($"Parameter cannot be empty: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (FormatException ex)
+            {
+                MessageBox.Show($"Invalid parameter format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Invalid operation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while loading the parameter: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine($"Unexpected error loading parameter: {ex}");
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -534,11 +547,24 @@ namespace FF7Scarlet.AIEditor
                         Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, op.Code, param);
                     }
                 }
+                catch (ArgumentNullException ex)
+                {
+                    MessageBox.Show($"Parameter cannot be empty: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (FormatException ex)
+                {
+                    MessageBox.Show($"Invalid parameter format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Invalid operation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    Debug.WriteLine($"Unexpected error in parameter parsing: {ex}");
+                    MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                return;
             }
             DialogResult = DialogResult.OK;
             Close();

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+using System.Diagnostics;
+using System.Globalization;
 using System.Media;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
@@ -2319,10 +2320,22 @@ namespace FF7Scarlet.ExeEditor
                             {
                                 DataManager.SetFilePath(FileClass.VanillaExe, path);
                             }
+                            catch (FileNotFoundException ex)
+                            {
+                                MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (IOException ex)
+                            {
+                                MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (FormatException ex)
+                            {
+                                MessageBox.Show($"Invalid file format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                             catch (Exception ex)
                             {
-                                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
+                                Debug.WriteLine($"Unexpected error in buttonVanillaExeBrowse_Click: {ex}");
+                                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
                     }

@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet.SceneEditor
+namespace FF7Scarlet.SceneEditor
 {
     partial class SceneEditorForm
     {
@@ -699,12 +699,15 @@
             tabPageEnemyPage2.UseVisualStyleBackColor = true;
             // 
             // enemyModelPreviewControl
-            // 
+            //
             enemyModelPreviewControl.BorderStyle = BorderStyle.FixedSingle;
-            enemyModelPreviewControl.Location = new Point(609, 242);
+            enemyModelPreviewControl.Location = new Point(568, 242);
+            enemyModelPreviewControl.MaximumSize = new Size(200, 150);
+            enemyModelPreviewControl.MinimumSize = new Size(200, 150);
             enemyModelPreviewControl.Name = "enemyModelPreviewControl";
-            enemyModelPreviewControl.Size = new Size(150, 150);
+            enemyModelPreviewControl.Size = new Size(200, 150);
             enemyModelPreviewControl.TabIndex = 51;
+            enemyModelPreviewControl.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             // 
             // comboBoxEnemyModelID
             // 

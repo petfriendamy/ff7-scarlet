@@ -12,9 +12,9 @@ namespace KimeraCS.Rendering
     /// </summary>
     internal class ContextResources : IDisposable
     {
-        public ShaderProgram ModelShader { get; set; }
-        public ShaderProgram LineShader { get; set; }
-        public ShaderProgram PointShader { get; set; }
+        public ShaderProgram? ModelShader { get; set; }
+        public ShaderProgram? LineShader { get; set; }
+        public ShaderProgram? PointShader { get; set; }
         public Dictionary<string, PModelMesh> MeshCacheByName { get; } = new Dictionary<string, PModelMesh>();
         public Dictionary<string, PModelMesh> PColorMeshCacheByName { get; } = new Dictionary<string, PModelMesh>();
         public bool Initialized { get; set; }
@@ -55,7 +55,7 @@ namespace KimeraCS.Rendering
     {
         // Per-context resources
         private static Dictionary<string, ContextResources> _contexts = new Dictionary<string, ContextResources>();
-        private static string _currentContextId = null;
+        private static string? _currentContextId = null;
 
         // Matrices (shared - set before rendering in each context)
         public static Matrix4 ProjectionMatrix { get; set; } = Matrix4.Identity;
@@ -108,7 +108,7 @@ namespace KimeraCS.Rendering
         /// <summary>
         /// Get the current context's resources, or null if not initialized.
         /// </summary>
-        private static ContextResources CurrentContext
+        private static ContextResources? CurrentContext
         {
             get
             {
@@ -183,7 +183,7 @@ namespace KimeraCS.Rendering
         /// Get or create a mesh for the given PModel in the current context.
         /// Uses fileName as cache key since GetHashCode() for structs can cause collisions.
         /// </summary>
-        public static PModelMesh GetOrCreateMesh(ref PModel model)
+        public static PModelMesh? GetOrCreateMesh(ref PModel model)
         {
             var ctx = CurrentContext;
             if (ctx == null) return null;
@@ -194,7 +194,7 @@ namespace KimeraCS.Rendering
                 ? model.fileName
                 : model.GetHashCode().ToString();
 
-            if (!ctx.MeshCacheByName.TryGetValue(cacheKey, out PModelMesh mesh))
+            if (!ctx.MeshCacheByName.TryGetValue(cacheKey, out PModelMesh? mesh))
             {
                 mesh = PModelMesh.FromPModel(model);
                 ctx.MeshCacheByName[cacheKey] = mesh;
@@ -215,13 +215,13 @@ namespace KimeraCS.Rendering
                 ? model.fileName
                 : model.GetHashCode().ToString();
 
-            if (ctx.MeshCacheByName.TryGetValue(cacheKey, out PModelMesh mesh))
+                if (ctx.MeshCacheByName.TryGetValue(cacheKey, out PModelMesh? mesh))
             {
                 mesh.Dispose();
                 ctx.MeshCacheByName.Remove(cacheKey);
             }
 
-            if (ctx.PColorMeshCacheByName.TryGetValue(cacheKey, out PModelMesh pcolorMesh))
+                if (ctx.PColorMeshCacheByName.TryGetValue(cacheKey, out PModelMesh? pcolorMesh))
             {
                 pcolorMesh.Dispose();
                 ctx.PColorMeshCacheByName.Remove(cacheKey);
@@ -240,13 +240,13 @@ namespace KimeraCS.Rendering
 
             foreach (var ctx in _contexts.Values)
             {
-                if (ctx.MeshCacheByName.TryGetValue(cacheKey, out PModelMesh mesh))
+            if (ctx.MeshCacheByName.TryGetValue(cacheKey, out PModelMesh? mesh))
                 {
                     mesh.Dispose();
                     ctx.MeshCacheByName.Remove(cacheKey);
                 }
 
-                if (ctx.PColorMeshCacheByName.TryGetValue(cacheKey, out PModelMesh pcolorMesh))
+            if (ctx.PColorMeshCacheByName.TryGetValue(cacheKey, out PModelMesh? pcolorMesh))
                 {
                     pcolorMesh.Dispose();
                     ctx.PColorMeshCacheByName.Remove(cacheKey);
@@ -280,6 +280,8 @@ namespace KimeraCS.Rendering
         {
             var ctx = CurrentContext;
             if (ctx == null || !ctx.Initialized) return;
+
+            if (ctx.ModelShader == null) return;
 
             var mesh = GetOrCreateMesh(ref model);
             if (mesh?.Groups == null) return;
@@ -331,7 +333,7 @@ namespace KimeraCS.Rendering
                 bool hasTexture = group.TexFlag && group.TextureID >= 0 && texIds != null && group.TextureID < texIds.Length;
                 if (hasTexture)
                 {
-                    uint texId = texIds[group.TextureID];
+                    uint texId = texIds![group.TextureID];
                     // Verify texture is valid in this GL context (textures aren't shared between contexts)
                     if (texId > 0 && GL.IsTexture((int)texId))
                     {

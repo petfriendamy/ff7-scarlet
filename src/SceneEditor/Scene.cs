@@ -1,5 +1,7 @@
-﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
+using System.Diagnostics;
+using System.Text;
 using Shojy.FF7.Elena.Attacks;
 
 namespace FF7Scarlet.SceneEditor
@@ -97,24 +99,24 @@ namespace FF7Scarlet.SceneEditor
             }
             else
             {
-                string temp = "";
+                var sb = new StringBuilder();
                 for (int i = 0; i < ENEMY_COUNT; i++)
                 {
                     var enemy = Enemies[i];
                     if (enemy == null)
                     {
-                        temp += "(none)";
+                        sb.Append("(none)");
                     }
                     else
                     {
-                        temp += GetEnemyName(enemy.ModelID);
+                        sb.Append(GetEnemyName(enemy.ModelID));
                     }
                     if (i + 1 < ENEMY_COUNT)
                     {
-                        temp += ", ";
+                        sb.Append(", ");
                     }
                 }
-                return temp;
+                return sb.ToString();
             }
         }
 
@@ -177,12 +179,16 @@ namespace FF7Scarlet.SceneEditor
                  orderby e.Value descending
                  select e);
 
-            string output = "";
+            var sb = new StringBuilder();
             foreach (var e in sorted)
             {
-                output += $"{e.Value}x {e.Key.GetNameString()}, ";
+                sb.Append($"{e.Value}x {e.Key.GetNameString()}, ");
             }
-            return output.Substring(0, output.LastIndexOf(','));
+            if (sb.Length > 0)
+            {
+                sb.Length -= 2; // Remove last ", "
+            }
+            return sb.ToString();
         }
 
         private void ParseData(byte[] data, bool isJPoriginal)
@@ -262,14 +268,26 @@ namespace FF7Scarlet.SceneEditor
                         attackName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
                         if (attackID[i] != HexParser.NULL_OFFSET_16_BIT)
                         {
-                            AttackList[i] = DataParser.ReadAttack(attackID[i], attackName[i].ToString(), attackData[i]);
+                            string name = attackName[i]?.ToString() ?? string.Empty;
+                            AttackList[i] = DataParser.ReadAttack(attackID[i], name, attackData[i]);
                         }
                         else { AttackList[i] = null; }
                     }
                 }
+                catch (FormatException ex)
+                {
+                    Debug.WriteLine($"Format error parsing enemy data: {ex}");
+                    throw new FileLoadException($"Invalid format in enemy data: {ex.Message}", ex);
+                }
+                catch (EndOfStreamException ex)
+                {
+                    Debug.WriteLine($"Unexpected end of stream parsing enemy data: {ex}");
+                    throw new FileLoadException($"Incomplete enemy data: {ex.Message}", ex);
+                }
                 catch (Exception ex)
                 {
-                    throw new FileLoadException($"An error occured while parsing the enemy data: {ex.Message}", ex);
+                    Debug.WriteLine($"Unexpected error parsing enemy data: {ex}");
+                    throw new FileLoadException($"Error in enemy data: {ex.Message}", ex);
                 }
 
                 if (IsEmpty())
@@ -334,9 +352,20 @@ namespace FF7Scarlet.SceneEditor
                         {
                             Formations[i].ParseScripts(formationAIRaw, FORMATION_COUNT * 2, formationAIoffset[i], next);
                         }
+                        catch (FormatException ex)
+                        {
+                            Debug.WriteLine($"Format error parsing formation scripts: {ex}");
+                            throw new FileLoadException($"Invalid format in formation scripts: {ex.Message}", ex);
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Debug.WriteLine($"Invalid operation parsing formation scripts: {ex}");
+                            throw new FileLoadException($"Invalid operation in formation scripts: {ex.Message}", ex);
+                        }
                         catch (Exception ex)
                         {
-                            throw new FileLoadException($"An error occurred while parsing the formation scripts: {ex.Message}", ex);
+                            Debug.WriteLine($"Unexpected error parsing formation scripts: {ex}");
+                            throw new FileLoadException($"Error in formation scripts: {ex.Message}", ex);
                         }
                     }
                 }
@@ -359,9 +388,20 @@ namespace FF7Scarlet.SceneEditor
                         {
                             e.ParseScripts(enemyAIraw, ENEMY_COUNT * 2, enemyAIoffset[i], next);
                         }
+                        catch (FormatException ex)
+                        {
+                            Debug.WriteLine($"Format error parsing enemy script for {e.Name}: {ex}");
+                            throw new FileLoadException($"Invalid format in enemy script for {e.Name}: {ex.Message}", ex);
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Debug.WriteLine($"Invalid operation parsing enemy script for {e.Name}: {ex}");
+                            throw new FileLoadException($"Invalid operation in enemy script for {e.Name}: {ex.Message}", ex);
+                        }
                         catch (Exception ex)
                         {
-                            throw new FileLoadException($"An error occurred while parsing the script for {e.Name} (enemy #{i + 1}): {ex.Message}", ex);
+                            Debug.WriteLine($"Unexpected error parsing enemy script for {e.Name}: {ex}");
+                            throw new FileLoadException($"Error in enemy script for {e.Name}: {ex.Message}", ex);
                         }
                     }
                 }
@@ -432,8 +472,24 @@ namespace FF7Scarlet.SceneEditor
                             }
                         }
                     }
+                    catch (IOException ex)
+                    {
+                        Debug.WriteLine($"I/O error in formation data (index {i}): {ex}");
+                        throw new IOException($"Error in formation data (index {i}): {ex.Message}", ex);
+                    }
+                    catch (FormatException ex)
+                    {
+                        Debug.WriteLine($"Format error in formation data (index {i}): {ex}");
+                        throw new FormatException($"Error in formation data (index {i}): {ex.Message}", ex);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Debug.WriteLine($"Invalid operation in formation data (index {i}): {ex}");
+                        throw new InvalidOperationException($"Error in formation data (index {i}): {ex.Message}", ex);
+                    }
                     catch (Exception ex)
                     {
+                        Debug.WriteLine($"Unexpected error in formation data (index {i}): {ex}");
                         throw new Exception($"Error in formation data (index {i}): {ex.Message}", ex);
                     }
 
@@ -450,8 +506,24 @@ namespace FF7Scarlet.SceneEditor
                             else { writer.Write(e.GetRawEnemyData(true)); }
                         }
                     }
+                    catch (IOException ex)
+                    {
+                        Debug.WriteLine($"I/O error in enemy data (index {i}): {ex}");
+                        throw new IOException($"Error in enemy data (index {i}): {ex.Message}", ex);
+                    }
+                    catch (FormatException ex)
+                    {
+                        Debug.WriteLine($"Format error in enemy data (index {i}): {ex}");
+                        throw new FormatException($"Error in enemy data (index {i}): {ex.Message}", ex);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Debug.WriteLine($"Invalid operation in enemy data (index {i}): {ex}");
+                        throw new InvalidOperationException($"Error in enemy data (index {i}): {ex.Message}", ex);
+                    }
                     catch (Exception ex)
                     {
+                        Debug.WriteLine($"Unexpected error in enemy data (index {i}): {ex}");
                         throw new Exception($"Error in enemy data (index {i}): {ex.Message}", ex);
                     }
 
@@ -492,21 +564,26 @@ namespace FF7Scarlet.SceneEditor
                         if (ScriptsLoaded) // no need to update script data if it isn't loaded
                         {
                             Array.Copy(AIContainer.GetGroupedScriptBlock(FORMATION_COUNT, Formation.AI_BLOCK_SIZE, formations,
-                                ref formationAIoffset), formationAIRaw, Formation.AI_BLOCK_SIZE);
+                                    ref formationAIoffset), formationAIRaw, Formation.AI_BLOCK_SIZE);
                         }
-
-                        foreach (var o in formationAIoffset)
-                        {
-                            writer.Write(o);
-                        }
-                        writer.Write(formationAIRaw);
                     }
                     catch (ScriptTooLongException)
                     {
                         throw new ScriptTooLongException("Formation A.I. block is too long!");
                     }
+                    catch (FormatException ex)
+                    {
+                        Debug.WriteLine($"Format error in formation scripts: {ex}");
+                        throw new FormatException($"Compiler error in formation scripts: {ex.Message}", ex);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Debug.WriteLine($"Invalid operation in formation scripts: {ex}");
+                        throw new InvalidOperationException($"Compiler error in formation scripts: {ex.Message}", ex);
+                    }
                     catch (Exception ex)
                     {
+                        Debug.WriteLine($"Unexpected error in formation scripts: {ex}");
                         throw new Exception($"Compiler error in formation scripts: {ex.Message}", ex);
                     }
 
@@ -529,9 +606,20 @@ namespace FF7Scarlet.SceneEditor
                     {
                         throw new ScriptTooLongException("Enemy A.I. block is too long!");
                     }
+                    catch (FormatException ex)
+                    {
+                        Debug.WriteLine($"Format error in enemy scripts: {ex}");
+                        throw new FormatException($"Compiler error in enemy scripts: {ex.Message}", ex);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Debug.WriteLine($"Invalid operation in enemy scripts: {ex}");
+                        throw new InvalidOperationException($"Compiler error in enemy scripts: {ex.Message}", ex);
+                    }
                     catch (Exception ex)
                     {
-                        throw new Exception($"Compiler error in enemy scripts: {ex.Message}");
+                        Debug.WriteLine($"Unexpected error in enemy scripts: {ex}");
+                        throw new Exception($"Compiler error in enemy scripts: {ex.Message}", ex);
                     }
 
                     //pad remaining data with 0xFF
@@ -542,8 +630,13 @@ namespace FF7Scarlet.SceneEditor
                         {
                             writer.Write((byte)0xFF);
                         }
-                        catch
+                        catch (IOException)
                         {
+                            end = true; // Expected when buffer is full
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Unexpected error padding data: {ex}");
                             end = true;
                         }
                     }

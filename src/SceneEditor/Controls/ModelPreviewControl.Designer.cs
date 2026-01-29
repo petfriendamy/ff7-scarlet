@@ -1,4 +1,4 @@
-﻿namespace FF7Scarlet.SceneEditor.Controls
+namespace FF7Scarlet.SceneEditor.Controls
 {
     partial class ModelPreviewControl
     {
@@ -44,9 +44,13 @@
             glControl.SharedContext = null;
             glControl.Size = new Size(150, 150);
             glControl.TabIndex = 0;
-            // 
+            glControl.MouseDown += GlControl_MouseDown;
+            glControl.MouseMove += GlControl_MouseMove;
+            glControl.MouseUp += GlControl_MouseUp;
+            glControl.MouseWheel += GlControl_MouseWheel;
+            //
             // ModelPreviewControl
-            // 
+            //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(glControl);

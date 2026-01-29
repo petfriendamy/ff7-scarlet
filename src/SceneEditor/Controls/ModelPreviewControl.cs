@@ -1,4 +1,4 @@
-﻿using FF7Scarlet.Shared;
+using FF7Scarlet.Shared;
 using KimeraCS.Core;
 using KimeraCS.Rendering;
 using OpenTK.Graphics.OpenGL.Compatibility;
@@ -13,9 +13,27 @@ namespace FF7Scarlet.SceneEditor.Controls
         private const string CONTEXT_ID = "ModelPreview";
         private readonly Color4<Rgba> CLEAR_COLOR = new Color4<Rgba>(0.4f, 0.4f, 0.65f, 0);
         private RenderingContext? renderContext;
+        private bool isDragging = false;
+        private bool isPanning = false;
+        private Point lastMousePosition;
+        private const float ROTATION_SPEED = 0.5f;
+        private const float ZOOM_SPEED = 0.3f;
+        private const float PAN_SPEED = 1.0f;
 
         public bool Loaded { get; private set; }
         public bool ModelLoaded { get; private set; }
+
+        public (float RotateX, float RotateY) RotationAngles
+        {
+            get
+            {
+                if (renderContext != null)
+                {
+                    return (renderContext.Transform.RotateX, renderContext.Transform.RotateY);
+                }
+                return (0, 0);
+            }
+        }
 
         public ModelPreviewControl()
         {
@@ -75,12 +93,17 @@ namespace FF7Scarlet.SceneEditor.Controls
 
         public void LoadModel(ushort modelID)
         {
+            ModelTransform savedTransform = ModelTransform.Default;
+            if (renderContext != null)
+            {
+                savedTransform = renderContext.Transform;
+            }
+
             renderContext = null;
             ModelLoaded = false;
 
             if (DataManager.BattleLgp != null)
             {
-                //attempt to load the model
                 var load = DataManager.BattleLgp.GetModelData(modelID);
                 if (load != null)
                 {
@@ -111,12 +134,12 @@ namespace FF7Scarlet.SceneEditor.Controls
                                 PanZ = 0
                             },
                             AnimationState.Default,
-                            new LightingConfig()
+                            new LightingConfig(),
+                            savedTransform
                         );
                         ModelLoaded = true;
                     }
                 }
-                glControl.Invalidate();
                 this.Invalidate();
             }
         }
@@ -124,6 +147,80 @@ namespace FF7Scarlet.SceneEditor.Controls
         public void Unload()
         {
             GLRenderer.Shutdown();
+        }
+
+        private void GlControl_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (renderContext != null)
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    isDragging = true;
+                    lastMousePosition = e.Location;
+                    glControl.Capture = true;
+                    glControl.Focus();
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    isPanning = true;
+                    lastMousePosition = e.Location;
+                    glControl.Capture = true;
+                    glControl.Focus();
+                }
+            }
+        }
+
+        private void GlControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (renderContext != null)
+            {
+                int deltaX = e.X - lastMousePosition.X;
+                int deltaY = e.Y - lastMousePosition.Y;
+
+                if (isDragging)
+                {
+                    var transform = renderContext.Transform;
+                    transform.RotateY -= deltaX * ROTATION_SPEED;
+                    transform.RotateX += deltaY * ROTATION_SPEED;
+                    renderContext.Transform = transform;
+                    lastMousePosition = e.Location;
+                    this.Invalidate();
+                }
+                else if (isPanning)
+                {
+                    var camera = renderContext.Camera;
+                    camera.PanX += deltaX * PAN_SPEED;
+                    camera.PanY -= deltaY * PAN_SPEED;
+                    renderContext.Camera = camera;
+                    lastMousePosition = e.Location;
+                    this.Invalidate();
+                }
+            }
+        }
+
+        private void GlControl_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (renderContext != null)
+            {
+                var camera = renderContext.Camera;
+                camera.Distance += e.Delta * ZOOM_SPEED;
+                renderContext.Camera = camera;
+                this.Invalidate();
+            }
+        }
+
+        private void GlControl_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isDragging = false;
+                glControl.Capture = false;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                isPanning = false;
+                glControl.Capture = false;
+            }
         }
     }
 }

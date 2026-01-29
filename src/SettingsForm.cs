@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+using System.Configuration;
+using System.Diagnostics;
 using FF7Scarlet.ExeEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
@@ -197,9 +198,18 @@ namespace FF7Scarlet
                 DialogResult = DialogResult.OK;
                 Close();
             }
+            catch (ConfigurationErrorsException ex)
+            {
+                MessageBox.Show($"Configuration error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Failed to save configuration: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                Debug.WriteLine($"Unexpected error in SettingsForm SaveSettings: {ex}");
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
