@@ -21,10 +21,12 @@ namespace FF7Scarlet.SceneEditor.Controls
         private const float PAN_SPEED = 1.0f;
         private const int ANIMATION_FPS = 15;
 
-        private System.Windows.Forms.Timer animationTimer;
+        private System.Windows.Forms.Timer? animationTimer;
         private KimeraCS.Core.FF7BattleAnimationsPack.BattleAnimationsPack? loadedAnimations;
         private bool isPlaying;
         private int totalFrames;
+        private AnimationState currentAnimationState;
+        private bool timerInitialized = false;
 
         public bool Loaded { get; private set; }
         public bool ModelLoaded { get; private set; }
@@ -57,9 +59,13 @@ namespace FF7Scarlet.SceneEditor.Controls
         {
             InitializeComponent();
 
-            animationTimer = new System.Windows.Forms.Timer();
-            animationTimer.Interval = 1000 / ANIMATION_FPS;
-            animationTimer.Tick += AnimationTimer_Tick;
+            if (!timerInitialized)
+            {
+                animationTimer = new System.Windows.Forms.Timer();
+                animationTimer.Interval = 1000 / ANIMATION_FPS;
+                animationTimer.Tick += AnimationTimer_Tick;
+                timerInitialized = true;
+            }
             Disposed += ModelPreviewControl_Disposed;
         }
 
@@ -101,13 +107,10 @@ namespace FF7Scarlet.SceneEditor.Controls
                         $"Animation index {animationIndex} is out of range. Available animations: 0-{loadedAnimations.Value.SkeletonAnimations.Count - 1}");
                 }
 
-                var newAnimationState = new AnimationState
-                {
-                    AnimationIndex = animationIndex,
-                    CurrentFrame = 0,
-                    WeaponAnimationIndex = -1
-                };
-                renderContext.Animation = newAnimationState;
+                currentAnimationState.AnimationIndex = animationIndex;
+                currentAnimationState.CurrentFrame = 0;
+                currentAnimationState.WeaponAnimationIndex = -1;
+                renderContext.Animation = currentAnimationState;
                 totalFrames = loadedAnimations.Value.SkeletonAnimations[animationIndex].frames.Count;
 
                 UpdateFrameCounter();
@@ -127,7 +130,7 @@ namespace FF7Scarlet.SceneEditor.Controls
 
         private void StartAnimation()
         {
-            if (!isPlaying && totalFrames > 0)
+            if (!isPlaying && totalFrames > 0 && animationTimer != null)
             {
                 isPlaying = true;
                 animationTimer.Start();
@@ -137,7 +140,7 @@ namespace FF7Scarlet.SceneEditor.Controls
         public void PauseAnimation()
         {
             isPlaying = false;
-            animationTimer.Stop();
+            animationTimer?.Stop();
         }
 
         public void StopAnimation()
@@ -145,13 +148,10 @@ namespace FF7Scarlet.SceneEditor.Controls
             PauseAnimation();
             if (renderContext != null)
             {
-                var newAnimationState = new AnimationState
-                {
-                    AnimationIndex = renderContext.Animation.AnimationIndex,
-                    CurrentFrame = 0,
-                    WeaponAnimationIndex = -1
-                };
-                renderContext.Animation = newAnimationState;
+                currentAnimationState.CurrentFrame = 0;
+                currentAnimationState.AnimationIndex = renderContext.Animation.AnimationIndex;
+                currentAnimationState.WeaponAnimationIndex = -1;
+                renderContext.Animation = currentAnimationState;
                 UpdateFrameCounter();
                 this.Invalidate();
             }
@@ -166,13 +166,10 @@ namespace FF7Scarlet.SceneEditor.Controls
                 {
                     newFrame = 0;
                 }
-                var newAnimationState = new AnimationState
-                {
-                    AnimationIndex = renderContext.Animation.AnimationIndex,
-                    CurrentFrame = newFrame,
-                    WeaponAnimationIndex = -1
-                };
-                renderContext.Animation = newAnimationState;
+                currentAnimationState.CurrentFrame = newFrame;
+                currentAnimationState.AnimationIndex = renderContext.Animation.AnimationIndex;
+                currentAnimationState.WeaponAnimationIndex = -1;
+                renderContext.Animation = currentAnimationState;
                 UpdateFrameCounter();
                 this.Invalidate();
             }
@@ -193,13 +190,10 @@ namespace FF7Scarlet.SceneEditor.Controls
                 {
                     newFrame = 0;
                 }
-                var newAnimationState = new AnimationState
-                {
-                    AnimationIndex = renderContext.Animation.AnimationIndex,
-                    CurrentFrame = newFrame,
-                    WeaponAnimationIndex = -1
-                };
-                renderContext.Animation = newAnimationState;
+                currentAnimationState.CurrentFrame = newFrame;
+                currentAnimationState.AnimationIndex = renderContext.Animation.AnimationIndex;
+                currentAnimationState.WeaponAnimationIndex = -1;
+                renderContext.Animation = currentAnimationState;
                 UpdateFrameCounter();
                 this.Invalidate();
             }
@@ -296,6 +290,7 @@ namespace FF7Scarlet.SceneEditor.Controls
             }
 
             renderContext = null;
+            loadedAnimations = null;
             ModelLoaded = false;
             StopAnimation();
             UpdateFrameCounter();
@@ -348,6 +343,10 @@ namespace FF7Scarlet.SceneEditor.Controls
                         totalFrames = loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames.Count;
                         ModelLoaded = true;
 
+                        currentAnimationState.AnimationIndex = safeAnimIndex;
+                        currentAnimationState.CurrentFrame = 0;
+                        currentAnimationState.WeaponAnimationIndex = -1;
+
                         if (totalFrames > 0)
                         {
                             UpdateFrameCounter();
@@ -374,7 +373,10 @@ namespace FF7Scarlet.SceneEditor.Controls
             {
                 animationTimer.Stop();
                 animationTimer.Dispose();
+                animationTimer = null;
+                timerInitialized = false;
             }
+            loadedAnimations = null;
         }
 
         private void GlControl_MouseDown(object sender, MouseEventArgs e)

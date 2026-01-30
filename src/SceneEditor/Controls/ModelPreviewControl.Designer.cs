@@ -19,6 +19,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                 {
                     components.Dispose();
                 }
+                frameCounterLabel?.Dispose();
             }
             base.Dispose(disposing);
         }
