@@ -390,22 +390,9 @@ namespace FF7Scarlet.AIEditor
                     }
                 }
             }
-            catch (ArgumentNullException ex)
-            {
-                MessageBox.Show($"Parameter cannot be empty: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (FormatException ex)
-            {
-                MessageBox.Show($"Invalid parameter format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Invalid operation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error loading parameter: {ex}");
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "LoadParameter");
             }
         }
 
@@ -547,22 +534,9 @@ namespace FF7Scarlet.AIEditor
                         Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, op.Code, param);
                     }
                 }
-                catch (ArgumentNullException ex)
-                {
-                    MessageBox.Show($"Parameter cannot be empty: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (FormatException ex)
-                {
-                    MessageBox.Show($"Invalid parameter format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    MessageBox.Show($"Invalid operation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Unexpected error in parameter parsing: {ex}");
-                    MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ExceptionHandler.Handle(ex, "parameter parsing");
                 }
                 return;
             }

@@ -1146,16 +1146,18 @@ namespace FF7Scarlet.KernelEditor
                 }
 
                 var character = kernel.CharacterList[charIndex];
-                
-                textBoxCharacterName.Text = character?.Name?.ToString() ?? string.Empty;
-                numericCharacterID.Value = character.ID;
-                numericCharacterLevel.Value = character.Level;
-                numericCharacterCurrentEXP.Value = character.CurrentEXP;
-                numericCharacterEXPtoNext.Value = character.EXPtoNextLevel;
-                numericCharacterLevelOffset.Value = character.RecruitLevelOffset;
-                numericCharacterLevelOffset.Enabled = character.ID != (byte)CharacterNames.Yuffie;
 
-                numericCharacterCurrHP.Value = character.CurrentHP;
+                if (character is null) return;
+
+                textBoxCharacterName.Text = character?.Name?.ToString() ?? string.Empty;
+                numericCharacterID.Value = character!.ID;
+                    numericCharacterLevel.Value = character.Level;
+                    numericCharacterCurrentEXP.Value = character.CurrentEXP;
+                    numericCharacterEXPtoNext.Value = character.EXPtoNextLevel;
+                    numericCharacterLevelOffset.Value = character.RecruitLevelOffset;
+                    numericCharacterLevelOffset.Enabled = character.ID != (byte)CharacterNames.Yuffie;
+
+                    numericCharacterCurrHP.Value = character.CurrentHP;
                 numericCharacterBaseHP.Value = character.BaseHP;
                 numericCharacterMaxHP.Value = character.MaxHP;
                 numericCharacterCurrMP.Value = character.CurrentMP;

@@ -170,8 +170,7 @@ namespace FF7Scarlet
                 }
                 catch //if the file can't be loaded, remove it from settings
                 {
-                    MessageBox.Show($"The file at '{path}' could not be loaded, and has been removed from settings.",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageDialog.ShowWarning($"The file at '{path}' could not be loaded, and has been removed from settings.");
                     settings[configKey].Value = string.Empty;
                     config.Save();
                 }
@@ -270,9 +269,9 @@ namespace FF7Scarlet
             if (DataManager.KernelFilePathExists && DataManager.SceneFilePathExists)
             {
                 if (!DataManager.LookupTableIsCorrect())
-                {
-                    var result = MessageBox.Show("The scene lookup table does not match between scene.bin and kernel.bin. Would you like to correct it now?",
-                        "Incorrect Lookup Table", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            {
+                var result = MessageDialog.AskYesNo("The scene lookup table does not match between scene.bin and kernel.bin. Would you like to correct it now?",
+                        "Incorrect Lookup Table");
                     if (result == DialogResult.Yes)
                     {
                         DataManager.SyncLookupTable();
@@ -299,22 +298,9 @@ namespace FF7Scarlet
                     UpdateTextBoxes(true);
                 }
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (FormatException ex)
-            {
-                MessageBox.Show($"Invalid file format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error in buttonExeBrowse_Click: {ex}");
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "buttonExeBrowse_Click");
             }
         }
 
@@ -337,22 +323,9 @@ namespace FF7Scarlet
                     CheckLookupTable();
                 }
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (FormatException ex)
-            {
-                MessageBox.Show($"Invalid file format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error in buttonKernelBrowse_Click: {ex}");
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "buttonKernelBrowse_Click");
             }
         }
 
@@ -374,22 +347,9 @@ namespace FF7Scarlet
                     UpdateTextBoxes(true);
                 }
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (FormatException ex)
-            {
-                MessageBox.Show($"Invalid file format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error in buttonKernel2Browse_Click: {ex}");
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "buttonKernel2Browse_Click");
             }
         }
 
@@ -412,8 +372,7 @@ namespace FF7Scarlet
                     bool isJPoriginal = (index == 2);
                     if (isJPoriginal)
                     {
-                        result = MessageBox.Show("Convert this file to JP International format? A backup will be made.", "Convert scene.bin?",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        result = MessageDialog.AskYesNo("Convert this file to JP International format? A backup will be made.", "Convert scene.bin?");
                         if (result == DialogResult.Yes)
                         {
                             DataManager.CreateBackupFile(file);
@@ -432,26 +391,9 @@ namespace FF7Scarlet
                     CheckLookupTable();
                 }
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (FormatException ex)
-            {
-                MessageBox.Show($"Invalid file format: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Invalid operation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error in buttonSceneBrowse_Click: {ex}");
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "buttonSceneBrowse_Click");
             }
         }
 

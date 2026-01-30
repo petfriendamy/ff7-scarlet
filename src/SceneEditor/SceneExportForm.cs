@@ -102,7 +102,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 if (listBoxSceneList.SelectedIndices.Count == 0)
                 {
-                    MessageBox.Show("No scenes selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageDialog.ShowError("No scenes selected.");
                 }
                 else
                 {
@@ -144,8 +144,7 @@ namespace FF7Scarlet.SceneEditor
                             {
                                 if (!Directory.Exists(path))
                                 {
-                                    MessageBox.Show("Invalid path.", "Error", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error);
+                                    MessageDialog.ShowError("Invalid path.");
                                 }
                                 else
                                 {
@@ -169,34 +168,9 @@ namespace FF7Scarlet.SceneEditor
                             Close();
                         }
                     }
-                    catch (FileNotFoundException ex)
-                    {
-                        MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        groupBoxExport.Enabled = true;
-                        buttonExport.Enabled = true;
-                        progressBarSaving.Value = 0;
-                        processing = false;
-                    }
-                    catch (IOException ex)
-                    {
-                        MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        groupBoxExport.Enabled = true;
-                        buttonExport.Enabled = true;
-                        progressBarSaving.Value = 0;
-                        processing = false;
-                    }
-                    catch (AggregateException ex)
-                    {
-                        MessageBox.Show($"Error exporting scenes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        groupBoxExport.Enabled = true;
-                        buttonExport.Enabled = true;
-                        progressBarSaving.Value = 0;
-                        processing = false;
-                    }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"Unexpected error exporting scene: {ex}");
-                        MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ExceptionHandler.Handle(ex, "exporting scene");
                         groupBoxExport.Enabled = true;
                         buttonExport.Enabled = true;
                         progressBarSaving.Value = 0;
@@ -212,7 +186,7 @@ namespace FF7Scarlet.SceneEditor
 
                 if (count == 0)
                 {
-                    MessageBox.Show("Can't export 0 scenes.", "No scenes", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageDialog.ShowInfo("Can't export 0 scenes.", "No scenes");
                 }
                 else
                 {
@@ -233,12 +207,11 @@ namespace FF7Scarlet.SceneEditor
                         progressBarSaving.Value = 100;
                         if (finalCount < count)
                         {
-                            MessageBox.Show($"{finalCount} scenes were exported, because the compressed {count} scenes were too large.",
-                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageDialog.ShowWarning($"{finalCount} scenes were exported, because compressed {count} scenes were too large.");
                         }
                         else
                         {
-                            MessageBox.Show("Chunk successfully exported.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageDialog.ShowInfo("Chunk successfully exported.", "Success");
                         }
                         processing = false;
                         Close();
@@ -278,22 +251,9 @@ namespace FF7Scarlet.SceneEditor
                 }
                 return true;
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found: {ex.FileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"I/O error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (AggregateException ex)
-            {
-                MessageBox.Show($"Error exporting: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error in ExportChunk: {ex}");
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "ExportChunk");
             }
             return false;
         }
@@ -307,9 +267,9 @@ namespace FF7Scarlet.SceneEditor
                     return Gzip.CreateSceneChunk(sceneList, path, start, count);
                 });
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "ExportChunkToFile");
             }
             return result;
         }

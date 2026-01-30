@@ -64,11 +64,10 @@ namespace FF7Scarlet
                     {
                         textBoxVanillaExe.Text = path;
                     }
-                    else
-                    {
-                        MessageBox.Show("This doesn't seem to be a valid EXE. Please provide an unmodified English EXE.",
-                            "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                else
+                {
+                    MessageDialog.ShowError("File not found.");
+                }
                 }
                 else
                 {
@@ -96,7 +95,7 @@ namespace FF7Scarlet
                 }
                 else
                 {
-                    MessageBox.Show("File not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageDialog.ShowError("File not found.");
                 }
             }
         }
@@ -113,7 +112,7 @@ namespace FF7Scarlet
 
                 if (settings == null) //failed to load config file
                 {
-                    MessageBox.Show("Config file could not be loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageDialog.ShowError("Config file could not be loaded.");
                 }
                 else
                 {
@@ -131,8 +130,7 @@ namespace FF7Scarlet
                     }
                     else if (DataManager.VanillaExePathExists)
                     {
-                        var result = MessageBox.Show("Invalid EXE path. Keep existing path?",
-                            "Invalid Path", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                        var result = MessageDialog.AskYesNoCancel("Invalid EXE path. Keep existing path?", "Invalid Path");
 
                         switch (result)
                         {
@@ -161,8 +159,7 @@ namespace FF7Scarlet
                     }
                     else if (DataManager.BattleLgpPathExists)
                     {
-                        var result = MessageBox.Show("Invalid battle.lgp path. Keep existing path?",
-                            "Invalid Path", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                        var result = MessageDialog.AskYesNoCancel("Invalid battle.lgp path. Keep existing path?", "Invalid Path");
 
                         switch (result)
                         {
@@ -198,18 +195,9 @@ namespace FF7Scarlet
                 DialogResult = DialogResult.OK;
                 Close();
             }
-            catch (ConfigurationErrorsException ex)
-            {
-                MessageBox.Show($"Configuration error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"Failed to save configuration: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected error in SettingsForm SaveSettings: {ex}");
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "SettingsForm SaveSettings");
             }
         }
 
