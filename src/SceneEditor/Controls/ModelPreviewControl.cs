@@ -367,7 +367,7 @@ namespace FF7Scarlet.SceneEditor.Controls
             GLRenderer.Shutdown();
         }
 
-        private void ModelPreviewControl_Disposed(object sender, EventArgs e)
+        private void ModelPreviewControl_Disposed(object? sender, EventArgs e)
         {
             if (animationTimer != null)
             {
