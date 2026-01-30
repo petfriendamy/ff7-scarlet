@@ -1,5 +1,7 @@
-﻿using FF7Scarlet.Shared;
+using FF7Scarlet.Shared;
+using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -68,48 +70,48 @@ namespace FF7Scarlet.AIEditor
 
         public override string Disassemble(bool verbose)
         {
-            string output = "";
+            var sb = new StringBuilder();
             if (verbose)
             {
                 if (Opcode <= (byte)Opcodes.PushValue13)
                 {
-                    output += $"Push {DisassembleSimple()}";
+                    sb.Append($"Push {DisassembleSimple()}");
                 }
                 else if (Opcode >= (byte)Opcodes.PushConst01 && Opcode <= (byte)Opcodes.PushConst03)
                 {
-                    output += $"Push {DisassembleSimple()}";
+                    sb.Append($"Push {DisassembleSimple()}");
                 }
                 else if (Opcode == (byte)Opcodes.Jump)
                 {
                     if (Parameter != null)
                     {
-                        output += $"Goto Label {Parameter.ToInt()}";
+                        sb.Append($"Goto Label {Parameter.ToInt()}");
                     }
                 }
                 else
                 {
-                    output += DisassembleSimple();
+                    sb.Append(DisassembleSimple());
                 }
             }
             else
             {
-                output += DisassembleSimple();
+                sb.Append(DisassembleSimple());
             }
-            return output;
+            return sb.ToString();
         }
 
         private string DisassembleSimple()
         {
-            string output = "";
+            var sb = new StringBuilder();
             if (Enum.IsDefined(typeof(Opcodes), Opcode))
             {
                 if (Opcode == (byte)Opcodes.Label)
                 {
-                    output += "--LABEL ";
+                    sb.Append("--LABEL ");
                 }
                 else if (Opcode <= (byte)Opcodes.PushValue13)
                 {
-                    output += "Var:";
+                    sb.Append("Var:");
                 }
                 else if (Opcode >= (byte)Opcodes.PushConst01 && Opcode <= (byte)Opcodes.PushConst03)
                 {
@@ -117,12 +119,12 @@ namespace FF7Scarlet.AIEditor
                 }
                 else
                 {
-                    output += Enum.GetName((Opcodes)Opcode) + " ";
+                    sb.Append(Enum.GetName((Opcodes)Opcode)).Append(" ");
                 }
             }
             else
             {
-                output += "Unknown ";
+                sb.Append("Unknown ");
             }
 
             //if the script has any parameters, show those
@@ -130,49 +132,49 @@ namespace FF7Scarlet.AIEditor
             {
                 if (Opcode == (byte)Opcodes.ShowMessage)
                 {
-                    output += $"\"{Parameter}\"";
+                    sb.Append($"\"{Parameter}\"");
                 }
                 else if (Opcode == (byte)Opcodes.Label)
                 {
-                    output += $"{Parameter.ToInt()} --";
+                    sb.Append($"{Parameter.ToInt()} --");
                 }
                 else if (OpcodeInfo?.Group == OpcodeGroups.Jump)
                 {
-                    output += $"Label {Parameter.ToInt()}";
+                    sb.Append($"Label {Parameter.ToInt()}");
                 }
                 else
                 {
-                    output += ParseHexParameter();
+                    sb.Append(ParseHexParameter());
                 }
             }
-            return output;
+            return sb.ToString();
         }
 
         private string ParseHexParameter()
         {
-            string output = "";
+            var sb = new StringBuilder();
             int param;
             var formatProvider = new CultureInfo("en-US");
             if (int.TryParse(Parameter?.ToString(), NumberStyles.HexNumber, formatProvider, out param))
             {
                 if (Opcode == (byte)Opcodes.PushConst01)
                 {
-                    output += param.ToString("X2");
+                    sb.Append(param.ToString("X2"));
                 }
                 else
                 {
-                    output += param.ToString("X4");
+                    sb.Append(param.ToString("X4"));
                     if (Enum.IsDefined((CommonVars.Globals)param))
                     {
-                        output += $" ({Enum.GetName((CommonVars.Globals)param)})";
+                        sb.Append($" ({Enum.GetName((CommonVars.Globals)param)})");
                     }
                     else if (Enum.IsDefined((CommonVars.ActorGlobals)param))
                     {
-                        output += $" ({Enum.GetName((CommonVars.ActorGlobals)param)})";
+                        sb.Append($" ({Enum.GetName((CommonVars.ActorGlobals)param)})");
                     }
                 }
             }
-            return output;
+            return sb.ToString();
         }
 
         public override List<CodeLine> BreakDown()
@@ -227,9 +229,20 @@ namespace FF7Scarlet.AIEditor
                     }
                     return data;
                 }
+                catch (FormatException ex)
+                {
+                    Debug.WriteLine($"Format error parsing opcode: {ex}");
+                    throw new FormatException($"Opcode {OpcodeInfo.Name} did not parse correctly: {ex.Message}", ex);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Debug.WriteLine($"Invalid operation parsing opcode: {ex}");
+                    throw new FormatException($"Opcode {OpcodeInfo.Name} did not parse correctly: {ex.Message}", ex);
+                }
                 catch (Exception ex)
                 {
-                    throw new FormatException($"Opcode {OpcodeInfo.Name} did not parse correctly: {ex.Message}");
+                    Debug.WriteLine($"Unexpected error parsing opcode: {ex}");
+                    throw new FormatException($"Opcode {OpcodeInfo.Name} did not parse correctly: {ex.Message}", ex);
                 }
             }
             catch (ArgumentNullException)

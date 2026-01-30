@@ -1,4 +1,4 @@
-﻿using FF7Scarlet.ExeEditor;
+using FF7Scarlet.ExeEditor;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
@@ -170,8 +170,7 @@ namespace FF7Scarlet
                 }
                 catch //if the file can't be loaded, remove it from settings
                 {
-                    MessageBox.Show($"The file at '{path}' could not be loaded, and has been removed from settings.",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageDialog.ShowWarning($"The file at '{path}' could not be loaded, and has been removed from settings.");
                     settings[configKey].Value = string.Empty;
                     config.Save();
                 }
@@ -270,9 +269,9 @@ namespace FF7Scarlet
             if (DataManager.KernelFilePathExists && DataManager.SceneFilePathExists)
             {
                 if (!DataManager.LookupTableIsCorrect())
-                {
-                    var result = MessageBox.Show("The scene lookup table does not match between scene.bin and kernel.bin. Would you like to correct it now?",
-                        "Incorrect Lookup Table", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            {
+                var result = MessageDialog.AskYesNo("The scene lookup table does not match between scene.bin and kernel.bin. Would you like to correct it now?",
+                        "Incorrect Lookup Table");
                     if (result == DialogResult.Yes)
                     {
                         DataManager.SyncLookupTable();
@@ -301,7 +300,7 @@ namespace FF7Scarlet
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "buttonExeBrowse_Click");
             }
         }
 
@@ -326,7 +325,7 @@ namespace FF7Scarlet
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "buttonKernelBrowse_Click");
             }
         }
 
@@ -350,7 +349,7 @@ namespace FF7Scarlet
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "buttonKernel2Browse_Click");
             }
         }
 
@@ -373,8 +372,7 @@ namespace FF7Scarlet
                     bool isJPoriginal = (index == 2);
                     if (isJPoriginal)
                     {
-                        result = MessageBox.Show("Convert this file to JP International format? A backup will be made.", "Convert scene.bin?",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        result = MessageDialog.AskYesNo("Convert this file to JP International format? A backup will be made.", "Convert scene.bin?");
                         if (result == DialogResult.Yes)
                         {
                             DataManager.CreateBackupFile(file);
@@ -395,7 +393,7 @@ namespace FF7Scarlet
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "buttonSceneBrowse_Click");
             }
         }
 

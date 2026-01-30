@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+using System.Diagnostics;
+using System.Globalization;
 using System.Media;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
@@ -677,9 +678,9 @@ namespace FF7Scarlet.ExeEditor
                     editor.CharacterNames[charID] = new FFText(textBox.Text);
                     SetUnsaved(true);
                 }
-                catch (ArgumentException ex)
+                catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ExceptionHandler.Handle(ex);
                     loading = true;
                     textBox.Text = editor.CharacterNames[charID].ToString();
                     loading = false;
@@ -1154,9 +1155,10 @@ namespace FF7Scarlet.ExeEditor
 
         private void checkBoxCharacterBackRow_CheckedChanged(object sender, EventArgs e)
         {
-            if (!loading && SelectedCharacter != null)
+            if (!loading && SelectedCharacter != null && SelectedCharacter.Name != null)
             {
-                SelectedCharacter.IsBackRow = checkBoxCharacterBackRow.Checked;
+                var flags = Enum.GetValues<CharacterFlags>();
+                SelectedCharacter.CharacterFlags = flags[comboBoxCharacterFlags.SelectedIndex];
                 SetUnsaved(true);
             }
         }
@@ -2218,27 +2220,25 @@ namespace FF7Scarlet.ExeEditor
                             var notice = editor.ReadFile(path);
                             if (notice == 1)
                             {
-                                MessageBox.Show("Some text in this file was too long, and has been truncated.",
-                                    "Truncated Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageDialog.ShowInfo("Some text in this file was too long, and has been truncated.",
+                                    "Truncated Text");
                             }
                         }
-                        catch (EndOfStreamException ex)
+                        catch (Exception ex)
                         {
-                            MessageBox.Show($"{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            ExceptionHandler.Handle(ex, "loading hext file");
                         }
                         UpdateFormData();
                         SetUnsaved(true);
                     }
                     else
                     {
-                        MessageBox.Show($"File could not be found.", "Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageDialog.ShowError($"File could not be found.");
                     }
                 }
                 catch (IOException ex)
                 {
-                    MessageBox.Show($"{ex.Message} ({ex.InnerException?.Message})", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ExceptionHandler.Handle(ex);
                 }
             }
         }
@@ -2267,11 +2267,10 @@ namespace FF7Scarlet.ExeEditor
                 {
                     editor.WriteFile(path);
                 }
-                catch (IOException ex)
-                {
-                    MessageBox.Show($"{ex.Message} ({ex.InnerException?.Message})", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                        catch (IOException ex)
+                        {
+                            ExceptionHandler.Handle(ex, "saving vanilla EXE to hext file");
+                        }
             }
         }
 
@@ -2321,8 +2320,7 @@ namespace FF7Scarlet.ExeEditor
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
+                                ExceptionHandler.Handle(ex, "buttonVanillaExeBrowse_Click");
                             }
                         }
                     }
@@ -2352,17 +2350,17 @@ namespace FF7Scarlet.ExeEditor
                     }
                 }
             }
-            catch (ArgumentNullException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "saving vanilla EXE");
             }
         }
 
         //update EXE
         private void buttonSaveEXE_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("A modified EXE may break compatability with 7th Heaven or other mods. Proceed anyway?",
-                "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (MessageDialog.AskYesNo("A modified EXE may break compatability with 7th Heaven or other mods. Proceed anyway?",
+                "Are you sure?") == DialogResult.Yes)
             {
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
 

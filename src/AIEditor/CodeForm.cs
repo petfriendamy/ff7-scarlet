@@ -1,4 +1,5 @@
-﻿using System.Data;
+using System.Data;
+using System.Diagnostics;
 using System.ComponentModel;
 using FF7Scarlet.Shared;
 
@@ -391,8 +392,7 @@ namespace FF7Scarlet.AIEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while loading the parameter: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "LoadParameter");
             }
         }
 
@@ -536,9 +536,9 @@ namespace FF7Scarlet.AIEditor
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    ExceptionHandler.Handle(ex, "parameter parsing");
                 }
+                return;
             }
             DialogResult = DialogResult.OK;
             Close();

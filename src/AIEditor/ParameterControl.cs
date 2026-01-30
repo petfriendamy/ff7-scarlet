@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Globalization;
 using System.ComponentModel;
 using FF7Scarlet.Shared;
@@ -271,7 +271,7 @@ namespace FF7Scarlet.AIEditor
                         if (str != null)
                         {
                             var temp = int.Parse(str, NumberStyles.HexNumber);
-                            if (Enum.IsDefined(typeof(CommonVars.Globals), temp))
+                        if (Enum.IsDefined(typeof(CommonVars.Globals), temp))
                             {
                                 comboBoxParameter.Text += $" ({(CommonVars.Globals)temp})";
                             }

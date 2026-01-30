@@ -1,10 +1,10 @@
-﻿using FF7Scarlet.Shared;
+using FF7Scarlet.Shared;
 using KimeraCS.Core;
 using KimeraCS.Rendering;
 using OpenTK.Graphics.OpenGL.Compatibility;
 using OpenTK.Mathematics;
 using static KimeraCS.Core.FF7BattleSkeleton;
-using static KimeraCS.Core.FF7BattleAnimationsPack;
+using BattleAnimPack = KimeraCS.Core.FF7BattleAnimationsPack.BattleAnimationsPack;
 
 namespace FF7Scarlet.SceneEditor.Controls
 {
@@ -13,13 +13,60 @@ namespace FF7Scarlet.SceneEditor.Controls
         private const string CONTEXT_ID = "ModelPreview";
         private readonly Color4<Rgba> CLEAR_COLOR = new Color4<Rgba>(0.4f, 0.4f, 0.65f, 0);
         private RenderingContext? renderContext;
+        private bool isDragging = false;
+        private bool isPanning = false;
+        private Point lastMousePosition;
+        private const float ROTATION_SPEED = 0.5f;
+        private const float ZOOM_SPEED = 0.3f;
+        private const float PAN_SPEED = 1.0f;
+        private const int ANIMATION_FPS = 15;
+
+        private System.Windows.Forms.Timer? animationTimer;
+        private KimeraCS.Core.FF7BattleAnimationsPack.BattleAnimationsPack? loadedAnimations;
+        private bool isPlaying;
+        private int totalFrames;
+        private AnimationState currentAnimationState;
+        private bool timerInitialized = false;
 
         public bool Loaded { get; private set; }
         public bool ModelLoaded { get; private set; }
 
+        public (float RotateX, float RotateY) RotationAngles
+        {
+            get
+            {
+                if (renderContext != null)
+                {
+                    return (renderContext.Transform.RotateX, renderContext.Transform.RotateY);
+                }
+                return (0, 0);
+            }
+        }
+
+        public (int Current, int Total) FrameInfo
+        {
+            get
+            {
+                if (renderContext != null)
+                {
+                    return (renderContext.Animation.CurrentFrame, totalFrames);
+                }
+                return (0, 0);
+            }
+        }
+
         public ModelPreviewControl()
         {
             InitializeComponent();
+
+            if (!timerInitialized)
+            {
+                animationTimer = new System.Windows.Forms.Timer();
+                animationTimer.Interval = 1000 / ANIMATION_FPS;
+                animationTimer.Tick += AnimationTimer_Tick;
+                timerInitialized = true;
+            }
+            Disposed += ModelPreviewControl_Disposed;
         }
 
         private void ModelPreviewControl_Load(object sender, EventArgs e)
@@ -50,6 +97,167 @@ namespace FF7Scarlet.SceneEditor.Controls
 
         }
 
+        public void SetAnimation(int animationIndex)
+        {
+            if (renderContext != null && loadedAnimations != null)
+            {
+                if (animationIndex < 0 || animationIndex >= loadedAnimations.Value.SkeletonAnimations.Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(animationIndex),
+                        $"Animation index {animationIndex} is out of range. Available animations: 0-{loadedAnimations.Value.SkeletonAnimations.Count - 1}");
+                }
+
+                currentAnimationState.AnimationIndex = animationIndex;
+                currentAnimationState.CurrentFrame = 0;
+                currentAnimationState.WeaponAnimationIndex = -1;
+                renderContext.Animation = currentAnimationState;
+                totalFrames = loadedAnimations.Value.SkeletonAnimations[animationIndex].frames.Count;
+
+                UpdateFrameCounter();
+
+                if (totalFrames > 0)
+                {
+                    StartAnimation();
+                }
+                else
+                {
+                    PauseAnimation();
+                }
+
+                this.Invalidate();
+            }
+        }
+
+        private void StartAnimation()
+        {
+            if (!isPlaying && totalFrames > 0 && animationTimer != null)
+            {
+                isPlaying = true;
+                animationTimer.Start();
+            }
+        }
+
+        public void PauseAnimation()
+        {
+            isPlaying = false;
+            animationTimer?.Stop();
+        }
+
+        public void StopAnimation()
+        {
+            PauseAnimation();
+            if (renderContext != null)
+            {
+                currentAnimationState.CurrentFrame = 0;
+                currentAnimationState.AnimationIndex = renderContext.Animation.AnimationIndex;
+                currentAnimationState.WeaponAnimationIndex = -1;
+                renderContext.Animation = currentAnimationState;
+                UpdateFrameCounter();
+                this.Invalidate();
+            }
+        }
+
+        private void AdvanceFrame()
+        {
+            if (renderContext != null && totalFrames > 0)
+            {
+                int newFrame = renderContext.Animation.CurrentFrame + 1;
+                if (newFrame >= totalFrames)
+                {
+                    newFrame = 0;
+                }
+                currentAnimationState.CurrentFrame = newFrame;
+                currentAnimationState.AnimationIndex = renderContext.Animation.AnimationIndex;
+                currentAnimationState.WeaponAnimationIndex = -1;
+                renderContext.Animation = currentAnimationState;
+                UpdateFrameCounter();
+                this.Invalidate();
+            }
+        }
+
+        private void StepFrame(int delta)
+        {
+            if (renderContext != null && totalFrames > 0)
+            {
+                PauseAnimation();
+
+                int newFrame = renderContext.Animation.CurrentFrame + delta;
+                if (newFrame < 0)
+                {
+                    newFrame = totalFrames - 1;
+                }
+                else if (newFrame >= totalFrames)
+                {
+                    newFrame = 0;
+                }
+                currentAnimationState.CurrentFrame = newFrame;
+                currentAnimationState.AnimationIndex = renderContext.Animation.AnimationIndex;
+                currentAnimationState.WeaponAnimationIndex = -1;
+                renderContext.Animation = currentAnimationState;
+                UpdateFrameCounter();
+                this.Invalidate();
+            }
+        }
+
+        private void UpdateFrameCounter()
+        {
+            if (frameCounterLabel != null)
+            {
+                if (renderContext != null)
+                {
+                    int currentFrame = renderContext.Animation.CurrentFrame;
+                    frameCounterLabel.Text = $"{currentFrame}/{totalFrames}";
+                }
+                else
+                {
+                    frameCounterLabel.Text = "0/0";
+                }
+            }
+        }
+
+        private void AnimationTimer_Tick(object? sender, EventArgs e)
+        {
+            AdvanceFrame();
+        }
+
+        private void GlControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (renderContext == null || totalFrames <= 0)
+            {
+                return;
+            }
+
+            switch (e.KeyCode)
+            {
+                case Keys.Space:
+                    e.Handled = true;
+                    if (isPlaying)
+                    {
+                        PauseAnimation();
+                    }
+                    else
+                    {
+                        StartAnimation();
+                    }
+                    break;
+
+                case Keys.Left:
+                    e.Handled = true;
+                    StepFrame(-1);
+                    break;
+
+                case Keys.Right:
+                    e.Handled = true;
+                    StepFrame(1);
+                    break;
+            }
+        }
+
+        private void ModelPreviewControl_Enter(object sender, EventArgs e)
+        {
+            glControl.Focus();
+        }
+
         private void ModelPreviewControl_Paint(object sender, PaintEventArgs e)
         {
             if (Loaded && DataManager.BattleLgp != null)
@@ -73,28 +281,40 @@ namespace FF7Scarlet.SceneEditor.Controls
             }
         }
 
-        public void LoadModel(ushort modelID)
+        public void LoadModel(ushort modelID, int initialAnimationIndex = 0)
         {
+            ModelTransform savedTransform = ModelTransform.Default;
+            if (renderContext != null)
+            {
+                savedTransform = renderContext.Transform;
+            }
+
             renderContext = null;
+            loadedAnimations = null;
             ModelLoaded = false;
+            StopAnimation();
+            UpdateFrameCounter();
 
             if (DataManager.BattleLgp != null)
             {
-                //attempt to load the model
                 var load = DataManager.BattleLgp.GetModelData(modelID);
                 if (load != null)
                 {
                     var anim = DataManager.BattleLgp.GetAnimationData((BattleSkeleton)load, modelID);
                     if (anim != null)
                     {
+                        loadedAnimations = (FF7BattleAnimationsPack.BattleAnimationsPack)anim;
+
                         Vector3 p_min = new(), p_max = new();
                         var modelData = new SkeletonModelData();
                         modelData.BattleSkeleton = (BattleSkeleton)load;
-                        modelData.BattleAnimations = (BattleAnimationsPack)anim;
+                        modelData.BattleAnimations = loadedAnimations.Value;
                         modelData.TextureIds = ((BattleSkeleton)load).TexIDS;
+
+                        int safeAnimIndex = Math.Min(initialAnimationIndex, loadedAnimations.Value.SkeletonAnimations.Count - 1);
                         ComputeBattleBoundingBox(
                             modelData.BattleSkeleton,
-                            modelData.BattleAnimations.SkeletonAnimations[0].frames[0],
+                            loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames[0],
                             ref p_min, ref p_max);
 
                         renderContext = RenderingContext.CreateWithModelData(
@@ -110,13 +330,34 @@ namespace FF7Scarlet.SceneEditor.Controls
                                 PanY = -300,
                                 PanZ = 0
                             },
-                            AnimationState.Default,
-                            new LightingConfig()
+                            new AnimationState
+                            {
+                                AnimationIndex = safeAnimIndex,
+                                CurrentFrame = 0,
+                                WeaponAnimationIndex = -1
+                            },
+                            new LightingConfig(),
+                            savedTransform
                         );
+
+                        totalFrames = loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames.Count;
                         ModelLoaded = true;
+
+                        currentAnimationState.AnimationIndex = safeAnimIndex;
+                        currentAnimationState.CurrentFrame = 0;
+                        currentAnimationState.WeaponAnimationIndex = -1;
+
+                        if (totalFrames > 0)
+                        {
+                            UpdateFrameCounter();
+                            StartAnimation();
+                        }
+                        else
+                        {
+                            UpdateFrameCounter();
+                        }
                     }
                 }
-                glControl.Invalidate();
                 this.Invalidate();
             }
         }
@@ -124,6 +365,92 @@ namespace FF7Scarlet.SceneEditor.Controls
         public void Unload()
         {
             GLRenderer.Shutdown();
+        }
+
+        private void ModelPreviewControl_Disposed(object sender, EventArgs e)
+        {
+            if (animationTimer != null)
+            {
+                animationTimer.Stop();
+                animationTimer.Dispose();
+                animationTimer = null;
+                timerInitialized = false;
+            }
+            loadedAnimations = null;
+        }
+
+        private void GlControl_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (renderContext != null)
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    isDragging = true;
+                    lastMousePosition = e.Location;
+                    glControl.Capture = true;
+                    glControl.Focus();
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    isPanning = true;
+                    lastMousePosition = e.Location;
+                    glControl.Capture = true;
+                    glControl.Focus();
+                }
+            }
+        }
+
+        private void GlControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (renderContext != null)
+            {
+                int deltaX = e.X - lastMousePosition.X;
+                int deltaY = e.Y - lastMousePosition.Y;
+
+                if (isDragging)
+                {
+                    var transform = renderContext.Transform;
+                    transform.RotateY -= deltaX * ROTATION_SPEED;
+                    transform.RotateX += deltaY * ROTATION_SPEED;
+                    renderContext.Transform = transform;
+                    lastMousePosition = e.Location;
+                    this.Invalidate();
+                }
+                else if (isPanning)
+                {
+                    var camera = renderContext.Camera;
+                    camera.PanX += deltaX * PAN_SPEED;
+                    camera.PanY -= deltaY * PAN_SPEED;
+                    renderContext.Camera = camera;
+                    lastMousePosition = e.Location;
+                    this.Invalidate();
+                }
+            }
+        }
+
+        private void GlControl_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (renderContext != null)
+            {
+                var camera = renderContext.Camera;
+                camera.Distance += e.Delta * ZOOM_SPEED;
+                renderContext.Camera = camera;
+                this.Invalidate();
+            }
+        }
+
+        private void GlControl_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isDragging = false;
+                glControl.Capture = false;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                isPanning = false;
+                glControl.Capture = false;
+            }
         }
     }
 }

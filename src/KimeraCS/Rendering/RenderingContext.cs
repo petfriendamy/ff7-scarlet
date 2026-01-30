@@ -42,6 +42,8 @@ namespace KimeraCS.Rendering
         public float RepositionX;
         public float RepositionY;
         public float RepositionZ;
+        public float RotateX;
+        public float RotateY;
 
         public static ModelTransform Default => new ModelTransform
         {
@@ -50,7 +52,9 @@ namespace KimeraCS.Rendering
             ResizeZ = 1,
             RepositionX = 0,
             RepositionY = 0,
-            RepositionZ = 0
+            RepositionZ = 0,
+            RotateX = 0,
+            RotateY = 0
         };
     }
 
@@ -144,7 +148,8 @@ namespace KimeraCS.Rendering
             SkeletonModelData modelData,
             CameraState camera,
             AnimationState animation,
-            LightingConfig lighting)
+            LightingConfig lighting,
+            ModelTransform transform = default)
         {
             return new RenderingContext
             {
@@ -152,7 +157,8 @@ namespace KimeraCS.Rendering
                 Camera = camera,
                 Animation = animation,
                 Lighting = lighting,
-                ModelData = modelData
+                ModelData = modelData,
+                Transform = transform
             };
         }
     }

@@ -1,4 +1,4 @@
-﻿using AutoUpdaterDotNET;
+using AutoUpdaterDotNET;
 using Newtonsoft.Json.Linq;
 
 namespace FF7Scarlet.Shared
@@ -78,12 +78,26 @@ namespace FF7Scarlet.Shared
         {
             dynamic release = JValue.Parse(args.RemoteData);
 
-            args.UpdateInfo = new UpdateInfoEventArgs
+            string? versionName = release?.name?.Value;
+            if (versionName != null)
             {
-                CurrentVersion = (new Version(GetUpdateVersion(release.name.Value))).ToString(),
-                DownloadURL = GetUpdateReleaseUrl(release.assets),
-                ChangelogURL = GetChangelogUrl(UpdateChannel)
-            };
+                dynamic? assets = release?.assets;
+                args.UpdateInfo = new UpdateInfoEventArgs
+                {
+                    CurrentVersion = (new Version(GetUpdateVersion(versionName!))).ToString(),
+                    DownloadURL = assets != null ? GetUpdateReleaseUrl(assets) : string.Empty,
+                    ChangelogURL = GetChangelogUrl(UpdateChannel)
+                };
+            }
+            else
+            {
+                args.UpdateInfo = new UpdateInfoEventArgs
+                {
+                    CurrentVersion = "Unknown",
+                    DownloadURL = string.Empty,
+                    ChangelogURL = string.Empty
+                };
+            }
         }
     }
 }

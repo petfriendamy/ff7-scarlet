@@ -1,11 +1,13 @@
-﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.AIEditor;
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Inventory;
 
+using System.Diagnostics;
 using System.Globalization;
 using System.Media;
+using System.Text;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -340,7 +342,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ExceptionHandler.Handle(ex, "parsing AI scripts");
                 }
             }
             int i;
@@ -406,9 +408,10 @@ namespace FF7Scarlet.SceneEditor
                 }
             }
             comboBoxEnemy.EndUpdate();
-            comboBoxFormationSelectedEnemy.EndUpdate();
+             comboBoxFormationSelectedEnemy.EndUpdate();
             comboBoxEnemy.SelectedIndex = 0;
-            LoadEnemyData(scene.Enemies[0], false, ignoreNull);
+            var firstEnemy = scene?.Enemies != null && scene.Enemies.Length > 0 ? scene.Enemies[0] : null;
+            LoadEnemyData(firstEnemy, false, ignoreNull);
 
             //get formations
             UpdateFormations(sceneIndex, false);
@@ -417,7 +420,15 @@ namespace FF7Scarlet.SceneEditor
                 LoadFormationData(SelectedFormation, false);
             }
 
-            if (clearLoadingWhenDone) { loading = false; }
+            if (clearLoadingWhenDone)
+            {
+                loading = false;
+
+                if (enemyModelPreviewControl.ModelLoaded)
+                {
+                    enemyModelPreviewControl.StopAnimation();
+                }
+            }
         }
 
         private bool LoadEnemyData(Enemy? enemy, bool clearLoadingWhenDone, bool ignoreNull)
@@ -429,8 +440,8 @@ namespace FF7Scarlet.SceneEditor
                 var result = DialogResult.None;
                 if (!ignoreNull)
                 {
-                    result = MessageBox.Show("There is no enemy data in the selected slot. Would you like to create a new enemy?",
-                        "No Enemy Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    result = MessageDialog.AskYesNo("There is no enemy data in the selected slot. Would you like to create a new enemy?",
+                        "No Enemy Data");
                 }
 
                 if (result == DialogResult.Yes)
@@ -526,8 +537,8 @@ namespace FF7Scarlet.SceneEditor
                         {
                             if (enemy.MorphItemIndex >= DataParser.MATERIA_START && !DataManager.PS3TweaksEnabled)
                             {
-                                var result = MessageBox.Show("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
-                                    "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                var result = MessageDialog.AskYesNo("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
+                                    "Enable Postscriptthree Tweaks?");
                                 if (result == DialogResult.Yes)
                                 {
                                     DataManager.PS3TweaksEnabled = true;
@@ -552,9 +563,10 @@ namespace FF7Scarlet.SceneEditor
                     if (DataManager.BattleLgp != null)
                     {
                         comboBoxEnemyModelID.SelectedIndex = enemy.ModelID;
-                        if (enemyModelPreviewControl.Loaded) //don't load the model if the control isn't visible
+                        if (enemyModelPreviewControl.Loaded) //don't load the model if control isn't visible
                         {
                             enemyModelPreviewControl.LoadModel(enemy.ModelID);
+                            enemyModelPreviewControl.SetAnimation(0);
                         }
                     }
                     else
@@ -569,7 +581,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 catch
                 {
-                    MessageBox.Show("This enemy data appears corrupt.", "Corrupt Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageDialog.ShowError("This enemy data appears corrupt.", "Corrupt Data");
                     success = false;
                 }
             }
@@ -653,7 +665,7 @@ namespace FF7Scarlet.SceneEditor
         {
             //get drop rate
             float percentage = (rate.DropRate / 63F) * 100;
-            string text = $"{percentage:N1}% ";
+            var sb = new StringBuilder($"{percentage:N1}% ");
 
             //get name
             string name = $"Unknown item (ID {rate.ItemID:X4})";
@@ -664,13 +676,13 @@ namespace FF7Scarlet.SceneEditor
                 item.Item = rate.ItemID;
                 name = DataManager.Kernel.GetInventoryItemName(item);
             }
-            text += name;
+            sb.Append(name);
 
             //get steal status
-            if (rate.IsSteal) { text += " steal"; }
-            else { text += " drop"; }
+            if (rate.IsSteal) { sb.Append(" steal"); }
+            else { sb.Append(" drop"); }
 
-            return text;
+            return sb.ToString();
         }
 
         private void SyncEnemyData(Enemy enemy)
@@ -713,8 +725,8 @@ namespace FF7Scarlet.SceneEditor
 
             if (attack == null)
             {
-                var result = MessageBox.Show("There is no attack data in the selected slot. Would you like to create a new attack?",
-                    "No Attack Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = MessageDialog.AskYesNo("There is no attack data in the selected slot. Would you like to create a new attack?",
+                    "No Attack Data");
 
                 if (result == DialogResult.Yes)
                 {
@@ -1032,8 +1044,7 @@ namespace FF7Scarlet.SceneEditor
 
                 if (!DataManager.KernelFilePathExists)
                 {
-                    MessageBox.Show("No kernel file is selected, so the lookup table cannot be updated. This scene.bin file may not work correctly in FF7.",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageDialog.ShowWarning("No kernel file is selected, so the lookup table cannot be updated. This scene.bin file may not work correctly in FF7.");
                 }
                 DataManager.UpdateAllScenes(this, sceneList);
                 DataManager.CreateSceneBin();
@@ -1041,7 +1052,7 @@ namespace FF7Scarlet.SceneEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "saving scene");
             }
             progressBarSaving.Value = 0;
             EnableOrDisableForm(true);
@@ -1163,6 +1174,14 @@ namespace FF7Scarlet.SceneEditor
                 && !enemyModelPreviewControl.ModelLoaded && SelectedEnemy != null)
             {
                 enemyModelPreviewControl.LoadModel(SelectedEnemy.ModelID);
+                enemyModelPreviewControl.SetAnimation(0);
+            }
+            else if (tabControlEnemyData.SelectedTab != tabPageEnemyPage2)
+            {
+                if (enemyModelPreviewControl.ModelLoaded)
+                {
+                    enemyModelPreviewControl.PauseAnimation();
+                }
             }
         }
 
@@ -1293,10 +1312,14 @@ namespace FF7Scarlet.SceneEditor
             if (!loading && i >= 0 && i < 16 && SelectedScene != null && SelectedEnemy != null)
             {
                 loading = true;
-                comboBoxEnemyAttackID.Enabled = true;
                 var atk = SelectedScene.GetAttackByID(SelectedEnemy.AttackIDs[i]);
                 if (atk == null) //no attack selected
                 {
+                    if (enemyModelPreviewControl.ModelLoaded)
+                    {
+                        enemyModelPreviewControl.SetAnimation(0);
+                    }
+
                     comboBoxEnemyAttackID.SelectedIndex = 0;
                     comboBoxEnemyAttackCamID.Text = HexParser.NULL_OFFSET_16_BIT.ToString("X4");
                     EnableOrDisableGroupBox(groupBoxEnemyAttacks, false, true, comboBoxEnemyAttackID);
@@ -1308,12 +1331,41 @@ namespace FF7Scarlet.SceneEditor
                     numericAttackAnimationIndex.Value = SelectedEnemy.ActionAnimationIndexes[i];
                     comboBoxEnemyAttackCamID.Text = SelectedEnemy.CameraMovementIDs[i].ToString("X4");
                     checkBoxEnemyAttackIsManipable.Checked = SelectedEnemy.AttackIsManipable((ushort)atk.Index);
+
+                    PlayAttackAnimation(i);
+
                     if (SelectedEnemy.ManipListIsEmpty())
                     {
                         buttonViewManipList.Enabled = false;
                     }
                 }
                 loading = false;
+            }
+        }
+
+        private void PlayAttackAnimation(int attackSlotIndex)
+        {
+            if (SelectedEnemy != null && enemyModelPreviewControl.ModelLoaded)
+            {
+                int animIndex = SelectedEnemy.ActionAnimationIndexes[attackSlotIndex];
+
+                try
+                {
+                    enemyModelPreviewControl.SetAnimation(animIndex);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    MessageDialog.ShowError(
+                        $"Animation index {animIndex} is invalid for this model.\n" +
+                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).",
+                        "Animation Error");
+                    enemyModelPreviewControl.StopAnimation();
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, "playing attack animation");
+                    enemyModelPreviewControl.StopAnimation();
+                }
             }
         }
 
@@ -1445,8 +1497,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 if (SelectedEnemy.ManipListIsEmpty())
                 {
-                    MessageBox.Show("The manip list is empty.", "No Attacks", MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    MessageDialog.ShowInfo("The manip list is empty.", "No Attacks");
                 }
                 else
                 {
@@ -1490,8 +1541,8 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else if (item.ItemID >= DataParser.MATERIA_START && !DataManager.PS3TweaksEnabled)
                 {
-                    var result = MessageBox.Show("This scene file appears to use materia drops! Would you like to enable Postscriptthree Tweaks?",
-                                "Enable Postscriptthree Tweaks?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var result = MessageDialog.AskYesNo("This scene file appears to use materia drops! Would you like to enable Postscriptthree Tweaks?",
+                                "Enable Postscriptthree Tweaks?");
                     if (result == DialogResult.Yes)
                     {
                         DataManager.PS3TweaksEnabled = true;
@@ -1608,11 +1659,11 @@ namespace FF7Scarlet.SceneEditor
                         {
                             enemyModelPreviewControl.LoadModel(newID);
                         }
-                        SetUnsaved(true);
+                    SetUnsaved(true);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ExceptionHandler.Handle(ex, "loading enemy model");
                         comboBoxEnemyModelID.SelectedIndex = oldID;
                     }
                     loading = false;
@@ -1638,7 +1689,7 @@ namespace FF7Scarlet.SceneEditor
                         }
                         catch (ArgumentException ex)
                         {
-                            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            ExceptionHandler.Handle(ex);
                             comboBoxEnemyModelID.Text = oldID.ToString("X4");
                         }
                     }
@@ -1897,16 +1948,15 @@ namespace FF7Scarlet.SceneEditor
                         int sceneIndex;
                         if (!int.TryParse(temp, out sceneIndex))
                         {
-                            MessageBox.Show($"Invalid scene file: {Path.GetFileName(path)}", "Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageDialog.ShowError($"Invalid scene file: {Path.GetFileName(path)}");
                         }
                         else
                         {
                             //if only one file is selected, prompt to import into the current scene
                             if (paths.Length == 1 && SelectedSceneIndex != sceneIndex && SelectedSceneIndex >= 0)
                             {
-                                result = MessageBox.Show("Import into the currently selected scene? Otherwise, the scene will be imported into the scene matching the file name.",
-                                    "Import Selected?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                result = MessageDialog.AskYesNoCancel("Import into the currently selected scene? Otherwise, the scene will be imported into the scene matching the file name.",
+                                    "Import Selected?");
                                 switch (result)
                                 {
                                     case DialogResult.Cancel:
@@ -1944,8 +1994,7 @@ namespace FF7Scarlet.SceneEditor
                 successfulImports.Sort();
                 if (successfulImports.Count == 0)
                 {
-                    MessageBox.Show("Failed to import scene(s).", "Error", MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    MessageDialog.ShowError("Failed to import scene(s).");
                 }
                 else
                 {
@@ -1981,7 +2030,7 @@ namespace FF7Scarlet.SceneEditor
                         }
                     }
 
-                    MessageBox.Show(output, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageDialog.ShowInfo(output, "Success");
                     comboBoxSceneList.SelectedIndex = successfulImports[0];
                     if (SelectedScene != null)
                     {
@@ -2028,8 +2077,8 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedScene != null)
             {
-                var result = MessageBox.Show("This will delete ALL enemies, attacks, and formations contained within this scene. Are you sure you want to do this?",
-                    "Delete Scene?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var result = MessageDialog.AskYesNo("This will delete ALL enemies, attacks, and formations contained within this scene. Are you sure you want to do this?",
+                    "Delete Scene?");
                 if (result == DialogResult.Yes)
                 {
                     loading = true;
@@ -2050,8 +2099,8 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedEnemy != null)
             {
-                var result = MessageBox.Show("There is already enemy data in the selected slot. Are you sure you want to overwrite it?",
-                    "Overwrite?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var result = MessageDialog.AskYesNo("There is already enemy data in the selected slot. Are you sure you want to overwrite it?",
+                    "Overwrite?");
                 if (result == DialogResult.No) { return; }
             }
             CreateNewEnemy(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
@@ -2087,8 +2136,8 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedEnemy != null && SelectedScene != null && SelectedFormation != null)
             {
-                var result = MessageBox.Show("Are you sure you want to delete the selected enemy? This can't be undone!",
-                    "Delete Enemy?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var result = MessageDialog.AskYesNo("Are you sure you want to delete the selected enemy? This can't be undone!",
+                    "Delete Enemy?");
                 if (result == DialogResult.Yes)
                 {
                     //remove the enemy from all formations
@@ -2139,8 +2188,8 @@ namespace FF7Scarlet.SceneEditor
                 bool getSynced = false;
                 if (syncedAttacks.ContainsKey((ushort)DataManager.CopiedAttack.Index))
                 {
-                    var result = MessageBox.Show("The copied enemy is a synced attack. Would you like to sync this one as well?",
-                        "Sync Attack?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    var result = MessageDialog.AskYesNoCancel("The copied enemy is a synced attack. Would you like to sync this one as well?",
+                        "Sync Attack?");
                     if (result == DialogResult.Cancel) { return; }
                     getSynced = result == DialogResult.Yes;
                 }
@@ -2168,8 +2217,7 @@ namespace FF7Scarlet.SceneEditor
             }
             else if (unsavedChanges)
             {
-                var result = MessageBox.Show("Unsaved changes will be lost. Are you sure?", "Unsaved changes",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var result = MessageDialog.AskYesNo("Unsaved changes will be lost. Are you sure?", "Unsaved changes");
 
                 e.Cancel = result == DialogResult.No;
             }

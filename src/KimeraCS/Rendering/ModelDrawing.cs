@@ -100,7 +100,7 @@ namespace KimeraCS.Rendering
             GL.PopMatrix();
         }
 
-        private static void DrawBattleSkeleton(RenderingContext renderContext, int weaponIndex, int currFrame = -1)
+        private static void DrawBattleSkeleton(RenderingContext renderContext, int weaponIndex, int currFrame = -1, Vector3? p_min = null, Vector3? p_max = null)
         {
             var modelData = renderContext.ModelData;
             if (modelData != null)
@@ -122,6 +122,21 @@ namespace KimeraCS.Rendering
                 int[] joint_stack = new int[bSkeleton.nBones + 1];
                 double[] rot_mat = new double[16];
 
+                Vector3 computedPMin, computedPMax;
+                if (!p_min.HasValue || !p_max.HasValue)
+                {
+                    computedPMin = new Vector3();
+                    computedPMax = new Vector3();
+                    ComputeBattleBoundingBox(bSkeleton, bFrame, ref computedPMin, ref computedPMax);
+                    p_min = computedPMin;
+                    p_max = computedPMax;
+                }
+                else
+                {
+                    computedPMin = p_min.Value;
+                    computedPMax = p_max.Value;
+                }
+
                 jsp = 0;
                 joint_stack[jsp] = -1;
 
@@ -131,6 +146,20 @@ namespace KimeraCS.Rendering
                 GL.MatrixMode(MatrixMode.Modelview);
                 GL.PushMatrix();
                 GL.Translated(bFrame.startX, bFrame.startY, bFrame.startZ);
+
+                // Apply model rotation around center point
+                if (renderContext.Transform.RotateX != 0 || renderContext.Transform.RotateY != 0)
+                {
+                    Vector3 center = new Vector3(
+                        (computedPMin.X + computedPMax.X) / 2,
+                        (computedPMin.Y + computedPMax.Y) / 2,
+                        (computedPMin.Z + computedPMax.Z) / 2
+                    );
+                    GL.Translated(center.X, center.Y, center.Z);
+                    GL.Rotated(renderContext.Transform.RotateY, 0, 1, 0);
+                    GL.Rotated(renderContext.Transform.RotateX, 1, 0, 0);
+                    GL.Translated(-center.X, -center.Y, -center.Z);
+                }
 
                 // Debug.Print bFrame.bones[0].alpha; ", "; bFrame.bones[0].Beta; ", "; bFrame.bones[0].Gamma
                 BuildRotationMatrixWithQuaternions(bFrame.bones[0].alpha, bFrame.bones[0].beta, bFrame.bones[0].gamma, ref rot_mat);
@@ -194,8 +223,11 @@ namespace KimeraCS.Rendering
                     //GL.Rotated(wpFrame.bones[0].alpha, 1, 0, 0);
                     //GL.Rotated(wpFrame.bones[0].gamma, 0, 0, 1);
 
-                    BuildRotationMatrixWithQuaternions(wpFrame.bones[0].alpha, wpFrame.bones[0].beta, wpFrame.bones[0].gamma, ref rot_mat);
-                    GL.MultMatrixd(rot_mat);
+                    if (wpFrame.bones != null && wpFrame.bones.Count > 0)
+                    {
+                        BuildRotationMatrixWithQuaternions(wpFrame.bones[0].alpha, wpFrame.bones[0].beta, wpFrame.bones[0].gamma, ref rot_mat);
+                        GL.MultMatrixd(rot_mat);
+                    }
 
                     GL.MatrixMode(MatrixMode.Modelview);
                     GL.PushMatrix();
@@ -300,7 +332,7 @@ namespace KimeraCS.Rendering
 
                             SetLights(ctx.Lighting, (float)(-2 * ComputeSceneRadius(p_min, p_max)));
 
-                            DrawBattleSkeleton(ctx, 0);
+                            DrawBattleSkeleton(ctx, 0, -1, p_min, p_max);
 
                             GL.Disable(EnableCap.Lighting);
 
@@ -314,6 +346,22 @@ namespace KimeraCS.Rendering
                     throw new KimeraException("Error Drawing current model.", ex);
                 }
             }
+        }
+
+        private static void ApplyModelTransformAroundCenter(ModelTransform transform, Vector3 p_min, Vector3 p_max)
+        {
+            Vector3 center = new Vector3(
+                (p_min.X + p_max.X) / 2,
+                (p_min.Y + p_max.Y) / 2,
+                (p_min.Z + p_max.Z) / 2
+            );
+
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.PushMatrix();
+            GL.Translated(center.X, center.Y, center.Z);
+            GL.Rotated(transform.RotateY, 0, 1, 0);
+            GL.Rotated(transform.RotateX, 1, 0, 0);
+            GL.Translated(-center.X, -center.Y, -center.Z);
         }
     }
 }
