@@ -699,24 +699,24 @@ namespace FF7Scarlet.SceneEditor
             tabPageEnemyPage2.UseVisualStyleBackColor = true;
             // 
             // enemyModelPreviewControl
-            //
+            // 
+            enemyModelPreviewControl.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             enemyModelPreviewControl.BorderStyle = BorderStyle.FixedSingle;
-            enemyModelPreviewControl.Location = new Point(568, 242);
+            enemyModelPreviewControl.Location = new Point(559, 241);
             enemyModelPreviewControl.MaximumSize = new Size(200, 150);
             enemyModelPreviewControl.MinimumSize = new Size(200, 150);
             enemyModelPreviewControl.Name = "enemyModelPreviewControl";
             enemyModelPreviewControl.Size = new Size(200, 150);
             enemyModelPreviewControl.TabIndex = 51;
-            enemyModelPreviewControl.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             // 
             // comboBoxEnemyModelID
             // 
             comboBoxEnemyModelID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             comboBoxEnemyModelID.FormattingEnabled = true;
-            comboBoxEnemyModelID.Location = new Point(609, 213);
+            comboBoxEnemyModelID.Location = new Point(559, 213);
             comboBoxEnemyModelID.MaxLength = 4;
             comboBoxEnemyModelID.Name = "comboBoxEnemyModelID";
-            comboBoxEnemyModelID.Size = new Size(150, 23);
+            comboBoxEnemyModelID.Size = new Size(200, 23);
             comboBoxEnemyModelID.TabIndex = 50;
             comboBoxEnemyModelID.SelectedIndexChanged += comboBoxEnemyModelID_SelectedIndexChanged;
             comboBoxEnemyModelID.TextChanged += comboBoxEnemyModelID_TextChanged;
@@ -725,7 +725,7 @@ namespace FF7Scarlet.SceneEditor
             // 
             labelEnemyModelID.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelEnemyModelID.AutoSize = true;
-            labelEnemyModelID.Location = new Point(609, 195);
+            labelEnemyModelID.Location = new Point(559, 195);
             labelEnemyModelID.Name = "labelEnemyModelID";
             labelEnemyModelID.Size = new Size(58, 15);
             labelEnemyModelID.TabIndex = 49;
