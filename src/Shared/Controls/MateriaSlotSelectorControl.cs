@@ -1,4 +1,4 @@
-﻿using FF7Scarlet.KernelEditor;
+using FF7Scarlet.KernelEditor;
 using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Materias;
@@ -23,6 +23,8 @@ namespace FF7Scarlet.Shared.Controls
         private ContextMenuStrip[] menuStrips = new ContextMenuStrip[SLOT_COUNT];
         private int selectedSlot = -1;
         private bool multiLinkEnabled;
+        private readonly List<ToolStripItem> trackedMenuItems = new();
+        private bool pictureBoxEventHandlersAttached = false;
 
         public event EventHandler? SelectedSlotChanged;
         public event EventHandler? DataChanged;
@@ -34,6 +36,10 @@ namespace FF7Scarlet.Shared.Controls
             get { return slotSelectorType; }
             set
             {
+                if (slotSelectorType == value)
+                    return;
+
+                ClearSlotEventHandlers();
                 slotSelectorType = value;
                 if (value == SlotSelectorType.Slots)
                 {
@@ -44,20 +50,24 @@ namespace FF7Scarlet.Shared.Controls
 
                         var menuItem = new ToolStripMenuItem("No slot");
                         menuItem.Click += new EventHandler(EmptySlotMenu_Clicked);
+                        trackedMenuItems.Add(menuItem);
                         menuStrips[i].Items.Add(menuItem);
 
                         menuItem = new ToolStripMenuItem("Unlinked slot");
                         menuItem.Click += new EventHandler(UnlinkedSlotMenu_Clicked);
+                        trackedMenuItems.Add(menuItem);
                         menuStrips[i].Items.Add(menuItem);
 
                         menuItem = new ToolStripMenuItem("Left linked slot");
                         menuItem.Click += new EventHandler(LeftLinkedSlotMenu_Clicked);
                         if (i == SLOT_COUNT - 1) { menuItem.Enabled = false; }
+                        trackedMenuItems.Add(menuItem);
                         menuStrips[i].Items.Add(menuItem);
 
                         menuItem = new ToolStripMenuItem("Right linked slot");
                         menuItem.Click += new EventHandler(RightLinkedSlotMenu_Clicked);
                         if (i == 0) { menuItem.Enabled = false; }
+                        trackedMenuItems.Add(menuItem);
                         menuStrips[i].Items.Add(menuItem);
 
                         if (multiLinkEnabled)
@@ -65,6 +75,7 @@ namespace FF7Scarlet.Shared.Controls
                             menuItem = new ToolStripMenuItem("Double linked slot");
                             menuItem.Click += new EventHandler(DoubleLinkedSlotMenu_Clicked);
                             if (i == 0 || i == SLOT_COUNT - 1) { menuItem.Enabled = false; }
+                            trackedMenuItems.Add(menuItem);
                             menuStrips[i].Items.Add(menuItem);
                         }
 
@@ -78,6 +89,7 @@ namespace FF7Scarlet.Shared.Controls
                         pictureBoxes[i].ContextMenuStrip = null;
                         pictureBoxes[i].Click += new EventHandler(Slot_Clicked);
                     }
+                    pictureBoxEventHandlersAttached = true;
                 }
             }
         }
@@ -224,6 +236,34 @@ namespace FF7Scarlet.Shared.Controls
             return Properties.Resources.materia_slot0;
         }
 
+        private void ClearSlotEventHandlers()
+        {
+            for (int i = 0; i < SLOT_COUNT; ++i)
+            {
+                if (menuStrips[i] != null)
+                {
+                    foreach (ToolStripItem item in menuStrips[i].Items)
+                    {
+                        if (item is ToolStripMenuItem menuItem)
+                        {
+                            menuItem.Click -= EmptySlotMenu_Clicked;
+                            menuItem.Click -= UnlinkedSlotMenu_Clicked;
+                            menuItem.Click -= LeftLinkedSlotMenu_Clicked;
+                            menuItem.Click -= RightLinkedSlotMenu_Clicked;
+                            menuItem.Click -= DoubleLinkedSlotMenu_Clicked;
+                        }
+                    }
+                    menuStrips[i].Items.Clear();
+                }
+                if (pictureBoxEventHandlersAttached)
+                {
+                    pictureBoxes[i].Click -= Slot_Clicked;
+                }
+            }
+            trackedMenuItems.Clear();
+            pictureBoxEventHandlersAttached = false;
+        }
+
         public void EnableMultiLinkSlots()
         {
             if (!multiLinkEnabled && SlotSelectorType == SlotSelectorType.Slots)
@@ -232,6 +272,7 @@ namespace FF7Scarlet.Shared.Controls
                 {
                     var menuItem = new ToolStripMenuItem("Double linked slot");
                     menuItem.Click += new EventHandler(DoubleLinkedSlotMenu_Clicked);
+                    trackedMenuItems.Add(menuItem);
                     if (i == 0 || i == SLOT_COUNT - 1) { menuItem.Enabled = false; }
                     menuStrips[i].Items.Add(menuItem);
                 }

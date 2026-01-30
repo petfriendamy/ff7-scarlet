@@ -294,14 +294,10 @@ namespace KimeraCS.Core
                 for (mi = 0; mi < bBone.nModels; mi++)
                 {
                     // Build model transform
-                    // IMPORTANT: Rotation order changed from Y→X→Z to X→Y→Z to match rendering pipeline
-                    // Previous order (Y then X then Z) caused bounding boxes to not match rendered models
-                    // Camera rendering uses X→Y→Z (see Utils.cs:BuildRotationMatrixWithQuaternionsXYZ)
-                    // Bounding box calculations must use same order for accurate picking and culling
                     Matrix4 modelMatrix = baseMatrix;
                     modelMatrix *= Matrix4.CreateTranslation(bBone.Models[mi].repositionX, bBone.Models[mi].repositionY, bBone.Models[mi].repositionZ);
-                    modelMatrix *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)bBone.Models[mi].rotateAlpha));
                     modelMatrix *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians((float)bBone.Models[mi].rotateBeta));
+                    modelMatrix *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)bBone.Models[mi].rotateAlpha));
                     modelMatrix *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)bBone.Models[mi].rotateGamma));
                     modelMatrix *= Matrix4.CreateScale(bBone.resizeX, bBone.resizeY, bBone.resizeZ);
 
@@ -367,10 +363,7 @@ namespace KimeraCS.Core
             Matrix4 currentMatrix = Matrix4.Identity;
             currentMatrix *= Matrix4.CreateTranslation((float)bFrame.startX, (float)bFrame.startY, (float)bFrame.startZ);
 
-            // IMPORTANT: Changed from BuildRotationMatrixWithQuaternions (Y→X→Z) to BuildRotationMatrixWithQuaternionsXYZ (X→Y→Z)
-            // This aligns bone frame transformations with the rendering pipeline rotation order
-            // Ensures skeleton frames match model bounding boxes and rendered geometry
-            BuildRotationMatrixWithQuaternionsXYZ(bFrame.bones[0].alpha, bFrame.bones[0].beta, bFrame.bones[0].gamma, ref rot_mat);
+            BuildRotationMatrixWithQuaternions(bFrame.bones[0].alpha, bFrame.bones[0].beta, bFrame.bones[0].gamma, ref rot_mat);
             Matrix4 rotMatrix = DoubleArrayToMatrix4(rot_mat);
             currentMatrix *= rotMatrix;
 
@@ -386,17 +379,15 @@ namespace KimeraCS.Core
                 }
                 matrixStack[matrixStackPtr++] = currentMatrix;
 
-                 if (bSkeleton.nBones > 1) iframeCnt = 1;
-                 else iframeCnt = 0;
-                 // IMPORTANT: Changed from BuildRotationMatrixWithQuaternions (Y→X→Z) to BuildRotationMatrixWithQuaternionsXYZ (X→Y→Z)
-                 // This aligns child bone bounding box calculations with camera rotation order
-                 BuildRotationMatrixWithQuaternionsXYZ(bFrame.bones[bi + iframeCnt].alpha,
-                                                    bFrame.bones[bi + iframeCnt].beta,
-                                                    bFrame.bones[bi + iframeCnt].gamma, ref rot_mat);
-                 rotMatrix = DoubleArrayToMatrix4(rot_mat);
-                 currentMatrix *= rotMatrix;
+                if (bSkeleton.nBones > 1) iframeCnt = 1;
+                else iframeCnt = 0;
+                BuildRotationMatrixWithQuaternions(bFrame.bones[bi + iframeCnt].alpha,
+                                                   bFrame.bones[bi + iframeCnt].beta,
+                                                   bFrame.bones[bi + iframeCnt].gamma, ref rot_mat);
+                rotMatrix = DoubleArrayToMatrix4(rot_mat);
+                currentMatrix *= rotMatrix;
 
-                 ComputeBattleBoneBoundingBox(bSkeleton.bones[bi], ref p_min_bone, ref p_max_bone);
+                ComputeBattleBoneBoundingBox(bSkeleton.bones[bi], ref p_min_bone, ref p_max_bone);
 
                 MV_matrix = Matrix4ToDoubleArray(currentMatrix);
 

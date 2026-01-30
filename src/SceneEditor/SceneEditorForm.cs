@@ -1317,14 +1317,7 @@ namespace FF7Scarlet.SceneEditor
                 {
                     if (enemyModelPreviewControl.ModelLoaded)
                     {
-                        try
-                        {
-                            enemyModelPreviewControl.SetAnimation(0);
-                        }
-                        catch
-                        {
-                            enemyModelPreviewControl.StopAnimation();
-                        }
+                        enemyModelPreviewControl.SetAnimation(0);
                     }
 
                     comboBoxEnemyAttackID.SelectedIndex = 0;
@@ -1364,37 +1357,14 @@ namespace FF7Scarlet.SceneEditor
                 {
                     MessageDialog.ShowError(
                         $"Animation index {animIndex} is invalid for this model.\n" +
-                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).\n" +
-                        "Defaulting to animation 0.",
-                        "Animation Error");
-                    try
-                    {
-                        enemyModelPreviewControl.SetAnimation(0);
-                    }
-                    catch
-                    {
-                        enemyModelPreviewControl.StopAnimation();
-                    }
-                }
-                catch (InvalidOperationException)
-                {
-                    MessageDialog.ShowError(
-                        $"No animations available for this model.\n" +
-                        "Please select a different model or check the model data.",
+                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).",
                         "Animation Error");
                     enemyModelPreviewControl.StopAnimation();
                 }
                 catch (Exception ex)
                 {
                     ExceptionHandler.Handle(ex, "playing attack animation");
-                    try
-                    {
-                        enemyModelPreviewControl.SetAnimation(0);
-                    }
-                    catch
-                    {
-                        enemyModelPreviewControl.StopAnimation();
-                    }
+                    enemyModelPreviewControl.StopAnimation();
                 }
             }
         }
@@ -1931,7 +1901,9 @@ namespace FF7Scarlet.SceneEditor
             SyncAllUnsavedData();
             DialogResult result;
             string[] paths;
+#pragma warning disable CA1416 // Type or member is only supported on: 'windows' 6.1 and later
             using (var import = new OpenFileDialog())
+#pragma warning restore CA1416
             {
                 import.Filter = "Scene files|scene.*.bin;scene.bin.chunk.*";
                 import.Multiselect = true;

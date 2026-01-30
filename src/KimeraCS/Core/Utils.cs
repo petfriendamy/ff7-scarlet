@@ -80,11 +80,28 @@ namespace KimeraCS.Core
             mat_res[15] = 1;
         }
 
+        public static void BuildRotationMatrixWithQuaternions(double alpha, double beta, double gamma, ref double[] mat_res)
+        {
+            Quaterniond quat_x = new Quaterniond();
+            Quaterniond quat_y = new Quaterniond();
+            Quaterniond quat_z = new Quaterniond();
+            Quaterniond quat_xy = new Quaterniond();
+            Quaterniond quat_xyz = new Quaterniond();
 
-        // DEPRECATED: BuildRotationMatrixWithQuaternions removed - used incorrect Y→X→Z rotation order
-        // Replaced by BuildRotationMatrixWithQuaternionsXYZ which uses correct X→Y→Z order
-        // This function was causing bounding boxes to not match rendered models
-        // All code now uses BuildRotationMatrixWithQuaternionsXYZ for consistency
+            Vector3 px = new Vector3(1, 0, 0);
+            Vector3 py = new Vector3(0, 1, 0);
+            Vector3 pz = new Vector3(0, 0, 1);
+
+            BuildQuaternionFromAxis(ref px, alpha, ref quat_x);
+            BuildQuaternionFromAxis(ref py, beta, ref quat_y);
+            BuildQuaternionFromAxis(ref pz, gamma, ref quat_z);
+
+            MultiplyQuaternions(quat_y, quat_x, ref quat_xy);
+            MultiplyQuaternions(quat_xy, quat_z, ref quat_xyz);
+
+            BuildMatrixFromQuaternion(quat_xyz, ref mat_res);
+        }
+
 
         public static void MultiplyPoint3DByOGLMatrix(double[] matA, Vector3 p_in, ref Vector3 p_out)
         {
