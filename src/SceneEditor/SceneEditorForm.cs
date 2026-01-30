@@ -420,7 +420,15 @@ namespace FF7Scarlet.SceneEditor
                 LoadFormationData(SelectedFormation, false);
             }
 
-            if (clearLoadingWhenDone) { loading = false; }
+            if (clearLoadingWhenDone)
+            {
+                loading = false;
+
+                if (enemyModelPreviewControl.ModelLoaded)
+                {
+                    enemyModelPreviewControl.StopAnimation();
+                }
+            }
         }
 
         private bool LoadEnemyData(Enemy? enemy, bool clearLoadingWhenDone, bool ignoreNull)
@@ -555,9 +563,10 @@ namespace FF7Scarlet.SceneEditor
                     if (DataManager.BattleLgp != null)
                     {
                         comboBoxEnemyModelID.SelectedIndex = enemy.ModelID;
-                        if (enemyModelPreviewControl.Loaded) //don't load the model if the control isn't visible
+                        if (enemyModelPreviewControl.Loaded) //don't load the model if control isn't visible
                         {
                             enemyModelPreviewControl.LoadModel(enemy.ModelID);
+                            enemyModelPreviewControl.SetAnimation(0);
                         }
                     }
                     else
@@ -1165,6 +1174,14 @@ namespace FF7Scarlet.SceneEditor
                 && !enemyModelPreviewControl.ModelLoaded && SelectedEnemy != null)
             {
                 enemyModelPreviewControl.LoadModel(SelectedEnemy.ModelID);
+                enemyModelPreviewControl.SetAnimation(0);
+            }
+            else if (tabControlEnemyData.SelectedTab != tabPageEnemyPage2)
+            {
+                if (enemyModelPreviewControl.ModelLoaded)
+                {
+                    enemyModelPreviewControl.PauseAnimation();
+                }
             }
         }
 
@@ -1295,10 +1312,14 @@ namespace FF7Scarlet.SceneEditor
             if (!loading && i >= 0 && i < 16 && SelectedScene != null && SelectedEnemy != null)
             {
                 loading = true;
-                comboBoxEnemyAttackID.Enabled = true;
                 var atk = SelectedScene.GetAttackByID(SelectedEnemy.AttackIDs[i]);
                 if (atk == null) //no attack selected
                 {
+                    if (enemyModelPreviewControl.ModelLoaded)
+                    {
+                        enemyModelPreviewControl.SetAnimation(0);
+                    }
+
                     comboBoxEnemyAttackID.SelectedIndex = 0;
                     comboBoxEnemyAttackCamID.Text = HexParser.NULL_OFFSET_16_BIT.ToString("X4");
                     EnableOrDisableGroupBox(groupBoxEnemyAttacks, false, true, comboBoxEnemyAttackID);
@@ -1310,12 +1331,41 @@ namespace FF7Scarlet.SceneEditor
                     numericAttackAnimationIndex.Value = SelectedEnemy.ActionAnimationIndexes[i];
                     comboBoxEnemyAttackCamID.Text = SelectedEnemy.CameraMovementIDs[i].ToString("X4");
                     checkBoxEnemyAttackIsManipable.Checked = SelectedEnemy.AttackIsManipable((ushort)atk.Index);
+
+                    PlayAttackAnimation(i);
+
                     if (SelectedEnemy.ManipListIsEmpty())
                     {
                         buttonViewManipList.Enabled = false;
                     }
                 }
                 loading = false;
+            }
+        }
+
+        private void PlayAttackAnimation(int attackSlotIndex)
+        {
+            if (SelectedEnemy != null && enemyModelPreviewControl.ModelLoaded)
+            {
+                int animIndex = SelectedEnemy.ActionAnimationIndexes[attackSlotIndex];
+
+                try
+                {
+                    enemyModelPreviewControl.SetAnimation(animIndex);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    MessageDialog.ShowError(
+                        $"Animation index {animIndex} is invalid for this model.\n" +
+                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).",
+                        "Animation Error");
+                    enemyModelPreviewControl.StopAnimation();
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, "playing attack animation");
+                    enemyModelPreviewControl.StopAnimation();
+                }
             }
         }
 
