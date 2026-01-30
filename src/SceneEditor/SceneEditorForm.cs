@@ -1901,7 +1901,9 @@ namespace FF7Scarlet.SceneEditor
             SyncAllUnsavedData();
             DialogResult result;
             string[] paths;
+#pragma warning disable CA1416 // Type or member is only supported on: 'windows' 6.1 and later
             using (var import = new OpenFileDialog())
+#pragma warning restore CA1416
             {
                 import.Filter = "Scene files|scene.*.bin;scene.bin.chunk.*";
                 import.Multiselect = true;

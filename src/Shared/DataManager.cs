@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+using System.Configuration;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using FF7Scarlet.Compression;
@@ -305,7 +305,7 @@ namespace FF7Scarlet.Shared
                     if (kernelForm == null)
                     {
                         kernelForm = new KernelForm();
-                        kernelForm.FormClosed += new FormClosedEventHandler(kernelFormClosed);
+                        kernelForm.FormClosed += kernelFormClosed;
                         kernelForm.Show();
                     }
                     break;
@@ -313,7 +313,7 @@ namespace FF7Scarlet.Shared
                     if (sceneEditorForm == null)
                     {
                         sceneEditorForm = new SceneEditorForm(syncedAttacks);
-                        sceneEditorForm.FormClosed += new FormClosedEventHandler(sceneFormClosed);
+                        sceneEditorForm.FormClosed += sceneFormClosed;
                         sceneEditorForm.Show();
                     }
                     break;
@@ -321,7 +321,7 @@ namespace FF7Scarlet.Shared
                     if (exeEditorForm == null)
                     {
                         exeEditorForm = new ExeEditorForm();
-                        exeEditorForm.FormClosed += new FormClosedEventHandler(exeFormClosed);
+                        exeEditorForm.FormClosed += exeFormClosed;
                         exeEditorForm.Show();
                     }
                     break;
@@ -606,18 +606,30 @@ namespace FF7Scarlet.Shared
 
         private static void kernelFormClosed(object? sender, FormClosedEventArgs e)
         {
+            if (sender is Form form)
+            {
+                form.FormClosed -= kernelFormClosed;
+            }
             kernelForm = null;
             startupForm?.EnableFormButton(FormType.KernelEditor);
         }
 
         private static void sceneFormClosed(object? sender, FormClosedEventArgs e)
         {
+            if (sender is Form form)
+            {
+                form.FormClosed -= sceneFormClosed;
+            }
             sceneEditorForm = null;
             startupForm?.EnableFormButton(FormType.SceneEditor);
         }
 
         private static void exeFormClosed(object? sender, FormClosedEventArgs e)
         {
+            if (sender is Form form)
+            {
+                form.FormClosed -= exeFormClosed;
+            }
             exeEditorForm = null;
             startupForm?.EnableFormButton(FormType.ExeEditor);
         }

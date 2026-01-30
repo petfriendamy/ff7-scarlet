@@ -108,10 +108,11 @@ namespace FF7Scarlet.SceneEditor.Controls
                 }
 
                 currentAnimationState.AnimationIndex = animationIndex;
-                currentAnimationState.CurrentFrame = 0;
+                int frameCount = loadedAnimations.Value.SkeletonAnimations[animationIndex].frames.Count;
+                currentAnimationState.CurrentFrame = frameCount > 0 ? 0 : 0;
                 currentAnimationState.WeaponAnimationIndex = -1;
                 renderContext.Animation = currentAnimationState;
-                totalFrames = loadedAnimations.Value.SkeletonAnimations[animationIndex].frames.Count;
+                totalFrames = frameCount;
 
                 UpdateFrameCounter();
 
@@ -157,45 +158,70 @@ namespace FF7Scarlet.SceneEditor.Controls
             }
         }
 
+        private int GetActualFrameCount()
+        {
+            if (loadedAnimations != null && renderContext != null)
+            {
+                int animIndex = Math.Max(0, Math.Min(renderContext.Animation.AnimationIndex, loadedAnimations.Value.SkeletonAnimations.Count - 1));
+                return loadedAnimations.Value.SkeletonAnimations[animIndex].frames.Count;
+            }
+            return 0;
+        }
+
         private void AdvanceFrame()
         {
-            if (renderContext != null && totalFrames > 0)
+            if (renderContext != null && loadedAnimations != null)
             {
-                int newFrame = renderContext.Animation.CurrentFrame + 1;
-                if (newFrame >= totalFrames)
+                int actualFrameCount = GetActualFrameCount();
+                if (actualFrameCount > 0)
                 {
-                    newFrame = 0;
+                    int animIndex = renderContext.Animation.AnimationIndex;
+                    animIndex = Math.Max(0, Math.Min(animIndex, loadedAnimations.Value.SkeletonAnimations.Count - 1));
+
+                    int newFrame = renderContext.Animation.CurrentFrame + 1;
+                    int frameCount = loadedAnimations.Value.SkeletonAnimations[animIndex].frames.Count;
+                    if (newFrame >= frameCount)
+                    {
+                        newFrame = 0;
+                    }
+                    currentAnimationState.CurrentFrame = newFrame;
+                    currentAnimationState.AnimationIndex = animIndex;
+                    currentAnimationState.WeaponAnimationIndex = -1;
+                    renderContext.Animation = currentAnimationState;
+                    UpdateFrameCounter();
+                    this.Invalidate();
                 }
-                currentAnimationState.CurrentFrame = newFrame;
-                currentAnimationState.AnimationIndex = renderContext.Animation.AnimationIndex;
-                currentAnimationState.WeaponAnimationIndex = -1;
-                renderContext.Animation = currentAnimationState;
-                UpdateFrameCounter();
-                this.Invalidate();
             }
         }
 
         private void StepFrame(int delta)
         {
-            if (renderContext != null && totalFrames > 0)
+            if (renderContext != null && loadedAnimations != null)
             {
                 PauseAnimation();
 
-                int newFrame = renderContext.Animation.CurrentFrame + delta;
-                if (newFrame < 0)
+                int animIndex = renderContext.Animation.AnimationIndex;
+                animIndex = Math.Max(0, Math.Min(animIndex, loadedAnimations.Value.SkeletonAnimations.Count - 1));
+
+                int frameCount = loadedAnimations.Value.SkeletonAnimations[animIndex].frames.Count;
+                if (frameCount > 0)
                 {
-                    newFrame = totalFrames - 1;
+                    int newFrame = renderContext.Animation.CurrentFrame + delta;
+                    if (newFrame < 0)
+                    {
+                        newFrame = frameCount - 1;
+                    }
+                    else if (newFrame >= frameCount)
+                    {
+                        newFrame = 0;
+                    }
+                    currentAnimationState.CurrentFrame = newFrame;
+                    currentAnimationState.AnimationIndex = animIndex;
+                    currentAnimationState.WeaponAnimationIndex = -1;
+                    renderContext.Animation = currentAnimationState;
+                    UpdateFrameCounter();
+                    this.Invalidate();
                 }
-                else if (newFrame >= totalFrames)
-                {
-                    newFrame = 0;
-                }
-                currentAnimationState.CurrentFrame = newFrame;
-                currentAnimationState.AnimationIndex = renderContext.Animation.AnimationIndex;
-                currentAnimationState.WeaponAnimationIndex = -1;
-                renderContext.Animation = currentAnimationState;
-                UpdateFrameCounter();
-                this.Invalidate();
             }
         }
 
@@ -271,8 +297,26 @@ namespace FF7Scarlet.SceneEditor.Controls
                 GL.ClearColor(CLEAR_COLOR);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-                if (renderContext != null)
+                if (renderContext != null && loadedAnimations != null)
                 {
+                    int animIndex = renderContext.Animation.AnimationIndex;
+                    int currentFrame = renderContext.Animation.CurrentFrame;
+
+                    if (loadedAnimations.Value.SkeletonAnimations.Count > 0)
+                    {
+                        animIndex = Math.Max(0, Math.Min(animIndex, loadedAnimations.Value.SkeletonAnimations.Count - 1));
+                        int frameCount = loadedAnimations.Value.SkeletonAnimations[animIndex].frames.Count;
+                        currentFrame = Math.Max(0, Math.Min(currentFrame, frameCount - 1));
+
+                        if (animIndex != renderContext.Animation.AnimationIndex || currentFrame != renderContext.Animation.CurrentFrame)
+                        {
+                            currentAnimationState.AnimationIndex = animIndex;
+                            currentAnimationState.CurrentFrame = currentFrame;
+                            currentAnimationState.WeaponAnimationIndex = -1;
+                            renderContext.Animation = currentAnimationState;
+                        }
+                    }
+
                     ModelDrawing.DrawSkeletonModel(renderContext);
                 }
 
@@ -367,7 +411,7 @@ namespace FF7Scarlet.SceneEditor.Controls
             GLRenderer.Shutdown();
         }
 
-        private void ModelPreviewControl_Disposed(object sender, EventArgs e)
+        private void ModelPreviewControl_Disposed(object? sender, EventArgs e)
         {
             if (animationTimer != null)
             {
