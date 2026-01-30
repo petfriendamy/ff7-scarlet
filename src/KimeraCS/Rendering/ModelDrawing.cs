@@ -162,7 +162,9 @@ namespace KimeraCS.Rendering
                 }
 
                 // Debug.Print bFrame.bones[0].alpha; ", "; bFrame.bones[0].Beta; ", "; bFrame.bones[0].Gamma
-                BuildRotationMatrixWithQuaternions(bFrame.bones[0].alpha, bFrame.bones[0].beta, bFrame.bones[0].gamma, ref rot_mat);
+                // IMPORTANT: Changed from BuildRotationMatrixWithQuaternions (Y→X→Z) to BuildRotationMatrixWithQuaternionsXYZ (X→Y→Z)
+                // This aligns root bone rendering with camera rotation order for consistent transformations
+                BuildRotationMatrixWithQuaternionsXYZ(bFrame.bones[0].alpha, bFrame.bones[0].beta, bFrame.bones[0].gamma, ref rot_mat);
                 GL.MultMatrixd(rot_mat);
 
                 for (iBoneIdx = 0; iBoneIdx < bSkeleton.nBones; iBoneIdx++)
@@ -181,15 +183,12 @@ namespace KimeraCS.Rendering
 
                         GL.PushMatrix();
 
-                        // -- Commented in KimeraVB6
-                        //GL.Rotated(bFrame.bones[bi + 1].beta, 0, 1, 0);
-                        //GL.Rotated(bFrame.bones[bi + 1].alpha, 1, 0, 0);
-                        //GL.Rotated(bFrame.bones[bi + 1].gamma, 0, 0, 1);
-
-                        BuildRotationMatrixWithQuaternions(bFrame.bones[iBoneIdx + itmpbones].alpha,
-                                                           bFrame.bones[iBoneIdx + itmpbones].beta,
-                                                           bFrame.bones[iBoneIdx + itmpbones].gamma,
-                                                           ref rot_mat);
+                        // IMPORTANT: Changed from BuildRotationMatrixWithQuaternions (Y→X→Z) to BuildRotationMatrixWithQuaternionsXYZ (X→Y→Z)
+                        // This aligns child bone rendering with camera rotation order for consistent transformations
+                        BuildRotationMatrixWithQuaternionsXYZ(bFrame.bones[iBoneIdx + itmpbones].alpha,
+                                                            bFrame.bones[iBoneIdx + itmpbones].beta,
+                                                            bFrame.bones[iBoneIdx + itmpbones].gamma,
+                                                            ref rot_mat);
                         GL.MultMatrixd(rot_mat);
 
                         DrawBattleSkeletonBone(bSkeleton.bones[iBoneIdx], bSkeleton.TexIDS,
@@ -225,7 +224,9 @@ namespace KimeraCS.Rendering
 
                     if (wpFrame.bones != null && wpFrame.bones.Count > 0)
                     {
-                        BuildRotationMatrixWithQuaternions(wpFrame.bones[0].alpha, wpFrame.bones[0].beta, wpFrame.bones[0].gamma, ref rot_mat);
+                        // IMPORTANT: Changed from BuildRotationMatrixWithQuaternions (Y→X→Z) to BuildRotationMatrixWithQuaternionsXYZ (X→Y→Z)
+                        // This aligns weapon bone rendering with camera rotation order for consistent transformations
+                        BuildRotationMatrixWithQuaternionsXYZ(wpFrame.bones[0].alpha, wpFrame.bones[0].beta, wpFrame.bones[0].gamma, ref rot_mat);
                         GL.MultMatrixd(rot_mat);
                     }
 
@@ -323,7 +324,29 @@ namespace KimeraCS.Rendering
 
                         case ModelType.K_AA_SKELETON:
                         case ModelType.K_MAGIC_SKELETON:
-                            ComputeBattleBoundingBox(battleSkel, battleAnims.SkeletonAnimations[ctx.Animation.AnimationIndex].frames[ctx.Animation.CurrentFrame],
+                            if (battleAnims.SkeletonAnimations.Count == 0)
+                            {
+                                break;
+                            }
+
+                            int safeAnimIndex = ctx.Animation.AnimationIndex;
+                            if (safeAnimIndex < 0 || safeAnimIndex >= battleAnims.SkeletonAnimations.Count)
+                            {
+                                safeAnimIndex = 0;
+                            }
+
+                            var animation = battleAnims.SkeletonAnimations[safeAnimIndex];
+                            int safeFrameIndex = ctx.Animation.CurrentFrame;
+                            if (animation.frames.Count == 0)
+                            {
+                                break;
+                            }
+                            if (safeFrameIndex < 0 || safeFrameIndex >= animation.frames.Count)
+                            {
+                                safeFrameIndex = 0;
+                            }
+
+                            ComputeBattleBoundingBox(battleSkel, animation.frames[safeFrameIndex],
                                                      ref p_min, ref p_max);
 
                             SetCameraAroundModel(ref p_min, ref p_max,
@@ -336,7 +359,7 @@ namespace KimeraCS.Rendering
 
                             GL.Disable(EnableCap.Lighting);
 
-                            //SelectBattleBoneAndModel(battleSkel, battleAnims.SkeletonAnimations[ctx.Animation.AnimationIndex].frames[ctx.Animation.CurrentFrame],
+                            //SelectBattleBoneAndModel(battleSkel, animation.frames[safeFrameIndex],
                             //    tmpbFrame, ctx.Animation.WeaponAnimationIndex, ctx.Selection.SelectedBone, ctx.Selection.SelectedBonePiece);
                             break;
                     }

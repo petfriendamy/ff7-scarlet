@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="tests\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
     <PackageReference Include="libzopfli-standard" Version="1.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1" />

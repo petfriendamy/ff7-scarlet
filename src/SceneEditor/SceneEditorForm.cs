@@ -1317,7 +1317,14 @@ namespace FF7Scarlet.SceneEditor
                 {
                     if (enemyModelPreviewControl.ModelLoaded)
                     {
-                        enemyModelPreviewControl.SetAnimation(0);
+                        try
+                        {
+                            enemyModelPreviewControl.SetAnimation(0);
+                        }
+                        catch
+                        {
+                            enemyModelPreviewControl.StopAnimation();
+                        }
                     }
 
                     comboBoxEnemyAttackID.SelectedIndex = 0;
@@ -1357,14 +1364,37 @@ namespace FF7Scarlet.SceneEditor
                 {
                     MessageDialog.ShowError(
                         $"Animation index {animIndex} is invalid for this model.\n" +
-                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).",
+                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).\n" +
+                        "Defaulting to animation 0.",
+                        "Animation Error");
+                    try
+                    {
+                        enemyModelPreviewControl.SetAnimation(0);
+                    }
+                    catch
+                    {
+                        enemyModelPreviewControl.StopAnimation();
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    MessageDialog.ShowError(
+                        $"No animations available for this model.\n" +
+                        "Please select a different model or check the model data.",
                         "Animation Error");
                     enemyModelPreviewControl.StopAnimation();
                 }
                 catch (Exception ex)
                 {
                     ExceptionHandler.Handle(ex, "playing attack animation");
-                    enemyModelPreviewControl.StopAnimation();
+                    try
+                    {
+                        enemyModelPreviewControl.SetAnimation(0);
+                    }
+                    catch
+                    {
+                        enemyModelPreviewControl.StopAnimation();
+                    }
                 }
             }
         }

@@ -101,6 +101,11 @@ namespace FF7Scarlet.SceneEditor.Controls
         {
             if (renderContext != null && loadedAnimations != null)
             {
+                if (loadedAnimations.Value.SkeletonAnimations.Count == 0)
+                {
+                    throw new InvalidOperationException("No animations available for this model.");
+                }
+
                 if (animationIndex < 0 || animationIndex >= loadedAnimations.Value.SkeletonAnimations.Count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(animationIndex),
@@ -311,25 +316,39 @@ namespace FF7Scarlet.SceneEditor.Controls
                         modelData.BattleAnimations = loadedAnimations.Value;
                         modelData.TextureIds = ((BattleSkeleton)load).TexIDS;
 
-                        int safeAnimIndex = Math.Min(initialAnimationIndex, loadedAnimations.Value.SkeletonAnimations.Count - 1);
-                        ComputeBattleBoundingBox(
-                            modelData.BattleSkeleton,
-                            loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames[0],
-                            ref p_min, ref p_max);
+                        int safeAnimIndex = 0;
+                        if (loadedAnimations.Value.SkeletonAnimations.Count > 0)
+                        {
+                            safeAnimIndex = Math.Min(initialAnimationIndex, loadedAnimations.Value.SkeletonAnimations.Count - 1);
+
+                            if (loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames.Count > 0)
+                            {
+                                ComputeBattleBoundingBox(
+                                    modelData.BattleSkeleton,
+                                    loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames[0],
+                                    ref p_min, ref p_max);
+                            }
+                        }
 
                         renderContext = RenderingContext.CreateWithModelData(
                             ModelType.K_AA_SKELETON,
                             modelData,
-                            new CameraState
-                            {
-                                Alpha = 200,
-                                Beta = 45,
-                                Gamma = 0,
-                                Distance = -1.25f * Utils.ComputeSceneRadius(p_min, p_max),
-                                PanX = 0,
-                                PanY = -300,
-                                PanZ = 0
-                            },
+                             new CameraState
+                             {
+                                 Alpha = 200,
+                                 Beta = 45,
+                                 Gamma = 0,
+                                 // IMPORTANT: Distance multiplier increased from 1.25x to 2.0x (60% farther camera)
+                                 // This fixes models appearing 60% too large
+                                 // Reference: Original KimeraCS implementation uses 2.0x multiplier
+                                 Distance = -2.0f * Utils.ComputeSceneRadius(p_min, p_max),
+                                 PanX = 0,
+                                 // IMPORTANT: PanY changed from -300 to 0
+                                 // Previous -300 offset shifted models upward in viewport
+                                 // Removing offset properly centers models vertically
+                                 PanY = 0,
+                                 PanZ = 0
+                             },
                             new AnimationState
                             {
                                 AnimationIndex = safeAnimIndex,
@@ -340,7 +359,15 @@ namespace FF7Scarlet.SceneEditor.Controls
                             savedTransform
                         );
 
-                        totalFrames = loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames.Count;
+                        if (loadedAnimations.Value.SkeletonAnimations.Count > 0)
+                        {
+                            totalFrames = loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames.Count;
+                        }
+                        else
+                        {
+                            totalFrames = 0;
+                        }
+
                         ModelLoaded = true;
 
                         currentAnimationState.AnimationIndex = safeAnimIndex;
@@ -358,7 +385,6 @@ namespace FF7Scarlet.SceneEditor.Controls
                         }
                     }
                 }
-                this.Invalidate();
             }
         }
 
