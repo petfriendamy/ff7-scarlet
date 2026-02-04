@@ -1,15 +1,18 @@
 ﻿using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
-using Shojy.FF7.Elena;
 using LibZopfliStandard;
+using Shojy.FF7.Elena;
 using System.IO.Compression;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace FF7Scarlet.Compression
 {
+    public enum CompressionType { Standard, Zopfli }
+
     public static class Gzip
     {
-        public static void CreateKernel(Kernel kernel, string path, string? kernel2Path = null)
+        public static void CreateKernel(Kernel kernel, CompressionType compressionType, string path, string? kernel2Path = null)
         {
             ushort i;
             var data = new List<byte>();
@@ -19,7 +22,7 @@ namespace FF7Scarlet.Compression
             {
                 uncompressedSection = kernel.GetSectionRawData((KernelSection)(i + 1));
                 uncompressedLength = (ushort)uncompressedSection.Length;
-                compressedSection = GetCompressedData(uncompressedSection);
+                compressedSection = GetCompressedData(uncompressedSection, compressionType);
                 compressedLength = (ushort)compressedSection.Length;
 
                 data.AddRange(BitConverter.GetBytes(compressedLength));
@@ -160,7 +163,7 @@ namespace FF7Scarlet.Compression
             return sceneList;
         }
 
-        private static byte[][] GetCompressedScenes(ref Scene[] sceneList, int start, int count)
+        private static byte[][] GetCompressedScenes(ref Scene[] sceneList, int start, int count, CompressionType compressionType)
         {
             if (start + count > Scene.SCENE_COUNT)
             {
@@ -169,7 +172,7 @@ namespace FF7Scarlet.Compression
             var compressed = new byte[count][];
             for (int i = start; i < start + count; ++i)
             {
-                var temp = GetCompressedData(sceneList[i].GetRawData());
+                var temp = GetCompressedData(sceneList[i].GetRawData(), compressionType);
                 if (temp.Length % 4 != 0) //must be a multiple of 4
                 {
                     int len = temp.Length + 1;
@@ -239,7 +242,7 @@ namespace FF7Scarlet.Compression
             return merged.ToArray();
         }
 
-        public static void CreateSceneBin(Scene[] sceneList, string path, ref byte[] sceneLookupTable)
+        public static byte[] CompressSceneBin(Scene[] sceneList, ref byte[] sceneLookupTable, CompressionType compressionType)
         {
             //fill the scene lookup table with 0xFF
             for (int i = 0; i < Scene.BLOCK_COUNT; ++i)
@@ -249,40 +252,50 @@ namespace FF7Scarlet.Compression
 
             //write the compressed data to a file and update lookup table
             int currScene = 0, currBlock = 0;
-            using (var fs = new FileStream(path, FileMode.Create))
-            using (var writer = new BinaryWriter(fs))
+            var output = new List<byte>();
+            var compressedScenes = GetCompressedScenes(ref sceneList, 0, Scene.SCENE_COUNT, compressionType);
+            while (currScene < Scene.SCENE_COUNT && currBlock < Scene.BLOCK_COUNT)
             {
-                var compressedScenes = GetCompressedScenes(ref sceneList, 0, Scene.SCENE_COUNT);
-                while (currScene < Scene.SCENE_COUNT && currBlock < Scene.BLOCK_COUNT)
-                {
-                    int len = GetTrimmedLength(ref compressedScenes, currScene);
-                    writer.Write(MergeCompressedScenes(ref compressedScenes, currScene, len));
-                    sceneLookupTable[currBlock] = (byte)currScene;
-                    currScene += len;
-                    currBlock++;
-                }
+                int len = GetTrimmedLength(ref compressedScenes, currScene);
+                output.AddRange(MergeCompressedScenes(ref compressedScenes, currScene, len));
+                sceneLookupTable[currBlock] = (byte)currScene;
+                currScene += len;
+                currBlock++;
             }
+            return output.ToArray();
         }
 
-        public static int CreateSceneChunk(Scene[] sceneList, string path, int start, int count)
+        public static int CreateSceneChunk(Scene[] sceneList, string path, int start, int count, CompressionType compressionType)
         {
-            var compressed = GetCompressedScenes(ref sceneList, start, count);
+            var compressed = GetCompressedScenes(ref sceneList, start, count, compressionType);
             int newCount = GetTrimmedLength(ref compressed);
             File.WriteAllBytes(path, MergeCompressedScenes(ref compressed, 0, newCount));
             return newCount;
         }
 
-        private static byte[] GetCompressedData(byte[] uncompressedData)
+        private static byte[] GetCompressedData(byte[] uncompressedData, CompressionType compressionType)
         {
-            var options = new ZopfliOptions { verbose = 0 };
             using (var outputStream = new MemoryStream())
             {
-                using (var gzipper = new ZopfliStream(outputStream, ZopfliFormat.ZOPFLI_FORMAT_GZIP, options))
+                if (compressionType == CompressionType.Standard)
                 {
-                    gzipper.Write(uncompressedData, 0, uncompressedData.Length);
-                    gzipper.Flush();
+                    using (var gzipper = new GZipStream(outputStream, CompressionLevel.SmallestSize))
+                    {
+                        gzipper.Write(uncompressedData, 0, uncompressedData.Length);
+                        gzipper.Flush();
+                    }
+                    return outputStream.ToArray();
                 }
-                return outputStream.ToArray();
+                else
+                {
+                    var options = new ZopfliOptions { verbose = 0 };
+                    using (var gzipper = new ZopfliStream(outputStream, ZopfliFormat.ZOPFLI_FORMAT_GZIP, options))
+                    {
+                        gzipper.Write(uncompressedData, 0, uncompressedData.Length);
+                        gzipper.Flush();
+                    }
+                    return outputStream.ToArray();
+                }
             }
         }
     }

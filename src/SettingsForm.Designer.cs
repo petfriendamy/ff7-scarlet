@@ -50,11 +50,14 @@
             labelUpdateChannelDesc = new Label();
             labelUpdateChannel = new Label();
             comboBoxUpdateChannel = new ComboBox();
+            groupBoxCompression = new GroupBox();
+            comboBoxCompression = new ComboBox();
             groupBoxBattleLgp.SuspendLayout();
             groupBoxVanillaExe.SuspendLayout();
             groupBoxPS3Tweaks.SuspendLayout();
             groupBoxRememberLastOpened.SuspendLayout();
             groupBoxCheckForUpdates.SuspendLayout();
+            groupBoxCompression.SuspendLayout();
             SuspendLayout();
             // 
             // groupBoxBattleLgp
@@ -63,11 +66,11 @@
             groupBoxBattleLgp.Controls.Add(labelBattleLgp);
             groupBoxBattleLgp.Controls.Add(textBoxBattleLgp);
             groupBoxBattleLgp.Controls.Add(buttonBattleLgpBrowse);
-            groupBoxBattleLgp.Location = new Point(16, 279);
+            groupBoxBattleLgp.Location = new Point(242, 222);
             groupBoxBattleLgp.Margin = new Padding(4, 3, 4, 3);
             groupBoxBattleLgp.Name = "groupBoxBattleLgp";
             groupBoxBattleLgp.Padding = new Padding(4, 3, 4, 3);
-            groupBoxBattleLgp.Size = new Size(438, 102);
+            groupBoxBattleLgp.Size = new Size(330, 109);
             groupBoxBattleLgp.TabIndex = 1;
             groupBoxBattleLgp.TabStop = false;
             groupBoxBattleLgp.Text = "battle.lgp";
@@ -77,23 +80,23 @@
             labelBattleLgp.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             labelBattleLgp.Location = new Point(8, 19);
             labelBattleLgp.Name = "labelBattleLgp";
-            labelBattleLgp.Size = new Size(422, 48);
+            labelBattleLgp.Size = new Size(314, 55);
             labelBattleLgp.TabIndex = 6;
             labelBattleLgp.Text = "This file contains the battle models, and allows you to preview enemy models in the scene editor.";
             // 
             // textBoxBattleLgp
             // 
             textBoxBattleLgp.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxBattleLgp.Location = new Point(10, 71);
+            textBoxBattleLgp.Location = new Point(10, 78);
             textBoxBattleLgp.Margin = new Padding(4, 3, 4, 3);
             textBoxBattleLgp.Name = "textBoxBattleLgp";
-            textBoxBattleLgp.Size = new Size(326, 23);
+            textBoxBattleLgp.Size = new Size(218, 23);
             textBoxBattleLgp.TabIndex = 5;
             // 
             // buttonBattleLgpBrowse
             // 
             buttonBattleLgpBrowse.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonBattleLgpBrowse.Location = new Point(344, 70);
+            buttonBattleLgpBrowse.Location = new Point(236, 77);
             buttonBattleLgpBrowse.Margin = new Padding(4, 3, 4, 3);
             buttonBattleLgpBrowse.Name = "buttonBattleLgpBrowse";
             buttonBattleLgpBrowse.Size = new Size(88, 23);
@@ -105,7 +108,7 @@
             // buttonOK
             // 
             buttonOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonOK.Location = new Point(377, 466);
+            buttonOK.Location = new Point(497, 346);
             buttonOK.Name = "buttonOK";
             buttonOK.Size = new Size(75, 23);
             buttonOK.TabIndex = 3;
@@ -116,7 +119,7 @@
             // buttonCancel
             // 
             buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonCancel.Location = new Point(296, 466);
+            buttonCancel.Location = new Point(416, 346);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(75, 23);
             buttonCancel.TabIndex = 2;
@@ -129,11 +132,11 @@
             groupBoxVanillaExe.Controls.Add(labelVanillaExe);
             groupBoxVanillaExe.Controls.Add(textBoxVanillaExe);
             groupBoxVanillaExe.Controls.Add(buttonVanillaExeBrowse);
-            groupBoxVanillaExe.Location = new Point(16, 175);
+            groupBoxVanillaExe.Location = new Point(242, 118);
             groupBoxVanillaExe.Margin = new Padding(4, 3, 4, 3);
             groupBoxVanillaExe.Name = "groupBoxVanillaExe";
             groupBoxVanillaExe.Padding = new Padding(4, 3, 4, 3);
-            groupBoxVanillaExe.Size = new Size(438, 98);
+            groupBoxVanillaExe.Size = new Size(330, 98);
             groupBoxVanillaExe.TabIndex = 0;
             groupBoxVanillaExe.TabStop = false;
             groupBoxVanillaExe.Text = "Unedited ff7.exe";
@@ -143,7 +146,7 @@
             labelVanillaExe.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             labelVanillaExe.Location = new Point(9, 19);
             labelVanillaExe.Name = "labelVanillaExe";
-            labelVanillaExe.Size = new Size(420, 43);
+            labelVanillaExe.Size = new Size(312, 43);
             labelVanillaExe.TabIndex = 6;
             labelVanillaExe.Text = "This should be a completely unedited ff7.exe file, to be referenced when creating Hext files. Currently only English EXEs are supported.";
             // 
@@ -153,13 +156,13 @@
             textBoxVanillaExe.Location = new Point(10, 65);
             textBoxVanillaExe.Margin = new Padding(4, 3, 4, 3);
             textBoxVanillaExe.Name = "textBoxVanillaExe";
-            textBoxVanillaExe.Size = new Size(326, 23);
+            textBoxVanillaExe.Size = new Size(218, 23);
             textBoxVanillaExe.TabIndex = 5;
             // 
             // buttonVanillaExeBrowse
             // 
             buttonVanillaExeBrowse.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonVanillaExeBrowse.Location = new Point(344, 64);
+            buttonVanillaExeBrowse.Location = new Point(236, 64);
             buttonVanillaExeBrowse.Margin = new Padding(4, 3, 4, 3);
             buttonVanillaExeBrowse.Name = "buttonVanillaExeBrowse";
             buttonVanillaExeBrowse.Size = new Size(88, 23);
@@ -173,9 +176,9 @@
             groupBoxPS3Tweaks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxPS3Tweaks.Controls.Add(checkBoxPS3Tweaks);
             groupBoxPS3Tweaks.Controls.Add(labelPS3Tweaks);
-            groupBoxPS3Tweaks.Location = new Point(16, 387);
+            groupBoxPS3Tweaks.Location = new Point(16, 241);
             groupBoxPS3Tweaks.Name = "groupBoxPS3Tweaks";
-            groupBoxPS3Tweaks.Size = new Size(438, 73);
+            groupBoxPS3Tweaks.Size = new Size(218, 90);
             groupBoxPS3Tweaks.TabIndex = 4;
             groupBoxPS3Tweaks.TabStop = false;
             groupBoxPS3Tweaks.Text = "Postscriptthree tweaks";
@@ -184,7 +187,7 @@
             // 
             checkBoxPS3Tweaks.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBoxPS3Tweaks.AutoSize = true;
-            checkBoxPS3Tweaks.Location = new Point(10, 48);
+            checkBoxPS3Tweaks.Location = new Point(10, 65);
             checkBoxPS3Tweaks.Name = "checkBoxPS3Tweaks";
             checkBoxPS3Tweaks.Size = new Size(68, 19);
             checkBoxPS3Tweaks.TabIndex = 1;
@@ -196,17 +199,16 @@
             labelPS3Tweaks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             labelPS3Tweaks.Location = new Point(10, 19);
             labelPS3Tweaks.Name = "labelPS3Tweaks";
-            labelPS3Tweaks.Size = new Size(422, 20);
+            labelPS3Tweaks.Size = new Size(202, 37);
             labelPS3Tweaks.TabIndex = 0;
             labelPS3Tweaks.Text = "Include additional features enabled by the Postscriptthree Tweaks mod.";
             // 
             // groupBoxRememberLastOpened
             // 
-            groupBoxRememberLastOpened.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxRememberLastOpened.Controls.Add(checkBoxRemeberLastOpened);
             groupBoxRememberLastOpened.Location = new Point(16, 118);
             groupBoxRememberLastOpened.Name = "groupBoxRememberLastOpened";
-            groupBoxRememberLastOpened.Size = new Size(438, 51);
+            groupBoxRememberLastOpened.Size = new Size(218, 51);
             groupBoxRememberLastOpened.TabIndex = 5;
             groupBoxRememberLastOpened.TabStop = false;
             groupBoxRememberLastOpened.Text = "Remember last opened files";
@@ -231,7 +233,7 @@
             groupBoxCheckForUpdates.Controls.Add(comboBoxUpdateChannel);
             groupBoxCheckForUpdates.Location = new Point(16, 12);
             groupBoxCheckForUpdates.Name = "groupBoxCheckForUpdates";
-            groupBoxCheckForUpdates.Size = new Size(438, 100);
+            groupBoxCheckForUpdates.Size = new Size(556, 100);
             groupBoxCheckForUpdates.TabIndex = 6;
             groupBoxCheckForUpdates.TabStop = false;
             groupBoxCheckForUpdates.Text = "Check for updates";
@@ -239,7 +241,7 @@
             // buttonCheckForUpdates
             // 
             buttonCheckForUpdates.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            buttonCheckForUpdates.Location = new Point(314, 21);
+            buttonCheckForUpdates.Location = new Point(432, 21);
             buttonCheckForUpdates.Name = "buttonCheckForUpdates";
             buttonCheckForUpdates.Size = new Size(116, 23);
             buttonCheckForUpdates.TabIndex = 4;
@@ -251,7 +253,7 @@
             // 
             checkBoxUpdateOnLaunch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             checkBoxUpdateOnLaunch.AutoSize = true;
-            checkBoxUpdateOnLaunch.Location = new Point(314, 50);
+            checkBoxUpdateOnLaunch.Location = new Point(432, 50);
             checkBoxUpdateOnLaunch.Name = "checkBoxUpdateOnLaunch";
             checkBoxUpdateOnLaunch.Size = new Size(115, 19);
             checkBoxUpdateOnLaunch.TabIndex = 3;
@@ -263,7 +265,7 @@
             labelUpdateChannelDesc.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             labelUpdateChannelDesc.Location = new Point(109, 48);
             labelUpdateChannelDesc.Name = "labelUpdateChannelDesc";
-            labelUpdateChannelDesc.Size = new Size(199, 49);
+            labelUpdateChannelDesc.Size = new Size(317, 49);
             labelUpdateChannelDesc.TabIndex = 2;
             labelUpdateChannelDesc.Text = "(text goes here)";
             // 
@@ -284,9 +286,29 @@
             comboBoxUpdateChannel.Items.AddRange(new object[] { "Stable", "Canary" });
             comboBoxUpdateChannel.Location = new Point(109, 22);
             comboBoxUpdateChannel.Name = "comboBoxUpdateChannel";
-            comboBoxUpdateChannel.Size = new Size(199, 23);
+            comboBoxUpdateChannel.Size = new Size(317, 23);
             comboBoxUpdateChannel.TabIndex = 0;
             comboBoxUpdateChannel.SelectedIndexChanged += comboBoxUpdateChannel_SelectedIndexChanged;
+            // 
+            // groupBoxCompression
+            // 
+            groupBoxCompression.Controls.Add(comboBoxCompression);
+            groupBoxCompression.Location = new Point(16, 175);
+            groupBoxCompression.Name = "groupBoxCompression";
+            groupBoxCompression.Size = new Size(218, 59);
+            groupBoxCompression.TabIndex = 7;
+            groupBoxCompression.TabStop = false;
+            groupBoxCompression.Text = "Compression";
+            // 
+            // comboBoxCompression
+            // 
+            comboBoxCompression.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxCompression.FormattingEnabled = true;
+            comboBoxCompression.Items.AddRange(new object[] { "Standard (faster, but larger)", "Zopfli (slower, but smaller)" });
+            comboBoxCompression.Location = new Point(9, 22);
+            comboBoxCompression.Name = "comboBoxCompression";
+            comboBoxCompression.Size = new Size(203, 23);
+            comboBoxCompression.TabIndex = 8;
             // 
             // SettingsForm
             // 
@@ -294,7 +316,8 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = buttonCancel;
-            ClientSize = new Size(464, 501);
+            ClientSize = new Size(584, 381);
+            Controls.Add(groupBoxCompression);
             Controls.Add(groupBoxCheckForUpdates);
             Controls.Add(groupBoxRememberLastOpened);
             Controls.Add(groupBoxPS3Tweaks);
@@ -303,7 +326,7 @@
             Controls.Add(buttonOK);
             Controls.Add(groupBoxBattleLgp);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(480, 540);
+            MinimumSize = new Size(600, 420);
             Name = "SettingsForm";
             Text = "Scarlet - Settings";
             groupBoxBattleLgp.ResumeLayout(false);
@@ -316,6 +339,7 @@
             groupBoxRememberLastOpened.PerformLayout();
             groupBoxCheckForUpdates.ResumeLayout(false);
             groupBoxCheckForUpdates.PerformLayout();
+            groupBoxCompression.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -342,5 +366,7 @@
         private Label labelUpdateChannelDesc;
         private Button buttonCheckForUpdates;
         private CheckBox checkBoxUpdateOnLaunch;
+        private GroupBox groupBoxCompression;
+        private ComboBox comboBoxCompression;
     }
 }

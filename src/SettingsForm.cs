@@ -1,9 +1,10 @@
 using System.Configuration;
-using System.Diagnostics;
+using FF7Scarlet.Compression;
 using FF7Scarlet.ExeEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet
 {
     public partial class SettingsForm : Form
@@ -29,6 +30,7 @@ namespace FF7Scarlet
             comboBoxUpdateChannel.SelectedIndex = (int)DataManager.Updater.UpdateChannel;
             checkBoxUpdateOnLaunch.Checked = DataManager.Updater.UpdateOnStartup;
             checkBoxRemeberLastOpened.Checked = DataManager.RememberLastOpened;
+            comboBoxCompression.SelectedIndex = (int)DataManager.CompressionType;
             checkBoxPS3Tweaks.Checked = DataManager.PS3TweaksEnabled;
         }
 
@@ -184,6 +186,10 @@ namespace FF7Scarlet
                     //enable/disable remembering previously opened files
                     DataManager.RememberLastOpened = checkBoxRemeberLastOpened.Checked;
                     UpdateSetting(ref settings, DataManager.REMEMBER_LAST_OPENED_KEY, $"{DataManager.RememberLastOpened}");
+
+                    //set compression type
+                    DataManager.CompressionType = (CompressionType)comboBoxCompression.SelectedIndex;
+                    UpdateSetting(ref settings, DataManager.COMPRESSION_TYPE_KEY, Enum.GetName(DataManager.CompressionType));
 
                     //enable/disable PS3 tweaks
                     DataManager.PS3TweaksEnabled = checkBoxPS3Tweaks.Checked;

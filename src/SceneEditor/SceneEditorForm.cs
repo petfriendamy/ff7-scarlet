@@ -3,12 +3,11 @@ using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Inventory;
-
-using System.Diagnostics;
 using System.Globalization;
 using System.Media;
 using System.Text;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.SceneEditor
 {
     public partial class SceneEditorForm : Form
@@ -1908,9 +1907,7 @@ namespace FF7Scarlet.SceneEditor
             SyncAllUnsavedData();
             DialogResult result;
             string[] paths;
-#pragma warning disable CA1416 // Type or member is only supported on: 'windows' 6.1 and later
             using (var import = new OpenFileDialog())
-#pragma warning restore CA1416
             {
                 import.Filter = "Scene files|scene.*.bin;scene.bin.chunk.*";
                 import.Multiselect = true;

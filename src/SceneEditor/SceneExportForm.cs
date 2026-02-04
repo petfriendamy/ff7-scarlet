@@ -264,7 +264,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 result = await Task.Run(() =>
                 {
-                    return Gzip.CreateSceneChunk(sceneList, path, start, count);
+                    return Gzip.CreateSceneChunk(sceneList, path, start, count, DataManager.CompressionType);
                 });
             }
             catch (Exception ex)

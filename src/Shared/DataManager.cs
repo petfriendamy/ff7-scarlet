@@ -34,12 +34,14 @@ namespace FF7Scarlet.Shared
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
         public static bool RememberLastOpened { get; set; } = true;
+        public static CompressionType CompressionType { get; set; } = CompressionType.Standard;
         public static bool PS3TweaksEnabled { get; set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
         public static ScarletUpdater Updater { get; } = new ScarletUpdater();
 
         public const string
             REMEMBER_LAST_OPENED_KEY = "RememberLastOpened",
+            COMPRESSION_TYPE_KEY = "CompressionType",
             PS3_TWEAKS_KEY = "PS3TweaksEnabled";
 
         //clipboard
@@ -547,7 +549,8 @@ namespace FF7Scarlet.Shared
                 throw new FileNotFoundException("No kernel.bin file is loaded.");
             }
 
-            Gzip.CreateKernel(kernel, KernelPath, updateKernel2 ? Kernel2Path : null);
+            Gzip.CreateKernel(kernel, DataManager.CompressionType, KernelPath,
+                updateKernel2 ? Kernel2Path : null);
 
             if (reload) //reload the kernel
             {
@@ -563,12 +566,16 @@ namespace FF7Scarlet.Shared
 
         public static void CreateSceneBin()
         {
-            Gzip.CreateSceneBin(sceneList, ScenePath, ref sceneLookupTable);
-
-            //update the scene lookup table in the kernel
-            if (!LookupTableIsCorrect())
+            if (SceneFilePathExists)
             {
-                SyncLookupTable();
+                File.WriteAllBytes(ScenePath,
+                    Gzip.CompressSceneBin(sceneList, ref sceneLookupTable, CompressionType));
+
+                //update the scene lookup table in the kernel
+                if (!LookupTableIsCorrect())
+                {
+                    SyncLookupTable();
+                }
             }
         }
 
