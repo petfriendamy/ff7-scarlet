@@ -7,6 +7,8 @@ namespace FF7Scarlet.SceneEditor
 {
     public class BattleLgp
     {
+        private const ushort ARENA_OFFSET = 370;
+
         public struct ModelData
         {
             public readonly string Name;
@@ -130,18 +132,6 @@ namespace FF7Scarlet.SceneEditor
                     }
                 }
             }
-
-            //reader = new LgpReader(path);
-
-            //there's probably a better way to get models
-            /*modelsFull =
-                (from file in reader.ListFiles()
-                 orderby file
-                 select file).ToList().AsReadOnly();
-            models =
-                (from file in modelsFull
-                 where file.EndsWith("aa")
-                 select file).ToArray();*/
         }
 
         public BattleSkeleton? GetModelData(ushort modelID)
@@ -163,6 +153,11 @@ namespace FF7Scarlet.SceneEditor
                     models[modelID].Name);
             }
             return null;
+        }
+
+        public BattleSkeleton? GetBattleArena(ushort modelID)
+        {
+            return GetModelData((ushort)(modelID + ARENA_OFFSET));
         }
     }
 }

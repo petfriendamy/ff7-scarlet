@@ -29,6 +29,12 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
+        public CameraPlacementData(CameraPlacementData other)
+        {
+            Array.Copy(other.CameraPositions, CameraPositions, POSITION_COUNT);
+            Array.Copy(other.CameraDirections, CameraDirections, POSITION_COUNT);
+        }
+
         public CameraPlacementData(byte[] data)
         {
             short x, y, z;

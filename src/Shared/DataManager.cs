@@ -219,6 +219,36 @@ namespace FF7Scarlet.Shared
             }
         }
 
+        public static void ClearFilePath(FileClass fileClass)
+        {
+            switch (fileClass)
+            {
+                case FileClass.Kernel:
+                    KernelPath = string.Empty;
+                    Kernel = null;
+                    break;
+                case FileClass.Kernel2:
+                    Kernel2Path = string.Empty;
+                    break;
+                case FileClass.Scene:
+                    ScenePath = string.Empty;
+                    sceneList = new Scene[Scene.SCENE_COUNT];
+                    break;
+                case FileClass.Exe:
+                    ExePath = string.Empty;
+                    ExeData = null;
+                    break;
+                case FileClass.VanillaExe:
+                    VanillaExePath = string.Empty;
+                    VanillaExe = null;
+                    break;
+                case FileClass.BattleLgp:
+                    BattleLgpPath = string.Empty;
+                    BattleLgp = null;
+                    break;
+            }
+        }
+
         private static bool ValidateFile(FileClass fileClass, string path, bool isJPoriginal = false)
         {
             try

@@ -2,7 +2,6 @@ using KimeraCS.Core;
 using OpenTK.Graphics.OpenGL.Compatibility;
 using OpenTK.Mathematics;
 
-#nullable enable
 namespace KimeraCS.Rendering
 {
     using static FF7BattleAnimation;
@@ -100,13 +99,13 @@ namespace KimeraCS.Rendering
             GL.PopMatrix();
         }
 
-        private static void DrawBattleSkeleton(RenderingContext renderContext, int weaponIndex, int currFrame = -1, Vector3? p_min = null, Vector3? p_max = null)
+        private static void DrawBattleSkeleton(RenderingContext renderContext, int modelIndex, int weaponIndex, int currFrame = -1, Vector3? p_min = null, Vector3? p_max = null)
         {
             var modelData = renderContext.ModelData;
-            if (modelData != null)
+            if (modelData != null && modelData.BattleSkeletons.Length > modelIndex)
             {
-                var bSkeleton = modelData.BattleSkeleton;
-                var bAnimationsPack = modelData.BattleAnimations;
+                var bSkeleton = modelData.BattleSkeletons[modelIndex];
+                var bAnimationsPack = modelData.BattleAnimations[modelIndex];
                 var anim = renderContext.Animation;
 
                 if (bAnimationsPack.SkeletonAnimations.Count == 0)
@@ -291,7 +290,7 @@ namespace KimeraCS.Rendering
         /// If ctx.ModelData is set, uses that model data (fully decoupled).
         /// Otherwise falls back to static model data for backward compatibility.
         /// </summary>
-        public static void DrawSkeletonModel(RenderingContext ctx)
+        public static void DrawSkeletonModel(RenderingContext ctx, int modelIndex = 0)
         {
             double[] rot_mat = new double[16];
 
@@ -304,8 +303,6 @@ namespace KimeraCS.Rendering
             {
                 PModel pModel = modelData.PModel;
                 uint[] texIds = modelData.TextureIds;
-                BattleSkeleton battleSkel = modelData.BattleSkeleton;
-                BattleAnimationsPack battleAnims = modelData.BattleAnimations;
 
                 try
                 {
@@ -318,7 +315,7 @@ namespace KimeraCS.Rendering
                             ComputePModelBoundingBox(pModel, ref p_min, ref p_max);
 
                             SetCameraAroundModel(ref p_min, ref p_max,
-                                                 ctx.Camera.PanX, ctx.Camera.PanY, ctx.Camera.PanZ + ctx.Camera.Distance,
+                                                 ctx.Camera.Pan.X, ctx.Camera.Pan.Y, ctx.Camera.Pan.Z + ctx.Camera.Distance,
                                                  ctx.Camera.Alpha, ctx.Camera.Beta, ctx.Camera.Gamma, 1, 1, 1);
 
                             SetLights(ctx.Lighting, (float)(-2 * ComputeSceneRadius(p_min, p_max)));
@@ -348,6 +345,11 @@ namespace KimeraCS.Rendering
 
                         case ModelType.K_AA_SKELETON:
                         case ModelType.K_MAGIC_SKELETON:
+                            if (modelIndex >= modelData.BattleSkeletons.Length)
+                                break;
+
+                            BattleSkeleton battleSkel = modelData.BattleSkeletons[modelIndex];
+                            BattleAnimationsPack battleAnims = modelData.BattleAnimations[modelIndex];
                             int animIndex = ctx.Animation.AnimationIndex;
                             int currentFrame = ctx.Animation.CurrentFrame;
 
@@ -364,13 +366,16 @@ namespace KimeraCS.Rendering
                             ComputeBattleBoundingBox(battleSkel, battleAnims.SkeletonAnimations[animIndex].frames[currentFrame],
                                                      ref p_min, ref p_max);
 
-                            SetCameraAroundModel(ref p_min, ref p_max,
-                                                 ctx.Camera.PanX, ctx.Camera.PanY, ctx.Camera.PanZ + ctx.Camera.Distance,
-                                                 ctx.Camera.Alpha, ctx.Camera.Beta, ctx.Camera.Gamma, 1, 1, 1);
+                            if (!ctx.UseExternalCamera)
+                            {
+                                SetCameraAroundModel(ref p_min, ref p_max,
+                                                     ctx.Camera.Pan.X, ctx.Camera.Pan.Y, ctx.Camera.Pan.Z + ctx.Camera.Distance,
+                                                     ctx.Camera.Alpha, ctx.Camera.Beta, ctx.Camera.Gamma, 1, 1, 1);
 
-                            SetLights(ctx.Lighting, (float)(-2 * ComputeSceneRadius(p_min, p_max)));
+                                SetLights(ctx.Lighting, (float)(-2 * ComputeSceneRadius(p_min, p_max)));
+                            }
 
-                            DrawBattleSkeleton(ctx, 0, currentFrame, p_min, p_max);
+                            DrawBattleSkeleton(ctx, modelIndex, 0, currentFrame, p_min, p_max);
 
                             GL.Disable(EnableCap.Lighting);
 

@@ -45,6 +45,17 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
+        public BattleSetupData(BattleSetupData other)
+        {
+            Location = other.Location;
+            NextSceneID = other.NextSceneID;
+            EscapeCounter = other.EscapeCounter;
+            Array.Copy(other.BattleArenaIDs, BattleArenaIDs, BATTLE_ARENA_ID_COUNT);
+            BattleFlags = other.BattleFlags;
+            BattleType = other.BattleType;
+            PreBattleCameraPosition = other.PreBattleCameraPosition;
+        }
+
         public byte[] GetRawData()
         {
             var data = new byte[BLOCK_SIZE];

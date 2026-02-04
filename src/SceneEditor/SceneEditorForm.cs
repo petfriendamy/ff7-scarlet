@@ -864,16 +864,6 @@ namespace FF7Scarlet.SceneEditor
             }
             numericFormationPreBattleCamPosition.Value = formation.BattleSetupData.PreBattleCameraPosition;
 
-            //camera data
-            cameraPositionControlMain.SetPosition(formation.CameraPlacementData.CameraPositions[0],
-                formation.CameraPlacementData.CameraDirections[0]);
-            cameraPositionControlExtra1.SetPosition(formation.CameraPlacementData.CameraPositions[1],
-                formation.CameraPlacementData.CameraDirections[1]);
-            cameraPositionControlExtra2.SetPosition(formation.CameraPlacementData.CameraPositions[2],
-                formation.CameraPlacementData.CameraDirections[2]);
-            cameraPositionControlExtra3.SetPosition(formation.CameraPlacementData.CameraPositions[3],
-                formation.CameraPlacementData.CameraDirections[3]);
-
             //A.I. scripts
             scriptControlFormations.AIContainer = formation;
             UpdateScripts(formation, listBoxFormationScripts);
@@ -913,16 +903,6 @@ namespace FF7Scarlet.SceneEditor
             formation.BattleSetupData.BattleType = (BattleType)comboBoxFormationBattleType.SelectedIndex;
             formation.BattleSetupData.EscapeCounter = (ushort)numericFormationEscapeCounter.Value;
             formation.BattleSetupData.PreBattleCameraPosition = (byte)numericFormationPreBattleCamPosition.Value;
-
-            //camera data
-            formation.CameraPlacementData.CameraPositions[0] = cameraPositionControlMain.GetPosition();
-            formation.CameraPlacementData.CameraDirections[0] = cameraPositionControlMain.GetAngle();
-            formation.CameraPlacementData.CameraPositions[1] = cameraPositionControlExtra1.GetPosition();
-            formation.CameraPlacementData.CameraDirections[1] = cameraPositionControlExtra1.GetAngle();
-            formation.CameraPlacementData.CameraPositions[2] = cameraPositionControlExtra2.GetPosition();
-            formation.CameraPlacementData.CameraDirections[2] = cameraPositionControlExtra2.GetAngle();
-            formation.CameraPlacementData.CameraPositions[3] = cameraPositionControlExtra3.GetPosition();
-            formation.CameraPlacementData.CameraDirections[3] = cameraPositionControlExtra3.GetAngle();
 
             formationNeedsSync = false;
         }
@@ -1773,9 +1753,9 @@ namespace FF7Scarlet.SceneEditor
                     }
                     else
                         comboBoxFormationSelectedEnemy.SelectedIndex = validEnemies.IndexOf(enemy) + 1;
-                    numericFormationEnemyX.Value = SelectedFormationEnemy.Location.X;
-                    numericFormationEnemyY.Value = SelectedFormationEnemy.Location.Y;
-                    numericFormationEnemyZ.Value = SelectedFormationEnemy.Location.Z;
+                    numericFormationEnemyX.Value = (decimal)SelectedFormationEnemy.Location.X;
+                    numericFormationEnemyY.Value = (decimal)SelectedFormationEnemy.Location.Y;
+                    numericFormationEnemyZ.Value = (decimal)SelectedFormationEnemy.Location.Z;
                     numericFormationEnemyRow.Value = SelectedFormationEnemy.Row;
                     coverFlagsControlFormationEnemy.SetFlags(SelectedFormationEnemy.CoverFlags);
                     initialConditionControlEnemy.SetConditions(SelectedFormationEnemy.InitialConditionFlags);
@@ -1847,6 +1827,33 @@ namespace FF7Scarlet.SceneEditor
                     listBoxFormationBattleArena.Items[selectedForm] = $"Battle ID {newForm - 1}";
                 }
                 SetUnsaved(true);
+            }
+        }
+
+        private void buttonFormationCameraData_Click(object sender, EventArgs e)
+        {
+            if (SelectedScene != null && SelectedFormation != null)
+            {
+                //sync formation data before passing it to the editor
+                if (formationNeedsSync)
+                {
+                    SyncFormationData(SelectedFormation);
+                }
+                if (formationEnemyNeedsSync && SelectedFormationEnemy != null)
+                {
+                    SyncFormationEnemyData(SelectedFormationEnemy);
+                }
+
+                //open the 3D editor
+                using (var editor = new Formation3DEditorForm(SelectedFormation))
+                {
+                    if (editor.ShowDialog() == DialogResult.OK)
+                    {
+                        SelectedScene.Formations[SelectedFormationIndex] = editor.EditedFormation;
+                        LoadFormationData(editor.EditedFormation, true);
+                        SetUnsaved(true);
+                    }
+                }
             }
         }
 

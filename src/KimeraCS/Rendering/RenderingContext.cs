@@ -1,3 +1,4 @@
+using OpenTK.Mathematics;
 using KimeraCS.Core;
 
 namespace KimeraCS.Rendering
@@ -15,9 +16,9 @@ namespace KimeraCS.Rendering
         public float Beta;      // Y-axis rotation
         public float Gamma;     // Z-axis rotation
         public float Distance;  // Camera distance from origin
-        public float PanX;      // Horizontal pan offset
-        public float PanY;      // Vertical pan offset
-        public float PanZ;      // Depth pan offset
+        public Vector3 Pan;     // Pan offset
+        public Vector3 Eye;     // Camera's eye
+        public Vector3 Target;  // Camera's target
 
         public static CameraState Default => new CameraState
         {
@@ -25,9 +26,9 @@ namespace KimeraCS.Rendering
             Beta = 0,
             Gamma = 0,
             Distance = -10,
-            PanX = 0,
-            PanY = 0,
-            PanZ = 0
+            Pan = new Vector3(),
+            Eye = new Vector3(),
+            Target = new Vector3()
         };
     }
 
@@ -113,8 +114,8 @@ namespace KimeraCS.Rendering
         public uint[] TextureIds { get; set; } = Array.Empty<uint>();
 
         // Battle skeleton data (for K_AA_SKELETON, K_MAGIC_SKELETON)
-        public BattleSkeleton BattleSkeleton { get; set; }
-        public BattleAnimationsPack BattleAnimations { get; set; }
+        public BattleSkeleton[] BattleSkeletons { get; set; } = [];
+        public BattleAnimationsPack[] BattleAnimations { get; set; } = [];
     }
 
     /// <summary>
@@ -129,6 +130,13 @@ namespace KimeraCS.Rendering
         public LightingConfig Lighting { get; set; }
         public AnimationState Animation { get; set; }
         public SkeletonModelData? ModelData { get; set; }
+
+        /// <summary>
+        /// When true, DrawSkeletonModel will skip SetCameraAroundModel and SetLights,
+        /// allowing the caller to set up projection/modelview matrices externally via the
+        /// GL legacy matrix stack.
+        /// </summary>
+        public bool UseExternalCamera { get; set; }
 
         public RenderingContext()
         {
@@ -146,9 +154,9 @@ namespace KimeraCS.Rendering
         public static RenderingContext CreateWithModelData(
             ModelType modelType,
             SkeletonModelData modelData,
-            CameraState camera,
-            AnimationState animation,
-            LightingConfig lighting,
+            CameraState camera = default,
+            AnimationState animation = default,
+            LightingConfig lighting = default,
             ModelTransform transform = default)
         {
             return new RenderingContext

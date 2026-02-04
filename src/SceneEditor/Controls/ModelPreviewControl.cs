@@ -4,7 +4,7 @@ using KimeraCS.Rendering;
 using OpenTK.Graphics.OpenGL.Compatibility;
 using OpenTK.Mathematics;
 using static KimeraCS.Core.FF7BattleSkeleton;
-using BattleAnimPack = KimeraCS.Core.FF7BattleAnimationsPack.BattleAnimationsPack;
+using static KimeraCS.Core.FF7BattleAnimationsPack;
 
 namespace FF7Scarlet.SceneEditor.Controls
 {
@@ -22,7 +22,7 @@ namespace FF7Scarlet.SceneEditor.Controls
         private const int ANIMATION_FPS = 15;
 
         private System.Windows.Forms.Timer? animationTimer;
-        private KimeraCS.Core.FF7BattleAnimationsPack.BattleAnimationsPack? loadedAnimations;
+        private BattleAnimationsPack? loadedAnimations;
         private bool isPlaying;
         private int totalFrames;
         private AnimationState currentAnimationState;
@@ -125,7 +125,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                     PauseAnimation();
                 }
 
-                this.Invalidate();
+                glControl.Invalidate();
             }
         }
 
@@ -154,7 +154,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                 currentAnimationState.WeaponAnimationIndex = -1;
                 renderContext.Animation = currentAnimationState;
                 UpdateFrameCounter();
-                this.Invalidate();
+                glControl.Invalidate();
             }
         }
 
@@ -189,7 +189,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                     currentAnimationState.WeaponAnimationIndex = -1;
                     renderContext.Animation = currentAnimationState;
                     UpdateFrameCounter();
-                    this.Invalidate();
+                    glControl.Invalidate();
                 }
             }
         }
@@ -220,7 +220,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                     currentAnimationState.WeaponAnimationIndex = -1;
                     renderContext.Animation = currentAnimationState;
                     UpdateFrameCounter();
-                    this.Invalidate();
+                    glControl.Invalidate();
                 }
             }
         }
@@ -284,7 +284,7 @@ namespace FF7Scarlet.SceneEditor.Controls
             glControl.Focus();
         }
 
-        private void ModelPreviewControl_Paint(object sender, PaintEventArgs e)
+        private void glControl_Paint(object sender, PaintEventArgs e)
         {
             if (Loaded && DataManager.BattleLgp != null)
             {
@@ -347,17 +347,17 @@ namespace FF7Scarlet.SceneEditor.Controls
                     var anim = DataManager.BattleLgp.GetAnimationData((BattleSkeleton)load, modelID);
                     if (anim != null)
                     {
-                        loadedAnimations = (FF7BattleAnimationsPack.BattleAnimationsPack)anim;
+                        loadedAnimations = (BattleAnimationsPack)anim;
 
                         Vector3 p_min = new(), p_max = new();
                         var modelData = new SkeletonModelData();
-                        modelData.BattleSkeleton = (BattleSkeleton)load;
-                        modelData.BattleAnimations = loadedAnimations.Value;
+                        modelData.BattleSkeletons = [(BattleSkeleton)load];
+                        modelData.BattleAnimations = [loadedAnimations.Value];
                         modelData.TextureIds = ((BattleSkeleton)load).TexIDS;
 
                         int safeAnimIndex = Math.Min(initialAnimationIndex, loadedAnimations.Value.SkeletonAnimations.Count - 1);
                         ComputeBattleBoundingBox(
-                            modelData.BattleSkeleton,
+                            modelData.BattleSkeletons[0],
                             loadedAnimations.Value.SkeletonAnimations[safeAnimIndex].frames[0],
                             ref p_min, ref p_max);
 
@@ -370,9 +370,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                                 Beta = 45,
                                 Gamma = 0,
                                 Distance = -1.25f * Utils.ComputeSceneRadius(p_min, p_max),
-                                PanX = 0,
-                                PanY = -300,
-                                PanZ = 0
+                                Pan = new Vector3(0, -300, 0)
                             },
                             new AnimationState
                             {
@@ -402,7 +400,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                         }
                     }
                 }
-                this.Invalidate();
+                glControl.Invalidate();
             }
         }
 
@@ -458,16 +456,16 @@ namespace FF7Scarlet.SceneEditor.Controls
                     transform.RotateX += deltaY * ROTATION_SPEED;
                     renderContext.Transform = transform;
                     lastMousePosition = e.Location;
-                    this.Invalidate();
+                    glControl.Invalidate();
                 }
                 else if (isPanning)
                 {
                     var camera = renderContext.Camera;
-                    camera.PanX += deltaX * PAN_SPEED;
-                    camera.PanY -= deltaY * PAN_SPEED;
+                    camera.Pan.X += deltaX * PAN_SPEED;
+                    camera.Pan.Y -= deltaY * PAN_SPEED;
                     renderContext.Camera = camera;
                     lastMousePosition = e.Location;
-                    this.Invalidate();
+                    glControl.Invalidate();
                 }
             }
         }
@@ -479,7 +477,7 @@ namespace FF7Scarlet.SceneEditor.Controls
                 var camera = renderContext.Camera;
                 camera.Distance += e.Delta * ZOOM_SPEED;
                 renderContext.Camera = camera;
-                this.Invalidate();
+                glControl.Invalidate();
             }
         }
 

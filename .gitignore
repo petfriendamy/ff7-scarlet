@@ -363,3 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 *.DS_Store
 .vs/
+
+# AI settings
+.claude/

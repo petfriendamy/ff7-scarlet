@@ -138,7 +138,7 @@ namespace FF7Scarlet
                                 return;
 
                             case DialogResult.No:
-                                DataManager.SetFilePath(FileClass.VanillaExe, string.Empty);
+                                DataManager.ClearFilePath(FileClass.VanillaExe);
                                 UpdateSetting(ref settings, ExeData.VANILLA_CONFIG_KEY, string.Empty);
                                 break;
                         }
@@ -167,7 +167,7 @@ namespace FF7Scarlet
                                 return;
 
                             case DialogResult.No:
-                                DataManager.SetFilePath(FileClass.BattleLgp, string.Empty);
+                                DataManager.ClearFilePath(FileClass.BattleLgp);
                                 UpdateSetting(ref settings, BattleLgp.CONFIG_KEY, string.Empty);
                                 break;
                         }

@@ -107,6 +107,7 @@ namespace FF7Scarlet.SceneEditor
             tabPageFormationData = new TabPage();
             tabControlFormationData = new TabControl();
             tabPageFormationDataInner = new TabPage();
+            buttonFormationCameraData = new Button();
             groupBoxFormationSetupData = new GroupBox();
             battleFlagsControlFormation = new BattleFlagsControl();
             labelFormationLocation = new Label();
@@ -135,11 +136,6 @@ namespace FF7Scarlet.SceneEditor
             comboBoxFormationSelectedEnemy = new ComboBox();
             labelFormationSelectedEnemy = new Label();
             listBoxFormationEnemies = new ListBox();
-            tabPageCameraData = new TabPage();
-            cameraPositionControlExtra3 = new FF7Scarlet.SceneEditor.Controls.CameraPositionControl();
-            cameraPositionControlExtra2 = new FF7Scarlet.SceneEditor.Controls.CameraPositionControl();
-            cameraPositionControlExtra1 = new FF7Scarlet.SceneEditor.Controls.CameraPositionControl();
-            cameraPositionControlMain = new FF7Scarlet.SceneEditor.Controls.CameraPositionControl();
             numericFormationPreBattleCamPosition = new NumericUpDown();
             labelFormationCamPreBattlePosition = new Label();
             tabPageFormationAI = new TabPage();
@@ -181,6 +177,7 @@ namespace FF7Scarlet.SceneEditor
             buttonExport = new Button();
             buttonImport = new Button();
             buttonSave = new Button();
+            groupBoxCameraData = new GroupBox();
             tabControlMain.SuspendLayout();
             tabPageEnemyData.SuspendLayout();
             tabControlEnemyData.SuspendLayout();
@@ -220,12 +217,12 @@ namespace FF7Scarlet.SceneEditor
             ((System.ComponentModel.ISupportInitialize)numericFormationEnemyZ).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericFormationEnemyY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericFormationEnemyX).BeginInit();
-            tabPageCameraData.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericFormationPreBattleCamPosition).BeginInit();
             tabPageFormationAI.SuspendLayout();
             panelTop.SuspendLayout();
             toolStripMain.SuspendLayout();
             panelBottom.SuspendLayout();
+            groupBoxCameraData.SuspendLayout();
             SuspendLayout();
             // 
             // labelScenes
@@ -1051,7 +1048,6 @@ namespace FF7Scarlet.SceneEditor
             // tabControlFormationData
             // 
             tabControlFormationData.Controls.Add(tabPageFormationDataInner);
-            tabControlFormationData.Controls.Add(tabPageCameraData);
             tabControlFormationData.Controls.Add(tabPageFormationAI);
             tabControlFormationData.Dock = DockStyle.Fill;
             tabControlFormationData.Location = new Point(0, 0);
@@ -1062,6 +1058,7 @@ namespace FF7Scarlet.SceneEditor
             // 
             // tabPageFormationDataInner
             // 
+            tabPageFormationDataInner.Controls.Add(groupBoxCameraData);
             tabPageFormationDataInner.Controls.Add(groupBoxFormationSetupData);
             tabPageFormationDataInner.Controls.Add(groupBoxFormationEnemies);
             tabPageFormationDataInner.Location = new Point(4, 24);
@@ -1071,6 +1068,16 @@ namespace FF7Scarlet.SceneEditor
             tabPageFormationDataInner.TabIndex = 0;
             tabPageFormationDataInner.Text = "Formation Data";
             tabPageFormationDataInner.UseVisualStyleBackColor = true;
+            // 
+            // buttonFormationCameraData
+            // 
+            buttonFormationCameraData.Location = new Point(6, 37);
+            buttonFormationCameraData.Name = "buttonFormationCameraData";
+            buttonFormationCameraData.Size = new Size(219, 23);
+            buttonFormationCameraData.TabIndex = 12;
+            buttonFormationCameraData.Text = "Edit camera data...";
+            buttonFormationCameraData.UseVisualStyleBackColor = true;
+            buttonFormationCameraData.Click += buttonFormationCameraData_Click;
             // 
             // groupBoxFormationSetupData
             // 
@@ -1367,56 +1374,9 @@ namespace FF7Scarlet.SceneEditor
             listBoxFormationEnemies.TabIndex = 0;
             listBoxFormationEnemies.SelectedIndexChanged += listBoxFormationEnemies_SelectedIndexChanged;
             // 
-            // tabPageCameraData
-            // 
-            tabPageCameraData.Controls.Add(cameraPositionControlExtra3);
-            tabPageCameraData.Controls.Add(cameraPositionControlExtra2);
-            tabPageCameraData.Controls.Add(cameraPositionControlExtra1);
-            tabPageCameraData.Controls.Add(cameraPositionControlMain);
-            tabPageCameraData.Controls.Add(numericFormationPreBattleCamPosition);
-            tabPageCameraData.Controls.Add(labelFormationCamPreBattlePosition);
-            tabPageCameraData.Location = new Point(4, 24);
-            tabPageCameraData.Name = "tabPageCameraData";
-            tabPageCameraData.Size = new Size(768, 450);
-            tabPageCameraData.TabIndex = 4;
-            tabPageCameraData.Text = "Camera Data";
-            tabPageCameraData.UseVisualStyleBackColor = true;
-            // 
-            // cameraPositionControlExtra3
-            // 
-            cameraPositionControlExtra3.Location = new Point(243, 184);
-            cameraPositionControlExtra3.Name = "cameraPositionControlExtra3";
-            cameraPositionControlExtra3.Size = new Size(230, 172);
-            cameraPositionControlExtra3.TabIndex = 14;
-            cameraPositionControlExtra3.DataChanged += FormationDataChanged;
-            // 
-            // cameraPositionControlExtra2
-            // 
-            cameraPositionControlExtra2.Location = new Point(7, 184);
-            cameraPositionControlExtra2.Name = "cameraPositionControlExtra2";
-            cameraPositionControlExtra2.Size = new Size(230, 172);
-            cameraPositionControlExtra2.TabIndex = 13;
-            cameraPositionControlExtra2.DataChanged += FormationDataChanged;
-            // 
-            // cameraPositionControlExtra1
-            // 
-            cameraPositionControlExtra1.Location = new Point(243, 6);
-            cameraPositionControlExtra1.Name = "cameraPositionControlExtra1";
-            cameraPositionControlExtra1.Size = new Size(230, 172);
-            cameraPositionControlExtra1.TabIndex = 12;
-            cameraPositionControlExtra1.DataChanged += FormationDataChanged;
-            // 
-            // cameraPositionControlMain
-            // 
-            cameraPositionControlMain.Location = new Point(6, 6);
-            cameraPositionControlMain.Name = "cameraPositionControlMain";
-            cameraPositionControlMain.Size = new Size(230, 172);
-            cameraPositionControlMain.TabIndex = 11;
-            cameraPositionControlMain.DataChanged += FormationDataChanged;
-            // 
             // numericFormationPreBattleCamPosition
             // 
-            numericFormationPreBattleCamPosition.Location = new Point(479, 24);
+            numericFormationPreBattleCamPosition.Location = new Point(231, 37);
             numericFormationPreBattleCamPosition.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             numericFormationPreBattleCamPosition.Name = "numericFormationPreBattleCamPosition";
             numericFormationPreBattleCamPosition.Size = new Size(108, 23);
@@ -1426,7 +1386,7 @@ namespace FF7Scarlet.SceneEditor
             // labelFormationCamPreBattlePosition
             // 
             labelFormationCamPreBattlePosition.AutoSize = true;
-            labelFormationCamPreBattlePosition.Location = new Point(479, 6);
+            labelFormationCamPreBattlePosition.Location = new Point(231, 19);
             labelFormationCamPreBattlePosition.Name = "labelFormationCamPreBattlePosition";
             labelFormationCamPreBattlePosition.Size = new Size(108, 15);
             labelFormationCamPreBattlePosition.TabIndex = 9;
@@ -1772,6 +1732,18 @@ namespace FF7Scarlet.SceneEditor
             buttonSave.UseVisualStyleBackColor = true;
             buttonSave.Click += buttonSave_Click;
             // 
+            // groupBoxCameraData
+            // 
+            groupBoxCameraData.Controls.Add(buttonFormationCameraData);
+            groupBoxCameraData.Controls.Add(labelFormationCamPreBattlePosition);
+            groupBoxCameraData.Controls.Add(numericFormationPreBattleCamPosition);
+            groupBoxCameraData.Location = new Point(6, 349);
+            groupBoxCameraData.Name = "groupBoxCameraData";
+            groupBoxCameraData.Size = new Size(345, 80);
+            groupBoxCameraData.TabIndex = 13;
+            groupBoxCameraData.TabStop = false;
+            groupBoxCameraData.Text = "Camera Data";
+            // 
             // SceneEditorForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1837,8 +1809,6 @@ namespace FF7Scarlet.SceneEditor
             ((System.ComponentModel.ISupportInitialize)numericFormationEnemyZ).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericFormationEnemyY).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericFormationEnemyX).EndInit();
-            tabPageCameraData.ResumeLayout(false);
-            tabPageCameraData.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericFormationPreBattleCamPosition).EndInit();
             tabPageFormationAI.ResumeLayout(false);
             tabPageFormationAI.PerformLayout();
@@ -1847,6 +1817,8 @@ namespace FF7Scarlet.SceneEditor
             toolStripMain.ResumeLayout(false);
             toolStripMain.PerformLayout();
             panelBottom.ResumeLayout(false);
+            groupBoxCameraData.ResumeLayout(false);
+            groupBoxCameraData.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -1935,45 +1907,10 @@ namespace FF7Scarlet.SceneEditor
         private TabControl tabControlEnemyData;
         private ListBox listBoxAttacks;
         private TabControl tabControlFormationData;
-        private TabPage tabPageFormationDataInner;
         private ComboBox comboBoxFormation;
         private Label labelFormation;
         private ProgressBar progressBarSaving;
         private Button buttonSearch;
-        private TabPage tabPageCameraData;
-        private Label labelFormationLocation;
-        private ComboBox comboBoxFormationLocation;
-        private Label labelFormationNext;
-        private Label labelFormationEscapeCounter;
-        private NumericUpDown numericFormationEscapeCounter;
-        private ComboBox comboBoxFormationNext;
-        private GroupBox groupBoxFormationBattleArena;
-        private ComboBox comboBoxFormationBattleArena;
-        private Label labelFormationBattleArena;
-        private ListBox listBoxFormationBattleArena;
-        private ComboBox comboBoxFormationBattleType;
-        private Label labelFormationBattleType;
-        private NumericUpDown numericFormationPreBattleCamPosition;
-        private Label labelFormationCamPreBattlePosition;
-        private GroupBox groupBoxFormationSetupData;
-        private BattleFlagsControl battleFlagsControlFormation;
-        private ListBox listBoxFormationEnemies;
-        private GroupBox groupBoxFormationEnemies;
-        private Label labelFormationSelectedEnemy;
-        private ComboBox comboBoxFormationSelectedEnemy;
-        private NumericUpDown numericFormationEnemyZ;
-        private Label labelFormationEnemyZ;
-        private NumericUpDown numericFormationEnemyY;
-        private Label labelFormationEnemyY;
-        private NumericUpDown numericFormationEnemyX;
-        private Label labelFormationEnemyX;
-        private Label labelFormationEnemyRow;
-        private NumericUpDown numericFormationEnemyRow;
-        private InitialConditionControl initialConditionControlEnemy;
-        private CoverFlagsControl coverFlagsControlFormationEnemy;
-        private Controls.CameraPositionControl cameraPositionControlExtra2;
-        private Controls.CameraPositionControl cameraPositionControlExtra1;
-        private Controls.CameraPositionControl cameraPositionControlMain;
         private Button buttonViewManipList;
         private ComboBox comboBoxEnemyModelID;
         private Label labelEnemyModelID;
@@ -2001,8 +1938,40 @@ namespace FF7Scarlet.SceneEditor
         private ToolStripMenuItem formationCopyToolStripMenuItem;
         private ToolStripMenuItem formationPasteToolStripMenuItem;
         private ToolStripMenuItem formationClearToolStripMenuItem;
-        private Controls.CameraPositionControl cameraPositionControlExtra3;
         private Shared.Controls.AttackFormControl attackFormControl;
         private Controls.ModelPreviewControl enemyModelPreviewControl;
+        private TabPage tabPageFormationDataInner;
+        private Button buttonFormationCameraData;
+        private GroupBox groupBoxFormationSetupData;
+        private GroupBox groupBoxFormationEnemies;
+        private NumericUpDown numericFormationPreBattleCamPosition;
+        private Label labelFormationCamPreBattlePosition;
+        private ListBox listBoxFormationEnemies;
+        private Label labelFormationSelectedEnemy;
+        private ComboBox comboBoxFormationSelectedEnemy;
+        private Label labelFormationEnemyX;
+        private NumericUpDown numericFormationEnemyX;
+        private Label labelFormationEnemyY;
+        private NumericUpDown numericFormationEnemyY;
+        private Label labelFormationEnemyZ;
+        private NumericUpDown numericFormationEnemyZ;
+        private Label labelFormationEnemyRow;
+        private NumericUpDown numericFormationEnemyRow;
+        private InitialConditionControl initialConditionControlEnemy;
+        private CoverFlagsControl coverFlagsControlFormationEnemy;
+        private NumericUpDown numericFormationEscapeCounter;
+        private GroupBox groupBoxFormationBattleArena;
+        private ListBox listBoxFormationBattleArena;
+        private Label labelFormationBattleArena;
+        private ComboBox comboBoxFormationBattleArena;
+        private Label labelFormationEscapeCounter;
+        private Label labelFormationBattleType;
+        private ComboBox comboBoxFormationNext;
+        private ComboBox comboBoxFormationBattleType;
+        private Label labelFormationNext;
+        private ComboBox comboBoxFormationLocation;
+        private Label labelFormationLocation;
+        private BattleFlagsControl battleFlagsControlFormation;
+        private GroupBox groupBoxCameraData;
     }
 }

@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             groupBoxMain = new GroupBox();
+            buttonCameraToView = new Button();
+            buttonViewToCamera = new Button();
             groupBoxAngle = new GroupBox();
             numericAngleY = new NumericUpDown();
             labelAngleX = new Label();
@@ -56,15 +58,39 @@
             // 
             // groupBoxMain
             // 
+            groupBoxMain.Controls.Add(buttonCameraToView);
+            groupBoxMain.Controls.Add(buttonViewToCamera);
             groupBoxMain.Controls.Add(groupBoxAngle);
             groupBoxMain.Controls.Add(groupBoxPosition);
             groupBoxMain.Dock = DockStyle.Fill;
             groupBoxMain.Location = new Point(0, 0);
             groupBoxMain.Name = "groupBoxMain";
-            groupBoxMain.Size = new Size(230, 172);
+            groupBoxMain.Size = new Size(230, 210);
             groupBoxMain.TabIndex = 0;
             groupBoxMain.TabStop = false;
             groupBoxMain.Text = "Position";
+            // 
+            // buttonCameraToView
+            // 
+            buttonCameraToView.Enabled = false;
+            buttonCameraToView.Location = new Point(119, 172);
+            buttonCameraToView.Name = "buttonCameraToView";
+            buttonCameraToView.Size = new Size(100, 23);
+            buttonCameraToView.TabIndex = 24;
+            buttonCameraToView.Text = "Reset";
+            buttonCameraToView.UseVisualStyleBackColor = true;
+            buttonCameraToView.Click += buttonCameraToView_Click;
+            // 
+            // buttonViewToCamera
+            // 
+            buttonViewToCamera.Enabled = false;
+            buttonViewToCamera.Location = new Point(12, 172);
+            buttonViewToCamera.Name = "buttonViewToCamera";
+            buttonViewToCamera.Size = new Size(100, 23);
+            buttonViewToCamera.TabIndex = 23;
+            buttonViewToCamera.Text = "Commit";
+            buttonViewToCamera.UseVisualStyleBackColor = true;
+            buttonViewToCamera.Click += buttonViewToCamera_Click;
             // 
             // groupBoxAngle
             // 
@@ -219,7 +245,7 @@
             Controls.Add(groupBoxMain);
             DoubleBuffered = true;
             Name = "CameraPositionControl";
-            Size = new Size(230, 172);
+            Size = new Size(230, 210);
             groupBoxMain.ResumeLayout(false);
             groupBoxAngle.ResumeLayout(false);
             groupBoxAngle.PerformLayout();
@@ -251,5 +277,7 @@
         private Label labelPositionX;
         private GroupBox groupBoxAngle;
         private GroupBox groupBoxPosition;
+        private Button buttonViewToCamera;
+        private Button buttonCameraToView;
     }
 }

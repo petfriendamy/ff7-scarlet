@@ -31,5 +31,15 @@ namespace FF7Scarlet.SceneEditor
             CameraPlacementData = cameraData;
             Array.Copy(enemyLocations, EnemyLocations, ENEMY_COUNT);
         }
+
+        public Formation(Formation other) :base(other.Parent)
+        {
+            BattleSetupData = new BattleSetupData(other.BattleSetupData);
+            CameraPlacementData = new CameraPlacementData(other.CameraPlacementData);
+            for (int i = 0; i < ENEMY_COUNT; ++i)
+            {
+                EnemyLocations[i] = new EnemyLocation(other.EnemyLocations[i]);
+            }
+        }
     }
 }

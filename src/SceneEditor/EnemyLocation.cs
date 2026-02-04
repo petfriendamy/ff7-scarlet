@@ -42,6 +42,15 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
+        public EnemyLocation(EnemyLocation other)
+        {
+            EnemyID = other.EnemyID;
+            Location = other.Location;
+            Row = other.Row;
+            Array.Copy(other.CoverFlags, CoverFlags, CoverFlags.Length);
+            InitialConditionFlags = other.InitialConditionFlags;
+        }
+
         public byte[] GetRawData()
         {
             var data = new byte[BLOCK_SIZE];

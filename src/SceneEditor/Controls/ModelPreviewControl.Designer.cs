@@ -33,6 +33,7 @@ namespace FF7Scarlet.SceneEditor.Controls
         private void InitializeComponent()
         {
             glControl = new OpenTK.GLControl.GLControl();
+            frameCounterLabel = new Label();
             SuspendLayout();
             // 
             // glControl
@@ -48,28 +49,28 @@ namespace FF7Scarlet.SceneEditor.Controls
             glControl.SharedContext = null;
             glControl.Size = new Size(150, 150);
             glControl.TabIndex = 0;
+            glControl.Paint += glControl_Paint;
+            glControl.KeyDown += GlControl_KeyDown;
             glControl.MouseDown += GlControl_MouseDown;
             glControl.MouseMove += GlControl_MouseMove;
             glControl.MouseUp += GlControl_MouseUp;
             glControl.MouseWheel += GlControl_MouseWheel;
-            glControl.KeyDown += GlControl_KeyDown;
             // 
             // frameCounterLabel
             // 
-            frameCounterLabel = new Label();
-            frameCounterLabel.Name = "frameCounterLabel";
-            frameCounterLabel.Text = "0/0";
-            frameCounterLabel.AutoSize = false;
-            frameCounterLabel.Size = new Size(50, 20);
-            frameCounterLabel.Location = new Point(150, 5);
             frameCounterLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            frameCounterLabel.BackColor = Color.FromArgb(180, Color.FromArgb(102, 102, 166));
-            frameCounterLabel.ForeColor = Color.White;
+            frameCounterLabel.BackColor = Color.FromArgb(180, 102, 102, 166);
             frameCounterLabel.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
+            frameCounterLabel.ForeColor = Color.White;
+            frameCounterLabel.Location = new Point(150, 5);
+            frameCounterLabel.Name = "frameCounterLabel";
+            frameCounterLabel.Size = new Size(50, 20);
+            frameCounterLabel.TabIndex = 1;
+            frameCounterLabel.Text = "0/0";
             frameCounterLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ModelPreviewControl
-            //
+            // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(glControl);
@@ -77,7 +78,6 @@ namespace FF7Scarlet.SceneEditor.Controls
             Name = "ModelPreviewControl";
             Load += ModelPreviewControl_Load;
             Enter += ModelPreviewControl_Enter;
-            Paint += ModelPreviewControl_Paint;
             ResumeLayout(false);
         }
 
