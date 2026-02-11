@@ -1,3 +1,4 @@
+using FF7Scarlet.Compression;
 using FF7Scarlet.ExeEditor;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
@@ -6,6 +7,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Xml;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet
 {
     public partial class StartupForm : Form
@@ -115,6 +117,16 @@ namespace FF7Scarlet
                 if (settings[BattleLgp.CONFIG_KEY] != null)
                 {
                     LoadFromConfig(config, FileClass.BattleLgp);
+                }
+
+                //check compression type
+                if (settings[DataManager.COMPRESSION_TYPE_KEY] != null)
+                {
+                    CompressionType temp;
+                    if (Enum.TryParse(settings[DataManager.COMPRESSION_TYPE_KEY].Value, out temp))
+                    {
+                        DataManager.CompressionType = temp;
+                    }
                 }
 
                 //check PS3 tweaks

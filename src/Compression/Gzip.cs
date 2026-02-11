@@ -1,10 +1,9 @@
-﻿using FF7Scarlet.KernelEditor;
+﻿using System.IO.Compression;
+using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.Shared;
 using LibZopfliStandard;
 using Shojy.FF7.Elena;
-using System.IO.Compression;
-using static System.Windows.Forms.Design.AxImporter;
 
 namespace FF7Scarlet.Compression
 {
