@@ -566,6 +566,12 @@ namespace FF7Scarlet.SceneEditor
                             Array.Copy(AIContainer.GetGroupedScriptBlock(FORMATION_COUNT, Formation.AI_BLOCK_SIZE, formations,
                                     ref formationAIoffset), formationAIRaw, Formation.AI_BLOCK_SIZE);
                         }
+
+                        foreach (var o in formationAIoffset)
+                        {
+                            writer.Write(o);
+                        }
+                        writer.Write(formationAIRaw);
                     }
                     catch (ScriptTooLongException)
                     {
