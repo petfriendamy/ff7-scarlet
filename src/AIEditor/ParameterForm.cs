@@ -198,7 +198,7 @@ namespace FF7Scarlet.AIEditor
                 else
                 {
                     var firstParse = new List<CodeLine> { };
-                    OpcodeInfo? operand = null;
+                    var operandStack = new Stack<OpcodeInfo>();
                     foreach (var p in paramList)
                     {
                         if (p.Checked || p.IsFirst)
@@ -210,15 +210,19 @@ namespace FF7Scarlet.AIEditor
                             }
                             else //is other code
                             {
-                                var op = OpcodeInfo.GetInfo(p.Operand); //check for logical operands
-                                if (op != null && op.Group == OpcodeGroups.Logical)
+                                var op = OpcodeInfo.GetInfo(p.Operand);
+
+                                //use shunting-yard algorithm to emit operators in precedence order
+                                if (!p.IsFirst && op != null)
                                 {
-                                    if (operand != null) //add the previously saved operand
+                                    int prec = OpcodeInfo.GetOperandPrecedence(op);
+                                    while (operandStack.Count > 0
+                                        && OpcodeInfo.GetOperandPrecedence(operandStack.Peek()) >= prec)
                                     {
                                         firstParse.Add(new CodeLine(parentScript,
-                                            HexParser.NULL_OFFSET_16_BIT, operand.Code));
+                                            HexParser.NULL_OFFSET_16_BIT, operandStack.Pop().Code));
                                     }
-                                    operand = op;
+                                    operandStack.Push(op);
                                 }
 
                                 firstParse.Add(ValidateCode(p.ParamType, p.Parameter));
@@ -229,19 +233,14 @@ namespace FF7Scarlet.AIEditor
                                     firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                                         p.Modifier));
                                 }
-
-                                //add non-logical operands
-                                if (!p.IsFirst && op != null && op.Group != OpcodeGroups.Logical)
-                                {
-                                    firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
-                                        p.Operand));
-                                }
                             }
                         }
                     }
-                    if (operand != null) //if there's a saved operand, add it to the end of the block
+                    //emit remaining operators from the stack
+                    while (operandStack.Count > 0)
                     {
-                        firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, operand.Code));
+                        firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
+                            operandStack.Pop().Code));
                     }
 
                     //get the parsed code block

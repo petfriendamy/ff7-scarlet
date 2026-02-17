@@ -172,5 +172,22 @@
         {
             return GetInfo((byte)opcode);
         }
+
+        public static int GetOperandPrecedence(OpcodeInfo op)
+        {
+            switch (op.Group)
+            {
+                case OpcodeGroups.BitOperation:
+                    return 4;
+                case OpcodeGroups.Logical:
+                    if (op.Code >= (byte)Opcodes.LogicalAnd)
+                        return 1;
+                    return 3;
+                case OpcodeGroups.Mathematical:
+                    return 2;
+                default:
+                    return 0;
+            }
+        }
     }
 }
