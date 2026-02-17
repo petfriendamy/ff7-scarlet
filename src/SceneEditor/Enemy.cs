@@ -197,9 +197,9 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        public string GetNameString()
+        public string GetNameString(bool isJapanese)
         {
-            var name = Name.ToString();
+            var name = Name.ToString(isJapanese);
             if (name == null) { return $"Enemy ID {ModelID:X4}"; }
             else { return name; }
         }

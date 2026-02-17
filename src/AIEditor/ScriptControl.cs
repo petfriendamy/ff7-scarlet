@@ -1,6 +1,7 @@
 ﻿using FF7Scarlet.Shared;
 using System.ComponentModel;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.AIEditor
 {
     public partial class ScriptControl : UserControl
@@ -73,6 +74,9 @@ namespace FF7Scarlet.AIEditor
             get { return SelectedCode != null; }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool JPText { get; set; }
+
         public ScriptControl()
         {
             InitializeComponent();
@@ -102,7 +106,7 @@ namespace FF7Scarlet.AIEditor
                     else
                     {
                         listBoxCurrScript.Enabled = true;
-                        foreach (var line in script.Disassemble())
+                        foreach (var line in script.Disassemble(JPText))
                         {
                             listBoxCurrScript.Items.Add(line);
                         }
@@ -251,7 +255,7 @@ namespace FF7Scarlet.AIEditor
                 Code newCode;
                 bool createLabel;
 
-                using (var codeForm = new CodeForm(SelectedScript))
+                using (var codeForm = new CodeForm(SelectedScript, JPText))
                 {
                     result = codeForm.ShowDialog();
                     newCode = codeForm.Code;
@@ -294,7 +298,7 @@ namespace FF7Scarlet.AIEditor
                 Code newCode;
                 bool createLabel;
 
-                using (var codeForm = new CodeForm(SelectedScript, SelectedCode))
+                using (var codeForm = new CodeForm(SelectedScript, JPText, SelectedCode))
                 {
                     result = codeForm.ShowDialog();
                     newCode = codeForm.Code;

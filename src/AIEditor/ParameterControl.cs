@@ -3,6 +3,7 @@ using System.Globalization;
 using System.ComponentModel;
 using FF7Scarlet.Shared;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.AIEditor
 {
     public partial class ParameterControl : UserControl
@@ -11,7 +12,7 @@ namespace FF7Scarlet.AIEditor
 
         private readonly List<OpcodeInfo> operands, modifiers, paramTypes;
         private byte operand = 0xFF, modifier = 0xFF, paramType = 0xFF;
-        private bool singleParameter = false, modifyAbove = false, loading = true;
+        private bool singleParameter = false, modifyAbove = false, jpText, loading = true;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte Operand
@@ -90,11 +91,11 @@ namespace FF7Scarlet.AIEditor
                     var temp = comboBoxParameter.Text.Split(' '); //ignore variable names
                     return new FFText(temp[0]);
                 }
-                return new FFText(comboBoxParameter.Text);
+                return new FFText(comboBoxParameter.Text, isJapanese: jpText);
             }
             private set
             {
-                comboBoxParameter.Text = value?.ToString();
+                comboBoxParameter.Text = value?.ToString(UseJPTyping);
             }
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -128,6 +129,20 @@ namespace FF7Scarlet.AIEditor
                     return Parent.Parent as ParameterForm;
                 }
                 return null;
+            }
+        }
+
+        private bool UseJPTyping
+        {
+            get
+            {
+                if (jpText)
+                {
+                    var op = OpcodeInfo.GetInfo(ParamType);
+                    if (op == null) { return false; }
+                    return (op.ParameterType == ParameterTypes.String);
+                }
+                return false;
             }
         }
 
@@ -261,7 +276,7 @@ namespace FF7Scarlet.AIEditor
                     }
                     else
                     {
-                        comboBoxParameter.Text = parameter.ToString();
+                        comboBoxParameter.Text = parameter.ToString(jpText);
                     }
 
                     //add common variables to the dropdown list
@@ -335,6 +350,11 @@ namespace FF7Scarlet.AIEditor
                     comboBoxParameter.SelectedIndex = selected;
                 }
             }
+        }
+
+        public void SetAsJP(bool jpText)
+        {
+            this.jpText = jpText;
         }
 
         #endregion

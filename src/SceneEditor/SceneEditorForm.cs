@@ -116,6 +116,11 @@ namespace FF7Scarlet.SceneEditor
             get { return listBoxFormationEnemies.SelectedIndex; }
         }
 
+        private bool DisplayJapaneseText
+        {
+            get { return japaneseTextToolStripMenuItem.Checked; }
+        }
+
         #endregion
 
         #region Constructor
@@ -212,27 +217,7 @@ namespace FF7Scarlet.SceneEditor
             sceneList = DataManager.CopySceneList();
             this.syncedAttacks = syncedAttacks;
             lastAttackID = 0;
-            comboBoxSceneList.BeginUpdate();
-            for (int i = 0; i < Scene.SCENE_COUNT; ++i)
-            {
-                comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames()}");
-                foreach (var atk in sceneList[i].AttackList)
-                {
-                    if (atk != null && atk.Index > lastAttackID && atk.Index != HexParser.NULL_OFFSET_16_BIT)
-                    {
-                        lastAttackID = (ushort)atk.Index;
-                    }
-                }
-                if (syncedAttacks.Count > 0)
-                {
-                    foreach (var a in syncedAttacks.Values)
-                    {
-                        sceneList[i].SyncAttack(a);
-                    }
-                }
-            }
-            comboBoxSceneList.EndUpdate();
-            comboBoxSceneList.SelectedIndex = 0;
+            LoadSceneList(0);
         }
 
         #endregion
@@ -328,6 +313,32 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
+        private void LoadSceneList(int selected)
+        {
+            comboBoxSceneList.BeginUpdate();
+            comboBoxSceneList.Items.Clear();
+            for (int i = 0; i < Scene.SCENE_COUNT; ++i)
+            {
+                comboBoxSceneList.Items.Add($"{i}: {sceneList[i].GetEnemyNames(DisplayJapaneseText)}");
+                foreach (var atk in sceneList[i].AttackList)
+                {
+                    if (atk != null && atk.Index > lastAttackID && atk.Index != HexParser.NULL_OFFSET_16_BIT)
+                    {
+                        lastAttackID = (ushort)atk.Index;
+                    }
+                }
+                if (syncedAttacks.Count > 0)
+                {
+                    foreach (var a in syncedAttacks.Values)
+                    {
+                        sceneList[i].SyncAttack(a);
+                    }
+                }
+            }
+            comboBoxSceneList.EndUpdate();
+            comboBoxSceneList.SelectedIndex = selected;
+        }
+
         private void LoadSceneData(int sceneIndex, bool clearLoadingWhenDone, bool ignoreNull)
         {
             loading = true;
@@ -401,13 +412,13 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else
                 {
-                    var name = enemy.GetNameString();
+                    var name = enemy.GetNameString(DisplayJapaneseText);
                     comboBoxEnemy.Items.Add(name);
                     comboBoxFormationSelectedEnemy.Items.Add(name);
                 }
             }
             comboBoxEnemy.EndUpdate();
-             comboBoxFormationSelectedEnemy.EndUpdate();
+            comboBoxFormationSelectedEnemy.EndUpdate();
             comboBoxEnemy.SelectedIndex = 0;
             var firstEnemy = scene?.Enemies != null && scene.Enemies.Length > 0 ? scene.Enemies[0] : null;
             LoadEnemyData(firstEnemy, false, ignoreNull);
@@ -430,6 +441,13 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
+        /// <summary>
+        /// Load the specified enemy data into the controls
+        /// </summary>
+        /// <param name="enemy">The enemy data to load</param>
+        /// <param name="clearLoadingWhenDone">Clear the "loading" variable when done</param>
+        /// <param name="ignoreNull">Supresses the prompt to create a new enemy</param>
+        /// <returns></returns>
         private bool LoadEnemyData(Enemy? enemy, bool clearLoadingWhenDone, bool ignoreNull)
         {
             loading = true;
@@ -461,7 +479,7 @@ namespace FF7Scarlet.SceneEditor
                     enemyDeleteToolStripMenuItem.Enabled = true;
 
                     //page 1
-                    textBoxEnemyName.Text = enemy.Name.ToString();
+                    textBoxEnemyName.Text = enemy.Name.ToString(DisplayJapaneseText);
                     numericEnemyLevel.Value = enemy.Level;
                     numericEnemyHP.Value = enemy.HP;
                     numericEnemyMP.Value = enemy.MP;
@@ -611,7 +629,7 @@ namespace FF7Scarlet.SceneEditor
                 enemy = new Enemy(scene, id, new FFText(), null);
                 scene.Enemies[enemyIndex] = enemy;
                 validEnemies.Add(enemy);
-                comboBoxFormationSelectedEnemy.Items.Add(enemy.GetNameString());
+                comboBoxFormationSelectedEnemy.Items.Add(enemy.GetNameString(DisplayJapaneseText));
                 tabControlMain.SelectedTab = tabPageEnemyData;
                 UpdateSelectedEnemyName(sceneIndex, enemyIndex, formationIndex);
                 enemyNeedsSync = false;
@@ -631,10 +649,10 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxEnemy.SelectedIndex = enemy;
 
                     loading = true;
-                    comboBoxSceneList.Items[scene] = $"{scene}: {sceneList[scene].GetEnemyNames()}";
+                    comboBoxSceneList.Items[scene] = $"{scene}: {sceneList[scene].GetEnemyNames(DisplayJapaneseText)}";
                     string name;
                     if (e == null) { name = "(none)"; }
-                    else { name = sceneList[scene].GetEnemyName(e.ModelID); }
+                    else { name = sceneList[scene].GetEnemyName(e.ModelID, DisplayJapaneseText); }
                     comboBoxEnemy.Items[enemy] = name;
 
                     //update name in formation data
@@ -814,7 +832,7 @@ namespace FF7Scarlet.SceneEditor
             listBoxFormationEnemies.Items.Clear();
             foreach (var e in formation.EnemyLocations)
             {
-                listBoxFormationEnemies.Items.Add(scene.GetEnemyName(e.EnemyID));
+                listBoxFormationEnemies.Items.Add(scene.GetEnemyName(e.EnemyID, DisplayJapaneseText));
             }
             listBoxFormationEnemies.EndUpdate();
             EnableOrDisableGroupBox(groupBoxFormationEnemies, false, false);
@@ -879,7 +897,7 @@ namespace FF7Scarlet.SceneEditor
             for (int i = 0; i < Scene.FORMATION_COUNT; ++i)
             {
                 comboBoxFormation.Items.Add($"{(Scene.FORMATION_COUNT *
-                    SelectedSceneIndex) + i}: {sceneList[scene].GetFormationEnemyNames(i)}");
+                    SelectedSceneIndex) + i}: {sceneList[scene].GetFormationEnemyNames(i, DisplayJapaneseText)}");
             }
             comboBoxFormation.EndUpdate();
             comboBoxFormation.SelectedIndex = index;
@@ -1168,7 +1186,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (!loading && SelectedEnemy != null)
             {
-                SelectedEnemy.Name = new FFText(textBoxEnemyName.Text);
+                SelectedEnemy.Name = new FFText(textBoxEnemyName.Text, isJapanese: DisplayJapaneseText);
                 UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
                 SetUnsaved(true);
             }
@@ -1482,7 +1500,7 @@ namespace FF7Scarlet.SceneEditor
                 {
                     DialogResult result;
                     ushort[] manipList;
-                    using (var form = new ManipListForm(SelectedScene, SelectedEnemyIndex))
+                    using (var form = new ManipListForm(SelectedScene, SelectedEnemyIndex, DisplayJapaneseText))
                     {
                         result = form.ShowDialog();
                         manipList = form.ManipList;
@@ -1638,7 +1656,7 @@ namespace FF7Scarlet.SceneEditor
                         {
                             enemyModelPreviewControl.LoadModel(newID);
                         }
-                    SetUnsaved(true);
+                        SetUnsaved(true);
                     }
                     catch (Exception ex)
                     {
@@ -1780,7 +1798,7 @@ namespace FF7Scarlet.SceneEditor
                 {
                     var enemy = validEnemies[newEnemy - 1];
                     SelectedFormation.EnemyLocations[selectedEnemy].EnemyID = enemy.ModelID;
-                    listBoxFormationEnemies.Items[selectedEnemy] = enemy.GetNameString();
+                    listBoxFormationEnemies.Items[selectedEnemy] = enemy.GetNameString(DisplayJapaneseText);
                 }
                 SetUnsaved(true);
             }
@@ -1925,7 +1943,7 @@ namespace FF7Scarlet.SceneEditor
                     if (path.Contains(".chunk.")) //chunk file
                     {
                         Dictionary<int, Scene> importScenes;
-                        using (var dialog = new SceneImportForm(path))
+                        using (var dialog = new SceneImportForm(path, DisplayJapaneseText))
                         {
                             result = dialog.ShowDialog();
                             importScenes = dialog.ImportScenes;
@@ -1941,7 +1959,7 @@ namespace FF7Scarlet.SceneEditor
                             else
                             {
                                 sceneList[scene.Key] = scene.Value;
-                                comboBoxSceneList.Items[scene.Key] = $"{scene.Key}: {scene.Value.GetEnemyNames()}";
+                                comboBoxSceneList.Items[scene.Key] = $"{scene.Key}: {scene.Value.GetEnemyNames(DisplayJapaneseText)}";
                                 successfulImports.Add(scene.Key);
                             }
                         }
@@ -1984,7 +2002,7 @@ namespace FF7Scarlet.SceneEditor
                                 {
                                     var newScene = new Scene(path);
                                     sceneList[sceneIndex] = newScene;
-                                    comboBoxSceneList.Items[sceneIndex] = $"{sceneIndex}: {newScene.GetEnemyNames()}";
+                                    comboBoxSceneList.Items[sceneIndex] = $"{sceneIndex}: {newScene.GetEnemyNames(DisplayJapaneseText)}";
                                     successfulImports.Add(sceneIndex);
                                 }
                             }
@@ -2050,7 +2068,7 @@ namespace FF7Scarlet.SceneEditor
         private void buttonExport_Click(object sender, EventArgs e)
         {
             SyncAllUnsavedData();
-            using (var export = new SceneExportForm(sceneList, SelectedSceneIndex))
+            using (var export = new SceneExportForm(sceneList, SelectedSceneIndex, DisplayJapaneseText))
             {
                 export.ShowDialog();
             }
@@ -2089,7 +2107,7 @@ namespace FF7Scarlet.SceneEditor
                 {
                     loading = true;
                     sceneList[SelectedSceneIndex] = new Scene();
-                    comboBoxSceneList.Items[SelectedSceneIndex] = $"{SelectedSceneIndex}: {sceneList[SelectedSceneIndex].GetEnemyNames()}";
+                    comboBoxSceneList.Items[SelectedSceneIndex] = $"{SelectedSceneIndex}: {sceneList[SelectedSceneIndex].GetEnemyNames(DisplayJapaneseText)}";
                     LoadSceneData(SelectedSceneIndex, false, true);
                     enemyNeedsSync = false;
                     attackNeedsSync = false;
@@ -2212,6 +2230,23 @@ namespace FF7Scarlet.SceneEditor
                 LoadAttackData(SelectedAttack, true);
                 UpdateSelectedAttackName(SelectedScene, SelectedEnemy, SelectedAttackIndex);
                 SetUnsaved(true);
+            }
+        }
+
+        private void japaneseTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool jpText = !japaneseTextToolStripMenuItem.Checked;
+            japaneseTextToolStripMenuItem.Checked = jpText;
+            scriptControlEnemyAI.JPText = jpText;
+            scriptControlFormations.JPText = jpText;
+            loading = true;
+            int currScene = SelectedSceneIndex,
+                currEnemy = SelectedEnemyIndex;
+            LoadSceneList(currScene);
+            LoadSceneData(currScene, false, true);
+            if (currEnemy >= 0)
+            {
+                comboBoxEnemy.SelectedIndex = currEnemy;
             }
         }
 

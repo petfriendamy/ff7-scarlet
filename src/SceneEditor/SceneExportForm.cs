@@ -1,8 +1,7 @@
 using FF7Scarlet.Compression;
-using System.Diagnostics;
-using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.SceneEditor
 {
     public partial class SceneExportForm : Form
@@ -11,7 +10,7 @@ namespace FF7Scarlet.SceneEditor
         private int selectedScene;
         private bool processing = false;
 
-        public SceneExportForm(Scene[] sceneList, int selected)
+        public SceneExportForm(Scene[] sceneList, int selected, bool jpText)
         {
             InitializeComponent();
             scenes = sceneList;
@@ -20,7 +19,7 @@ namespace FF7Scarlet.SceneEditor
             //scene data
             for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
-                listBoxSceneList.Items.Add($"{i}: {scenes[i].GetEnemyNames()}");
+                listBoxSceneList.Items.Add($"{i}: {scenes[i].GetEnemyNames(jpText)}");
             }
             if (selected == -1)
             {

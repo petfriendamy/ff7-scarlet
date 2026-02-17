@@ -1,8 +1,8 @@
 using System.Data;
-using System.Diagnostics;
 using System.ComponentModel;
 using FF7Scarlet.Shared;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.AIEditor
 {
     public partial class CodeForm : Form
@@ -19,12 +19,13 @@ namespace FF7Scarlet.AIEditor
         private int label = -1, popCount;
         private List<OpcodeInfo> currList = new();
         private Script parentScript;
-        private bool loading = true, unsavedChanges = false;
+        private bool loading = true, unsavedChanges = false, jpText;
 
-        public CodeForm(Script script, Code? code = null)
+        public CodeForm(Script script, bool jpText, Code? code = null)
         {
             InitializeComponent();
             parentScript = script;
+            this.jpText = jpText;
 
             //get command list
             comboBoxCommands.BeginUpdate();
@@ -145,10 +146,10 @@ namespace FF7Scarlet.AIEditor
                             textbox.Text = popCount.ToString();
                             break;
                         case ParameterTypes.String:
-                            textbox.Text = strText?.ToString();
+                            textbox.Text = strText?.ToString(jpText);
                             break;
                         case ParameterTypes.ReadWrite:
-                            if (currParam?.Disassemble(false) == "01")
+                            if (currParam?.Disassemble(jpText, false) == "01")
                             {
                                 textbox.Text = "Write";
                             }
@@ -162,7 +163,7 @@ namespace FF7Scarlet.AIEditor
                             else { textbox.Text = label.ToString(); }
                             break;
                         default:
-                            textbox.Text = currParam?.Disassemble(false);
+                            textbox.Text = currParam?.Disassemble(jpText, false);
                             break;
                     }
                 }
@@ -182,7 +183,7 @@ namespace FF7Scarlet.AIEditor
 
                 if (op.ParameterType != ParameterTypes.None && code.Parameter != null)
                 {
-                    comboBoxManualParameter.Text = code.Parameter.ToString();
+                    comboBoxManualParameter.Text = code.Parameter.ToString(jpText);
                 }
             }
         }
@@ -322,7 +323,7 @@ namespace FF7Scarlet.AIEditor
             }
             try
             {
-                using (var paramForm = new ParameterForm(parentScript, temp, opcode.EnumValue, type))
+                using (var paramForm = new ParameterForm(parentScript, temp, opcode.EnumValue, type, jpText))
                 {
                     if (paramForm.ShowDialog() == DialogResult.OK)
                     {
@@ -331,7 +332,7 @@ namespace FF7Scarlet.AIEditor
                             var p = paramForm.Code[0].GetParameter();
                             if (p != null)
                             {
-                                textBox.Text = p.ToString();
+                                textBox.Text = p.ToString(jpText);
                                 comboBoxManualParameter.Text = textBox.Text;
                                 strText = p;
                             }
@@ -372,18 +373,18 @@ namespace FF7Scarlet.AIEditor
                                 if (pos == 0)
                                 {
                                     param1 = test;
-                                    textBoxParameter1.Text = test.Disassemble(false);
+                                    textBoxParameter1.Text = test.Disassemble(jpText, false);
                                 }
                                 else
                                 {
                                     param2 = test;
-                                    textBoxParameter2.Text = test.Disassemble(false);
+                                    textBoxParameter2.Text = test.Disassemble(jpText, false);
                                 }
                             }
                             else
                             {
                                 param1 = test;
-                                comboBoxManualParameter.Text = test.Disassemble(false);
+                                comboBoxManualParameter.Text = test.Disassemble(jpText, false);
                             }
                         }
                         unsavedChanges = true;
@@ -412,7 +413,7 @@ namespace FF7Scarlet.AIEditor
                 }
                 throw new FormatException("Invalid label.");
             }
-            return new FFText(text);
+            return new FFText(text, isJapanese: jpText && type == ParameterTypes.String);
         }
 
         private int GetNewLabel()
@@ -537,8 +538,8 @@ namespace FF7Scarlet.AIEditor
                 catch (Exception ex)
                 {
                     ExceptionHandler.Handle(ex, "parameter parsing");
+                    return;
                 }
-                return;
             }
             DialogResult = DialogResult.OK;
             Close();

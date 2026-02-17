@@ -381,7 +381,7 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
-        public string[] Disassemble()
+        public string[] Disassemble(bool jpText)
         {
             var output = new List<string> { };
             if (IsEmpty) { output.Add("(Script is empty)"); }
@@ -421,7 +421,7 @@ namespace FF7Scarlet.AIEditor
                     }
 
                     //output the disassembled code
-                    output.Add($"{new string(indent)}{c.Disassemble(true)}");
+                    output.Add($"{new string(indent)}{c.Disassemble(jpText, true)}");
                 }
             }
             return output.ToArray();

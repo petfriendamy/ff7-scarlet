@@ -1,14 +1,6 @@
 ﻿using FF7Scarlet.Shared;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.SceneEditor
 {
     public partial class ManipListForm : Form
@@ -16,14 +8,14 @@ namespace FF7Scarlet.SceneEditor
         public ushort[] ManipList { get; } = new ushort[Enemy.MANIP_ATTACK_COUNT];
         private int attackCount = 0;
 
-        public ManipListForm(Scene scene, int enemyIndex)
+        public ManipListForm(Scene scene, int enemyIndex, bool jpText)
         {
             InitializeComponent();
 
             var enemy = scene.Enemies[enemyIndex];
             if (enemy != null)
             {
-                Text = $"{scene.GetEnemyName(enemy.ModelID)}'s manipulate list";
+                Text = $"{scene.GetEnemyName(enemy.ModelID, jpText)}'s manipulate list";
                 Array.Copy(enemy.ManipAttackIDs, ManipList, Enemy.MANIP_ATTACK_COUNT);
                 foreach (var atk in ManipList)
                 {

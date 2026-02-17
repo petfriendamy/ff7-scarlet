@@ -68,18 +68,18 @@ namespace FF7Scarlet.AIEditor
             return (byte)op == Opcode;
         }
 
-        public override string Disassemble(bool verbose)
+        public override string Disassemble(bool jpText, bool verbose)
         {
             var sb = new StringBuilder();
             if (verbose)
             {
                 if (Opcode <= (byte)Opcodes.PushValue13)
                 {
-                    sb.Append($"Push {DisassembleSimple()}");
+                    sb.Append($"Push {DisassembleSimple(jpText)}");
                 }
                 else if (Opcode >= (byte)Opcodes.PushConst01 && Opcode <= (byte)Opcodes.PushConst03)
                 {
-                    sb.Append($"Push {DisassembleSimple()}");
+                    sb.Append($"Push {DisassembleSimple(jpText)}");
                 }
                 else if (Opcode == (byte)Opcodes.Jump)
                 {
@@ -90,17 +90,17 @@ namespace FF7Scarlet.AIEditor
                 }
                 else
                 {
-                    sb.Append(DisassembleSimple());
+                    sb.Append(DisassembleSimple(jpText));
                 }
             }
             else
             {
-                sb.Append(DisassembleSimple());
+                sb.Append(DisassembleSimple(jpText));
             }
             return sb.ToString();
         }
 
-        private string DisassembleSimple()
+        private string DisassembleSimple(bool jpText)
         {
             var sb = new StringBuilder();
             if (Enum.IsDefined(typeof(Opcodes), Opcode))
@@ -132,7 +132,7 @@ namespace FF7Scarlet.AIEditor
             {
                 if (Opcode == (byte)Opcodes.ShowMessage)
                 {
-                    sb.Append($"\"{Parameter}\"");
+                    sb.Append($"\"{Parameter.ToString(jpText)}\"");
                 }
                 else if (Opcode == (byte)Opcodes.Label)
                 {

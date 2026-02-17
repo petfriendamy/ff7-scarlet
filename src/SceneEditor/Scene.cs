@@ -84,14 +84,14 @@ namespace FF7Scarlet.SceneEditor
             return null;
         }
 
-        public string GetEnemyName(ushort id)
+        public string GetEnemyName(ushort id, bool isJapanese)
         {
             var enemy = GetEnemyByID(id);
             if (enemy == null) { return "(none)"; }
-            else { return enemy.GetNameString(); }
+            else { return enemy.GetNameString(isJapanese); }
         }
 
-        public string GetEnemyNames()
+        public string GetEnemyNames(bool isJapanese)
         {
             if (IsEmpty())
             {
@@ -109,7 +109,7 @@ namespace FF7Scarlet.SceneEditor
                     }
                     else
                     {
-                        sb.Append(GetEnemyName(enemy.ModelID));
+                        sb.Append(GetEnemyName(enemy.ModelID, isJapanese));
                     }
                     if (i + 1 < ENEMY_COUNT)
                     {
@@ -146,7 +146,7 @@ namespace FF7Scarlet.SceneEditor
             return $"Unknown ({id:X4})";
         }
 
-        public string GetFormationEnemyNames(int formation)
+        public string GetFormationEnemyNames(int formation, bool isJapanese)
         {
             if (formation < 0 || formation >= FORMATION_COUNT)
             {
@@ -182,7 +182,7 @@ namespace FF7Scarlet.SceneEditor
             var sb = new StringBuilder();
             foreach (var e in sorted)
             {
-                sb.Append($"{e.Value}x {e.Key.GetNameString()}, ");
+                sb.Append($"{e.Value}x {e.Key.GetNameString(isJapanese)}, ");
             }
             if (sb.Length > 0)
             {

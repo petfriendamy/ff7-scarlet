@@ -1,16 +1,8 @@
 ﻿using FF7Scarlet.Compression;
 using FF7Scarlet.SceneEditor.Controls;
 using FF7Scarlet.Shared;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.SceneEditor
 {
     public partial class SceneImportForm : Form
@@ -19,7 +11,7 @@ namespace FF7Scarlet.SceneEditor
         private readonly SceneImportControl[] importList;
         public Dictionary<int, Scene> ImportScenes { get; private set; } = new();
 
-        public SceneImportForm(string filePath)
+        public SceneImportForm(string filePath, bool jpText)
         {
             InitializeComponent();
             scenes = Gzip.GetDecompressedSceneChunk(filePath);
@@ -38,7 +30,7 @@ namespace FF7Scarlet.SceneEditor
             int y = 3;
             for (int i = 0; i < scenes.Length; ++i)
             {
-                importList[i] = new SceneImportControl(scenes[i].GetEnemyNames(), i + start);
+                importList[i] = new SceneImportControl(scenes[i].GetEnemyNames(jpText), i + start);
                 importList[i].Location = new Point(3, y);
                 importList[i].Size = new Size(416, 30);
                 y += 33;

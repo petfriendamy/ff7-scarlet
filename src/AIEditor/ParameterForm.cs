@@ -1,6 +1,7 @@
 ﻿using FF7Scarlet.Shared;
 using System.ComponentModel;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.AIEditor
 {
     public partial class ParameterForm : Form
@@ -12,18 +13,23 @@ namespace FF7Scarlet.AIEditor
         private readonly Opcodes opcode;
         private readonly int xx, yy, offset;
         private readonly ParameterTypes type;
-        private bool loading = false;
+        private bool loading = false, jpText;
 
-        public ParameterForm(Script script, List<Code> code, Opcodes opcode, ParameterTypes type)
+        public ParameterForm(Script script, List<Code> code, Opcodes opcode, ParameterTypes type, bool jpText)
         {
             InitializeComponent();
             parentScript = script;
             Code = code;
             this.opcode = opcode;
             this.type = type;
+            this.jpText = jpText;
 
             paramList = new List<ParameterControl> { parameterControl1, parameterControl2 };
             parameterControl1.SetAsFirst();
+            foreach (var p in paramList)
+            {
+                p.SetAsJP(jpText);
+            }
 
             //get position info
             xx = parameterControl1.Location.X;
@@ -92,6 +98,7 @@ namespace FF7Scarlet.AIEditor
         {
             SuspendLayout();
             var newLine = new ParameterControl();
+            newLine.SetAsJP(jpText);
             newLine.Name = $"parameterControl{paramList.Count}";
             newLine.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right);
             newLine.Size = new Size(parameterControl1.Size.Width, parameterControl1.Size.Height);

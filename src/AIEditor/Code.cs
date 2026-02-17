@@ -6,7 +6,7 @@ namespace FF7Scarlet.AIEditor
     {
         public Script Parent { get; protected set; }
 
-        public abstract string Disassemble(bool verbose);
+        public abstract string Disassemble(bool jpText, bool verbose);
         public abstract List<CodeLine> BreakDown();
         public abstract ushort GetHeader();
         public abstract byte GetPrimaryOpcode();
