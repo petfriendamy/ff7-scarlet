@@ -69,20 +69,16 @@ namespace FF7Scarlet.AIEditor
         {
             var op = OpcodeInfo.GetInfo(Opcode);
             if (op == null) { throw new ArgumentNullException(); }
-            FFText? p = null;
+            byte[] p = [];
             CodeBlock block;
             if (old == null)
             {
-                if (op.ParameterType != ParameterTypes.None)
-                {
-                    p = new FFText("");
-                }
                 block = new CodeBlock(parentScript, new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                     (byte)Opcode, p));
                 for (int i = 0; i < op.PopCount; ++i)
                 {
                     block.AddToTop(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
-                        (byte)Opcodes.PushConst01, new FFText("0")));
+                        (byte)Opcodes.PushConst01, [0]));
                 }
             }
             else

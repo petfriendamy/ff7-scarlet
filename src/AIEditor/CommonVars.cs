@@ -8,7 +8,7 @@ namespace FF7Scarlet.AIEditor
 {
     public static class CommonVars
     {
-        public enum Globals
+        public enum Globals : ushort
         {
             CommandIndex = 0x2000, ActionIndex = 0x2008, TempGlobal = 0x2010, Dummy = 0x2018,
             BattleFormation = 0x2020, LimitLevel = 0x2038, ActiveActors = 0x2050, Self = 0x2060,
@@ -18,7 +18,7 @@ namespace FF7Scarlet.AIEditor
             ActionIndex2 = 0x2150, SpecialFlags = 0x2170, Gil = 0x21C0
         }
 
-        public enum ActorGlobals
+        public enum ActorGlobals : ushort
         {
             StatusEffects = 0x4000, ActorIndex = 0x4040, Level = 0x4048,
             ElementalDamageModifier = 0x4058, CharacterID = 0x4060, PhysicalAttackPower = 0x4068,

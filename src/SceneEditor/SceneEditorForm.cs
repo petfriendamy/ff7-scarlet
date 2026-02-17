@@ -2247,7 +2247,9 @@ namespace FF7Scarlet.SceneEditor
             if (currEnemy >= 0)
             {
                 comboBoxEnemy.SelectedIndex = currEnemy;
+                LoadEnemyData(SelectedEnemy, true, true);
             }
+            loading = false;
         }
 
         private void SceneEditorForm_FormClosing(object sender, FormClosingEventArgs e)

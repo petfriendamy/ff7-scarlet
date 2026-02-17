@@ -40,7 +40,7 @@ namespace FF7Scarlet.AIEditor
                 var p = startingCode.GetParameter();
                 if (p != null)
                 {
-                    labels = new Dictionary<int, ushort> { { p.ToInt(), startingCode.GetHeader() } };
+                    labels = new Dictionary<int, ushort> { { BitConverter.ToUInt16(p), startingCode.GetHeader() } };
                 }
             }
             if (startingCode.GetPrimaryOpcode() != (byte)Opcodes.End)
@@ -124,16 +124,13 @@ namespace FF7Scarlet.AIEditor
                                 switch (type)
                                 {
                                     case ParameterTypes.OneByte:
-                                        parsedLine.Parameter = new FFText(reader.ReadByte().ToString("X2"));
+                                        parsedLine.Parameter = [reader.ReadByte()];
                                         break;
                                     case ParameterTypes.TwoByte:
-                                        parsedLine.Parameter = new FFText(reader.ReadUInt16().ToString("X4"));
+                                        parsedLine.Parameter = reader.ReadBytes(2);
                                         break;
                                     case ParameterTypes.ThreeByte:
-                                        intParser[0] = reader.ReadByte();
-                                        intParser[1] = reader.ReadByte();
-                                        intParser[2] = reader.ReadByte();
-                                        parsedLine.Parameter = new FFText(BitConverter.ToInt32(intParser, 0).ToString("X6"));
+                                        parsedLine.Parameter = reader.ReadBytes(3);
                                         break;
                                     case ParameterTypes.String:
                                         stringParser.Clear();
@@ -143,7 +140,7 @@ namespace FF7Scarlet.AIEditor
                                             temp = reader.ReadByte();
                                             stringParser.Add(temp);
                                         }
-                                        parsedLine.Parameter = new FFText(stringParser.ToArray());
+                                        parsedLine.Parameter = stringParser.ToArray();
                                         break;
                                     case ParameterTypes.Debug:
                                         parsedLine.PopCount = reader.ReadByte();
@@ -154,7 +151,7 @@ namespace FF7Scarlet.AIEditor
                                             temp = reader.ReadByte();
                                             if (temp != 0) { stringParser.Add(temp); }
                                         }
-                                        parsedLine.Parameter = new FFText(Encoding.ASCII.GetString(stringParser.ToArray()));
+                                        parsedLine.Parameter = stringParser.ToArray();
                                         break;
 
                                 }
@@ -173,25 +170,21 @@ namespace FF7Scarlet.AIEditor
             var jumps =
                 from c in firstParse
                 where c.OpcodeInfo?.Group == OpcodeGroups.Jump
-                orderby c.Parameter
+                orderby BitConverter.ToUInt16(c.Parameter)
                 select c;
 
-            var newLabels = new List<int> { };
+            var newLabels = new List<ushort> { };
             int currLabel = 0;
-            var provider = new CultureInfo("en-US");
             foreach (var j in jumps)
             {
-                ushort loc;
-                if (ushort.TryParse(j.Parameter?.ToString(), NumberStyles.HexNumber, provider, out loc))
+                ushort loc = BitConverter.ToUInt16(j.Parameter);
+                if (!newLabels.Contains(loc))
                 {
-                    if (!newLabels.Contains(loc))
-                    {
-                        newLabels.Add(loc);
-                        currLabel++;
-                        labels.Add(currLabel, loc);
-                    }
-                    j.Parameter = new FFText((newLabels.IndexOf(loc) + 1).ToString("X4"));
+                    newLabels.Add(loc);
+                    currLabel++;
+                    labels.Add(currLabel, loc);
                 }
+                j.Parameter = BitConverter.GetBytes((ushort)(newLabels.IndexOf(loc) + 1));
             }
 
             //insert labels into the codelist
@@ -201,7 +194,7 @@ namespace FF7Scarlet.AIEditor
                 if (newLabels.Contains(header))
                 {
                     int labelPos = newLabels.IndexOf(header) + 1;
-                    var newLabel = new CodeLine(this, header, (byte)Opcodes.Label, new FFText(labelPos.ToString("X4")));
+                    var newLabel = new CodeLine(this, header, (byte)Opcodes.Label, BitConverter.GetBytes(labelPos));
                     firstParse.Insert(i, newLabel);
                     ++i;
                 }
@@ -291,7 +284,7 @@ namespace FF7Scarlet.AIEditor
                 var p = newCode.GetParameter();
                 if (p != null)
                 {
-                    AddLabel(p.ToInt());
+                    AddLabel(BitConverter.ToUInt16(p));
                 }
             }
             headersAreCorrect = false;
@@ -316,7 +309,7 @@ namespace FF7Scarlet.AIEditor
                     var p = newCode.GetParameter();
                     if (p != null)
                     {
-                        AddLabel(p.ToInt());
+                        AddLabel(BitConverter.ToUInt16(p));
                     }
                 }
                 headersAreCorrect = false;
@@ -332,7 +325,7 @@ namespace FF7Scarlet.AIEditor
                     var p = code[pos].GetParameter();
                     if (p != null)
                     {
-                        labels.Remove(p.ToInt());
+                        labels.Remove(BitConverter.ToUInt16(p));
                     }
                 }
                 code.RemoveAt(pos);
@@ -372,7 +365,7 @@ namespace FF7Scarlet.AIEditor
             return labels.Keys.ToArray();
         }
 
-        public void AddLabel(int label)
+        public void AddLabel(ushort label)
         {
             if (!labels.ContainsKey(label))
             {
@@ -396,8 +389,8 @@ namespace FF7Scarlet.AIEditor
                     if (op != null && op.Group == OpcodeGroups.Jump && op.EnumValue != Opcodes.Jump)
                     {
                         var p = c.GetParameter();
-                        int label = 0;
-                        if (p != null) { label = p.ToInt(); }
+                        ushort label = 0;
+                        if (p != null) { label = BitConverter.ToUInt16(p); }
 
                         if (op.EnumValue == Opcodes.Label) //label
                         {
@@ -453,7 +446,7 @@ namespace FF7Scarlet.AIEditor
                     var p = c.GetParameter();
                     if (p != null)
                     {
-                        int pint = p.ToInt();
+                        ushort pint = BitConverter.ToUInt16(p);
                         if (!labels.ContainsKey(pint))
                         {
                             throw new ArgumentOutOfRangeException($"Label {pint}");

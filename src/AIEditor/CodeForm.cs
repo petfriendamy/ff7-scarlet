@@ -1,6 +1,8 @@
-using System.Data;
-using System.ComponentModel;
 using FF7Scarlet.Shared;
+using System.ComponentModel;
+using System.Data;
+using System.Globalization;
+using System.Text;
 
 #pragma warning disable CA1416
 namespace FF7Scarlet.AIEditor
@@ -15,8 +17,9 @@ namespace FF7Scarlet.AIEditor
         private OpcodeInfo opcode;
         private CommandInfo? command;
         private Code? param1, param2;
-        private FFText? strText;
-        private int label = -1, popCount;
+        private string? strText;
+        private int label = -1;
+        private byte popCount;
         private List<OpcodeInfo> currList = new();
         private Script parentScript;
         private bool loading = true, unsavedChanges = false, jpText;
@@ -63,6 +66,7 @@ namespace FF7Scarlet.AIEditor
                 comboBoxCommands.SelectedIndex = CommandInfo.COMMAND_LIST.ToList().IndexOf(command);
                 var ptype = command.ParameterType1;
                 var param = Code.GetParameter();
+                bool debug = false;
                 for (int i = 1; i <= 2; ++i)
                 {
                     switch (ptype)
@@ -71,14 +75,18 @@ namespace FF7Scarlet.AIEditor
                             break;
                         case ParameterTypes.Debug:
                             popCount = Code.GetPopCount();
+                            debug = true;
                             break;
                         case ParameterTypes.String:
-                            strText = param;
+                            if (debug)
+                                strText = Encoding.ASCII.GetString(param);
+                            else
+                                strText = new FFText(param).ToString(jpText);
                             break;
                         case ParameterTypes.Label:
-                            if (param != null)
+                            if (param.Length > 0)
                             {
-                                label = param.ToInt();
+                                label = BitConverter.ToUInt16(param);
                             }
                             break;
                         default:
@@ -143,10 +151,10 @@ namespace FF7Scarlet.AIEditor
                     switch (ptype)
                     {
                         case ParameterTypes.Debug:
-                            textbox.Text = popCount.ToString();
+                            textbox.Text = popCount.ToString("X2");
                             break;
                         case ParameterTypes.String:
-                            textbox.Text = strText?.ToString(jpText);
+                            textbox.Text = strText;
                             break;
                         case ParameterTypes.ReadWrite:
                             if (currParam?.Disassemble(jpText, false) == "01")
@@ -183,7 +191,7 @@ namespace FF7Scarlet.AIEditor
 
                 if (op.ParameterType != ParameterTypes.None && code.Parameter != null)
                 {
-                    comboBoxManualParameter.Text = code.Parameter.ToString(jpText);
+                    comboBoxManualParameter.Text = new FFText(code.Parameter).ToString(jpText);
                 }
             }
         }
@@ -258,11 +266,12 @@ namespace FF7Scarlet.AIEditor
             {
                 if (pos == 0)
                 {
-                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, new FFText(Code.GetPopCount()));
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, [Code.GetPopCount()]);
                 }
                 else
                 {
-                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, strText);
+                    var bytes = new FFText(strText).GetBytesTruncated();
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, bytes);
                     type = ParameterTypes.String;
                 }
             }
@@ -284,14 +293,14 @@ namespace FF7Scarlet.AIEditor
                     var p = currP as CodeLine;
                     if (p != null)
                     {
-                        if (p.Parameter?.ToInt() == 1)
+                        if (p.Parameter[0] == 1)
                         {
-                            p.Parameter = new FFText("00");
+                            p.Parameter = [0];
                             textBox.Text = "Read";
                         }
                         else
                         {
-                            p.Parameter = new FFText("01");
+                            p.Parameter = [1];
                             textBox.Text = "Write";
                         }
                     }
@@ -299,11 +308,12 @@ namespace FF7Scarlet.AIEditor
                 }
                 else if (type == ParameterTypes.String)
                 {
-                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, strText);
+                    var str = new FFText(strText, isJapanese: jpText);
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.ShowMessage, str.GetBytes());
                 }
                 else if (type == ParameterTypes.Label)
                 {
-                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.Label, new FFText(label.ToString("X4")));
+                    param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.Label, BitConverter.GetBytes(label));
                 }
                 else
                 {
@@ -312,7 +322,7 @@ namespace FF7Scarlet.AIEditor
             }
             if (param == null)
             {
-                param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, new FFText("0"));
+                param = new CodeLine(Code.Parent, Code.GetHeader(), (byte)Opcodes.PushConst01, [0]);
             }
 
             //send the parameter to the parameter form for editing
@@ -323,18 +333,20 @@ namespace FF7Scarlet.AIEditor
             }
             try
             {
-                using (var paramForm = new ParameterForm(parentScript, temp, opcode.EnumValue, type, jpText))
+                bool useJP = jpText && opcode.EnumValue != Opcodes.DebugMessage;
+                using (var paramForm = new ParameterForm(parentScript, temp, opcode.EnumValue, type, useJP))
                 {
                     if (paramForm.ShowDialog() == DialogResult.OK)
                     {
                         if (type == ParameterTypes.String)
                         {
-                            var p = paramForm.Code[0].GetParameter();
+                            var p = new FFText(paramForm.Code[0].GetParameter());
                             if (p != null)
                             {
-                                textBox.Text = p.ToString(jpText);
-                                comboBoxManualParameter.Text = textBox.Text;
-                                strText = p;
+                                strText = p.ToString(useJP);
+                                textBox.Text = strText;
+                                if (opcode.EnumValue != Opcodes.DebugMessage)
+                                    comboBoxManualParameter.Text = strText;
                             }
 
                         }
@@ -349,7 +361,7 @@ namespace FF7Scarlet.AIEditor
                             }
                             else //existing label
                             {
-                                int pint = p.ToInt();
+                                ushort pint = BitConverter.ToUInt16(p);
                                 textBox.Text = pint.ToString();
                                 comboBoxManualParameter.Text = textBox.Text;
                                 label = pint;
@@ -395,25 +407,6 @@ namespace FF7Scarlet.AIEditor
             {
                 ExceptionHandler.Handle(ex, "LoadParameter");
             }
-        }
-
-        private FFText? ParseParameter(ParameterTypes type, string text)
-        {
-            if (type == ParameterTypes.None) { return null; }
-            if (string.IsNullOrEmpty(text))
-            {
-                throw new ArgumentNullException("Parameter cannot be empty.");
-            }
-            if (type == ParameterTypes.Label)
-            {
-                int temp;
-                if (int.TryParse(text, out temp))
-                {
-                    return new FFText(temp.ToString("X4"));
-                }
-                throw new FormatException("Invalid label.");
-            }
-            return new FFText(text, isJapanese: jpText && type == ParameterTypes.String);
         }
 
         private int GetNewLabel()
@@ -470,7 +463,7 @@ namespace FF7Scarlet.AIEditor
             {
                 try
                 {
-                    FFText? param;
+                    byte[]? param = null;
                     if (tabControlOptions.SelectedTab == tabPageGenerate)
                     {
                         if (command != null) //command
@@ -483,6 +476,14 @@ namespace FF7Scarlet.AIEditor
                                 }
                                 else { Code = param1; }
                             }
+                            else if (command.Opcode == Opcodes.DebugMessage) //debug string
+                            {
+                                param = Encoding.ASCII.GetBytes(strText ?? string.Empty);
+                                var cl = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
+                                    (byte)command.Opcode, param);
+                                cl.PopCount = popCount;
+                                Code = new CodeBlock(parentScript, cl);
+                            }
                             else if (command.OpcodeInfo?.PopCount > 0) //two parameters
                             {
                                 if (param1 == null)
@@ -491,21 +492,21 @@ namespace FF7Scarlet.AIEditor
                                 }
                                 else
                                 {
-                                    FFText? p = null;
                                     if (command.ParameterType2 == ParameterTypes.Label)
                                     {
                                         if (label == -1) //new label
                                         {
-                                            param = new FFText(GetNewLabel().ToString("X4"));
+                                            param = BitConverter.GetBytes(GetNewLabel());
                                             CreateNewLabel = true;
                                         }
                                         else
                                         {
-                                            p = new FFText(label.ToString("X4"));
+                                            param = BitConverter.GetBytes(label);
                                         }
                                     }
+
                                     var cb = new CodeBlock(parentScript, new CodeLine(parentScript,
-                                        HexParser.NULL_OFFSET_16_BIT, (byte)command.Opcode, p));
+                                        HexParser.NULL_OFFSET_16_BIT, (byte)command.Opcode, param));
                                     if (param2 != null) { cb.AddToTop(param2); }
 
                                     cb.AddToTop(param1);
@@ -516,12 +517,12 @@ namespace FF7Scarlet.AIEditor
                             {
                                 if (command.ParameterType1 == ParameterTypes.Label && label == -1) //new label
                                 {
-                                    param = new FFText(GetNewLabel().ToString("X4"));
+                                    param = BitConverter.GetBytes(GetNewLabel());
                                     CreateNewLabel = true;
                                 }
                                 else
                                 {
-                                    param = ParseParameter(command.ParameterType1, textBoxParameter1.Text);
+                                    param = HexParser.ParameterTextToBytes(command.ParameterType1, textBoxParameter1.Text, jpText);
                                 }
                                 Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                                     (byte)command.Opcode, param);
@@ -531,7 +532,7 @@ namespace FF7Scarlet.AIEditor
                     else //manual
                     {
                         var op = currList[comboBoxOpcodes.SelectedIndex];
-                        param = ParseParameter(op.ParameterType, comboBoxManualParameter.Text);
+                        param = HexParser.ParameterTextToBytes(op.ParameterType, comboBoxManualParameter.Text, jpText);
                         Code = new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT, op.Code, param);
                     }
                 }

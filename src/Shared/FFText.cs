@@ -161,9 +161,9 @@ namespace FF7Scarlet.Shared
             get { return data.Length; }
         }
 
-        public FFText(byte[] data)
+        public FFText(byte[]? data)
         {
-            this.data = data;
+            this.data = data ?? [];
         }
 
         public FFText(byte[] data, int length)
@@ -416,41 +416,11 @@ namespace FF7Scarlet.Shared
             return string.Empty;
         }
 
-        public int ToInt()
+        public byte[] GetBytes()
         {
-            int value;
-            var provider = new CultureInfo("en-US");
-            if (int.TryParse(ToString(), NumberStyles.HexNumber, provider, out value))
-            {
-                return value;
-            }
-            return -1;
-        }
-
-        public byte[] GetBytes(ParameterTypes type = ParameterTypes.String)
-        {
-            var singleByte = new byte[1];
-            var threeByteInt = new byte[3];
-            switch (type)
-            {
-                case ParameterTypes.OneByte:
-                case ParameterTypes.ReadWrite:
-                    singleByte[0] = (byte)ToInt();
-                    return singleByte;
-                case ParameterTypes.TwoByte:
-                    return BitConverter.GetBytes((ushort)ToInt());
-                case ParameterTypes.ThreeByte:
-                    Array.Copy(BitConverter.GetBytes(ToInt()), threeByteInt, 3);
-                    return threeByteInt;
-                case ParameterTypes.Debug:
-                    var str = ToString();
-                    if (str == string.Empty) { return Array.Empty<byte>(); }
-                    return Encoding.ASCII.GetBytes(str);
-                default:
-                    var copy = new byte[data.Length];
-                    Array.Copy(data, copy, data.Length);
-                    return copy;
-            }
+            var copy = new byte[data.Length];
+            Array.Copy(data, copy, data.Length);
+            return copy;
         }
 
         public byte[] GetBytes(int length, bool terminatedWithZero = false, bool padWithZero = false, bool addSpace = false)

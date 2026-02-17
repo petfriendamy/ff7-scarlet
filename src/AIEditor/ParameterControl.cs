@@ -1,7 +1,8 @@
-using System.Data;
-using System.Globalization;
-using System.ComponentModel;
 using FF7Scarlet.Shared;
+using System.ComponentModel;
+using System.Data;
+using System.Reflection.Metadata;
+using System.Text;
 
 #pragma warning disable CA1416
 namespace FF7Scarlet.AIEditor
@@ -71,31 +72,71 @@ namespace FF7Scarlet.AIEditor
             }
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public FFText? Parameter
+        public byte[] Parameter
         {
             get
             {
                 var op = OpcodeInfo.GetInfo(ParamType);
-                if (op == null) { return null; }
+                if (op == null) { return []; }
 
                 var type = op.ParameterType;
-                if (type == ParameterTypes.Label)
+                try
                 {
-                    ushort temp;
-                    bool test = ushort.TryParse(comboBoxParameter.Text, out temp);
-                    if (test) { return new FFText(temp.ToString("X4")); }
-                    else { return null; }
+                    return HexParser.ParameterTextToBytes(type, comboBoxParameter.Text, jpText);
                 }
-                else if (type != ParameterTypes.String && type != ParameterTypes.Debug)
+                catch (FormatException)
                 {
-                    var temp = comboBoxParameter.Text.Split(' '); //ignore variable names
-                    return new FFText(temp[0]);
+                    return [];
                 }
-                return new FFText(comboBoxParameter.Text, isJapanese: jpText);
             }
             private set
             {
-                comboBoxParameter.Text = value?.ToString(UseJPTyping);
+                if (value.Length > 0)
+                {
+                    var op = OpcodeInfo.GetInfo(ParamType);
+                    if (op == null)
+                    {
+                        comboBoxParameter.ResetText();
+                    }
+                    else
+                    {
+
+                        switch (op.ParameterType)
+                        {
+                            case ParameterTypes.String:
+                                comboBoxParameter.Text = new FFText(value).ToString(UseJPTyping);
+                                break;
+                            case ParameterTypes.Debug:
+                                comboBoxParameter.Text = Encoding.ASCII.GetString(value);
+                                break;
+                            default:
+                                //show the variable name (if it exists)
+                                ushort u = value[0];
+                                if (value.Length > 1)
+                                {
+                                    u = BitConverter.ToUInt16(value);
+                                }
+
+                                if (Enum.IsDefined(typeof(CommonVars.Globals), u))
+                                {
+                                    comboBoxParameter.Text = Enum.GetName((CommonVars.Globals)u);
+                                }
+                                else if (Enum.IsDefined(typeof(CommonVars.ActorGlobals), u))
+                                {
+                                    comboBoxParameter.Text = Enum.GetName((CommonVars.ActorGlobals)u);
+                                }
+                                else
+                                {
+                                    comboBoxParameter.Text = HexParser.HexNumberToText(value);
+                                }
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    comboBoxParameter.ResetText();
+                }
             }
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -191,15 +232,14 @@ namespace FF7Scarlet.AIEditor
             comboBoxType.Items.Add("(Modify above)");
             comboBoxType.EndUpdate();
 
+            //add common variable names to drop down
             comboBoxParameter.BeginUpdate();
-            foreach (int gv in Enum.GetValues(typeof(CommonVars.Globals)))
+            var varList = Enum.GetNames<CommonVars.Globals>().ToList();
+            varList.AddRange(Enum.GetNames<CommonVars.ActorGlobals>());
+            varList.Sort();
+            foreach (string gv in varList)
             {
-                comboBoxParameter.Items.Add($"{gv:X4} ({(CommonVars.Globals)gv})");
-            }
-
-            foreach (int gv in Enum.GetValues(typeof(CommonVars.ActorGlobals)))
-            {
-                comboBoxParameter.Items.Add($"{gv:X4} ({(CommonVars.ActorGlobals)gv})");
+                comboBoxParameter.Items.Add(gv);
             }
             comboBoxParameter.EndUpdate();
             loading = false;
@@ -240,11 +280,10 @@ namespace FF7Scarlet.AIEditor
             ResumeLayout();
         }
 
-        public void SetCode(byte paramType, FFText? parameter, bool isModifier = false)
+        public void SetCode(byte paramType, byte[] parameter, bool isModifier = false)
         {
             loading = true;
             ParamType = paramType;
-            Parameter = parameter;
             Modifier = 0xFF;
             ModifyAbove = isModifier;
 
@@ -266,39 +305,9 @@ namespace FF7Scarlet.AIEditor
                 {
                     comboBoxType.SelectedIndex = paramTypes.IndexOf(op);
                 }
-
-                //set text in parameter textbox
-                if (parameter != null)
-                {
-                    if (op.Group == OpcodeGroups.Jump)
-                    {
-                        comboBoxParameter.Text = parameter.ToInt().ToString();
-                    }
-                    else
-                    {
-                        comboBoxParameter.Text = parameter.ToString(jpText);
-                    }
-
-                    //add common variables to the dropdown list
-                    if (op.ParameterType != ParameterTypes.String && op.ParameterType != ParameterTypes.Debug)
-                    {
-                        var str = parameter.ToString();
-                        if (str != null)
-                        {
-                            var temp = int.Parse(str, NumberStyles.HexNumber);
-                        if (Enum.IsDefined(typeof(CommonVars.Globals), temp))
-                            {
-                                comboBoxParameter.Text += $" ({(CommonVars.Globals)temp})";
-                            }
-                            if (Enum.IsDefined(typeof(CommonVars.ActorGlobals), temp))
-                            {
-                                comboBoxParameter.Text += $" ({(CommonVars.ActorGlobals)temp})";
-                            }
-                        }
-                    }
-                }
                 checkBoxEnabled.Checked = true;
             }
+            Parameter = parameter; //this sets the combobox text
             loading = false;
         }
 

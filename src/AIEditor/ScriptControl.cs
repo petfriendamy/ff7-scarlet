@@ -220,7 +220,7 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
-        private void CreateLabelAtPosition(byte opcode, FFText label, int pos)
+        private void CreateLabelAtPosition(byte opcode, byte[] label, int pos)
         {
             if (SelectedScript != null)
             {
@@ -229,7 +229,7 @@ namespace FF7Scarlet.AIEditor
                     SelectedScript.InsertCodeAtPosition(pos, new CodeLine(SelectedScript,
                         HexParser.NULL_OFFSET_16_BIT, (byte)Opcodes.Label, label));
                 }
-                SelectedScript.AddLabel(label.ToInt());
+                SelectedScript.AddLabel(BitConverter.ToUInt16(label));
             }
         }
 

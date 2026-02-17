@@ -10,7 +10,6 @@ namespace FF7Scarlet.AIEditor
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Code> Code { get; private set; }
         private readonly Script parentScript;
-        private readonly Opcodes opcode;
         private readonly int xx, yy, offset;
         private readonly ParameterTypes type;
         private bool loading = false, jpText;
@@ -20,7 +19,6 @@ namespace FF7Scarlet.AIEditor
             InitializeComponent();
             parentScript = script;
             Code = code;
-            this.opcode = opcode;
             this.type = type;
             this.jpText = jpText;
 
@@ -155,7 +153,7 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
-        private CodeLine ValidateCode(byte opcode, FFText? parameter)
+        private CodeLine ValidateCode(byte opcode, byte[] parameter)
         {
             //check if opcode exists
             var op = OpcodeInfo.GetInfo(opcode);

@@ -10,7 +10,7 @@ namespace FF7Scarlet.AIEditor
         public abstract List<CodeLine> BreakDown();
         public abstract ushort GetHeader();
         public abstract byte GetPrimaryOpcode();
-        public abstract FFText? GetParameter();
+        public abstract byte[] GetParameter();
         public abstract byte GetPopCount();
         public abstract void SetParent(Script parent);
         public abstract ushort SetHeader(ushort value);

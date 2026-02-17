@@ -52,25 +52,25 @@ namespace FF7Scarlet.AIEditor
             return null;
         }
 
-        public bool IsValid(FFText? data)
+        public bool IsValid(byte[] data)
         {
             switch (ValidData)
             {
                 case ParameterValidData.None:
                     return false;
                 case ParameterValidData.Hex:
-                    if (data == null || data.ToInt() == -1)
+                    if (data.Length == 0)
                     {
                         return false;
                     }
                     break;
             }
-            int? temp = data?.Length;
-            if (MaxLength > 0 && data?.Length > ((MaxLength * 2) + 1)) { return false; }
+            int? temp = data.Length;
+            if (MaxLength > 0 && data.Length > ((MaxLength * 2) + 1)) { return false; }
             return true;
         }
 
-        public static bool IsValid(ParameterTypes type, FFText? data)
+        public static bool IsValid(ParameterTypes type, byte[] data)
         {
             var info = GetInfo(type);
             if (info == null) { return false; }

@@ -1,6 +1,7 @@
 using FF7Scarlet.Shared;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace FF7Scarlet.AIEditor
@@ -13,14 +14,14 @@ namespace FF7Scarlet.AIEditor
         {
             get { return OpcodeInfo.GetInfo(Opcode); }
         }
-        public FFText? Parameter { get; set; }
+        public byte[] Parameter { get; set; } = [];
         public byte PopCount { get; set; }
 
-        public CodeLine(Script parent, ushort header, byte opcode, FFText? parameter = null) :base(parent)
+        public CodeLine(Script parent, ushort header, byte opcode, byte[]? parameter = null) :base(parent)
         {
             Header = header;
             Opcode = opcode;
-            Parameter = parameter;
+            Parameter = parameter ?? [];
         }
 
         public CodeLine(CodeLine other) :base(other.Parent)
@@ -41,7 +42,7 @@ namespace FF7Scarlet.AIEditor
             return Opcode;
         }
 
-        public override FFText? GetParameter()
+        public override byte[] GetParameter()
         {
             return Parameter;
         }
@@ -85,7 +86,7 @@ namespace FF7Scarlet.AIEditor
                 {
                     if (Parameter != null)
                     {
-                        sb.Append($"Goto Label {Parameter.ToInt()}");
+                        sb.Append($"Goto Label {BitConverter.ToUInt16(Parameter)}");
                     }
                 }
                 else
@@ -103,6 +104,7 @@ namespace FF7Scarlet.AIEditor
         private string DisassembleSimple(bool jpText)
         {
             var sb = new StringBuilder();
+            bool isVar = false;
             if (Enum.IsDefined(typeof(Opcodes), Opcode))
             {
                 if (Opcode == (byte)Opcodes.Label)
@@ -111,7 +113,7 @@ namespace FF7Scarlet.AIEditor
                 }
                 else if (Opcode <= (byte)Opcodes.PushValue13)
                 {
-                    sb.Append("Var:");
+                    isVar = true;
                 }
                 else if (Opcode >= (byte)Opcodes.PushConst01 && Opcode <= (byte)Opcodes.PushConst03)
                 {
@@ -119,7 +121,7 @@ namespace FF7Scarlet.AIEditor
                 }
                 else
                 {
-                    sb.Append(Enum.GetName((Opcodes)Opcode)).Append(" ");
+                    sb.Append(Enum.GetName((Opcodes)Opcode)).Append(' ');
                 }
             }
             else
@@ -132,46 +134,43 @@ namespace FF7Scarlet.AIEditor
             {
                 if (Opcode == (byte)Opcodes.ShowMessage)
                 {
-                    sb.Append($"\"{Parameter.ToString(jpText)}\"");
+                    sb.Append($"\"{new FFText(Parameter).ToString(jpText)}\"");
                 }
                 else if (Opcode == (byte)Opcodes.Label)
                 {
-                    sb.Append($"{Parameter.ToInt()} --");
+                    sb.Append($"{BitConverter.ToUInt16(Parameter)} --");
                 }
-                else if (OpcodeInfo?.Group == OpcodeGroups.Jump)
+                else if (OpcodeInfo.GetInfo(Opcode)?.Group == OpcodeGroups.Jump)
                 {
-                    sb.Append($"Label {Parameter.ToInt()}");
+                    sb.Append($"Label {BitConverter.ToUInt16(Parameter)}");
                 }
-                else
+                else if (Parameter.Length > 0)
                 {
-                    sb.Append(ParseHexParameter());
-                }
-            }
-            return sb.ToString();
-        }
+                    //get variable name (if it exists)
+                    ushort u = Parameter[0];
+                    if (Parameter.Length > 1)
+                    {
+                        u = BitConverter.ToUInt16(Parameter);
+                    }
 
-        private string ParseHexParameter()
-        {
-            var sb = new StringBuilder();
-            int param;
-            var formatProvider = new CultureInfo("en-US");
-            if (int.TryParse(Parameter?.ToString(), NumberStyles.HexNumber, formatProvider, out param))
-            {
-                if (Opcode == (byte)Opcodes.PushConst01)
-                {
-                    sb.Append(param.ToString("X2"));
-                }
-                else
-                {
-                    sb.Append(param.ToString("X4"));
-                    if (Enum.IsDefined((CommonVars.Globals)param))
+                    //append the variable name, or just the number if one doesn't exist
+                    if (Enum.IsDefined((CommonVars.Globals)u))
                     {
-                        sb.Append($" ({Enum.GetName((CommonVars.Globals)param)})");
+                        sb.Append(Enum.GetName((CommonVars.Globals)u));
                     }
-                    else if (Enum.IsDefined((CommonVars.ActorGlobals)param))
+                    else if (Enum.IsDefined((CommonVars.ActorGlobals)u))
                     {
-                        sb.Append($" ({Enum.GetName((CommonVars.ActorGlobals)param)})");
+                        sb.Append(Enum.GetName((CommonVars.ActorGlobals)u));
                     }
+                    else
+                    {
+                        if (isVar)
+                        {
+                            sb.Append("Var:");
+                        }
+                        sb.Append(HexParser.HexNumberToText(Parameter));
+                    }
+                    return sb.ToString();
                 }
             }
             return sb.ToString();
@@ -185,7 +184,7 @@ namespace FF7Scarlet.AIEditor
         public override byte[] GetBytes()
         {
             int length = GetDataLength();
-            if (length == 0) { return new byte[0]; }
+            if (length == 0) { return []; }
 
             try
             {
@@ -198,32 +197,24 @@ namespace FF7Scarlet.AIEditor
                     if (OpcodeInfo.Group == OpcodeGroups.Jump)
                     {
                         if (Parent == null || Parameter == null) { throw new ArgumentNullException(); }
-                        var temp = BitConverter.GetBytes(Parent.GetLabelPosition(Parameter.ToInt()));
+                        var temp = BitConverter.GetBytes(Parent.GetLabelPosition(BitConverter.ToUInt16(Parameter)));
                         Array.Copy(temp, 0, data, 1, temp.Length);
                     }
                     else
                     {
                         //check for parameter data
-                        byte[]? pbytes = null;
-                        if (Parameter != null)
-                        {
-                            pbytes = Parameter.GetBytes(OpcodeInfo.ParameterType);
-                        }
-
-                        //get data
+                        if (Parameter == null) { throw new ArgumentNullException(); }
                         switch (OpcodeInfo.ParameterType)
                         {
                             case ParameterTypes.None:
                                 break;
                             case ParameterTypes.Debug:
                                 data[1] = PopCount;
-                                if (pbytes == null) { throw new ArgumentNullException(); }
-                                Array.Copy(pbytes, 0, data, 2, pbytes.Length);
+                                Array.Copy(Parameter, 0, data, 2, Parameter.Length);
                                 data[data.Length - 1] = 0;
                                 break;
                             default:
-                                if (pbytes == null) { throw new ArgumentNullException(); }
-                                Array.Copy(pbytes, 0, data, 1, pbytes.Length);
+                                Array.Copy(Parameter, 0, data, 1, Parameter.Length);
                                 break;
                         }
                     }

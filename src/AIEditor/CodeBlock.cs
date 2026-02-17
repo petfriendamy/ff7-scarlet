@@ -84,7 +84,7 @@ namespace FF7Scarlet.AIEditor
             return block[block.Count - 1].GetPrimaryOpcode();
         }
 
-        public override FFText? GetParameter()
+        public override byte[] GetParameter()
         {
             return block[block.Count - 1].GetParameter();
         }
@@ -177,7 +177,7 @@ namespace FF7Scarlet.AIEditor
                         pop1 = block[1] as CodeLine;
                         if (pop1 != null && pop1.Parameter != null)
                         {
-                            sb.Append($"If ({block[0].Disassemble(jpText, false)}) (else goto label {pop1.Parameter.ToInt()})");
+                            sb.Append($"If ({block[0].Disassemble(jpText, false)}) (else goto label {BitConverter.ToUInt16(pop1.Parameter)})");
                         }
                         break;
                     case Opcodes.JumpNotEqual:
@@ -185,7 +185,7 @@ namespace FF7Scarlet.AIEditor
                         if (pop1 != null && pop1.Parameter != null)
                         {
                             sb.Append($"If (1st in Stack != {block[0].Disassemble(jpText, false)})");
-                            sb.Append($" (else goto label {pop1.Parameter.ToInt()})");
+                            sb.Append($" (else goto label {BitConverter.ToUInt16(pop1.Parameter)})");
                         }
                         break;
                     case Opcodes.Mask:
@@ -209,13 +209,13 @@ namespace FF7Scarlet.AIEditor
                         pop2 = block[1] as CodeLine;
                         if (pop1 != null)
                         {
-                            if (pop1.Parameter?.ToString() == "24")
+                            if (pop1.Parameter[0] == 0x24)
                             {
                                 sb.Append("Wait");
                             }
                             else if (pop2 != null && pop2.Parameter != null)
                             {
-                                sb.Append($"PerformAttack ({pop1.Parameter}, {GetAttackName(pop2, jpText)})");
+                                sb.Append($"PerformAttack ({pop1.Parameter[0]:X2}, {GetAttackName(pop2, jpText)})");
                             }
                         }
                         break;
@@ -223,13 +223,13 @@ namespace FF7Scarlet.AIEditor
                         pop1 = block[0] as CodeLine;
                         if (pop1 != null)
                         {
-                            if (pop1.Parameter?.ToInt() == 1)
+                            if (pop1.Parameter[0] == 1)
                             {
-                                sb.Append($"GlobalVar:{block[1].Disassemble(jpText, false)} = Var:2010 (TempGlobal)");
+                                sb.Append($"GlobalVar:{block[1].Disassemble(jpText, false)} = TempGlobal");
                             }
                             else
                             {
-                                sb.Append($"Var:2010 (TempGlobal) = GlobalVar:{block[1].Disassemble(jpText, false)}");
+                                sb.Append($"TempGlobal = GlobalVar:{block[1].Disassemble(jpText, false)}");
                             }
                         }
                         break;
@@ -237,7 +237,7 @@ namespace FF7Scarlet.AIEditor
                         var parameter = block[1].GetParameter();
                         if (parameter != null)
                         {
-                            var elementName = Enum.GetName((Elements)parameter.ToInt());
+                            var elementName = Enum.GetName((Elements)BitConverter.ToUInt16(parameter));
                             if (elementName == null)
                             {
                                 sb.Append($"GetElementDefense({block[0].Disassemble(jpText, false)}, Unknown ({block[1].Disassemble(jpText, false)}))");
@@ -250,7 +250,11 @@ namespace FF7Scarlet.AIEditor
                         break;
                     case Opcodes.DebugMessage:
                         pop1 = block[block.Count - 1] as CodeLine;
-                        sb.Append($"DebugMessage \"{pop1?.Parameter}\"");
+                        if (pop1 != null)
+                        {
+                            sb.Append($"DebugMessage \"{Encoding.ASCII.GetString(pop1.Parameter)}\"");
+                        }
+                            
                         break;
                     default:
                         sb.Append($"{Enum.GetName(typeof(Opcodes), opcode)}({block[0].Disassemble(jpText, false)}");
@@ -276,7 +280,7 @@ namespace FF7Scarlet.AIEditor
 
         private string GetAttackName(CodeLine parameter, bool jpText)
         {
-            string atkName = $"Unknown ({parameter.Parameter})";
+            string atkName = $"Unknown ({HexParser.HexNumberToText(parameter.Parameter)})";
             var op = parameter.OpcodeInfo;
             if (op != null && op.IsVariable)
             {
@@ -286,9 +290,12 @@ namespace FF7Scarlet.AIEditor
             {
                 var parent = GetTopMostParent();
                 var p = parameter.Parameter;
-                if (parent != null && p != null)
+                if (parent != null)
                 {
-                    atkName = parent.GetAttackName((ushort)p.ToInt());
+                    if (p.Length == 1)
+                        atkName = parent.GetAttackName(p[0]);
+                    else
+                        atkName = parent.GetAttackName(BitConverter.ToUInt16(p));
                 }
             }
             return atkName;
