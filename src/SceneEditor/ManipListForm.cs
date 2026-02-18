@@ -19,7 +19,7 @@ namespace FF7Scarlet.SceneEditor
                 Array.Copy(enemy.ManipAttackIDs, ManipList, Enemy.MANIP_ATTACK_COUNT);
                 foreach (var atk in ManipList)
                 {
-                    listBoxAttacks.Items.Add(scene.GetAttackName(atk));
+                    listBoxAttacks.Items.Add(scene.GetAttackName(atk, jpText));
                     if (atk != HexParser.NULL_OFFSET_16_BIT) { attackCount++; }
                 }
             }

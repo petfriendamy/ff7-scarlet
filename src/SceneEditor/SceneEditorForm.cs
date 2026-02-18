@@ -3,6 +3,7 @@ using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Inventory;
+using Shojy.FF7.Elena.Text;
 using System.Globalization;
 using System.Media;
 using System.Text;
@@ -369,7 +370,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else
                 {
-                    listBoxAttacks.Items.Add(DataParser.GetAttackNameString(a));
+                    listBoxAttacks.Items.Add(DataParser.GetAttackNameString(a, DisplayJapaneseText));
                 }
             }
             listBoxAttacks.EndUpdate();
@@ -385,7 +386,7 @@ namespace FF7Scarlet.SceneEditor
             comboBoxEnemyAttackID.Items.Add("None");
             foreach (var a in validAttacks)
             {
-                comboBoxEnemyAttackID.Items.Add(DataParser.GetAttackNameString(a));
+                comboBoxEnemyAttackID.Items.Add(DataParser.GetAttackNameString(a, DisplayJapaneseText));
             }
             comboBoxEnemyAttackID.EndUpdate();
             comboBoxEnemyAttackID.SelectedIndex = 0;
@@ -521,7 +522,7 @@ namespace FF7Scarlet.SceneEditor
                         }
                         else if (SelectedScene != null)
                         {
-                            listBoxEnemyAttacks.Items.Add(SelectedScene.GetAttackName(enemy.AttackIDs[i]));
+                            listBoxEnemyAttacks.Items.Add(SelectedScene.GetAttackName(enemy.AttackIDs[i], DisplayJapaneseText));
                         }
                     }
                     listBoxEnemyAttacks.EndUpdate();
@@ -760,7 +761,7 @@ namespace FF7Scarlet.SceneEditor
             }
             else
             {
-                attackFormControl.UpdateForm(attack, attack.Index);
+                attackFormControl.UpdateForm(attack, attack.Index, DisplayJapaneseText);
                 attackDeleteToolStripMenuItem.Enabled = true;
             }
 
@@ -775,8 +776,8 @@ namespace FF7Scarlet.SceneEditor
             newAttack.StatusChange = new StatusChange(0xFF);
             newAttack.ConditionSubmenu = ConditionSubmenu.None;
             scene.AttackList[attack] = newAttack;
-            var name = scene.GetAttackName(lastAttackID);
-            newAttack.Name = name;
+            var name = scene.GetAttackName(lastAttackID, DisplayJapaneseText);
+            newAttack.Name = new FFText(name);
             UpdateSelectedAttackName(scene, SelectedEnemy, attack);
             validAttacks.Add(newAttack);
             comboBoxEnemyAttackID.Items.Add(name);
@@ -793,7 +794,7 @@ namespace FF7Scarlet.SceneEditor
                 if (atk != null)
                 {
                     loading = true;
-                    string name = scene.GetAttackName((ushort)atk.Index);
+                    string name = scene.GetAttackName((ushort)atk.Index, DisplayJapaneseText);
                     int i, j;
                     listBoxAttacks.SelectedIndex = attack;
                     listBoxAttacks.Items[attack] = name;
@@ -1384,7 +1385,7 @@ namespace FF7Scarlet.SceneEditor
                 {
                     var atk = validAttacks[newAttack - 1];
                     SelectedEnemy.AttackIDs[selectedAttack] = (ushort)atk.Index;
-                    listBoxEnemyAttacks.Items[selectedAttack] = DataParser.GetAttackNameString(atk);
+                    listBoxEnemyAttacks.Items[selectedAttack] = DataParser.GetAttackNameString(atk, DisplayJapaneseText);
                     EnableOrDisableGroupBox(groupBoxEnemyAttacks, true, false);
                 }
                 SetUnsaved(true);
@@ -1447,7 +1448,7 @@ namespace FF7Scarlet.SceneEditor
                     var names = new string[Enemy.MANIP_ATTACK_COUNT];
                     for (n = 0; n < Enemy.MANIP_ATTACK_COUNT; ++n)
                     {
-                        names[n] = SelectedScene.GetAttackName(SelectedEnemy.ManipAttackIDs[n]);
+                        names[n] = SelectedScene.GetAttackName(SelectedEnemy.ManipAttackIDs[n], DisplayJapaneseText);
                     }
                     DialogResult result;
                     int replace;
@@ -2241,13 +2242,19 @@ namespace FF7Scarlet.SceneEditor
             scriptControlFormations.JPText = jpText;
             loading = true;
             int currScene = SelectedSceneIndex,
-                currEnemy = SelectedEnemyIndex;
+                currEnemy = SelectedEnemyIndex,
+                currAttack = SelectedAttackIndex;
             LoadSceneList(currScene);
             LoadSceneData(currScene, false, true);
             if (currEnemy >= 0)
             {
                 comboBoxEnemy.SelectedIndex = currEnemy;
-                LoadEnemyData(SelectedEnemy, true, true);
+                LoadEnemyData(SelectedEnemy, false, true);
+            }
+            if (currAttack >= 0)
+            {
+                listBoxAttacks.SelectedIndex = currAttack;
+                LoadAttackData(SelectedAttack, false);
             }
             loading = false;
         }

@@ -1,21 +1,12 @@
-﻿using FF7Scarlet.KernelEditor;
-using FF7Scarlet.SceneEditor;
-using Shojy.FF7.Elena;
+﻿using FF7Scarlet.SceneEditor;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
-using System;
-using System.Collections.Generic;
+using Shojy.FF7.Elena.Text;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Media;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.Shared.Controls
 {
     public partial class AttackFormControl : UserControl
@@ -34,7 +25,7 @@ namespace FF7Scarlet.Shared.Controls
         private Attack? attack;
         private bool nameEnabled = true;
         private bool descriptionEnabled = true;
-        private bool loading;
+        private bool loading, jpText;
 
         public string AttackName => textBoxAttackName.Text;
         public string AttackDescription => textBoxAttackDescription.Text;
@@ -118,7 +109,7 @@ namespace FF7Scarlet.Shared.Controls
             //groupBoxAttackSpecialActions.Visible = isKernel;
         }
 
-        public void UpdateForm(Attack attack, int id, bool isLimit = false, string? summonAttackName = null,
+        public void UpdateForm(Attack attack, int id, bool jpText, bool isLimit = false, FFText? summonAttackName = null,
             SpellType spellType = SpellType.Unlisted, bool synced = false)
         {
             if (this.attack != null)
@@ -126,13 +117,14 @@ namespace FF7Scarlet.Shared.Controls
                 SyncAttackData(this.attack);
             }
             this.attack = attack;
+            this.jpText = jpText;
             EnableOrDisableControls(true, true);
             loading = true;
 
             //page 1
             labelAttackId.Text = $"ID: {id:X2}";
-            textBoxAttackName.Text = attack.Name;
-            textBoxAttackDescription.Text = attack.Description;
+            textBoxAttackName.Text = attack.Name.ToString(jpText);
+            textBoxAttackDescription.Text = attack.Description?.ToString(jpText);
 
             if (summonAttackName == null)
             {
@@ -142,7 +134,7 @@ namespace FF7Scarlet.Shared.Controls
             else
             {
                 textBoxSummonText.Enabled = true;
-                textBoxSummonText.Text = summonAttackName;
+                textBoxSummonText.Text = summonAttackName.ToString(jpText);
             }
             checkBoxAttackIsLimit.Checked = isLimit;
             numericAttackAttackPercent.Value = attack.AccuracyRate;
@@ -189,25 +181,26 @@ namespace FF7Scarlet.Shared.Controls
             loading = false;
         }
 
-        public void UpdateForm(Attack attack, int id, string name, string desc)
+        public void UpdateForm(Attack attack, int id, FFText name, FFText desc, bool jpText)
         {
-            UpdateForm(attack, id);
-            textBoxAttackName.Text = name;
-            textBoxAttackDescription.Text = desc;
+            UpdateForm(attack, id, jpText);
+            textBoxAttackName.Text = name.ToString(jpText);
+            textBoxAttackDescription.Text = desc.ToString(jpText);
         }
 
-        public void UpdateForm(int id, string name, string desc)
+        public void UpdateForm(int id, FFText name, FFText desc, bool jpText)
         {
             labelAttackId.Text = $"ID: {id:X2}";
-            textBoxAttackName.Text = name;
-            textBoxAttackDescription.Text = desc;
+            this.jpText = jpText;
+            textBoxAttackName.Text = name.ToString(jpText);
+            textBoxAttackDescription.Text = desc.ToString(jpText);
             EnableOrDisableControls(false, true);
         }
 
-        public void UpdateSummonText(string text)
+        public void UpdateSummonText(FFText text)
         {
             loading = true;
-            textBoxSummonText.Text = text;
+            textBoxSummonText.Text = text.ToString(jpText);
             loading = false;
         }
 
@@ -267,7 +260,7 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading && attack != null)
             {
-                attack.Name = AttackName;
+                attack.Name = new FFText(AttackName, isJapanese: jpText);
                 InvokeNameChanged(sender, e);
             }
         }
@@ -276,7 +269,7 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading && attack != null)
             {
-                attack.Description = AttackDescription;
+                attack.Description = new FFText(AttackDescription, isJapanese: jpText);
                 InvokeDescriptionChanged(sender, e);
             }
         }

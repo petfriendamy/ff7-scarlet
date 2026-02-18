@@ -1,7 +1,7 @@
 using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Text;
 using System.ComponentModel;
 using System.Data;
-using System.Globalization;
 using System.Text;
 
 #pragma warning disable CA1416

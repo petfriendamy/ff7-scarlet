@@ -1,8 +1,9 @@
 ﻿using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Battle;
-using Shojy.FF7.Elena.Sections;
+using Shojy.FF7.Elena.Text;
 using System.ComponentModel;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.KernelEditor
 {
     public partial class CurveEditForm : Form

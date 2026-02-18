@@ -1,12 +1,14 @@
 ﻿using Shojy.FF7.Elena.Battle;
+using Shojy.FF7.Elena.Text;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.KernelEditor
 {
     public partial class MagicOrderForm : Form
     {
         public List<SpellIndex> SpellIndices { get; }
 
-        public MagicOrderForm(List<SpellIndex> spellIndices, SpellIndex selected, string[] spellNames)
+        public MagicOrderForm(List<SpellIndex> spellIndices, SpellIndex selected, FFText[] spellNames)
         {
             InitializeComponent();
             SpellIndices = spellIndices;

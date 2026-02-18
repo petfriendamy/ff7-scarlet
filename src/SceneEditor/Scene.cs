@@ -3,6 +3,7 @@ using FF7Scarlet.Shared;
 using System.Diagnostics;
 using System.Text;
 using Shojy.FF7.Elena.Attacks;
+using Shojy.FF7.Elena.Text;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -132,12 +133,12 @@ namespace FF7Scarlet.SceneEditor
             return null;
         }
 
-        public string GetAttackName(ushort id)
+        public string GetAttackName(ushort id, bool jpText)
         {
             var atk = GetAttackByID(id);
             if (atk != null)
             {
-                return DataParser.GetAttackNameString(atk);
+                return DataParser.GetAttackNameString(atk, jpText);
             }
             else if (id == HexParser.NULL_OFFSET_16_BIT)
             {
@@ -268,8 +269,7 @@ namespace FF7Scarlet.SceneEditor
                         attackName[i] = new FFText(reader.ReadBytes(NAME_LENGTH));
                         if (attackID[i] != HexParser.NULL_OFFSET_16_BIT)
                         {
-                            string name = attackName[i]?.ToString() ?? string.Empty;
-                            AttackList[i] = DataParser.ReadAttack(attackID[i], name, attackData[i]);
+                            AttackList[i] = DataParser.ReadAttack(attackID[i], attackName[i], attackData[i]);
                         }
                         else { AttackList[i] = null; }
                     }

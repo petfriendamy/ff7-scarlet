@@ -293,9 +293,9 @@ namespace FF7Scarlet.AIEditor
                 if (parent != null)
                 {
                     if (p.Length == 1)
-                        atkName = parent.GetAttackName(p[0]);
+                        atkName = parent.GetAttackName(p[0], jpText);
                     else
-                        atkName = parent.GetAttackName(BitConverter.ToUInt16(p));
+                        atkName = parent.GetAttackName(BitConverter.ToUInt16(p), jpText);
                 }
             }
             return atkName;

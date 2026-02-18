@@ -1,7 +1,9 @@
 ﻿using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Sections;
 using FF7Scarlet.KernelEditor;
+using Shojy.FF7.Elena.Text;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.Shared
 {
     public partial class MateriaAPEditForm : Form
@@ -13,7 +15,7 @@ namespace FF7Scarlet.Shared
         private MateriaData MateriaData { get; }
         private EnemySkills[] ESkills { get; }
 
-        public MateriaAPEditForm(InventoryMateria materia, MateriaData materiaData, string[] eskills)
+        public MateriaAPEditForm(InventoryMateria materia, MateriaData materiaData, FFText[] eskills, bool jpText)
         {
             InitializeComponent();
             Materia = materia;
@@ -23,7 +25,7 @@ namespace FF7Scarlet.Shared
             comboBoxMateriaID.Items.Add("None");
             foreach (var m in MateriaData.Materias)
             {
-                comboBoxMateriaID.Items.Add(m.Name);
+                comboBoxMateriaID.Items.Add(m.Name.ToString(jpText));
             }
 
             //set AP limit

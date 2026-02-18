@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shojy.FF7.Elena.Text;
 
 namespace FF7Scarlet.Shared
 {
@@ -33,6 +29,23 @@ namespace FF7Scarlet.Shared
                 }
             }
             return str;
+        }
+
+        public static FFText GetTextFromByteArray(byte[] data, int pos, int length = -1)
+        {
+            var bytes = new List<byte>();
+            using (var stream = new MemoryStream(data))
+            using (var reader = new BinaryReader(stream))
+            {
+                stream.Seek(pos, SeekOrigin.Begin);
+                byte b;
+                do
+                {
+                    b = reader.ReadByte();
+                    bytes.Add(b);
+                } while (b != 0xFF);
+            }
+            return new FFText(bytes.ToArray(), length);
         }
     }
 }

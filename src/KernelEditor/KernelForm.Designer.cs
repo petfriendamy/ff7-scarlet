@@ -317,6 +317,7 @@
             attackDeleteToolStripMenuItem = new ToolStripMenuItem();
             toolStripDropDownTools = new ToolStripDropDownButton();
             useKernel2StringsToolStripMenuItem = new ToolStripMenuItem();
+            japaneseTextToolStripMenuItem = new ToolStripMenuItem();
             tabControlMain.SuspendLayout();
             tabPageCommandData.SuspendLayout();
             tabPageAttackData.SuspendLayout();
@@ -3468,8 +3469,7 @@
             // toolStripDropDownTools
             // 
             toolStripDropDownTools.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownTools.DropDownItems.AddRange(new ToolStripItem[] { useKernel2StringsToolStripMenuItem });
-            toolStripDropDownTools.Image = (Image)resources.GetObject("toolStripDropDownTools.Image");
+            toolStripDropDownTools.DropDownItems.AddRange(new ToolStripItem[] { useKernel2StringsToolStripMenuItem, japaneseTextToolStripMenuItem });
             toolStripDropDownTools.ImageTransparentColor = Color.Magenta;
             toolStripDropDownTools.Name = "toolStripDropDownTools";
             toolStripDropDownTools.ShowDropDownArrow = false;
@@ -3479,9 +3479,16 @@
             // useKernel2StringsToolStripMenuItem
             // 
             useKernel2StringsToolStripMenuItem.Name = "useKernel2StringsToolStripMenuItem";
-            useKernel2StringsToolStripMenuItem.Size = new Size(172, 22);
+            useKernel2StringsToolStripMenuItem.Size = new Size(180, 22);
             useKernel2StringsToolStripMenuItem.Text = "Use kernel2 strings";
             useKernel2StringsToolStripMenuItem.Click += useKernel2StringsToolStripMenuItem_Click;
+            // 
+            // japaneseTextToolStripMenuItem
+            // 
+            japaneseTextToolStripMenuItem.Name = "japaneseTextToolStripMenuItem";
+            japaneseTextToolStripMenuItem.Size = new Size(180, 22);
+            japaneseTextToolStripMenuItem.Text = "Use Japanese text";
+            japaneseTextToolStripMenuItem.Click += japaneseTextToolStripMenuItem_Click;
             // 
             // KernelForm
             // 
@@ -3898,5 +3905,6 @@
         private ToolStripDropDownButton toolStripDropDownTools;
         private ToolStripMenuItem useKernel2StringsToolStripMenuItem;
         private Shared.Controls.AttackFormControl attackFormControl;
+        private ToolStripMenuItem japaneseTextToolStripMenuItem;
     }
 }

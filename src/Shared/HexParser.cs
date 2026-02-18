@@ -1,4 +1,5 @@
 ﻿using FF7Scarlet.AIEditor;
+using Shojy.FF7.Elena.Text;
 using System.Globalization;
 using System.Text;
 

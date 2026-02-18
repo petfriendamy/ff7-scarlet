@@ -1,6 +1,8 @@
 ﻿using Shojy.FF7.Elena.Materias;
+using Shojy.FF7.Elena.Text;
 using System.ComponentModel;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.KernelEditor
 {
     public partial class MateriaSpellsForm : Form
@@ -12,7 +14,7 @@ namespace FF7Scarlet.KernelEditor
         private int offset = 0;
         private bool loading;
 
-        public MateriaSpellsForm(Materia materia, string[] names)
+        public MateriaSpellsForm(Materia materia, FFText[] names)
         {
             InitializeComponent();
 

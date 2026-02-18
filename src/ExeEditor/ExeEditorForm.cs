@@ -1,17 +1,15 @@
-using System.Diagnostics;
-using System.Globalization;
-using System.Media;
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Inventory;
+using Shojy.FF7.Elena.Text;
 using SharpDX;
 using SharpDX.DirectSound;
 using SharpDX.Multimedia;
-using System.Collections;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.ExeEditor
 {
     public partial class ExeEditorForm : Form
@@ -952,7 +950,7 @@ namespace FF7Scarlet.ExeEditor
         {
             if (!loading && SelectedCharacter != null)
             {
-                SelectedCharacter.Name = textBoxCharacterName.Text;
+                SelectedCharacter.Name = new FFText(textBoxCharacterName.Text);
                 SetUnsaved(true);
             }
         }
@@ -1109,7 +1107,7 @@ namespace FF7Scarlet.ExeEditor
                 if (slot != -1)
                 {
                     var mat = DataParser.CopyMateria(SelectedCharacter.WeaponMateria[slot]);
-                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData, DataManager.Kernel.GetEnemySkillNames()))
+                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData, DataManager.Kernel.GetEnemySkillNames(), false))
                     {
                         if (edit.ShowDialog() == DialogResult.OK)
                         {
@@ -1130,7 +1128,7 @@ namespace FF7Scarlet.ExeEditor
                 if (slot != -1)
                 {
                     var mat = DataParser.CopyMateria(SelectedCharacter.ArmorMateria[slot]);
-                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData, DataManager.Kernel.GetEnemySkillNames()))
+                    using (var edit = new MateriaAPEditForm(mat, DataManager.Kernel.MateriaData, DataManager.Kernel.GetEnemySkillNames(), false))
                     {
                         if (edit.ShowDialog() == DialogResult.OK)
                         {
@@ -1198,13 +1196,13 @@ namespace FF7Scarlet.ExeEditor
                     var limit = editor.Limits[i];
                     if (limit != null)
                     {
-                        string name = limit.Name, desc = limit.Description;
+                        FFText name = limit.Name, desc = limit.Description;
                         if (DataManager.Kernel != null)
                         {
                             name = DataManager.Kernel.GetLimitName(i);
                             desc = DataManager.Kernel.GetLimitDescription(i);
                         }
-                        attackFormControlLimit.UpdateForm(limit, i, name, desc);
+                        attackFormControlLimit.UpdateForm(limit, i, name, desc, false);
                     }
                 }
                 prevLimit = i;

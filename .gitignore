@@ -364,5 +364,6 @@ FodyWeavers.xsd
 *.DS_Store
 .vs/
 
-# AI settings
+# Local settings
 .claude/
+src/.idea/

@@ -5,10 +5,8 @@ using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Materias;
-using System.Buffers.Text;
+using Shojy.FF7.Elena.Text;
 using System.Collections;
-using System.Reflection.PortableExecutable;
-using System.Xml.Linq;
 
 namespace FF7Scarlet.Shared
 {
@@ -49,7 +47,7 @@ namespace FF7Scarlet.Shared
                 c.LuckBonus = reader.ReadByte();
                 c.LimitLevel = reader.ReadByte();
                 c.CurrentLimitBar = reader.ReadByte();
-                c.Name = new FFText(reader.ReadBytes(CHARACTER_NAME_LENGTH)).ToString();
+                c.Name = new FFText(reader.ReadBytes(CHARACTER_NAME_LENGTH));
                 c.WeaponID = reader.ReadByte();
                 c.ArmorID = reader.ReadByte();
                 c.AccessoryID = reader.ReadByte();
@@ -149,7 +147,7 @@ namespace FF7Scarlet.Shared
             return array1.SequenceEqual(array2);
         }
 
-        public static Attack ReadAttack(ushort index, string name, byte[] data)
+        public static Attack ReadAttack(ushort index, FFText name, byte[] data)
         {
             var atk = new Attack();
             atk.Index = index;
@@ -238,10 +236,10 @@ namespace FF7Scarlet.Shared
             }
         }
 
-        public static string GetAttackNameString(Attack atk)
+        public static string GetAttackNameString(Attack atk, bool jpText)
         {
             if (string.IsNullOrEmpty(atk.Name)) { return $"Unnamed ({atk.Index:X4})"; }
-            else { return atk.Name; }
+            else { return atk.Name.ToString(jpText); }
         }
 
         public static Attack CopyAttack(Attack atk)

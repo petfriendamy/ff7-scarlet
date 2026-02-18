@@ -2,6 +2,7 @@ using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
+using Shojy.FF7.Elena.Text;
 using System.Diagnostics;
 using System.Collections;
 using System.Security.Cryptography;
@@ -1108,7 +1109,7 @@ namespace FF7Scarlet.ExeEditor
                 {
                     for (int i = 0; i < maxCount; ++i)
                     {
-                        Limits[i] = DataParser.ReadAttack((ushort)i, $"(Limit #{i})", reader.ReadBytes(length));
+                        Limits[i] = DataParser.ReadAttack((ushort)i, new FFText($"(Limit #{i})"), reader.ReadBytes(length));
                     }
                 }
                 else if (offset == LIMIT_TEXT_POS)
@@ -2160,7 +2161,7 @@ namespace FF7Scarlet.ExeEditor
                     //read limits
                     for (i = 0; i < NUM_LIMITS; ++i)
                     {
-                        DataParser.ReadAttack((ushort)i, $"(Limit #{i})", reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
+                        DataParser.ReadAttack((ushort)i, new FFText($"(Limit #{i})"), reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
                     }
 
                     //read main menu text
@@ -2172,7 +2173,7 @@ namespace FF7Scarlet.ExeEditor
                     //read config menu text
                     for (i = 0; i < NUM_CONFIG_MENU_TEXTS; ++i)
                     {
-                        ConfigMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                        ConfigMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetConfigTextLength());
                         stream.Seek(ConfigMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                     }
@@ -2180,7 +2181,7 @@ namespace FF7Scarlet.ExeEditor
                     //read status effects
                     for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
                     {
-                        StatusEffectsBattle[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                        StatusEffectsBattle[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetStatusEffectBattleLength());
                         stream.Seek(StatusEffectsBattle[i].ToString().Length + 1, SeekOrigin.Current);
                     }
@@ -2188,7 +2189,7 @@ namespace FF7Scarlet.ExeEditor
                     //read shop names
                     for (i = 0; i < NUM_SHOP_NAMES; ++i)
                     {
-                        ShopNames[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                        ShopNames[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetShopNameLength());
                         stream.Seek(ShopNames[i].ToString().Length + 1, SeekOrigin.Current);
                     }
@@ -2202,7 +2203,7 @@ namespace FF7Scarlet.ExeEditor
                     //read L4 success text
                     for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT - 1; ++i)
                     {
-                        LimitSuccess[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                        LimitSuccess[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetLimitTextLength());
                         stream.Seek(LimitSuccess[i].ToString().Length + 1, SeekOrigin.Current);
                     }
@@ -2210,7 +2211,7 @@ namespace FF7Scarlet.ExeEditor
                     //read L4 fail text
                     for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT - 1; ++i)
                     {
-                        LimitFail[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                        LimitFail[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetLimitTextLength());
                         stream.Seek(LimitFail[i].ToString().Length + 1, SeekOrigin.Current);
                     }
@@ -2218,7 +2219,7 @@ namespace FF7Scarlet.ExeEditor
                     //read L4 wrong text
                     for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
                     {
-                        LimitWrong[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                        LimitWrong[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                             GetLimitTextLength());
                         stream.Seek(LimitWrong[i].ToString().Length + 1, SeekOrigin.Current);
                     }
@@ -2241,7 +2242,7 @@ namespace FF7Scarlet.ExeEditor
                         //read materia menu text
                         for (i = 0; i < NUM_MATERIA_MENU_TEXTS; ++i)
                         {
-                            MateriaMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            MateriaMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetMateriaMenuTextLength());
                             stream.Seek(MateriaMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2249,7 +2250,7 @@ namespace FF7Scarlet.ExeEditor
                         //read equip menu text
                         for (i = 0; i < NUM_EQUIP_MENU_TEXTS; ++i)
                         {
-                            EquipMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            EquipMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetEquipMenuTextLength());
                             stream.Seek(EquipMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2257,7 +2258,7 @@ namespace FF7Scarlet.ExeEditor
                         //read element names
                         for (i = 0; i < NUM_ELEMENTS; ++i)
                         {
-                            ElementNames[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            ElementNames[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetElementNameLength());
                             stream.Seek(ElementNames[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2265,7 +2266,7 @@ namespace FF7Scarlet.ExeEditor
                         //read status effects (menu)
                         for (i = 0; i < NUM_STATUS_EFFECTS; ++i)
                         {
-                            StatusEffectsMenu[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            StatusEffectsMenu[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 MENU_TEXT_LENGTH);
                             stream.Seek(StatusEffectsMenu[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2273,7 +2274,7 @@ namespace FF7Scarlet.ExeEditor
                         //read status menu text
                         for (i = 0; i < NUM_STATUS_MENU_TEXTS; ++i)
                         {
-                            StatusMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            StatusMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetStatusMenuTextLength());
                             stream.Seek(StatusMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2281,7 +2282,7 @@ namespace FF7Scarlet.ExeEditor
                         //read chocobo names
                         for (i = 0; i < GetNumChocoboNames(Language) + 1; ++i)
                         {
-                            ChocoboNames[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            ChocoboNames[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetChocoboNameLength());
                             stream.Seek(GetChocoboNameLength(), SeekOrigin.Current);
                         }
@@ -2289,7 +2290,7 @@ namespace FF7Scarlet.ExeEditor
                         //read item names
                         for (i = 0; i < NUM_CHOCOBO_RACE_ITEMS; ++i)
                         {
-                            ChocoboRacePrizes[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            ChocoboRacePrizes[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetItemNameLength());
                             stream.Seek(GetItemNameLength(), SeekOrigin.Current);
                         }
@@ -2297,7 +2298,7 @@ namespace FF7Scarlet.ExeEditor
                         //read item menu text
                         for (i = 0; i < NUM_ITEM_MENU_TEXTS; ++i)
                         {
-                            ItemMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            ItemMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetItemMenuTextLength());
                             stream.Seek(ItemMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2305,7 +2306,7 @@ namespace FF7Scarlet.ExeEditor
                         //read magic menu text
                         for (i = 0; i < NUM_MAGIC_MENU_TEXTS; ++i)
                         {
-                            MagicMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            MagicMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetMagicMenuTextLength());
                             stream.Seek(MagicMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2313,7 +2314,7 @@ namespace FF7Scarlet.ExeEditor
                         //read unequip text
                         for (i = 0; i < NUM_UNEQUIP_TEXTS; ++i)
                         {
-                            UnequipTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            UnequipTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetUnequipTextLength());
                             stream.Seek(UnequipTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2321,7 +2322,7 @@ namespace FF7Scarlet.ExeEditor
                         //read limit menu text
                         for (i = 0; i < NUM_LIMIT_MENU_TEXTS; ++i)
                         {
-                            LimitMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            LimitMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetLimitMenuTextLength());
                             stream.Seek(LimitMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2329,7 +2330,7 @@ namespace FF7Scarlet.ExeEditor
                         //read save menu text
                         for (i = 0; i < NUM_SAVE_MENU_TEXTS; ++i)
                         {
-                            SaveMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            SaveMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetSaveTextLength());
                             stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2337,7 +2338,7 @@ namespace FF7Scarlet.ExeEditor
                         //read quit text
                         for (i = 0; i < NUM_QUIT_TEXTS_1 + NUM_QUIT_TEXTS_2; ++i)
                         {
-                            SaveMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            SaveMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 QUIT_TEXT_LENGTH_1);
                             stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
@@ -2350,7 +2351,7 @@ namespace FF7Scarlet.ExeEditor
                             int len = lengths[i].Length;
                             for (int j = 0; j < lengths[i].Count; ++j)
                             {
-                                BattleArenaTexts[curr] = FFText.GetTextFromByteArray(bytes, (int)stream.Position, len);
+                                BattleArenaTexts[curr] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position, len);
                                 stream.Seek(BattleArenaTexts[curr].ToString().Length + 1, SeekOrigin.Current);
                                 curr++;
                             }
@@ -2359,7 +2360,7 @@ namespace FF7Scarlet.ExeEditor
                         //read Bizarro menu text
                         for (i = 0; i < NUM_BIZARRO_MENU_TEXTS; ++i)
                         {
-                            BizarroMenuTexts[i] = FFText.GetTextFromByteArray(bytes, (int)stream.Position,
+                            BizarroMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 GetBizarroTextLength());
                             stream.Seek(BizarroMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }

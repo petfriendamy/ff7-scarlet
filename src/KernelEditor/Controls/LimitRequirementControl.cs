@@ -1,15 +1,8 @@
 ﻿using FF7Scarlet.Shared;
 using Shojy.FF7.Elena.Characters;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Shojy.FF7.Elena.Text;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.KernelEditor.Controls
 {
     public partial class LimitRequirementControl : UserControl
@@ -25,7 +18,7 @@ namespace FF7Scarlet.KernelEditor.Controls
             numericHPDivisor.Maximum = uint.MaxValue;
         }
 
-        public void SetData(string[] names, int level)
+        public void SetData(FFText[] names, int level)
         {
             this.level = level;
             groupBoxMain.Text = $"Limit level {level}";

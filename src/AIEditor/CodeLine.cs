@@ -1,7 +1,6 @@
 using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Text;
 using System.Diagnostics;
-using System.Globalization;
-using System.Reflection.Emit;
 using System.Text;
 
 namespace FF7Scarlet.AIEditor

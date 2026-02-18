@@ -168,7 +168,7 @@ namespace FF7Scarlet.SceneEditor
             formationCopyToolStripMenuItem = new ToolStripMenuItem();
             formationPasteToolStripMenuItem = new ToolStripMenuItem();
             formationClearToolStripMenuItem = new ToolStripMenuItem();
-            toolStripDropDownView = new ToolStripDropDownButton();
+            toolStripDropDownTools = new ToolStripDropDownButton();
             japaneseTextToolStripMenuItem = new ToolStripMenuItem();
             buttonSearch = new Button();
             comboBoxFormation = new ComboBox();
@@ -1470,7 +1470,7 @@ namespace FF7Scarlet.SceneEditor
             // toolStripMain
             // 
             toolStripMain.GripStyle = ToolStripGripStyle.Hidden;
-            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownFile, toolStripDropDownEdit, toolStripDropDownView });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownFile, toolStripDropDownEdit, toolStripDropDownTools });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Padding = new Padding(5, 0, 1, 0);
@@ -1642,23 +1642,22 @@ namespace FF7Scarlet.SceneEditor
             formationClearToolStripMenuItem.Size = new Size(102, 22);
             formationClearToolStripMenuItem.Text = "Clear";
             // 
-            // toolStripDropDownView
+            // toolStripDropDownTools
             // 
-            toolStripDropDownView.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownView.DropDownItems.AddRange(new ToolStripItem[] { japaneseTextToolStripMenuItem });
-            toolStripDropDownView.Image = (Image)resources.GetObject("toolStripDropDownView.Image");
-            toolStripDropDownView.ImageTransparentColor = Color.Magenta;
-            toolStripDropDownView.Name = "toolStripDropDownView";
-            toolStripDropDownView.ShowDropDownArrow = false;
-            toolStripDropDownView.Size = new Size(36, 22);
-            toolStripDropDownView.Text = "View";
-            toolStripDropDownView.ToolTipText = "View";
+            toolStripDropDownTools.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownTools.DropDownItems.AddRange(new ToolStripItem[] { japaneseTextToolStripMenuItem });
+            toolStripDropDownTools.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownTools.Name = "toolStripDropDownTools";
+            toolStripDropDownTools.ShowDropDownArrow = false;
+            toolStripDropDownTools.Size = new Size(38, 22);
+            toolStripDropDownTools.Text = "Tools";
+            toolStripDropDownTools.ToolTipText = "View";
             // 
             // japaneseTextToolStripMenuItem
             // 
             japaneseTextToolStripMenuItem.Name = "japaneseTextToolStripMenuItem";
             japaneseTextToolStripMenuItem.Size = new Size(180, 22);
-            japaneseTextToolStripMenuItem.Text = "Japanese text";
+            japaneseTextToolStripMenuItem.Text = "Use Japanese text";
             japaneseTextToolStripMenuItem.Click += japaneseTextToolStripMenuItem_Click;
             // 
             // buttonSearch
@@ -1994,7 +1993,7 @@ namespace FF7Scarlet.SceneEditor
         private Label labelFormationLocation;
         private BattleFlagsControl battleFlagsControlFormation;
         private GroupBox groupBoxCameraData;
-        private ToolStripDropDownButton toolStripDropDownView;
+        private ToolStripDropDownButton toolStripDropDownTools;
         private ToolStripMenuItem japaneseTextToolStripMenuItem;
     }
 }

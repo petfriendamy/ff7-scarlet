@@ -11,6 +11,7 @@ using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Items;
 using Shojy.FF7.Elena.Materias;
 using Shojy.FF7.Elena.Sections;
+using Shojy.FF7.Elena.Text;
 
 using System.Collections;
 
@@ -29,7 +30,6 @@ namespace FF7Scarlet.KernelEditor
 
         public CharacterAI[] CharacterAI { get; } = new CharacterAI[AI_BLOCK_COUNT];
         public bool ScriptsLoaded { get; private set; } = false;
-        public FFText[] BattleTextFF { get; }
         private bool loaded = false;
         public Character[] CharacterList { get; }
         private ushort[] characterAIoffsets = new ushort[AI_BLOCK_COUNT];
@@ -54,36 +54,23 @@ namespace FF7Scarlet.KernelEditor
                 for (int i = 0; i < AI_BLOCK_COUNT; ++i)
                 {
                     characterAIoffsets[i] = reader.ReadUInt16();
+
                 }
             }
 
             //mark limits as limits (this adds a special function to attack names/descriptions)
-            using (var ms = new MemoryStream(GetSectionRawData(KernelSection.MagicNames, false)))
-            using (var reader = new BinaryReader(ms))
+            for (int i = 0; i < BattleText.Strings.Length; ++i)
             {
-                //get headers
-                var headers = new ushort[ATTACK_COUNT];
-                for (int i = 0; i < ATTACK_COUNT; ++i)
+                var temp = BattleText.Strings[i].GetBytes();
+                if (temp.Length > 1 && temp[0] == 0xF8 && temp[1] == 0x02)
                 {
-                    headers[i] = reader.ReadUInt16();
+                    AttackIsLimit[i] = true;
+                    var temp2 = new byte[temp.Length - 2];
+                    Array.Copy(temp, 2, temp2, 0, temp2.Length);
+                    BattleText.Strings[i] = new FFText(temp2);
                 }
 
-                //check the first two characters of each name
-                for (int i = 0; i < ATTACK_COUNT; ++i)
-                {
-                    ms.Seek(headers[i], SeekOrigin.Begin);
-                    var temp = reader.ReadBytes(2);
-                    if (temp[0] == 0xF8 && temp[1] == 0x02)
-                    {
-                        AttackIsLimit[i] = true;
-                    }
-                }
             }
-
-            //get battle text as FFText
-            BattleTextFF = new FFText[BattleText.Strings.Length];
-            ReloadBattleText();
-
             loaded = true;
         }
 
@@ -158,24 +145,6 @@ namespace FF7Scarlet.KernelEditor
                     }
                     strings[i] = new FFText(bytes.ToArray());
                     bytes.Clear();
-                }
-            }
-
-            //update the strings for the section
-            if (section == KernelSection.BattleText)
-            {
-                for (int i = 0; i < strings.Length; ++i)
-                {
-                    BattleTextFF[i] = strings[i];
-                }
-            }
-            else
-            {
-                string? str;
-                for (int i = 0; i < strings.Length; ++i)
-                {
-                    str = strings[i].ToString();
-                    UpdateString(section, str, i);
                 }
             }
         }
@@ -266,15 +235,6 @@ namespace FF7Scarlet.KernelEditor
             return output.ToArray();
         }
 
-        public void ReloadBattleText()
-        {
-            bool wasAlreadyLoaded = loaded;
-            loaded = false;
-            ParseTextSectionStrings(KernelSection.BattleText,
-                GetSectionRawData(KernelSection.BattleText, true));
-            loaded = wasAlreadyLoaded;
-        }
-
         public void CopyAllText(Kernel other)
         {
             int i;
@@ -306,12 +266,6 @@ namespace FF7Scarlet.KernelEditor
             {
                 KeyItemNames.Strings[i] = other.KeyItemNames.Strings[i];
                 KeyItemDescriptions.Strings[i] = other.KeyItemDescriptions.Strings[i];
-            }
-
-            //battle text
-            for (i = 0; i < BattleTextFF.Length; ++i)
-            {
-                BattleTextFF[i] = other.BattleTextFF[i];
             }
 
             //summon attack names
@@ -402,46 +356,46 @@ namespace FF7Scarlet.KernelEditor
             return null;
         }
 
-        public string GetAttackName(ushort id)
+        public string GetAttackName(ushort id, bool jpText)
         {
             var atk = GetAttackByID(id);
             if (atk != null)
             {
-                return DataParser.GetAttackNameString(atk);
+                return DataParser.GetAttackNameString(atk, jpText);
             }
-            return $"Unknown ({id:X4})";
+            return new FFText($"Unknown ({id:X4})");
         }
 
-        public string[] GetEnemySkillNames()
+        public FFText[] GetEnemySkillNames()
         {
-            var names = new string[ESKILL_COUNT];
+            var names = new FFText[ESKILL_COUNT];
             Array.Copy(MagicNames.Strings, ESKILL_OFFSET, names, 0, ESKILL_COUNT);
             return names;
         }
 
-        public string GetLimitName(int index)
+        public FFText GetLimitName(int index)
         {
             if (index >= 0 && index < ExeData.NUM_LIMITS)
             {
                 return MagicNames.Strings[index + ATTACK_COUNT];
             }
-            return string.Empty;
+            return new FFText();
         }
 
-        public string[] GetLimitNames()
+        public FFText[] GetLimitNames()
         {
-            var names = new string[ExeData.NUM_LIMITS];
+            var names = new FFText[ExeData.NUM_LIMITS];
             Array.Copy(MagicNames.Strings, ATTACK_COUNT, names, 0, ExeData.NUM_LIMITS);
             return names;
         }
 
-        public string GetLimitDescription(int index)
+        public FFText GetLimitDescription(int index)
         {
             if (index >= 0 && index < ExeData.NUM_LIMITS)
             {
                 return MagicDescriptions.Strings[index + ATTACK_COUNT];
             }
-            return string.Empty;
+            return new FFText();
         }
 
         public Item? GetItemByID(int id)
@@ -593,7 +547,7 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        public string[] GetAssociatedNames(KernelSection section, bool fullList = false)
+        public FFText[] GetAssociatedNames(KernelSection section, bool fullList = false)
         {
             var ds = GetDataSection(section);
             switch (ds)
@@ -605,7 +559,7 @@ namespace FF7Scarlet.KernelEditor
                     if (fullList) { return MagicNames.Strings; }
                     else
                     {
-                        var temp = new string[ATTACK_COUNT];
+                        var temp = new FFText[ATTACK_COUNT];
                         Array.Copy(MagicNames.Strings, temp, ATTACK_COUNT);
                         return temp;
                     }
@@ -629,10 +583,10 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.KeyItemDescriptions:
                     return KeyItemNames.Strings;
             }
-            return Array.Empty<string>();
+            return Array.Empty<FFText>();
         }
 
-        public string[] GetAssociatedDescriptions(KernelSection section)
+        public FFText[] GetAssociatedDescriptions(KernelSection section)
         {
             var ds = GetDataSection(section);
             switch (ds)
@@ -662,7 +616,7 @@ namespace FF7Scarlet.KernelEditor
                 case KernelSection.KeyItemDescriptions:
                     return KeyItemDescriptions.Strings;
             }
-            return Array.Empty<string>();
+            return Array.Empty<FFText>();
         }
 
         public void UpdateName(KernelSection section, string? name, int pos)
@@ -673,8 +627,8 @@ namespace FF7Scarlet.KernelEditor
             if (name != null) { n = name; }
             if (names.Length > 0)
             {
-                names[pos] = n;
-                switch (ds) //update associated item name (if it exists)
+                names[pos] = new FFText(n);
+                /*switch (ds) //update associated item name (if it exists)
                 {
                     case KernelSection.AttackData:
                         if (pos < ATTACK_COUNT)
@@ -702,7 +656,7 @@ namespace FF7Scarlet.KernelEditor
                     case KernelSection.MateriaData:
                         MateriaData.Materias[pos].Name = n;
                         break;
-                }
+                }*/
             }
         }
 
@@ -714,8 +668,8 @@ namespace FF7Scarlet.KernelEditor
             if (desc != null) { d = desc; }
             if (descs.Length > 0)
             {
-                descs[pos] = d;
-                switch (ds) //update associated item description (if it exists)
+                descs[pos] = new FFText(d);
+                /*switch (ds) //update associated item description (if it exists)
                 {
                     case KernelSection.AttackData:
                         if (pos < ATTACK_COUNT)
@@ -743,7 +697,7 @@ namespace FF7Scarlet.KernelEditor
                     case KernelSection.MateriaData:
                         MateriaData.Materias[pos].Description = d;
                         break;
-                }
+                }*/
             }
         }
 
@@ -762,8 +716,8 @@ namespace FF7Scarlet.KernelEditor
                 }
                 else
                 {
-                    if (value == null) { ts.Strings[pos] = string.Empty; }
-                    else { ts.Strings[pos] = value; }
+                    if (value == null) { ts.Strings[pos] = new FFText(); }
+                    else { ts.Strings[pos] = new FFText(value); }
                 }
             }
         }
@@ -1255,14 +1209,14 @@ namespace FF7Scarlet.KernelEditor
                     FFText[] text;
                     bool isAttacks = GetDataSection(section) == KernelSection.AttackData;
                     
-                    if (section == KernelSection.BattleText) //write the BattleTextFFs
+                    /*if (section == KernelSection.BattleText) //write the BattleTextFFs
                     {
                         text = BattleTextFF;
                     }
                     else
-                    {
+                    {*/
                         //get strings associated with this section
-                        string[] strings;
+                        FFText[] strings;
 
                         if (section == KernelSection.SummonAttackNames)
                         {
@@ -1278,22 +1232,22 @@ namespace FF7Scarlet.KernelEditor
                         }
 
                         //converts strings to FFText
-                        text = new FFText[strings.Length];
+                        /*text = new FFText[strings.Length];
                         for (i = 0; i < strings.Length; ++i)
                         {
                             text[i] = new FFText(strings[i].Trim());
-                        }
+                        }*/
                         
-                    }
+                    //}
 
                     //build compressed strings first to calculate correct offsets
                     var compressedStrings = new List<byte[]>();
-                    for (i = 0; i < text.Length; ++i)
+                    for (i = 0; i < strings.Length; ++i)
                     {
                         var stringBytes = new List<byte>();
 
                         //add limit function marker if needed
-                        if (isAttacks && text[i].Length > 1)
+                        if (isAttacks && strings[i].Length > 1)
                         {
                             if ((i < ATTACK_COUNT && AttackIsLimit[i]) || i >= ATTACK_COUNT)
                             {
@@ -1303,9 +1257,9 @@ namespace FF7Scarlet.KernelEditor
                         }
 
                         //add the string bytes
-                        if (text[i].Length > 1 || i == 0)
+                        if (strings[i].Length > 1 || i == 0)
                         {
-                            stringBytes.AddRange(text[i].GetBytes());
+                            stringBytes.AddRange(strings[i].GetBytes());
                         }
 
                         //compress and store
@@ -1313,15 +1267,15 @@ namespace FF7Scarlet.KernelEditor
                     }
 
                     //generate headers using compressed lengths
-                    var offset = (ushort)(text.Length * 2); //starts just after headers
+                    var offset = (ushort)(strings.Length * 2); //starts just after headers
                     ushort length;
                     bool empty = false;
-                    for (i = 0; i < text.Length; ++i)
+                    for (i = 0; i < strings.Length; ++i)
                     {
                         length = (ushort)compressedStrings[i].Length;
                         if (i > 0) //offset for empty strings
                         {
-                            if (text[i].Length > 1)
+                            if (strings[i].Length > 1)
                             {
                                 if (empty) { offset++; }
                                 empty = false;
@@ -1343,7 +1297,7 @@ namespace FF7Scarlet.KernelEditor
                     //write the compressed strings
                     for (i = 0; i < compressedStrings.Count; ++i)
                     {
-                        if (text[i].Length > 1 || i == 0) //don't add empty strings
+                        if (strings[i].Length > 1 || i == 0) //don't add empty strings
                         {
                             bytes.AddRange(compressedStrings[i]);
                         }
