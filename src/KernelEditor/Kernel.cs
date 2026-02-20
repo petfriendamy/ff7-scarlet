@@ -59,7 +59,7 @@ namespace FF7Scarlet.KernelEditor
             }
 
             //mark limits as limits (this adds a special function to attack names/descriptions)
-            for (int i = 0; i < BattleText.Strings.Length; ++i)
+            /*for (int i = 0; i < BattleText.Strings.Length; ++i)
             {
                 var temp = BattleText.Strings[i].GetBytes();
                 if (temp.Length > 1 && temp[0] == 0xF8 && temp[1] == 0x02)
@@ -70,7 +70,7 @@ namespace FF7Scarlet.KernelEditor
                     BattleText.Strings[i] = new FFText(temp2);
                 }
 
-            }
+            }*/
             loaded = true;
         }
 
@@ -1206,39 +1206,24 @@ namespace FF7Scarlet.KernelEditor
                 if (loaded)
                 {
                     var bytes = new List<byte>();
-                    FFText[] text;
-                    bool isAttacks = GetDataSection(section) == KernelSection.AttackData;
-                    
-                    /*if (section == KernelSection.BattleText) //write the BattleTextFFs
+                    FFText[] strings;
+
+                    if (section == KernelSection.SummonAttackNames)
                     {
-                        text = BattleTextFF;
+                        strings = SummonAttackNames.Strings;
                     }
-                    else
-                    {*/
-                        //get strings associated with this section
-                        FFText[] strings;
-
-                        if (section == KernelSection.SummonAttackNames)
-                        {
-                            strings = SummonAttackNames.Strings;
-                        }
-                        else if ((int)section > DESCRIPTIONS_END) //names
-                        {
-                            strings = GetAssociatedNames(section, true);
-                        }
-                        else //descriptions
-                        {
-                            strings = GetAssociatedDescriptions(section);
-                        }
-
-                        //converts strings to FFText
-                        /*text = new FFText[strings.Length];
-                        for (i = 0; i < strings.Length; ++i)
-                        {
-                            text[i] = new FFText(strings[i].Trim());
-                        }*/
-                        
-                    //}
+                    else if (section == KernelSection.BattleText)
+                    {
+                        strings = BattleText.Strings;
+                    }
+                    else if ((int)section > DESCRIPTIONS_END) //names
+                    {
+                        strings = GetAssociatedNames(section, true);
+                    }
+                    else //descriptions
+                    {
+                        strings = GetAssociatedDescriptions(section);
+                    }
 
                     //build compressed strings first to calculate correct offsets
                     var compressedStrings = new List<byte[]>();
@@ -1247,19 +1232,20 @@ namespace FF7Scarlet.KernelEditor
                         var stringBytes = new List<byte>();
 
                         //add limit function marker if needed
-                        if (isAttacks && strings[i].Length > 1)
+                        /*if (isAttacks && strings[i].Length > 1)
                         {
                             if ((i < ATTACK_COUNT && AttackIsLimit[i]) || i >= ATTACK_COUNT)
                             {
                                 stringBytes.Add(0xF8);
                                 stringBytes.Add(0x02);
                             }
-                        }
+                        }*/
 
                         //add the string bytes
                         if (strings[i].Length > 1 || i == 0)
                         {
                             stringBytes.AddRange(strings[i].GetBytes());
+                            stringBytes.Add(0xFF);
                         }
 
                         //compress and store
