@@ -748,7 +748,7 @@ namespace FF7Scarlet.SceneEditor
             enemyNeedsSync = false;
         }
 
-        private void LoadAttackData(Attack? attack, bool clearLoadingWhenDone)
+        private void LoadAttackData(Attack? attack, bool clearLoadingWhenDone, bool ignoreNull = false)
         {
             loading = true;
             selectedAttackToolStripMenuItem.Enabled = true;
@@ -756,7 +756,7 @@ namespace FF7Scarlet.SceneEditor
 
             if (attack == null)
             {
-                if (MessageDialog.AskYesNo("There is no attack data in the selected slot. Would you like to create a new attack?",
+                if (!ignoreNull && MessageDialog.AskYesNo("There is no attack data in the selected slot. Would you like to create a new attack?",
                     "No Attack Data"))
                 {
                     if (SelectedScene != null && SelectedAttackIndex != -1)
@@ -830,6 +830,12 @@ namespace FF7Scarlet.SceneEditor
                     loading = false;
                 }
             }
+        }
+
+        private void SyncAttackData(Attack attack)
+        {
+            attackFormControl.SyncAttackData(attack);
+            attackNeedsSync = false;
         }
 
         private void LoadFormationData(Formation formation, bool clearLoadingWhenDone)
@@ -972,7 +978,7 @@ namespace FF7Scarlet.SceneEditor
                     if (prev) { attack = scene.AttackList[prevAttack]; }
                     if (attack != null)
                     {
-                        attackFormControl.SyncAttackData(attack);
+                        SyncAttackData(attack);
                     }
                 }
 
@@ -1037,6 +1043,32 @@ namespace FF7Scarlet.SceneEditor
             buttonExport.Enabled = enable;
         }
 
+        private void PlayAttackAnimation(int attackSlotIndex)
+        {
+            if (SelectedEnemy != null && enemyModelPreviewControl.ModelLoaded)
+            {
+                int animIndex = SelectedEnemy.ActionAnimationIndexes[attackSlotIndex];
+
+                try
+                {
+                    enemyModelPreviewControl.SetAnimation(animIndex);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    MessageDialog.ShowError(
+                        $"Animation index {animIndex} is invalid for this model.\n" +
+                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).",
+                        "Animation Error");
+                    enemyModelPreviewControl.StopAnimation();
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, "playing attack animation");
+                    enemyModelPreviewControl.StopAnimation();
+                }
+            }
+        }
+
         private async void SaveSceneBin()
         {
             SyncAllUnsavedData();
@@ -1090,7 +1122,8 @@ namespace FF7Scarlet.SceneEditor
             {
                 SyncAllUnsavedData(true);
                 prevScene = SelectedSceneIndex;
-                LoadSceneData(SelectedSceneIndex, true, false);
+                LoadSceneData(SelectedSceneIndex, false, false);
+                LoadAttackData(null, true, true);
             }
         }
 
@@ -1120,7 +1153,7 @@ namespace FF7Scarlet.SceneEditor
                     var attack = SelectedScene.AttackList[prevAttack];
                     if (attack != null)
                     {
-                        attackFormControl.SyncAttackData(attack);
+                        SyncAttackData(attack);
                     }
                 }
                 prevAttack = SelectedAttackIndex;
@@ -1349,32 +1382,6 @@ namespace FF7Scarlet.SceneEditor
                     }
                 }
                 loading = false;
-            }
-        }
-
-        private void PlayAttackAnimation(int attackSlotIndex)
-        {
-            if (SelectedEnemy != null && enemyModelPreviewControl.ModelLoaded)
-            {
-                int animIndex = SelectedEnemy.ActionAnimationIndexes[attackSlotIndex];
-
-                try
-                {
-                    enemyModelPreviewControl.SetAnimation(animIndex);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    MessageDialog.ShowError(
-                        $"Animation index {animIndex} is invalid for this model.\n" +
-                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).",
-                        "Animation Error");
-                    enemyModelPreviewControl.StopAnimation();
-                }
-                catch (Exception ex)
-                {
-                    ExceptionHandler.Handle(ex, "playing attack animation");
-                    enemyModelPreviewControl.StopAnimation();
-                }
             }
         }
 
@@ -2349,7 +2356,7 @@ namespace FF7Scarlet.SceneEditor
             if (currAttack >= 0)
             {
                 listBoxAttacks.SelectedIndex = currAttack;
-                LoadAttackData(SelectedAttack, false);
+                LoadAttackData(SelectedAttack, false, true);
             }
             loading = false;
         }
