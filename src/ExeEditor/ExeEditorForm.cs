@@ -846,6 +846,12 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
+        private void SyncLimitData(Attack limit)
+        {
+            attackFormControlLimit.SyncAttackData(limit);
+            limitNeedsSync = false;
+        }
+
         private void PlaySound(int volume, int pan)
         {
             sound.Volume = volume;
@@ -1185,7 +1191,7 @@ namespace FF7Scarlet.ExeEditor
                     var limit = editor.Limits[prevLimit];
                     if (limit != null)
                     {
-                        attackFormControlLimit.SyncAttackData(limit);
+                        SyncLimitData(limit);
                     }
                 }
 
@@ -2247,7 +2253,7 @@ namespace FF7Scarlet.ExeEditor
             if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
             if (limitNeedsSync && SelectedLimit != null)
             {
-                attackFormControlLimit.SyncAttackData(SelectedLimit);
+                SyncLimitData(SelectedLimit);
             }
 
             DialogResult result;
@@ -2280,7 +2286,7 @@ namespace FF7Scarlet.ExeEditor
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
                 if (limitNeedsSync && SelectedLimit != null)
                 {
-                    attackFormControlLimit.SyncAttackData(SelectedLimit);
+                    SyncLimitData(SelectedLimit);
                 }
 
                 DialogResult result;
@@ -2365,7 +2371,7 @@ namespace FF7Scarlet.ExeEditor
                 //sync limit data
                 if (limitNeedsSync && SelectedLimit != null)
                 {
-                    attackFormControlLimit.SyncAttackData(SelectedLimit);
+                    SyncLimitData(SelectedLimit);
                 }
 
                 try
