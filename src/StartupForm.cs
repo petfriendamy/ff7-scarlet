@@ -281,10 +281,9 @@ namespace FF7Scarlet
             if (DataManager.KernelFilePathExists && DataManager.SceneFilePathExists)
             {
                 if (!DataManager.LookupTableIsCorrect())
-            {
-                var result = MessageDialog.AskYesNo("The scene lookup table does not match between scene.bin and kernel.bin. Would you like to correct it now?",
-                        "Incorrect Lookup Table");
-                    if (result == DialogResult.Yes)
+                {
+                    if (MessageDialog.AskYesNo("The scene lookup table does not match between scene.bin and kernel.bin. Would you like to correct it now?",
+                        "Incorrect Lookup Table"))
                     {
                         DataManager.SyncLookupTable();
                     }
@@ -384,8 +383,7 @@ namespace FF7Scarlet
                     bool isJPoriginal = (index == 2);
                     if (isJPoriginal)
                     {
-                        result = MessageDialog.AskYesNo("Convert this file to JP International format? A backup will be made.", "Convert scene.bin?");
-                        if (result == DialogResult.Yes)
+                        if (MessageDialog.AskYesNo("Convert this file to JP International format? A backup will be made.", "Convert scene.bin?"))
                         {
                             DataManager.CreateBackupFile(file);
                         }

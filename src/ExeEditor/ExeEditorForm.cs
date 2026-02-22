@@ -2358,7 +2358,7 @@ namespace FF7Scarlet.ExeEditor
         private void buttonSaveEXE_Click(object sender, EventArgs e)
         {
             if (MessageDialog.AskYesNo("A modified EXE may break compatability with 7th Heaven or other mods. Proceed anyway?",
-                "Are you sure?") == DialogResult.Yes)
+                "Are you sure?"))
             {
                 if (editor == null) { throw new ArgumentNullException(nameof(editor)); }
 

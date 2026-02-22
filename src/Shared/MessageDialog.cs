@@ -1,6 +1,4 @@
-using System;
-using System.Windows.Forms;
-
+#pragma warning disable CA1416
 namespace FF7Scarlet.Shared
 {
     public static class MessageDialog
@@ -35,9 +33,9 @@ namespace FF7Scarlet.Shared
             MessageBox.Show(owner, message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        public static DialogResult AskYesNo(string question, string title = "Confirm")
+        public static bool AskYesNo(string question, string title = "Confirm")
         {
-            return MessageBox.Show(question, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return MessageBox.Show(question, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
         public static DialogResult AskYesNo(IWin32Window? owner, string question, string title = "Confirm")

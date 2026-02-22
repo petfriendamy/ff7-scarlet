@@ -8,7 +8,9 @@ namespace FF7Scarlet.SceneEditor
     public class Enemy : AIContainer
     {
         public const int DATA_BLOCK_SIZE = 152, AI_BLOCK_SIZE = 4090, ELEMENT_RESISTANCE_COUNT = 8,
-            ATTACK_COUNT = 16, MANIP_ATTACK_COUNT = 3, DROP_ITEM_COUNT = 4;
+            ATTACK_COUNT = 16, MANIP_ATTACK_COUNT = 3, DROP_ITEM_COUNT = 4,
+            NAME_LENGTH = Scene.NAME_LENGTH,
+            AI_BLOCK_COMBINED_SIZE = AI_BLOCK_SIZE + (Scene.ENEMY_COUNT * 2);
         private readonly ResistanceRate?[] resistanceRates = new ResistanceRate?[ELEMENT_RESISTANCE_COUNT];
         private readonly byte[] actionAnimationIndexes = new byte[ATTACK_COUNT];
         private readonly ushort[] attackIDs = new ushort[ATTACK_COUNT];
@@ -81,7 +83,7 @@ namespace FF7Scarlet.SceneEditor
 
         public Enemy(Scene parent, ushort modelID, FFText name, byte[]? data) :base(parent)
         {
-            if (name.Length > Scene.NAME_LENGTH)
+            if (name.Length > NAME_LENGTH)
             {
                 throw new ArgumentException("Enemy name is too long.");
             }
@@ -217,20 +219,28 @@ namespace FF7Scarlet.SceneEditor
             return true;
         }
 
-        public byte[] GetRawEnemyData(bool includeName)
+        public byte[] GetRawEnemyData(bool includeName, bool includeModelID = false)
         {
             int length = DATA_BLOCK_SIZE;
             if (includeName)
             {
-                length += Scene.NAME_LENGTH;
+                length += NAME_LENGTH;
+            }
+            if (includeModelID)
+            {
+                length += 2;
             }
             var data = new byte[length];
             using (var ms = new MemoryStream(data, true))
             using (var writer = new BinaryWriter(ms))
             {
+                if (includeModelID)
+                {
+                    writer.Write(ModelID);
+                }
                 if (includeName)
                 {
-                    writer.Write(Name.GetBytes(Scene.NAME_LENGTH, addSpace:true));
+                    writer.Write(Name.GetBytes(NAME_LENGTH, addSpace:true));
                 }
                 writer.Write(Level);
                 writer.Write(Speed);

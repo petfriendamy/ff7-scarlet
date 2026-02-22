@@ -180,6 +180,9 @@ namespace FF7Scarlet.SceneEditor
             buttonExport = new Button();
             buttonImport = new Button();
             buttonSave = new Button();
+            enemyImportToolStripMenuItem = new ToolStripMenuItem();
+            attackImportToolStripMenuItem = new ToolStripMenuItem();
+            sceneImportToolStripMenuItem = new ToolStripMenuItem();
             tabControlMain.SuspendLayout();
             tabPageEnemyData.SuspendLayout();
             tabControlEnemyData.SuspendLayout();
@@ -1523,7 +1526,7 @@ namespace FF7Scarlet.SceneEditor
             // 
             // selectedSceneToolStripMenuItem
             // 
-            selectedSceneToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sceneCopyToolStripMenuItem, scenePasteToolStripMenuItem, sceneClearToolStripMenuItem });
+            selectedSceneToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sceneCopyToolStripMenuItem, scenePasteToolStripMenuItem, sceneClearToolStripMenuItem, sceneImportToolStripMenuItem });
             selectedSceneToolStripMenuItem.Name = "selectedSceneToolStripMenuItem";
             selectedSceneToolStripMenuItem.Size = new Size(183, 22);
             selectedSceneToolStripMenuItem.Text = "Selected scene...";
@@ -1531,27 +1534,27 @@ namespace FF7Scarlet.SceneEditor
             // sceneCopyToolStripMenuItem
             // 
             sceneCopyToolStripMenuItem.Name = "sceneCopyToolStripMenuItem";
-            sceneCopyToolStripMenuItem.Size = new Size(102, 22);
+            sceneCopyToolStripMenuItem.Size = new Size(180, 22);
             sceneCopyToolStripMenuItem.Text = "Copy";
             sceneCopyToolStripMenuItem.Click += sceneCopyToolStripMenuItem_Click;
             // 
             // scenePasteToolStripMenuItem
             // 
             scenePasteToolStripMenuItem.Name = "scenePasteToolStripMenuItem";
-            scenePasteToolStripMenuItem.Size = new Size(102, 22);
+            scenePasteToolStripMenuItem.Size = new Size(180, 22);
             scenePasteToolStripMenuItem.Text = "Paste";
             scenePasteToolStripMenuItem.Click += scenePasteToolStripMenuItem_Click;
             // 
             // sceneClearToolStripMenuItem
             // 
             sceneClearToolStripMenuItem.Name = "sceneClearToolStripMenuItem";
-            sceneClearToolStripMenuItem.Size = new Size(102, 22);
+            sceneClearToolStripMenuItem.Size = new Size(180, 22);
             sceneClearToolStripMenuItem.Text = "Clear";
             sceneClearToolStripMenuItem.Click += sceneClearToolStripMenuItem_Click;
             // 
             // enemyToolStripMenuItem
             // 
-            enemyToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewEnemyToolStripMenuItem, enemyCopyToolStripMenuItem, enemyPasteToolStripMenuItem, enemyDeleteToolStripMenuItem });
+            enemyToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewEnemyToolStripMenuItem, enemyCopyToolStripMenuItem, enemyPasteToolStripMenuItem, enemyDeleteToolStripMenuItem, enemyImportToolStripMenuItem });
             enemyToolStripMenuItem.Name = "enemyToolStripMenuItem";
             enemyToolStripMenuItem.Size = new Size(183, 22);
             enemyToolStripMenuItem.Text = "Selected enemy...";
@@ -1586,7 +1589,7 @@ namespace FF7Scarlet.SceneEditor
             // 
             // selectedAttackToolStripMenuItem
             // 
-            selectedAttackToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewAttackToolStripMenuItem, attackCopyToolStripMenuItem, attackPasteToolStripMenuItem, attackDeleteToolStripMenuItem });
+            selectedAttackToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewAttackToolStripMenuItem, attackCopyToolStripMenuItem, attackPasteToolStripMenuItem, attackDeleteToolStripMenuItem, attackImportToolStripMenuItem });
             selectedAttackToolStripMenuItem.Name = "selectedAttackToolStripMenuItem";
             selectedAttackToolStripMenuItem.Size = new Size(183, 22);
             selectedAttackToolStripMenuItem.Text = "Selected attack...";
@@ -1594,27 +1597,27 @@ namespace FF7Scarlet.SceneEditor
             // createNewAttackToolStripMenuItem
             // 
             createNewAttackToolStripMenuItem.Name = "createNewAttackToolStripMenuItem";
-            createNewAttackToolStripMenuItem.Size = new Size(168, 22);
+            createNewAttackToolStripMenuItem.Size = new Size(180, 22);
             createNewAttackToolStripMenuItem.Text = "Create new attack";
             // 
             // attackCopyToolStripMenuItem
             // 
             attackCopyToolStripMenuItem.Name = "attackCopyToolStripMenuItem";
-            attackCopyToolStripMenuItem.Size = new Size(168, 22);
+            attackCopyToolStripMenuItem.Size = new Size(180, 22);
             attackCopyToolStripMenuItem.Text = "Copy";
             attackCopyToolStripMenuItem.Click += attackCopyToolStripMenuItem_Click;
             // 
             // attackPasteToolStripMenuItem
             // 
             attackPasteToolStripMenuItem.Name = "attackPasteToolStripMenuItem";
-            attackPasteToolStripMenuItem.Size = new Size(168, 22);
+            attackPasteToolStripMenuItem.Size = new Size(180, 22);
             attackPasteToolStripMenuItem.Text = "Paste";
             attackPasteToolStripMenuItem.Click += attackPasteToolStripMenuItem_Click;
             // 
             // attackDeleteToolStripMenuItem
             // 
             attackDeleteToolStripMenuItem.Name = "attackDeleteToolStripMenuItem";
-            attackDeleteToolStripMenuItem.Size = new Size(168, 22);
+            attackDeleteToolStripMenuItem.Size = new Size(180, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
             // 
             // selectedFormationToolStripMenuItem
@@ -1656,7 +1659,7 @@ namespace FF7Scarlet.SceneEditor
             // japaneseTextToolStripMenuItem
             // 
             japaneseTextToolStripMenuItem.Name = "japaneseTextToolStripMenuItem";
-            japaneseTextToolStripMenuItem.Size = new Size(180, 22);
+            japaneseTextToolStripMenuItem.Size = new Size(166, 22);
             japaneseTextToolStripMenuItem.Text = "Use Japanese text";
             japaneseTextToolStripMenuItem.Click += japaneseTextToolStripMenuItem_Click;
             // 
@@ -1763,6 +1766,27 @@ namespace FF7Scarlet.SceneEditor
             buttonSave.Text = "Save scene.bin";
             buttonSave.UseVisualStyleBackColor = true;
             buttonSave.Click += buttonSave_Click;
+            // 
+            // enemyImportToolStripMenuItem
+            // 
+            enemyImportToolStripMenuItem.Name = "enemyImportToolStripMenuItem";
+            enemyImportToolStripMenuItem.Size = new Size(172, 22);
+            enemyImportToolStripMenuItem.Text = "Import...";
+            enemyImportToolStripMenuItem.Click += buttonImport_Click;
+            // 
+            // attackImportToolStripMenuItem
+            // 
+            attackImportToolStripMenuItem.Name = "attackImportToolStripMenuItem";
+            attackImportToolStripMenuItem.Size = new Size(180, 22);
+            attackImportToolStripMenuItem.Text = "Import...";
+            attackImportToolStripMenuItem.Click += buttonImport_Click;
+            // 
+            // sceneImportToolStripMenuItem
+            // 
+            sceneImportToolStripMenuItem.Name = "sceneImportToolStripMenuItem";
+            sceneImportToolStripMenuItem.Size = new Size(180, 22);
+            sceneImportToolStripMenuItem.Text = "Import...";
+            sceneImportToolStripMenuItem.Click += buttonImport_Click;
             // 
             // SceneEditorForm
             // 
@@ -1995,5 +2019,8 @@ namespace FF7Scarlet.SceneEditor
         private GroupBox groupBoxCameraData;
         private ToolStripDropDownButton toolStripDropDownTools;
         private ToolStripMenuItem japaneseTextToolStripMenuItem;
+        private ToolStripMenuItem sceneImportToolStripMenuItem;
+        private ToolStripMenuItem enemyImportToolStripMenuItem;
+        private ToolStripMenuItem attackImportToolStripMenuItem;
     }
 }

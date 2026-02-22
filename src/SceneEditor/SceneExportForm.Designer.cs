@@ -40,6 +40,7 @@
             tabControlExportType = new TabControl();
             tabPageScenes = new TabPage();
             tabPageChunks = new TabPage();
+            labelWarning = new Label();
             checkBoxCalculateFromLookup = new CheckBox();
             labelChunkID = new Label();
             numericChunkID = new NumericUpDown();
@@ -47,7 +48,16 @@
             numericStartingAt = new NumericUpDown();
             numericNumScenes = new NumericUpDown();
             labelNumScenes = new Label();
-            labelWarning = new Label();
+            tabPageOther = new TabPage();
+            groupBox1 = new GroupBox();
+            buttonExportAllEnemyAI = new Button();
+            buttonExportSelectedEnemyAI = new Button();
+            groupBoxAttacks = new GroupBox();
+            buttonExportAllAttacks = new Button();
+            buttonExportSelectedAttacks = new Button();
+            groupBoxEnemies = new GroupBox();
+            buttonExportAllEnemies = new Button();
+            buttonExportSelectedEnemies = new Button();
             groupBoxExport.SuspendLayout();
             tabControlExportType.SuspendLayout();
             tabPageScenes.SuspendLayout();
@@ -55,6 +65,10 @@
             ((System.ComponentModel.ISupportInitialize)numericChunkID).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericStartingAt).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericNumScenes).BeginInit();
+            tabPageOther.SuspendLayout();
+            groupBox1.SuspendLayout();
+            groupBoxAttacks.SuspendLayout();
+            groupBoxEnemies.SuspendLayout();
             SuspendLayout();
             // 
             // buttonExport
@@ -152,11 +166,13 @@
             // 
             tabControlExportType.Controls.Add(tabPageScenes);
             tabControlExportType.Controls.Add(tabPageChunks);
+            tabControlExportType.Controls.Add(tabPageOther);
             tabControlExportType.Location = new Point(12, 12);
             tabControlExportType.Name = "tabControlExportType";
             tabControlExportType.SelectedIndex = 0;
             tabControlExportType.Size = new Size(460, 267);
             tabControlExportType.TabIndex = 10;
+            tabControlExportType.SelectedIndexChanged += tabControlExportType_SelectedIndexChanged;
             // 
             // tabPageScenes
             // 
@@ -186,6 +202,17 @@
             tabPageChunks.TabIndex = 1;
             tabPageChunks.Text = "Chunks";
             tabPageChunks.UseVisualStyleBackColor = true;
+            // 
+            // labelWarning
+            // 
+            labelWarning.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            labelWarning.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            labelWarning.Location = new Point(6, 125);
+            labelWarning.Name = "labelWarning";
+            labelWarning.Size = new Size(440, 111);
+            labelWarning.TabIndex = 7;
+            labelWarning.Text = "Important note: These should match the scene lookup table in kernel.bin, or you may get strange results in-game!";
+            labelWarning.TextAlign = ContentAlignment.TopCenter;
             // 
             // checkBoxCalculateFromLookup
             // 
@@ -260,16 +287,111 @@
             labelNumScenes.Text = "# of scenes to export:";
             labelNumScenes.TextAlign = ContentAlignment.TopRight;
             // 
-            // labelWarning
+            // tabPageOther
             // 
-            labelWarning.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            labelWarning.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            labelWarning.Location = new Point(6, 125);
-            labelWarning.Name = "labelWarning";
-            labelWarning.Size = new Size(440, 111);
-            labelWarning.TabIndex = 7;
-            labelWarning.Text = "Important note: These should match the scene lookup table in kernel.bin, or you may get strange results in-game!";
-            labelWarning.TextAlign = ContentAlignment.TopCenter;
+            tabPageOther.Controls.Add(groupBox1);
+            tabPageOther.Controls.Add(groupBoxAttacks);
+            tabPageOther.Controls.Add(groupBoxEnemies);
+            tabPageOther.Location = new Point(4, 24);
+            tabPageOther.Name = "tabPageOther";
+            tabPageOther.Padding = new Padding(3);
+            tabPageOther.Size = new Size(452, 239);
+            tabPageOther.TabIndex = 2;
+            tabPageOther.Text = "Other";
+            tabPageOther.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(buttonExportAllEnemyAI);
+            groupBox1.Controls.Add(buttonExportSelectedEnemyAI);
+            groupBox1.Location = new Point(6, 124);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(440, 53);
+            groupBox1.TabIndex = 3;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Export enemy A.I...";
+            // 
+            // buttonExportAllEnemyAI
+            // 
+            buttonExportAllEnemyAI.Location = new Point(162, 22);
+            buttonExportAllEnemyAI.Name = "buttonExportAllEnemyAI";
+            buttonExportAllEnemyAI.Size = new Size(130, 23);
+            buttonExportAllEnemyAI.TabIndex = 1;
+            buttonExportAllEnemyAI.Text = "From all scenes";
+            buttonExportAllEnemyAI.UseVisualStyleBackColor = true;
+            buttonExportAllEnemyAI.Click += buttonExportAllEnemyAI_Click;
+            // 
+            // buttonExportSelectedEnemyAI
+            // 
+            buttonExportSelectedEnemyAI.Location = new Point(6, 22);
+            buttonExportSelectedEnemyAI.Name = "buttonExportSelectedEnemyAI";
+            buttonExportSelectedEnemyAI.Size = new Size(150, 23);
+            buttonExportSelectedEnemyAI.TabIndex = 0;
+            buttonExportSelectedEnemyAI.Text = "From selected scene";
+            buttonExportSelectedEnemyAI.UseVisualStyleBackColor = true;
+            buttonExportSelectedEnemyAI.Click += buttonExportSelectedEnemyAI_Click;
+            // 
+            // groupBoxAttacks
+            // 
+            groupBoxAttacks.Controls.Add(buttonExportAllAttacks);
+            groupBoxAttacks.Controls.Add(buttonExportSelectedAttacks);
+            groupBoxAttacks.Location = new Point(6, 65);
+            groupBoxAttacks.Name = "groupBoxAttacks";
+            groupBoxAttacks.Size = new Size(440, 53);
+            groupBoxAttacks.TabIndex = 2;
+            groupBoxAttacks.TabStop = false;
+            groupBoxAttacks.Text = "Export attacks...";
+            // 
+            // buttonExportAllAttacks
+            // 
+            buttonExportAllAttacks.Location = new Point(162, 22);
+            buttonExportAllAttacks.Name = "buttonExportAllAttacks";
+            buttonExportAllAttacks.Size = new Size(130, 23);
+            buttonExportAllAttacks.TabIndex = 1;
+            buttonExportAllAttacks.Text = "From all scenes";
+            buttonExportAllAttacks.UseVisualStyleBackColor = true;
+            buttonExportAllAttacks.Click += buttonExportAllAttacks_Click;
+            // 
+            // buttonExportSelectedAttacks
+            // 
+            buttonExportSelectedAttacks.Location = new Point(6, 22);
+            buttonExportSelectedAttacks.Name = "buttonExportSelectedAttacks";
+            buttonExportSelectedAttacks.Size = new Size(150, 23);
+            buttonExportSelectedAttacks.TabIndex = 0;
+            buttonExportSelectedAttacks.Text = "From selected scene";
+            buttonExportSelectedAttacks.UseVisualStyleBackColor = true;
+            buttonExportSelectedAttacks.Click += buttonExportSelectedAttacks_Click;
+            // 
+            // groupBoxEnemies
+            // 
+            groupBoxEnemies.Controls.Add(buttonExportAllEnemies);
+            groupBoxEnemies.Controls.Add(buttonExportSelectedEnemies);
+            groupBoxEnemies.Location = new Point(6, 6);
+            groupBoxEnemies.Name = "groupBoxEnemies";
+            groupBoxEnemies.Size = new Size(440, 53);
+            groupBoxEnemies.TabIndex = 0;
+            groupBoxEnemies.TabStop = false;
+            groupBoxEnemies.Text = "Export enemies...";
+            // 
+            // buttonExportAllEnemies
+            // 
+            buttonExportAllEnemies.Location = new Point(162, 22);
+            buttonExportAllEnemies.Name = "buttonExportAllEnemies";
+            buttonExportAllEnemies.Size = new Size(130, 23);
+            buttonExportAllEnemies.TabIndex = 1;
+            buttonExportAllEnemies.Text = "From all scenes";
+            buttonExportAllEnemies.UseVisualStyleBackColor = true;
+            buttonExportAllEnemies.Click += buttonExportAllEnemies_Click;
+            // 
+            // buttonExportSelectedEnemies
+            // 
+            buttonExportSelectedEnemies.Location = new Point(6, 22);
+            buttonExportSelectedEnemies.Name = "buttonExportSelectedEnemies";
+            buttonExportSelectedEnemies.Size = new Size(150, 23);
+            buttonExportSelectedEnemies.TabIndex = 0;
+            buttonExportSelectedEnemies.Text = "From selected scene";
+            buttonExportSelectedEnemies.UseVisualStyleBackColor = true;
+            buttonExportSelectedEnemies.Click += buttonExportSelectedEnemies_Click;
             // 
             // SceneExportForm
             // 
@@ -293,6 +415,10 @@
             ((System.ComponentModel.ISupportInitialize)numericChunkID).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericStartingAt).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericNumScenes).EndInit();
+            tabPageOther.ResumeLayout(false);
+            groupBox1.ResumeLayout(false);
+            groupBoxAttacks.ResumeLayout(false);
+            groupBoxEnemies.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -317,5 +443,15 @@
         private NumericUpDown numericChunkID;
         private CheckBox checkBoxCalculateFromLookup;
         private Label labelWarning;
+        private TabPage tabPageOther;
+        private GroupBox groupBoxEnemies;
+        private Button buttonExportAllEnemies;
+        private Button buttonExportSelectedEnemies;
+        private GroupBox groupBoxAttacks;
+        private Button buttonExportAllAttacks;
+        private Button buttonExportSelectedAttacks;
+        private GroupBox groupBox1;
+        private Button buttonExportAllEnemyAI;
+        private Button buttonExportSelectedEnemyAI;
     }
 }

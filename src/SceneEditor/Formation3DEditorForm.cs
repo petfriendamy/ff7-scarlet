@@ -11,6 +11,7 @@ using static KimeraCS.Core.FF7BattleAnimationsPack;
 using static KimeraCS.Core.FF7BattleSkeleton;
 using static KimeraCS.Core.FF7PModel;
 
+#pragma warning disable CA1416
 namespace FF7Scarlet.SceneEditor
 {
     public partial class Formation3DEditorForm : Form
@@ -501,8 +502,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 if (cameraPositionControl.ViewMode)
                 {
-                    var result = MessageDialog.AskYesNo("Commit camera position?", "Commit changes?");
-                    if (result == DialogResult.Yes)
+                    if (MessageDialog.AskYesNo("Commit camera position?", "Commit changes?"))
                     {
                         cameraPositionControl.CommitChanges();
                     }
@@ -638,65 +638,74 @@ namespace FF7Scarlet.SceneEditor
 
         private void glControl_MouseMove(object? sender, MouseEventArgs e)
         {
-            glMousePos = e.Location;
-
-            // Handle camera controls
-            if (isOrbiting || isCameraPanning)
+            if (context != null)
             {
-                int deltaX = e.X - lastCameraMousePos.X;
-                int deltaY = e.Y - lastCameraMousePos.Y;
+                glMousePos = e.Location;
 
-                if (isOrbiting)
+                // Handle camera controls
+                if (isOrbiting || isCameraPanning)
                 {
-                    OrbitCamera(deltaX, deltaY);
-                }
-                else if (isCameraPanning)
-                {
-                    PanCamera(deltaX, deltaY);
-                }
+                    int deltaX = e.X - lastCameraMousePos.X;
+                    int deltaY = e.Y - lastCameraMousePos.Y;
 
-                lastCameraMousePos = e.Location;
-                var cam = context.Camera;
-                cameraPositionControl.SetPosition(cam.Eye, cam.Target, true);
-                SetUnsaved(true);
-                glControl.Invalidate();
-            }
-            else if (glMouseLeft && selectedModel >= 0)
-            {
-                glControl.Invalidate();
+                    if (isOrbiting)
+                    {
+                        OrbitCamera(deltaX, deltaY);
+                    }
+                    else if (isCameraPanning)
+                    {
+                        PanCamera(deltaX, deltaY);
+                    }
+
+                    lastCameraMousePos = e.Location;
+                    var cam = context.Camera;
+                    cameraPositionControl.SetPosition(cam.Eye, cam.Target, true);
+                    SetUnsaved(true);
+                    glControl.Invalidate();
+                }
+                else if (glMouseLeft && selectedModel >= 0)
+                {
+                    glControl.Invalidate();
+                }
             }
         }
 
         private void glControl_MouseUp(object? sender, MouseEventArgs e)
         {
-            if (glControl.Capture)
+            if (context != null)
             {
-                var cam = context.Camera;
-                cameraPositionControl.SetPosition(cam.Eye, cam.Target, true);
+                if (glControl.Capture)
+                {
+                    var cam = context.Camera;
+                    cameraPositionControl.SetPosition(cam.Eye, cam.Target, true);
+                }
+                if (e.Button == MouseButtons.Left)
+                {
+                    glMouseLeft = false;
+                    isOrbiting = false;
+                    glControl.Capture = false;
+                }
+                if (e.Button == MouseButtons.Right)
+                {
+                    glMouseRight = false;
+                    isCameraPanning = false;
+                    glControl.Capture = false;
+                }
+                if (gizmoWasUsing)
+                    glControl.Invalidate();
             }
-            if (e.Button == MouseButtons.Left)
-            {
-                glMouseLeft = false;
-                isOrbiting = false;
-                glControl.Capture = false;
-            }
-            if (e.Button == MouseButtons.Right)
-            {
-                glMouseRight = false;
-                isCameraPanning = false;
-                glControl.Capture = false;
-            }
-            if (gizmoWasUsing)
-                glControl.Invalidate();
         }
 
         private void glControl_MouseWheel(object? sender, MouseEventArgs e)
         {
-            ZoomCamera(e.Delta);
-            var cam = context.Camera;
-            cameraPositionControl.SetPosition(cam.Eye, cam.Target, true);
-            SetUnsaved(true);
-            glControl.Invalidate();
+            if (context != null)
+            {
+                ZoomCamera(e.Delta);
+                var cam = context.Camera;
+                cameraPositionControl.SetPosition(cam.Eye, cam.Target, true);
+                SetUnsaved(true);
+                glControl.Invalidate();
+            }
         }
 
         private void cameraPositionControl_DataChanged(object sender, EventArgs e)
@@ -751,7 +760,7 @@ namespace FF7Scarlet.SceneEditor
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            if (MessageDialog.AskYesNo("Reset all camera and position data?") == DialogResult.Yes)
+            if (MessageDialog.AskYesNo("Reset all camera and position data?"))
             {
                 loading = true;
                 EditedFormation = new Formation(originalFormation);
@@ -793,13 +802,13 @@ namespace FF7Scarlet.SceneEditor
         private void Formation3DEditorForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (unsavedChanges)
-                e.Cancel = MessageDialog.AskYesNo("Exit without committing changes?", "Unsaved changes") == DialogResult.No;
+                e.Cancel = !MessageDialog.AskYesNo("Exit without committing changes?", "Unsaved changes");
         }
 
         private void Formation3DEditorForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             GLRenderer.Shutdown();
-            guiController.Dispose();
+            guiController?.Dispose();
         }
     }
 }

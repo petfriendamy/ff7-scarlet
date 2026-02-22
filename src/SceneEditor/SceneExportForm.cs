@@ -10,6 +10,17 @@ namespace FF7Scarlet.SceneEditor
         private int selectedScene;
         private bool processing = false;
 
+        private bool Processing
+        {
+            get { return processing; }
+            set
+            {
+                groupBoxExport.Enabled = !value;
+                buttonExport.Enabled = !(value && tabControlExportType.SelectedTab != tabPageOther);
+                processing = value;
+            }
+        }
+
         public SceneExportForm(Scene[] sceneList, int selected, bool jpText)
         {
             InitializeComponent();
@@ -94,6 +105,11 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
+        private void tabControlExportType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            buttonExport.Enabled = !(tabControlExportType.SelectedTab == tabPageOther);
+        }
+
         private async void buttonExport_Click(object sender, EventArgs e)
         {
             //export scene(s)
@@ -123,9 +139,7 @@ namespace FF7Scarlet.SceneEditor
 
                             if (result == DialogResult.OK)
                             {
-                                groupBoxExport.Enabled = false;
-                                buttonExport.Enabled = false;
-                                processing = true;
+                                Processing = true;
                                 await ExportScene(selectedScene, path);
                                 progressBarSaving.Value = 100;
                                 success = true;
@@ -147,15 +161,13 @@ namespace FF7Scarlet.SceneEditor
                                 }
                                 else
                                 {
-                                    groupBoxExport.Enabled = false;
-                                    buttonExport.Enabled = false;
-                                    processing = true;
+                                    Processing = true;
                                     var selected = new int[listBoxSceneList.SelectedIndices.Count];
                                     for (int i = 0; i < selected.Length; ++i)
                                     {
                                         selected[i] = listBoxSceneList.SelectedIndices[i];
                                     }
-                                    success = await ExportMulti(path, selected);
+                                    success = await ExportMultipleScenes(path, selected);
                                 }
                             }
                         }
@@ -163,17 +175,15 @@ namespace FF7Scarlet.SceneEditor
                         {
                             MessageBox.Show("Scene(s) exported successfully.", "Done!", MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
-                            processing = false;
+                            Processing = false;
                             Close();
                         }
                     }
                     catch (Exception ex)
                     {
                         ExceptionHandler.Handle(ex, "exporting scene");
-                        groupBoxExport.Enabled = true;
-                        buttonExport.Enabled = true;
                         progressBarSaving.Value = 0;
-                        processing = false;
+                        Processing = false;
                     }
                 }
             }
@@ -199,9 +209,9 @@ namespace FF7Scarlet.SceneEditor
                         path = save.FileName;
                     }
 
-                    if (result == DialogResult.OK)
+                    if (result == DialogResult.OK && Path.Exists(path))
                     {
-                        processing = true;
+                        Processing = true;
                         int finalCount = await ExportChunk(scenes, path, start, count);
                         progressBarSaving.Value = 100;
                         if (finalCount < count)
@@ -212,9 +222,202 @@ namespace FF7Scarlet.SceneEditor
                         {
                             MessageDialog.ShowInfo("Chunk successfully exported.", "Success");
                         }
-                        processing = false;
+                        progressBarSaving.Value = 0;
+                        Processing = false;
                         Close();
                     }
+                }
+            }
+        }
+
+        private async void buttonExportSelectedEnemies_Click(object sender, EventArgs e)
+        {
+            var scene = scenes[selectedScene];
+            if (scene.IsEmpty())
+            {
+                MessageDialog.ShowInfo("Selected scene is empty.", "Scene Empty");
+            }
+            else
+            {
+                DialogResult result;
+                string path;
+                using (var save = new FolderBrowserDialog())
+                {
+                    result = save.ShowDialog();
+                    path = save.SelectedPath;
+                }
+                if (result == DialogResult.OK && Path.Exists(path))
+                {
+                    Processing = true;
+                    try
+                    {
+                        await ExportEnemies(scene, path, selectedScene);
+                        MessageDialog.ShowInfo("Enemies exported successfully.", "Success");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageDialog.ShowException(ex);
+                    }
+                    Processing = false;
+                }
+            }
+        }
+
+        private async void buttonExportAllEnemies_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            string path;
+            using (var save = new FolderBrowserDialog())
+            {
+                result = save.ShowDialog();
+                path = save.SelectedPath;
+            }
+            if (result == DialogResult.OK && Path.Exists(path))
+            {
+                Processing = true;
+                try
+                {
+                    for (int i = 0; i < Scene.SCENE_COUNT; ++i)
+                    {
+                        await ExportEnemies(scenes[i], path, i);
+                        progressBarSaving.Value = ((i + 1) / Scene.SCENE_COUNT) * 100;
+                    }
+                    MessageDialog.ShowInfo("Enemies exported successfully.", "Success");
+                }
+                catch (Exception ex)
+                {
+                    MessageDialog.ShowException(ex);
+                }
+                Processing = false;
+            }
+        }
+
+        private async void buttonExportSelectedAttacks_Click(object sender, EventArgs e)
+        {
+            var scene = scenes[selectedScene];
+            if (scene.IsEmpty())
+            {
+                MessageDialog.ShowInfo("Selected scene is empty.", "Scene Empty");
+            }
+            else
+            {
+                DialogResult result;
+                string path;
+                using (var save = new FolderBrowserDialog())
+                {
+                    result = save.ShowDialog();
+                    path = save.SelectedPath;
+                }
+                if (result == DialogResult.OK && Path.Exists(path))
+                {
+                    Processing = true;
+                    try
+                    {
+                        await ExportAttacks(scene, path, selectedScene);
+                        MessageDialog.ShowInfo("Attacks exported successfully.", "Success");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageDialog.ShowException(ex);
+                    }
+                    Processing = false;
+                }
+            }
+        }
+
+        private async void buttonExportAllAttacks_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            string path;
+            using (var save = new FolderBrowserDialog())
+            {
+                result = save.ShowDialog();
+                path = save.SelectedPath;
+            }
+            if (result == DialogResult.OK && Path.Exists(path))
+            {
+                Processing = true;
+                try
+                {
+                    for (int i = 0; i < Scene.SCENE_COUNT; ++i)
+                    {
+                        await ExportAttacks(scenes[i], path, i);
+                        progressBarSaving.Value = ((i + 1) / Scene.SCENE_COUNT) * 100;
+                    }
+                    MessageDialog.ShowInfo("Attacks exported successfully.", "Success");
+                }
+                catch (Exception ex)
+                {
+                    MessageDialog.ShowException(ex);
+                }
+                Processing = false;
+            }
+        }
+
+        private async void buttonExportSelectedEnemyAI_Click(object sender, EventArgs e)
+        {
+            var scene = scenes[selectedScene];
+            if (scene.IsEmpty())
+            {
+                MessageDialog.ShowInfo("Selected scene is empty.", "Scene Empty");
+            }
+            else
+            {
+                DialogResult result;
+                string path;
+                using (var save = new SaveFileDialog())
+                {
+                    save.FileName = $"enemyai.{selectedScene}.bin";
+                    save.Filter = "Enemy A.I. chunk|enemyai.*.bin";
+                    result = save.ShowDialog();
+                    path = save.FileName;
+                }
+                if (result == DialogResult.OK)
+                {
+                    Processing = true;
+                    try
+                    {
+                        await ExportEnemyAI(scene, path, selectedScene);
+                        MessageDialog.ShowInfo("Enemy A.I. exported successfully.", "Success");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageDialog.ShowException(ex);
+                    }
+                    Processing = false;
+                }
+            }
+        }
+
+        private async void buttonExportAllEnemyAI_Click(object sender, EventArgs e)
+        {
+            if (MessageDialog.AskYesNo("This operation may take a while. Are you sure?"))
+            {
+                DialogResult result;
+                string path;
+                using (var save = new FolderBrowserDialog())
+                {
+                    result = save.ShowDialog();
+                    path = save.SelectedPath;
+                }
+                if (result == DialogResult.OK && Path.Exists(path))
+                {
+                    Processing = true;
+                    try
+                    {
+                        for (int i = 0; i < Scene.SCENE_COUNT; ++i)
+                        {
+                            string filePath = Path.Combine(path, $"enemyai.{i}.bin");
+                            await ExportEnemyAI(scenes[i], filePath, i);
+                            progressBarSaving.Value = ((i + 1) / Scene.SCENE_COUNT) * 100;
+                        }
+                        MessageDialog.ShowInfo("Enemy A.I. exported successfully.", "Success");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageDialog.ShowException(ex);
+                    }
+                    Processing = false;
                 }
             }
         }
@@ -236,7 +439,7 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        private async Task<bool> ExportMulti(string folderPath, int[] selected)
+        private async Task<bool> ExportMultipleScenes(string folderPath, int[] selected)
         {
             try
             {
@@ -252,10 +455,11 @@ namespace FF7Scarlet.SceneEditor
             }
             catch (Exception ex)
             {
-                ExceptionHandler.Handle(ex, "ExportChunk");
+                ExceptionHandler.Handle(ex, "ExportMultipleScenes");
             }
             return false;
         }
+
         private async Task<int> ExportChunk(Scene[] sceneList, string path, int start, int count)
         {
             int result = 0;
@@ -273,9 +477,66 @@ namespace FF7Scarlet.SceneEditor
             return result;
         }
 
+        private async Task<bool> ExportEnemies(Scene scene, string folderPath, int sceneID)
+        {
+            if (Path.Exists(folderPath))
+            {
+                return await Task.Run(() =>
+                {
+                    for (int i = 0; i < Scene.ENEMY_COUNT; ++i)
+                    {
+                        var enemy = scene.Enemies[i];
+                        if (enemy != null)
+                        {
+                            string filePath = Path.Combine(folderPath, $"enemy.{sceneID}.{i}.bin");
+                            File.WriteAllBytes(filePath, enemy.GetRawEnemyData(true, true));
+                        }
+                    }
+                    return true;
+                });
+            }
+            return false;
+        }
+
+        private async Task<bool> ExportAttacks(Scene scene, string folderPath, int sceneID)
+        {
+            if (Path.Exists(folderPath))
+            {
+                return await Task.Run(() =>
+                {
+                    for (int i = 0; i < Scene.ATTACK_COUNT; ++i)
+                    {
+                        var attack = scene.AttackList[i];
+                        if (attack != null)
+                        {
+                            string filePath = Path.Combine(folderPath, $"attack.{sceneID}.{i}.bin");
+                            using (var fs = new FileStream(filePath, FileMode.Create))
+                            using (var writer = new BinaryWriter(fs))
+                            {
+                                writer.Write((ushort)attack.Index);
+                                writer.Write(attack.Name.GetBytes(Scene.NAME_LENGTH, addSpace: true));
+                                writer.Write(DataParser.GetAttackBytes(attack));
+                            }
+                        }
+                    }
+                    return true;
+                });
+            }
+            return false;
+        }
+
+        private async Task<bool> ExportEnemyAI(Scene scene, string filePath, int sceneID)
+        {
+            return await Task.Run(() =>
+            {
+                File.WriteAllBytes(filePath, scene.GetEnemyAI());
+                return true;
+            });
+        }
+
         private void SceneExportForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (processing) { e.Cancel = true; }
+            e.Cancel = Processing;
         }
     }
 }

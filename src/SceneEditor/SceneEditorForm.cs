@@ -15,6 +15,20 @@ namespace FF7Scarlet.SceneEditor
     {
         #region Properties
 
+        private struct ImportFile
+        {
+            public string Type;
+            public int Scene;
+            public int ID;
+
+            public ImportFile(string type, int scene, int id)
+            {
+                Type = type;
+                Scene = scene;
+                ID = id;
+            }
+        }
+
         private readonly string WINDOW_TITLE = $"{Application.ProductName} v{Application.ProductVersion} - Scene Editor";
         private readonly string[] SCRIPT_LIST =
         {
@@ -134,7 +148,7 @@ namespace FF7Scarlet.SceneEditor
             //set max values for various controls
             attackFormControl.SetIsKernel(false);
             attackFormControl.DescriptionEnabled = false;
-            textBoxEnemyName.MaxLength = Scene.NAME_LENGTH - 1;
+            textBoxEnemyName.MaxLength = Enemy.NAME_LENGTH - 1;
             numericEnemyHP.Maximum = uint.MaxValue;
             numericEnemyEXP.Maximum = uint.MaxValue;
             numericEnemyGil.Maximum = uint.MaxValue;
@@ -455,14 +469,14 @@ namespace FF7Scarlet.SceneEditor
             bool success = true;
             if (enemy == null) //no enemy data to load
             {
-                var result = DialogResult.None;
+                bool result = false;
                 if (!ignoreNull)
                 {
                     result = MessageDialog.AskYesNo("There is no enemy data in the selected slot. Would you like to create a new enemy?",
                         "No Enemy Data");
                 }
 
-                if (result == DialogResult.Yes)
+                if (result)
                 {
                     CreateNewEnemy(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
                 }
@@ -555,9 +569,8 @@ namespace FF7Scarlet.SceneEditor
                         {
                             if (enemy.MorphItemIndex >= DataParser.MATERIA_START && !DataManager.PS3TweaksEnabled)
                             {
-                                var result = MessageDialog.AskYesNo("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
-                                    "Enable Postscriptthree Tweaks?");
-                                if (result == DialogResult.Yes)
+                                if (MessageDialog.AskYesNo("This scene file appears to use materia morphs! Would you like to enable Postscriptthree Tweaks?",
+                                    "Enable Postscriptthree Tweaks?"))
                                 {
                                     DataManager.PS3TweaksEnabled = true;
                                     LoadKernelData();
@@ -743,10 +756,8 @@ namespace FF7Scarlet.SceneEditor
 
             if (attack == null)
             {
-                var result = MessageDialog.AskYesNo("There is no attack data in the selected slot. Would you like to create a new attack?",
-                    "No Attack Data");
-
-                if (result == DialogResult.Yes)
+                if (MessageDialog.AskYesNo("There is no attack data in the selected slot. Would you like to create a new attack?",
+                    "No Attack Data"))
                 {
                     if (SelectedScene != null && SelectedAttackIndex != -1)
                     {
@@ -1539,9 +1550,8 @@ namespace FF7Scarlet.SceneEditor
                 }
                 else if (item.ItemID >= DataParser.MATERIA_START && !DataManager.PS3TweaksEnabled)
                 {
-                    var result = MessageDialog.AskYesNo("This scene file appears to use materia drops! Would you like to enable Postscriptthree Tweaks?",
-                                "Enable Postscriptthree Tweaks?");
-                    if (result == DialogResult.Yes)
+                    if (MessageDialog.AskYesNo("This scene file appears to use materia drops! Would you like to enable Postscriptthree Tweaks?",
+                                "Enable Postscriptthree Tweaks?"))
                     {
                         DataManager.PS3TweaksEnabled = true;
                         LoadKernelData();
@@ -1923,21 +1933,23 @@ namespace FF7Scarlet.SceneEditor
 
         private void buttonImport_Click(object sender, EventArgs e)
         {
+            bool multi = sender == buttonImport;
+
             SyncAllUnsavedData();
             DialogResult result;
             string[] paths;
             using (var import = new OpenFileDialog())
             {
-                import.Filter = "Scene files|scene.*.bin;scene.bin.chunk.*";
-                import.Multiselect = true;
+                import.Filter = "Scene files|scene.*.bin;scene.bin.chunk.*;enemy.*.*.bin;attack.*.*.bin;enemyai.*.bin;";
+                import.Multiselect = multi;
                 result = import.ShowDialog();
                 paths = import.FileNames;
             }
 
             if (result == DialogResult.OK && paths.Length > 0)
             {
-                var successfulImports = new List<int>();
-                var unsuccessfulImports = new List<int>();
+                var successfulImports = new List<ImportFile>();
+                var unsuccessfulImports = new List<ImportFile>();
 
                 foreach (var path in paths)
                 {
@@ -1953,63 +1965,149 @@ namespace FF7Scarlet.SceneEditor
                         //attempt to import the scenes
                         foreach (var scene in importScenes)
                         {
-                            if (successfulImports.Contains(scene.Key))
+                            var s =
+                                (from i in successfulImports
+                                 where i.Type == "scene"
+                                 select i.Scene);
+                            if (s.Contains(scene.Key))
                             {
-                                unsuccessfulImports.Add(scene.Key);
+                                unsuccessfulImports.Add(new ImportFile("scene", scene.Key, 0));
                             }
                             else
                             {
                                 sceneList[scene.Key] = scene.Value;
                                 comboBoxSceneList.Items[scene.Key] = $"{scene.Key}: {scene.Value.GetEnemyNames(DisplayJapaneseText)}";
-                                successfulImports.Add(scene.Key);
+                                successfulImports.Add(new ImportFile("scene", scene.Key, 0));
                             }
                         }
                     }
-                    else //individual scene
+                    else //individual scene file
                     {
                         //attempt to get the scene's number
                         string temp = Path.GetFileNameWithoutExtension(path);
-                        temp = temp.Substring(temp.IndexOf('.') + 1);
-                        int sceneIndex;
-                        if (!int.TryParse(temp, out sceneIndex))
+                        var splitStr = temp.Split('.');
+                        if (splitStr.Length > 1)
                         {
-                            MessageDialog.ShowError($"Invalid scene file: {Path.GetFileName(path)}");
-                        }
-                        else
-                        {
-                            //if only one file is selected, prompt to import into the current scene
-                            if (paths.Length == 1 && SelectedSceneIndex != sceneIndex && SelectedSceneIndex >= 0)
+                            int id = 0;
+                            bool valid = int.TryParse(splitStr[1], out int sceneIndex);
+                            if (valid && splitStr[0] != "scene" && !splitStr[0].EndsWith("ai"))
                             {
-                                result = MessageDialog.AskYesNoCancel("Import into the currently selected scene? Otherwise, the scene will be imported into the scene matching the file name.",
-                                    "Import Selected?");
-                                switch (result)
-                                {
-                                    case DialogResult.Cancel:
-                                        return;
-                                    case DialogResult.Yes:
-                                        sceneIndex = SelectedSceneIndex;
-                                        break;
-                                }
+                                if (splitStr.Length > 2)
+                                    valid = int.TryParse(splitStr[2], out id);
+                                else
+                                    valid = false;
                             }
-
-                            //attempt to insert the scene at the correct place
-                            try
+                            if (!valid)
                             {
-                                if (successfulImports.Contains(sceneIndex))
+                                MessageDialog.ShowError($"Invalid scene file: {Path.GetFileName(path)}");
+                            }
+                            else
+                            {
+                                //if only one file is selected, prompt to import into the current scene
+                                if (multi && paths.Length == 1 && SelectedSceneIndex != sceneIndex && SelectedSceneIndex >= 0)
                                 {
-                                    unsuccessfulImports.Add(sceneIndex);
+                                    result = MessageDialog.AskYesNoCancel("Import into the currently selected scene? Otherwise, the scene will be imported into the scene matching the file name.",
+                                        "Import Selected?");
+                                    switch (result)
+                                    {
+                                        case DialogResult.Cancel:
+                                            return;
+                                        case DialogResult.Yes:
+                                            sceneIndex = SelectedSceneIndex;
+                                            break;
+                                    }
+                                }
+
+                                //attempt to insert the scene at the correct place
+                                if (splitStr[0] == "scene")
+                                {
+                                    try
+                                    {
+                                        var importScenes =
+                                            (from i in successfulImports
+                                             where i.Type == splitStr[0]
+                                             select i.Scene);
+                                        if (importScenes.Contains(sceneIndex))
+                                        {
+                                            unsuccessfulImports.Add(new ImportFile(splitStr[0], sceneIndex, 0));
+                                        }
+                                        else
+                                        {
+                                            var newScene = new Scene(path);
+                                            sceneList[sceneIndex] = newScene;
+                                            comboBoxSceneList.Items[sceneIndex] = $"{sceneIndex}: {newScene.GetEnemyNames(DisplayJapaneseText)}";
+                                            successfulImports.Add(new ImportFile(splitStr[0], sceneIndex, 0));
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        unsuccessfulImports.Add(new ImportFile(splitStr[0], sceneIndex, 0));
+                                    }
                                 }
                                 else
                                 {
-                                    var newScene = new Scene(path);
-                                    sceneList[sceneIndex] = newScene;
-                                    comboBoxSceneList.Items[sceneIndex] = $"{sceneIndex}: {newScene.GetEnemyNames(DisplayJapaneseText)}";
-                                    successfulImports.Add(sceneIndex);
+                                    var file = new ImportFile(splitStr[0], sceneIndex, id);
+                                    try
+                                    {
+                                        if (successfulImports.Contains(file))
+                                        {
+                                            unsuccessfulImports.Add(file);
+                                        }
+                                        else
+                                        {
+                                            switch (splitStr[0])
+                                            {
+                                                case "scene":
+                                                    var newScene = new Scene(path);
+                                                    sceneList[sceneIndex] = newScene;
+                                                    comboBoxSceneList.Items[sceneIndex] = $"{sceneIndex}: {newScene.GetEnemyNames(DisplayJapaneseText)}";
+                                                    successfulImports.Add(file);
+                                                    break;
+
+                                                case "enemy":
+                                                    var enemy = sceneList[sceneIndex].Enemies[id];
+                                                    if (enemy != null) //clear model ID before loading enemy
+                                                        enemy.ModelID = HexParser.NULL_OFFSET_16_BIT;
+                                                    var scripts = enemy?.Scripts;
+
+                                                    using (var fs = new FileStream(path, FileMode.Open))
+                                                    using (var reader = new BinaryReader(fs))
+                                                    {
+                                                        ushort modelID = reader.ReadUInt16();
+                                                        var name = new FFText(reader.ReadBytes(Enemy.NAME_LENGTH));
+                                                        enemy = new Enemy(sceneList[sceneIndex], modelID, name,
+                                                            reader.ReadBytes(Enemy.DATA_BLOCK_SIZE));
+                                                        if (scripts != null)
+                                                            Array.Copy(scripts, enemy.Scripts, AIContainer.SCRIPT_NUMBER);
+                                                        sceneList[sceneIndex].Enemies[id] = enemy;
+                                                        successfulImports.Add(file);
+                                                    }
+                                                    break;
+
+                                                case "attack":
+                                                    using (var fs = new FileStream(path, FileMode.Open))
+                                                    using (var reader = new BinaryReader(fs))
+                                                    {
+                                                        ushort atkID = reader.ReadUInt16();
+                                                        var name = new FFText(reader.ReadBytes(Scene.NAME_LENGTH));
+                                                        sceneList[sceneIndex].AttackList[id] = DataParser.ReadAttack(atkID,
+                                                            name, reader.ReadBytes(DataParser.ATTACK_BLOCK_SIZE));
+                                                        successfulImports.Add(file);
+                                                    }
+                                                    break;
+
+                                                case "enemyai":
+                                                    sceneList[sceneIndex].ReadEnemyAI(File.ReadAllBytes(path));
+                                                    successfulImports.Add(file);
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        unsuccessfulImports.Add(file);
+                                    }
                                 }
-                            }
-                            catch
-                            {
-                                unsuccessfulImports.Add(sceneIndex);
                             }
                         }
                     }
@@ -2019,21 +2117,21 @@ namespace FF7Scarlet.SceneEditor
                 successfulImports.Sort();
                 if (successfulImports.Count == 0)
                 {
-                    MessageDialog.ShowError("Failed to import scene(s).");
+                    MessageDialog.ShowError("Failed to import file(s).");
                 }
                 else
                 {
-                    string output = "Successfully imported the following scene(s): ";
+                    string output = "Successfully imported the following file(s): ";
                     int i;
                     for (i = 0; i < successfulImports.Count; ++i)
                     {
                         if (i == successfulImports.Count - 1)
                         {
-                            output += successfulImports[i].ToString();
+                            output += successfulImports[i].Scene.ToString();
                         }
                         else
                         {
-                            output += $"{successfulImports[i]}, ";
+                            output += $"{successfulImports[i].Scene}, ";
                         }
                     }
 
@@ -2041,7 +2139,7 @@ namespace FF7Scarlet.SceneEditor
                     if (unsuccessfulImports.Count > 0)
                     {
                         unsuccessfulImports.Sort();
-                        output += "\n\nThe following scene(s) failed to import: ";
+                        output += "\n\nThe following file(s) failed to import: ";
                         for (i = 0; i < unsuccessfulImports.Count; ++i)
                         {
                             if (i == unsuccessfulImports.Count - 1)
@@ -2056,7 +2154,7 @@ namespace FF7Scarlet.SceneEditor
                     }
 
                     MessageDialog.ShowInfo(output, "Success");
-                    comboBoxSceneList.SelectedIndex = successfulImports[0];
+                    comboBoxSceneList.SelectedIndex = successfulImports[0].Scene;
                     if (SelectedScene != null)
                     {
                         LoadSceneData(SelectedSceneIndex, true, true);
@@ -2102,9 +2200,8 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedScene != null)
             {
-                var result = MessageDialog.AskYesNo("This will delete ALL enemies, attacks, and formations contained within this scene. Are you sure you want to do this?",
-                    "Delete Scene?");
-                if (result == DialogResult.Yes)
+                if (MessageDialog.AskYesNo("This will delete ALL enemies, attacks, and formations contained within this scene. Are you sure you want to do this?",
+                    "Delete Scene?"))
                 {
                     loading = true;
                     sceneList[SelectedSceneIndex] = new Scene();
@@ -2124,9 +2221,8 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedEnemy != null)
             {
-                var result = MessageDialog.AskYesNo("There is already enemy data in the selected slot. Are you sure you want to overwrite it?",
-                    "Overwrite?");
-                if (result == DialogResult.No) { return; }
+                if (!MessageDialog.AskYesNo("There is already enemy data in the selected slot. Are you sure you want to overwrite it?",
+                    "Overwrite?")) { return; }
             }
             CreateNewEnemy(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
         }
@@ -2161,9 +2257,8 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedEnemy != null && SelectedScene != null && SelectedFormation != null)
             {
-                var result = MessageDialog.AskYesNo("Are you sure you want to delete the selected enemy? This can't be undone!",
-                    "Delete Enemy?");
-                if (result == DialogResult.Yes)
+                if (MessageDialog.AskYesNo("Are you sure you want to delete the selected enemy? This can't be undone!",
+                    "Delete Enemy?"))
                 {
                     //remove the enemy from all formations
                     ushort id = SelectedEnemy.ModelID;
@@ -2267,9 +2362,7 @@ namespace FF7Scarlet.SceneEditor
             }
             else if (unsavedChanges)
             {
-                var result = MessageDialog.AskYesNo("Unsaved changes will be lost. Are you sure?", "Unsaved changes");
-
-                e.Cancel = result == DialogResult.No;
+                e.Cancel = !MessageDialog.AskYesNo("Unsaved changes will be lost. Are you sure?", "Unsaved changes");
             }
         }
 

@@ -75,11 +75,14 @@ namespace FF7Scarlet.SceneEditor
 
         public Enemy? GetEnemyByID(ushort id)
         {
-            foreach (var e in Enemies)
+            if (id != HexParser.NULL_OFFSET_16_BIT)
             {
-                if (e?.ModelID == id)
+                foreach (var e in Enemies)
                 {
-                    return e;
+                    if (e?.ModelID == id)
+                    {
+                        return e;
+                    }
                 }
             }
             return null;
@@ -303,7 +306,7 @@ namespace FF7Scarlet.SceneEditor
                         else { formationAIoffset[i] = reader.ReadUInt16(); }
                     }
 
-                    //formations
+                    //A.I. data
                     if (isJPoriginal)
                     {
                         Array.Copy(HexParser.GetNullBlock(Formation.AI_BLOCK_SIZE), formationAIRaw, Formation.AI_BLOCK_SIZE);
@@ -312,21 +315,31 @@ namespace FF7Scarlet.SceneEditor
                     {
                         Array.Copy(reader.ReadBytes(Formation.AI_BLOCK_SIZE), formationAIRaw, Formation.AI_BLOCK_SIZE);
                     }
-
-                    //enemy A.I. offsets
-                    for (i = 0; i < ENEMY_COUNT; ++i)
-                    {
-                        enemyAIoffset[i] = reader.ReadUInt16();
-                    }
-
-                    //enemy A.I. scripts
-                    Array.Copy(reader.ReadBytes(Enemy.AI_BLOCK_SIZE), enemyAIraw, Enemy.AI_BLOCK_SIZE);
+                    ReadEnemyAI(reader.ReadBytes(Enemy.AI_BLOCK_COMBINED_SIZE));
                 }
             }
 
             //make a copy of the unedited data
             if (isJPoriginal) { GetRawData(); }
             else { Array.Copy(data, rawData, UNCOMPRESSED_BLOCK_SIZE); }
+        }
+
+        public void ReadEnemyAI(byte[] data)
+        {
+            if (data.Length != Enemy.AI_BLOCK_COMBINED_SIZE)
+            {
+                throw new ArgumentException("Enemy A.I. block was the wrong size.");
+            }
+            using (var ms = new MemoryStream(data))
+            using (var reader = new BinaryReader(ms))
+            {
+                for (int i = 0; i < ENEMY_COUNT; ++i)
+                {
+                    enemyAIoffset[i] = reader.ReadUInt16();
+                }
+                Array.Copy(reader.ReadBytes(Enemy.AI_BLOCK_SIZE), enemyAIraw, Enemy.AI_BLOCK_SIZE);
+            }
+            if (ScriptsLoaded) { ParseAIScripts(); }
         }
 
         public void ParseAIScripts()
@@ -412,7 +425,7 @@ namespace FF7Scarlet.SceneEditor
         public int SyncAttack(Attack attack)
         {
             int count = 0;
-            for (int i = 0; i < ATTACK_COUNT; ++i)
+            /*for (int i = 0; i < ATTACK_COUNT; ++i)
             {
                 var atk = AttackList[i];
                 if (atk != null)
@@ -423,8 +436,86 @@ namespace FF7Scarlet.SceneEditor
                         count++;
                     }
                 }
-            }
+            }*/
             return count;
+        }
+
+        public byte[] GetEnemyAI()
+        {
+            var bytes = new List<byte>();
+            try
+            {
+                if (ScriptsLoaded)
+                {
+                    Array.Copy(AIContainer.GetGroupedScriptBlock(ENEMY_COUNT, Enemy.AI_BLOCK_SIZE, enemies,
+                        ref enemyAIoffset), enemyAIraw, Enemy.AI_BLOCK_SIZE);
+                }
+
+                foreach (var o in enemyAIoffset)
+                {
+                    bytes.AddRange(BitConverter.GetBytes(o));
+                }
+                bytes.AddRange(enemyAIraw);
+                return bytes.ToArray();
+            }
+            catch (ScriptTooLongException)
+            {
+                throw new ScriptTooLongException("Enemy A.I. block is too long!");
+            }
+            catch (FormatException ex)
+            {
+                Debug.WriteLine($"Format error in enemy scripts: {ex}");
+                throw new FormatException($"Compiler error in enemy scripts: {ex.Message}", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Debug.WriteLine($"Invalid operation in enemy scripts: {ex}");
+                throw new InvalidOperationException($"Compiler error in enemy scripts: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected error in enemy scripts: {ex}");
+                throw new Exception($"Compiler error in enemy scripts: {ex.Message}", ex);
+            }
+        }
+
+        public byte[] GetFormationAI()
+        {
+            var bytes = new List<byte>();
+            try
+            {
+                if (ScriptsLoaded) // no need to update script data if it isn't loaded
+                {
+                    Array.Copy(AIContainer.GetGroupedScriptBlock(FORMATION_COUNT, Formation.AI_BLOCK_SIZE, formations,
+                            ref formationAIoffset), formationAIRaw, Formation.AI_BLOCK_SIZE);
+                }
+
+                foreach (var o in formationAIoffset)
+                {
+                    bytes.AddRange(BitConverter.GetBytes(o));
+                }
+                bytes.AddRange(formationAIRaw);
+                return bytes.ToArray();
+            }
+            catch (ScriptTooLongException)
+            {
+                throw new ScriptTooLongException("Formation A.I. block is too long!");
+            }
+            catch (FormatException ex)
+            {
+                Debug.WriteLine($"Format error in formation scripts: {ex}");
+                throw new FormatException($"Compiler error in formation scripts: {ex.Message}", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Debug.WriteLine($"Invalid operation in formation scripts: {ex}");
+                throw new InvalidOperationException($"Compiler error in formation scripts: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected error in formation scripts: {ex}");
+                throw new Exception($"Compiler error in formation scripts: {ex.Message}", ex);
+            }
         }
 
         public byte[] GetRawData()
@@ -558,75 +649,9 @@ namespace FF7Scarlet.SceneEditor
                         throw new Exception($"Error in attack data (index {i}): {ex.Message}", ex);
                     }
 
-                    //formation data
-                    try
-                    {
-                        if (ScriptsLoaded) // no need to update script data if it isn't loaded
-                        {
-                            Array.Copy(AIContainer.GetGroupedScriptBlock(FORMATION_COUNT, Formation.AI_BLOCK_SIZE, formations,
-                                    ref formationAIoffset), formationAIRaw, Formation.AI_BLOCK_SIZE);
-                        }
-
-                        foreach (var o in formationAIoffset)
-                        {
-                            writer.Write(o);
-                        }
-                        writer.Write(formationAIRaw);
-                    }
-                    catch (ScriptTooLongException)
-                    {
-                        throw new ScriptTooLongException("Formation A.I. block is too long!");
-                    }
-                    catch (FormatException ex)
-                    {
-                        Debug.WriteLine($"Format error in formation scripts: {ex}");
-                        throw new FormatException($"Compiler error in formation scripts: {ex.Message}", ex);
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Debug.WriteLine($"Invalid operation in formation scripts: {ex}");
-                        throw new InvalidOperationException($"Compiler error in formation scripts: {ex.Message}", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Unexpected error in formation scripts: {ex}");
-                        throw new Exception($"Compiler error in formation scripts: {ex.Message}", ex);
-                    }
-
-                    //enemy A.I. data
-                    try
-                    {
-                        if (ScriptsLoaded)
-                        {
-                            Array.Copy(AIContainer.GetGroupedScriptBlock(ENEMY_COUNT, Enemy.AI_BLOCK_SIZE, enemies,
-                                ref enemyAIoffset), enemyAIraw, Enemy.AI_BLOCK_SIZE);
-                        }
-
-                        foreach (var o in enemyAIoffset)
-                        {
-                            writer.Write(o);
-                        }
-                        writer.Write(enemyAIraw);
-                    }
-                    catch (ScriptTooLongException)
-                    {
-                        throw new ScriptTooLongException("Enemy A.I. block is too long!");
-                    }
-                    catch (FormatException ex)
-                    {
-                        Debug.WriteLine($"Format error in enemy scripts: {ex}");
-                        throw new FormatException($"Compiler error in enemy scripts: {ex.Message}", ex);
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Debug.WriteLine($"Invalid operation in enemy scripts: {ex}");
-                        throw new InvalidOperationException($"Compiler error in enemy scripts: {ex.Message}", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Unexpected error in enemy scripts: {ex}");
-                        throw new Exception($"Compiler error in enemy scripts: {ex.Message}", ex);
-                    }
+                    //A.I. data
+                    writer.Write(GetFormationAI());
+                    writer.Write(GetEnemyAI());
 
                     //pad remaining data with 0xFF
                     bool end = false;
