@@ -1061,6 +1061,10 @@ namespace FF7Scarlet.ExeEditor
                         //2026 version (this isn't supported (for now?))
                         hash = Convert.FromHexString("6461ccb05ed56206a7061344cb18dc3bcafa65d5");
                         if (hash.SequenceEqual(compare)) { return 3; }
+
+                        //2026 version (update)
+                        hash = Convert.FromHexString("a33a64eca35aee6ebdd30e20a2411449cbdd9a3d");
+                        if (hash.SequenceEqual(compare)) { return 3; }
                         break;
                 }
             }
