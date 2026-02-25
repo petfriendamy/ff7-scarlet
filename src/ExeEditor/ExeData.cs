@@ -10,6 +10,11 @@ using System.Text;
 
 namespace FF7Scarlet.ExeEditor
 {
+    public enum EXEVersion
+    {
+        Original, Steam2013, Steam2026
+    }
+
     public struct MultiStringLength
     {
         public readonly int Length;
@@ -41,7 +46,8 @@ namespace FF7Scarlet.ExeEditor
         }
 
         //constants
-        private static readonly int[] EXE_HEADER = { 0x4D, 0x5A, 0x90 };
+        private static readonly int[] EXE_HEADER = { 0x55, 0x8B, 0xEC, 0xC7 };
+        private const int EXE_OFFSET = 0x400, EXE_OFFSET_2026 = 0x200;
         public const string
             CONFIG_KEY = "ExePath",
             VANILLA_CONFIG_KEY = "VanillaExePath";
@@ -117,55 +123,55 @@ namespace FF7Scarlet.ExeEditor
             HEXT_OFFSET_DATA = 0x401600,
             DATA_SECTION_START = 0x3B8A00,
 
-            TEST_BYTE_POS = 0x94,
-            AP_MULTIPLIER_POS = 0x31F14F,
+            AP_MULTIPLIER_POS = 0x31ED4F,
             AP_MASTER_OFFSET = 0x4E,
-            MATERIA_EQUIP_EFFECT_POS = 0x4FD8C8,
-            QUIT_TEXT_POS_1 = 0x518370,
-            QUIT_TEXT_POS_2 = 0x5183D0,
-            CONFIG_MENU_TEXT_POS = 0x5188A8,
-            MAIN_MENU_TEXT_POS = 0x5192C0,
-            STATUS_EFFECT_BATTLE_POS = 0x51D228,
-            BATTLE_ARENA_TEXT_POS = 0x51D588,
-            BIZARRO_MENU_TEXT_POS = 0x51DB40,
-            LIMIT_MENU_TEXT_POS = 0x51DED8,
-            LIMIT_BREAK_POS = 0x51E0D4,
-            STATUS_MENU_ELEMENT_POS = 0x51EF40,
-            STATUS_EFFECTS_MENU_POS = 0x51EFA0,
-            STATUS_MENU_TEXT_POS = 0x51F1C0,
-            EQUIP_MENU_TEXT_POS = 0x51F3A8,
-            UNEQUIP_TEXT_POS = 0x51F518,
-            MATERIA_MENU_TEXT_POS = 0x51F5A8,
-            MAGIC_MENU_TEXT_POS = 0x51F9E8,
-            ITEM_MENU_TEXT_POS = 0x51FB68,
-            LIMIT_TEXT_POS = 0x51FBF0,
-            ITEM_SORT_POS = 0x51FF48,
-            MATERIA_PRIORITY_POS = 0x5201C8,
-            CHARACTER_NAMES_POS = 0x5206B8,
-            CAIT_SITH_DATA_POS = 0x520C10,
+            MATERIA_EQUIP_EFFECT_POS = 0x4FD4C8,
+            QUIT_TEXT_POS_1 = 0x517F70,
+            QUIT_TEXT_POS_2 = 0x517FD0,
+            CONFIG_MENU_TEXT_POS = 0x5184A8,
+            MAIN_MENU_TEXT_POS = 0x518EC0,
+            STATUS_EFFECT_BATTLE_POS = 0x51CE28,
+            BATTLE_ARENA_TEXT_POS = 0x51D188,
+            BIZARRO_MENU_TEXT_POS = 0x51D740,
+            LIMIT_MENU_TEXT_POS = 0x51DAD8,
+            LIMIT_BREAK_POS = 0x51DCD4,
+            STATUS_MENU_ELEMENT_POS = 0x51EB40,
+            STATUS_EFFECTS_MENU_POS = 0x51EBA0,
+            STATUS_MENU_TEXT_POS = 0x51EDC0,
+            EQUIP_MENU_TEXT_POS = 0x51EFA8,
+            UNEQUIP_TEXT_POS = 0x51F118,
+            MATERIA_MENU_TEXT_POS = 0x51F1A8,
+            MAGIC_MENU_TEXT_POS = 0x51F5E8,
+            ITEM_MENU_TEXT_POS = 0x51F768,
+            LIMIT_TEXT_POS = 0x51F7F0,
+            ITEM_SORT_POS = 0x51FB48,
+            MATERIA_PRIORITY_POS = 0x51FDC8,
+            CHARACTER_NAMES_POS = 0x5202B8,
+            CAIT_SITH_DATA_POS = 0x520810,
             VINCENT_DATA_POS = CAIT_SITH_DATA_POS + DataParser.CHARACTER_RECORD_LENGTH,
-            SHOP_NAME_POS = 0x5219C8,
-            SHOP_TEXT_POS = 0x521A80,
-            SHOP_INVENTORY_POS = 0x521E18,
-            ITEM_PRICE_DATA_POS = 0x523858,
-            MATERIA_PRICE_DATA_POS = 0x523E58,
-            SAVE_MENU_TEXT_POS = 0x524160,
-            AUDIO_VOLUME_POS = 0x566060,
-            AUDIO_PAN_POS = 0x566260,
-            TEIOH_POS = 0x57B2A8,
-            CHOCOBO_RACE_ITEMS_POS = 0x57B3D0,
-            CHOCOBO_NAMES_POS = 0x57B658;
+            SHOP_NAME_POS = 0x5215C8,
+            SHOP_TEXT_POS = 0x521680,
+            SHOP_INVENTORY_POS = 0x521A18,
+            ITEM_PRICE_DATA_POS = 0x523458,
+            MATERIA_PRICE_DATA_POS = 0x523A58,
+            SAVE_MENU_TEXT_POS = 0x523D60,
+            AUDIO_VOLUME_POS = 0x565C60,
+            AUDIO_PAN_POS = 0x565E60,
+            TEIOH_POS = 0x57AEA8,
+            CHOCOBO_RACE_ITEMS_POS = 0x57AFD0,
+            CHOCOBO_NAMES_POS = 0x57B258;
 
-        private const long MODELS_POS = 0x34c356;
-        private static readonly long[] MODEL_CAN_WALK_POS = { MODELS_POS, 0, 0x34c383, 0x34c4cc, 0x34c57e, 0x34c5c9, 0x568440, 0x568444, 0x568448, 0x56844c, 0x568450, 0x34bbdb };
-        private static readonly long[] MODEL_CAN_DISEMBARK_POS = { 0, 0x34c45f, 0x34c3c1, 0x34c518, 0x34c54c, 0x34c59a, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0x34c3ec, 0 };
-        private static readonly long[] MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS = { 0x34c4f3, 0x34c52d };
+        private const long MODELS_POS = 0x34BF56;
+        private static readonly long[] MODEL_CAN_WALK_POS = { MODELS_POS, 0, 0x34BF83, 0x34C0CC, 0x34C17E, 0x34C1C9, 0x568040, 0x568044, 0x568048, 0x56804C, 0x568050, 0x34B7DB };
+        private static readonly long[] MODEL_CAN_DISEMBARK_POS = { 0, 0x34C05F, 0x34BFC1, 0x34C118, 0x34C14C, 0x34C19A, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0 };
+        private static readonly long[] MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS = { 0x34C0F3, 0x34C12D };
 
         //properties
         private Dictionary<long, ArrayInfo> ArrayInfoList { get; }
 
         public string FilePath { get; private set; } = string.Empty;
         public Language Language { get; private set; }
+        public EXEVersion Version { get; private set; }
         public Attack[] Limits { get; } = new Attack[NUM_LIMITS];
         public MateriaEquipEffect[] MateriaEquipEffects { get; } = new MateriaEquipEffect[MateriaEquipEffect.COUNT];
         public FFText[] LimitSuccess { get; } = new FFText[Kernel.PLAYABLE_CHARACTER_COUNT - 1];
@@ -213,6 +219,7 @@ namespace FF7Scarlet.ExeEditor
         public ExeData(string path)
         {
             Language = GetLanguage(path);
+            Version = GetEXEVersion(path);
             BattleArenaTexts = new FFText[GetNumBattleArenaTexts()];
             ChocoboNames = new FFText[GetNumChocoboNames(Language) + 1];
 
@@ -279,6 +286,14 @@ namespace FF7Scarlet.ExeEditor
         }
 
         #region Offsets
+
+        private int GetEXEOffset()
+        {
+            if (Version == EXEVersion.Steam2026)
+                return EXE_OFFSET_2026;
+            else
+                return EXE_OFFSET;
+        }
 
         private long GetAPPriceMultiplierOffset()
         {
@@ -973,13 +988,18 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        public static bool ValidateEXE(string path, bool unedited)
+        public static int ValidateEXE(string path, bool unedited)
         {
             if (File.Exists(path))
             {
-                if (unedited) //this should be an unedited EXE, so do a hash check
+                int hashCheck = HashCheck(path);
+                if (hashCheck > 1) //unsupported EXE
                 {
-                    return HashCheck(path);
+                    return hashCheck;
+                }
+                else if (unedited && hashCheck == 0) //this should be an unedited EXE, so do a hash check
+                {
+                    return 0;
                 }
                 else
                 {
@@ -987,50 +1007,78 @@ namespace FF7Scarlet.ExeEditor
                     using (var reader = new BinaryReader(stream))
                     {
                         //check if header is correct
+                        if (Path.GetExtension(path).ToLower() == ".exe")
+                            stream.Seek(EXE_OFFSET, SeekOrigin.Begin);
+                        else
+                            stream.Seek(EXE_OFFSET_2026, SeekOrigin.Begin);
+
                         for (int i = 0; i < EXE_HEADER.Length; ++i)
                         {
                             if (reader.ReadByte() != EXE_HEADER[i])
                             {
-                                return false;
+                                return 0;
                             }
                         }
-
-                        //test a certain byte (this is different in 1.00)
-                        stream.Seek(TEST_BYTE_POS, SeekOrigin.Begin);
-                        if (reader.ReadByte() != 5)
-                        {
-                            return false;
-                        }
-                        return true;
+                        return 1;
                     }
                 }
             }
-            return false;
+            return 0;
         }
 
-        private static bool HashCheck(string path)
+        private static int HashCheck(string path)
         {
             byte[] compare = SHA1.HashData(File.ReadAllBytes(path)), hash;
 
             if (GetLanguage(path) == Language.English) //only English version supported
             {
-                if (IsSteamVersion(path)) //Steam version
+                var version = GetEXEVersion(path);
+                switch (version)
                 {
-                    hash = Convert.FromHexString("1C9A6F4B6F554B1B4ECB38812F9396A026A677D6");
-                    return hash.SequenceEqual(compare);
-                }
-                else //1998 version
-                {
-                    //1.02
-                    hash = Convert.FromHexString("684A0E87840138B4E02FC8EDB9AE2E2591CE4982");
-                    if (hash.SequenceEqual(compare)) { return true; }
+                    case EXEVersion.Steam2013:
+                        hash = Convert.FromHexString("1C9A6F4B6F554B1B4ECB38812F9396A026A677D6");
+                        if (hash.SequenceEqual(compare)) { return 1; }
+                        break;
 
-                    //1.02 4GB patch
-                    hash = Convert.FromHexString("141822081B3F24EA70BE35D59449E0CA098881E3");
-                    return hash.SequenceEqual(compare);
+                    case EXEVersion.Steam2026:
+                        hash = Convert.FromHexString("ac306ae92615af75ff36bba6347c67ca1284151d");
+                        if (hash.SequenceEqual(compare)) { return 1; }
+                        break;
+
+                    default:
+                        //1.02
+                        hash = Convert.FromHexString("684A0E87840138B4E02FC8EDB9AE2E2591CE4982");
+                        if (hash.SequenceEqual(compare)) { return 1; }
+
+                        //1.02 4GB patch
+                        hash = Convert.FromHexString("141822081B3F24EA70BE35D59449E0CA098881E3");
+                        if (hash.SequenceEqual(compare)) { return 1; }
+
+                        //1.0 version (this isn't supported)
+                        hash = Convert.FromHexString("4eecaf14f30e8b0cc87b88c943f1119b567452d7");
+                        if (hash.SequenceEqual(compare)) { return 2; }
+
+                        //2026 version (this isn't supported (for now?))
+                        hash = Convert.FromHexString("6461ccb05ed56206a7061344cb18dc3bcafa65d5");
+                        if (hash.SequenceEqual(compare)) { return 3; }
+                        break;
                 }
             }
-            return false;
+            return 0;
+        }
+
+        //user selected the wrong EXE, direct them to the right one
+        public static string? Get2026EXEPath(string path)
+        {
+            if (File.Exists(path))
+            {
+                var folderPath = Path.GetDirectoryName(path);
+                if (Directory.Exists(folderPath))
+                {
+                    return Path.Combine(folderPath, "ff7", "resources", "ff7_1.02", "ff7_en");
+                }
+            }
+            return null;
         }
 
         public static Language GetLanguage(string path)
@@ -1054,6 +1102,10 @@ namespace FF7Scarlet.ExeEditor
             {
                 return Language.German;
             }
+            else if (name.EndsWith("_ja"))
+            {
+                return Language.Japanese;
+            }
             else
             {
                 return Language.English;
@@ -1071,15 +1123,28 @@ namespace FF7Scarlet.ExeEditor
                     return "fr";
                 case Language.German:
                     return "de";
+                case Language.Japanese:
+                    return "ja";
                 default:
                     return "en";
             }
         }
 
-        public static bool IsSteamVersion(string path)
+        public static EXEVersion GetEXEVersion(string path)
         {
-            string fileName = Path.GetFileNameWithoutExtension(path);
-            return fileName.Contains('_');
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                if (fileName.Contains('_'))
+                {
+                    var extension = Path.GetExtension(path).ToLower();
+                    if (extension == ".exe")
+                        return EXEVersion.Steam2013;
+                    else
+                        return EXEVersion.Steam2026;
+                }
+            }
+            return EXEVersion.Original;
         }
 
         //private function to read items from an array
@@ -1641,18 +1706,26 @@ namespace FF7Scarlet.ExeEditor
                 if (File.Exists(path))
                 {
                     Language = GetLanguage(path);
-                    IsUnedited = HashCheck(path);
+                    IsUnedited = (HashCheck(path) == 1);
 
                     //attempt to open and read the EXE
                     int i;
                     using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
                     using (var reader = new BinaryReader(stream))
                     {
-                        //check if header is correct
-                        if (!ValidateEXE(path, false))
+                        //check if file is valid
+                        int isValid = ValidateEXE(path, false);
+                        if (isValid == 0)
                         {
                             throw new FormatException("EXE appears to be invalid.");
                         }
+                        else if (isValid > 1)
+                        {
+                            throw new FormatException("Unsuppored EXE.");
+                        }
+
+                        //get overall offset for EXE data
+                        var exeOffset = GetEXEOffset();
 
                         //English only stuff (for now)
                         if (Language == Language.English)
@@ -1662,14 +1735,14 @@ namespace FF7Scarlet.ExeEditor
                             {
                                 if (MODEL_CAN_WALK_POS[i] > 0)
                                 {
-                                    stream.Seek(MODEL_CAN_WALK_POS[i], SeekOrigin.Begin);
+                                    stream.Seek(MODEL_CAN_WALK_POS[i] + exeOffset, SeekOrigin.Begin);
                                     int temp = reader.ReadInt32();
                                     var bytes = BitConverter.GetBytes(temp);
                                     ModelMoveBitmasks[i] = new BitArray(bytes);
                                 }
                                 if (MODEL_CAN_DISEMBARK_POS[i] > 0 && i < (int)WorldMapModels.YellowChocobo)
                                 {
-                                    stream.Seek(MODEL_CAN_DISEMBARK_POS[i], SeekOrigin.Begin);
+                                    stream.Seek(MODEL_CAN_DISEMBARK_POS[i] + exeOffset, SeekOrigin.Begin);
                                     int temp = reader.ReadInt32();
                                     var bytes = BitConverter.GetBytes(temp);
                                     ModelDisembarkBitmasks[i] = new BitArray(bytes);
@@ -1677,7 +1750,7 @@ namespace FF7Scarlet.ExeEditor
                             }
 
                             //get item sort values
-                            stream.Seek(ITEM_SORT_POS, SeekOrigin.Begin);
+                            stream.Seek(ITEM_SORT_POS + exeOffset, SeekOrigin.Begin);
                             for (i = 0; i < DataParser.MATERIA_START; ++i)
                             {
                                 ItemsSortedByName.Add((ushort)i, reader.ReadUInt16());
@@ -1690,7 +1763,7 @@ namespace FF7Scarlet.ExeEditor
                             byte[] temp;
                             int count = arr.Value.Count,
                                 length = arr.Value.Length;
-                            stream.Seek(arr.Key + arr.Value.Offset, SeekOrigin.Begin);
+                            stream.Seek(arr.Key + arr.Value.Offset + exeOffset, SeekOrigin.Begin);
                             if (arr.Key == BATTLE_ARENA_TEXT_POS)
                             {
                                 length = GetBattleArenaBlockLength();
@@ -1704,11 +1777,11 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //get AP multiplier
-                        stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
+                        stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset() + exeOffset, SeekOrigin.Begin);
                         APPriceMultiplier = reader.ReadByte();
 
                         //get Teioh's name
-                        stream.Seek(TEIOH_POS + GetChocoboRaceOffset(), SeekOrigin.Begin);
+                        stream.Seek(TEIOH_POS + GetChocoboRaceOffset() + exeOffset, SeekOrigin.Begin);
                         ChocoboNames[GetNumChocoboNames(Language)] = new FFText(reader.ReadBytes(GetChocoboNameLength()));
                     }
                     FilePath = path;
@@ -1734,6 +1807,9 @@ namespace FF7Scarlet.ExeEditor
                     using (var stream = new FileStream(path, FileMode.Open, FileAccess.Write))
                     using (var writer = new BinaryWriter(stream))
                     {
+                        //get overall offset for EXE data
+                        var exeOffset = GetEXEOffset();
+
                         //English-only stuff (for now)
                         if (Language == Language.English)
                         {
@@ -1742,7 +1818,7 @@ namespace FF7Scarlet.ExeEditor
                             {
                                 if (ModelMoveBitmasks[i] != null)
                                 {
-                                    stream.Seek(MODEL_CAN_WALK_POS[i], SeekOrigin.Begin);
+                                    stream.Seek(MODEL_CAN_WALK_POS[i] + exeOffset, SeekOrigin.Begin);
                                     var temp = new byte[4];
                                     ModelMoveBitmasks[i].CopyTo(temp, 0);
                                     writer.Write(temp);
@@ -1751,14 +1827,14 @@ namespace FF7Scarlet.ExeEditor
                                     {
                                         foreach (var p in MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS)
                                         {
-                                            stream.Seek(p, SeekOrigin.Begin);
+                                            stream.Seek(p + exeOffset, SeekOrigin.Begin);
                                             writer.Write(temp);
                                         }
                                     }
                                 }
                                 if (ModelDisembarkBitmasks[i] != null)
                                 {
-                                    stream.Seek(MODEL_CAN_DISEMBARK_POS[i], SeekOrigin.Begin);
+                                    stream.Seek(MODEL_CAN_DISEMBARK_POS[i] + exeOffset, SeekOrigin.Begin);
                                     var temp = new byte[4];
                                     ModelDisembarkBitmasks[i].CopyTo(temp, 0);
                                     writer.Write(temp);
@@ -1766,7 +1842,7 @@ namespace FF7Scarlet.ExeEditor
                             }
 
                             //write item sort list
-                            stream.Seek(ITEM_SORT_POS, SeekOrigin.Begin);
+                            stream.Seek(ITEM_SORT_POS + exeOffset, SeekOrigin.Begin);
                             writer.Write(WriteData(ITEM_SORT_POS, true));
                         }
 
@@ -1775,19 +1851,19 @@ namespace FF7Scarlet.ExeEditor
                         {
                             if (!str.Value.KernelSynced || (DataManager.KernelFilePathExists && DataManager.Kernel != null))
                             {
-                                stream.Seek(str.Key + str.Value.Offset, SeekOrigin.Begin);
+                                stream.Seek(str.Key + str.Value.Offset + exeOffset, SeekOrigin.Begin);
                                 writer.Write(WriteData(str.Key, true));
                             }
                         }
 
                         //write AP multiplier
-                        stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset(), SeekOrigin.Begin);
+                        stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset() + exeOffset, SeekOrigin.Begin);
                         writer.Write(APPriceMultiplier);
                         stream.Seek(AP_MASTER_OFFSET, SeekOrigin.Current);
                         writer.Write(APPriceMultiplier);
 
                         //write Teioh's name
-                        stream.Seek(TEIOH_POS - GetChocoboRaceOffset(), SeekOrigin.Begin);
+                        stream.Seek(TEIOH_POS - GetChocoboRaceOffset() + exeOffset, SeekOrigin.Begin);
                         writer.Write(ChocoboNames[GetNumChocoboNames(Language)].GetBytes(GetChocoboNameLength()));
                     }
                     IsUnedited = false;
@@ -1844,7 +1920,7 @@ namespace FF7Scarlet.ExeEditor
                         {
                             try
                             {
-                                pos = reader.ReadUInt32();
+                                pos = reader.ReadUInt32() - EXE_OFFSET;
                                 length = reader.ReadInt32();
                                 count = reader.ReadInt32();
                                 size = length * count;
@@ -1918,6 +1994,7 @@ namespace FF7Scarlet.ExeEditor
         //output a header for byte array data
         private byte[] GetDataHeader(long pos, int length, int count)
         {
+            pos += EXE_OFFSET;
             var output = new byte[12];
             Array.Copy(BitConverter.GetBytes(pos), output, 4);
             Array.Copy(BitConverter.GetBytes(length), 0, output, 4, 4);
@@ -2451,8 +2528,9 @@ namespace FF7Scarlet.ExeEditor
         }
 
         //private function to get the correct Hext offset for current position
-        private long GetHextPosition(long pos)
+        private static long GetHextPosition(long pos)
         {
+            pos += EXE_OFFSET;
             if (pos > DATA_SECTION_START)
             {
                 return pos + HEXT_OFFSET_DATA;

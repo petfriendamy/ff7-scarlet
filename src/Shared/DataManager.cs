@@ -91,39 +91,67 @@ namespace FF7Scarlet.Shared
 
         public static void SetFilePath(FileClass fileClass, string path, bool suppressRelativeCheck = false, bool isJPoriginal = false)
         {
-            if (ValidateFile(fileClass, path, isJPoriginal))
+            int isValid = ValidateFile(fileClass, path, isJPoriginal);
+            if (isValid == 1)
             {
                 if (fileClass != FileClass.VanillaExe && fileClass != FileClass.BattleLgp && !suppressRelativeCheck)
                 {
-                    var result = MessageBox.Show("Would you like to auto-detect the other files based on this one's location?",
-                        "Auto-Detect Files", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                    if (result == DialogResult.Yes)
+                    if (MessageDialog.AskYesNo("Would you like to auto-detect the other files based on this one's location?",
+                        "Auto-Detect Files"))
                     {
-                        string? exeDir = null, parentDir = null, kernelDir = null, battleDir = null, temp;
+                        string? exeDir = null,
+                            parentDir = null,
+                            kernelDir = null,
+                            battleDir = null,
+                            temp = null;
                         string code = "en";
-                        bool isSteam = true;
+                        EXEVersion version = EXEVersion.Steam2013;
 
                         //figure out relative file paths
                         if (fileClass == FileClass.Exe)
                         {
                             //check for version
                             code = ExeData.GetLanguageCode(path);
-                            isSteam = ExeData.IsSteamVersion(path);
+                            version = ExeData.GetEXEVersion(path);
 
                             //find kernel and scene files
                             exeDir = Directory.GetParent(path)?.FullName;
-                            if (exeDir != null)
+                            if (!string.IsNullOrEmpty(exeDir))
                             {
-                                kernelDir = exeDir + @"\data";
-                                battleDir = exeDir + @"\data";
-                                if (isSteam)
+                                if (version == EXEVersion.Steam2026) //completely different file structure
                                 {
-                                    kernelDir += @"\lang-" + code;
-                                    battleDir += @"\lang-" + code;
+                                    temp = Directory.GetParent(exeDir)?.FullName;
+                                    if (!string.IsNullOrEmpty(temp))
+                                    {
+                                        temp = Directory.GetParent(temp)?.FullName;
+                                        if (!string.IsNullOrEmpty(temp))
+                                        {
+                                            temp = Path.Combine(temp, "workingdir");
+                                            if (!string.IsNullOrEmpty(temp))
+                                            {
+                                                kernelDir = Path.Combine(temp, "data");
+                                                battleDir = Path.Combine(temp, "data");
+                                            }
+                                        }
+                                    }
                                 }
-                                kernelDir += @"\kernel";
-                                battleDir += @"\battle";
+                                else
+                                {
+                                    kernelDir = Path.Combine(exeDir, "data");
+                                    battleDir = Path.Combine(exeDir, "data");
+                                }
+                                
+                                //get the file paths
+                                if (!string.IsNullOrEmpty(kernelDir) && !string.IsNullOrEmpty(battleDir))
+                                {
+                                    if (version != EXEVersion.Original)
+                                    {
+                                        kernelDir = Path.Combine(kernelDir, $"lang-{code}");
+                                        battleDir = Path.Combine(battleDir, $"lang-{code}");
+                                    }
+                                    kernelDir = Path.Combine(kernelDir, "kernel");
+                                    battleDir = Path.Combine(battleDir, "battle");
+                                }
                             }
                         }
                         else //kernel/scene
@@ -131,93 +159,129 @@ namespace FF7Scarlet.Shared
                             if (fileClass == FileClass.Scene)
                             {
                                 battleDir = Path.GetDirectoryName(path);
-                                if (battleDir != null)
+                                if (!string.IsNullOrEmpty(battleDir))
                                 {
                                     parentDir = Directory.GetParent(battleDir)?.FullName;
-                                    if (parentDir != null)
+                                    if (!string.IsNullOrEmpty(parentDir))
                                     {
-                                        kernelDir = parentDir + @"\kernel";
+                                        kernelDir = Path.Combine(parentDir, "kernel");
                                     }
                                 }
                             }
                             else //kernel
                             {
                                 kernelDir = Path.GetDirectoryName(path);
-                                if (kernelDir != null)
+                                if (!string.IsNullOrEmpty(kernelDir))
                                 {
                                     parentDir = Directory.GetParent(kernelDir)?.FullName;
-                                    if (parentDir != null)
+                                    if (!string.IsNullOrEmpty(parentDir))
                                     {
-                                        battleDir = parentDir + @"\battle";
+                                        battleDir = Path.Combine(parentDir, "battle");
                                     }
                                 }
                             }
 
                             //get EXE directory
-                            if (parentDir != null)
+                            if (!string.IsNullOrEmpty(parentDir))
                             {
                                 //check for region code
-                                string? parentDirName = Path.GetDirectoryName(parentDir + '\\');
-                                if (parentDirName != null)
+                                var parentDirName = Path.GetDirectoryName(parentDir + '\\');
+                                if (!string.IsNullOrEmpty(parentDirName))
                                 {
                                     if (parentDirName.EndsWith("en")) { code = "en"; }
                                     else if (parentDirName.EndsWith("es")) { code = "es"; }
                                     else if (parentDirName.EndsWith("fr")) { code = "fr"; }
                                     else if (parentDirName.EndsWith("de")) { code = "de"; }
+                                    else if (parentDirName.EndsWith("ja")) { code = "ja"; }
                                     else //no region code, assume 1998 version
                                     {
-                                        isSteam = false;
+                                        version = EXEVersion.Original;
                                     }
                                 }
 
-                                if (isSteam) //one more directory for Steam
+                                temp = parentDir;
+                                if (version != EXEVersion.Original)
                                 {
-                                    temp = Directory.GetParent(parentDir)?.FullName;
+                                    temp = Directory.GetParent(temp)?.FullName;
+                                    if (!string.IsNullOrEmpty(temp))
+                                    {
+                                        //check if this is the 2026 version
+                                        var temp2 = Directory.GetParent(temp)?.FullName;
+                                        if (!string.IsNullOrEmpty(temp2) && temp2.EndsWith("workingdir"))
+                                        {
+                                            version = EXEVersion.Steam2026;
+                                            temp = Directory.GetParent(temp2)?.FullName;
+                                        }
+                                    }
                                 }
-                                else
+                                if (!string.IsNullOrEmpty(temp))
                                 {
-                                    temp = parentDir;
-                                }
-                                if (temp != null)
-                                {
-                                    exeDir = Directory.GetParent(temp)?.FullName;
+                                    if (version == EXEVersion.Steam2026)
+                                    {
+                                        exeDir = Path.Combine(temp, "resources", "ff7_1.02");
+                                    }
+                                    else
+                                    {
+                                        exeDir = Directory.GetParent(temp)?.FullName;
+                                    }
                                 }
                             }
                         }
 
                         //attempt to find the files in their directories
-                        if (exeDir != null && fileClass != FileClass.Exe)
+                        if (!string.IsNullOrEmpty(exeDir) && fileClass != FileClass.Exe)
                         {
-                            if (isSteam)
+                            switch (version)
                             {
-                                ValidateFile(FileClass.Exe, exeDir + @"\ff7_" + code + ".exe");
+                                case EXEVersion.Original:
+                                    temp = Path.Combine(exeDir, "FF7.exe");
+                                    break;
+                                case EXEVersion.Steam2013:
+                                    temp = Path.Combine(exeDir, $"ff7_{code}.exe");
+                                    break;
+                                case EXEVersion.Steam2026:
+                                    temp = Path.Combine(exeDir, $"ff7_{code}");
+                                    break;
                             }
-                            else
-                            {
-                                ValidateFile(FileClass.Exe, exeDir + @"\FF7.exe");
-                            }
+                            ValidateFile(FileClass.Exe, temp);
                         }
-                        if (kernelDir != null)
+                        if (!string.IsNullOrEmpty(kernelDir))
                         {
                             if (fileClass != FileClass.Kernel)
                             {
-                                ValidateFile(FileClass.Kernel, kernelDir + @"\KERNEL.BIN");
+                                temp = Path.Combine(kernelDir, "KERNEL.BIN");
+                                ValidateFile(FileClass.Kernel, temp);
                             }
                             if (fileClass != FileClass.Kernel2)
                             {
-                                ValidateFile(FileClass.Kernel2, kernelDir + @"\kernel2.bin");
+                                temp = Path.Combine(kernelDir, "kernel2.bin");
+                                ValidateFile(FileClass.Kernel2, temp);
                             }
                         }
-                        if (battleDir != null && fileClass != FileClass.Scene)
+                        if (!string.IsNullOrEmpty(battleDir) && fileClass != FileClass.Scene)
                         {
-                            ValidateFile(FileClass.Scene, battleDir + @"\scene.bin");
+                            temp = Path.Combine(battleDir, "scene.bin");
+                            ValidateFile(FileClass.Scene, temp);
                         }
                     }
                 }
             }
+            else if (isValid == 2) //unsupported EXE
+            {
+                MessageDialog.ShowError("This version of the EXE is unsupported.");
+            }
+            else if (isValid == 3) //2026 EXE
+            {
+                MessageDialog.ShowInfo(@"This is the wrong EXE. Redirecting to ff7\resources\ff7_1.02");
+                var newPath = ExeData.Get2026EXEPath(path);
+                if (!string.IsNullOrEmpty(newPath))
+                {
+                    SetFilePath(FileClass.Exe, newPath, suppressRelativeCheck);
+                }
+            }
             else
             {
-                throw new FileFormatException($"An error occurred while reading {Path.GetFileName(path)}.");
+                MessageDialog.ShowError("The file appears to be invalid.");
             }
         }
 
@@ -251,7 +315,7 @@ namespace FF7Scarlet.Shared
             }
         }
 
-        private static bool ValidateFile(FileClass fileClass, string path, bool isJPoriginal = false)
+        private static int ValidateFile(FileClass fileClass, string? path, bool isJPoriginal = false)
         {
             try
             {
@@ -261,7 +325,8 @@ namespace FF7Scarlet.Shared
                     {
                         case FileClass.Exe:
                         case FileClass.VanillaExe:
-                            if (ExeData.ValidateEXE(path, fileClass == FileClass.VanillaExe))
+                            int isValid = ExeData.ValidateEXE(path, fileClass == FileClass.VanillaExe);
+                            if (isValid == 1)
                             {
                                 if (fileClass == FileClass.VanillaExe)
                                 {
@@ -270,24 +335,23 @@ namespace FF7Scarlet.Shared
                                         VanillaExePath = path;
                                         LoadVanillaEXE();
                                     }
-                                    else { return false; }
+                                    else { return 0; }
                                 }
                                 else
                                 {
                                     ExeData = new ExeData(path);
                                     ExePath = path;
                                 }
-                                return true;
                             }
-                            return false;
+                            return isValid;
                         case FileClass.Kernel:
                             try
                             {
                                 Kernel = new Kernel(path);
                                 KernelPath = path;
-                                return true;
+                                return 1;
                             }
-                            catch { return false; }
+                            catch { return 0; }
                         case FileClass.Kernel2:
                             if (Kernel != null)
                             {
@@ -295,22 +359,22 @@ namespace FF7Scarlet.Shared
                                 //Kernel.ReloadBattleText();
                                 Kernel2Path = path;
                             }
-                            return true;
+                            return 1;
                         case FileClass.Scene:
                             try
                             {
                                 LoadSceneBin(path, isJPoriginal);
-                                return true;
+                                return 1;
                             }
-                            catch { return false; }
+                            catch { return 0; }
                         case FileClass.BattleLgp:
                             try
                             {
                                 BattleLgp = new BattleLgp(path);
                                 BattleLgpPath = path;
-                                return true;
+                                return 1;
                             }
-                            catch { return false; }
+                            catch { return 0; }
                     }
                 }
             }
@@ -318,7 +382,7 @@ namespace FF7Scarlet.Shared
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            return false;
+            return 0;
         }
 
         public static void LoadVanillaEXE()

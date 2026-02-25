@@ -62,18 +62,37 @@ namespace FF7Scarlet
             {
                 if (File.Exists(path))
                 {
-                    if (ExeData.ValidateEXE(path, true))
+                    int isValid = ExeData.ValidateEXE(path, true);
+                    switch (isValid)
                     {
-                        textBoxVanillaExe.Text = path;
+                        case 1:
+                            textBoxVanillaExe.Text = path;
+                            break;
+
+                        case 2: //unsupported
+                            MessageDialog.ShowError("This EXE is unsupported.");
+                            break;
+
+                        case 3: //2026 version
+                            var newPath = ExeData.Get2026EXEPath(path);
+                            if (!string.IsNullOrEmpty(newPath) && File.Exists(newPath))
+                            {
+
+                            }
+                            else
+                            {
+                                MessageDialog.ShowError("This EXE is unsupported. Could not locate a valid EXE.");
+                            }
+                            break;
+
+                        default:
+                            MessageDialog.ShowError("This doesn't seem to be a valid EXE. Please provide an unmodified English EXE.");
+                            break;
                     }
+                }
                 else
                 {
                     MessageDialog.ShowError("File not found.");
-                }
-                }
-                else
-                {
-                    MessageBox.Show("File not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
