@@ -2121,46 +2121,51 @@ namespace FF7Scarlet.SceneEditor
                 }
 
                 //display which scenes imported correctly
-                successfulImports.Sort();
                 if (successfulImports.Count == 0)
                 {
                     MessageDialog.ShowError("Failed to import file(s).");
                 }
                 else
                 {
-                    string output = "Successfully imported the following file(s): ";
-                    int i;
-                    for (i = 0; i < successfulImports.Count; ++i)
+                    StringBuilder output = new StringBuilder("Successfully imported the following file(s): ");
+                    var imports =
+                        (from i in successfulImports
+                         orderby i.Scene, i.ID
+                         select i).ToArray();
+                    for (int i = 0; i < imports.Length; ++i)
                     {
-                        if (i == successfulImports.Count - 1)
+                        if (i == imports.Length - 1)
                         {
-                            output += successfulImports[i].Scene.ToString();
+                            output.Append(imports[i].Scene.ToString());
                         }
                         else
                         {
-                            output += $"{successfulImports[i].Scene}, ";
+                            output.Append($"{imports[i].Scene}, ");
                         }
                     }
 
                     //if any scenes failed to import, list those
                     if (unsuccessfulImports.Count > 0)
                     {
-                        unsuccessfulImports.Sort();
-                        output += "\n\nThe following file(s) failed to import: ";
-                        for (i = 0; i < unsuccessfulImports.Count; ++i)
+                        var failed =
+                            (from i in unsuccessfulImports
+                             orderby i.Scene, i.ID
+                             select i).ToArray();
+                        output.Append("\n\nThe following file(s) failed to import: ");
+                        for (int i = 0; i < failed.Length; ++i)
                         {
-                            if (i == unsuccessfulImports.Count - 1)
+                            if (i == failed.Length - 1)
                             {
-                                output += unsuccessfulImports[i].ToString();
+                                output.Append(failed[i].ToString());
                             }
                             else
                             {
-                                output += $"{unsuccessfulImports[i]}, ";
+                                output.Append($"{failed[i]}, ");
                             }
                         }
                     }
 
-                    MessageDialog.ShowInfo(output, "Success");
+                    MessageDialog.ShowInfo(output.ToString(), "Success");
                     comboBoxSceneList.SelectedIndex = successfulImports[0].Scene;
                     if (SelectedScene != null)
                     {
