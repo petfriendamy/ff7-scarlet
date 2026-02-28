@@ -229,6 +229,22 @@ namespace FF7Scarlet.KernelEditor
             get { return listBoxInitCharacters.SelectedIndex; }
         }
 
+        /// <summary>
+        /// The index of the currently selected character (for A.I. scripts). Returns -1 if none is selected.
+        /// </summary>
+        private int SelectedScriptCharacter
+        {
+            get { return listBoxCharacterAI.SelectedIndex; }
+        }
+
+        /// <summary>
+        /// The index of the currently selected character script. Returns -1 if none is selected.
+        /// </summary>
+        private int SelectedScript
+        {
+            get { return listBoxCharacterScripts.SelectedIndex; }
+        }
+
         private Series MainCurveMin
         {
             get { return chartMainCurve.Series[0]; }
@@ -1422,10 +1438,9 @@ namespace FF7Scarlet.KernelEditor
         /// <summary>
         /// Reload the script list for the selected character
         /// </summary>
-        /// <param name="selectedChar">The index of the selected character</param>
-        private void UpdateCharacterAIScripts(int selectedChar)
+        private void UpdateCharacterAIScripts()
         {
-            if (selectedChar >= 0 && selectedChar < Kernel.AI_BLOCK_COUNT)
+            if (SelectedScriptCharacter >= 0 && SelectedScriptCharacter < Kernel.AI_BLOCK_COUNT)
             {
                 try
                 {
@@ -1436,7 +1451,7 @@ namespace FF7Scarlet.KernelEditor
                         groupBoxCharacterScripts.Enabled = true;
                         scriptControlCharacterAI.Enabled = true;
                     }
-                    var chara = kernel.CharacterAI[selectedChar];
+                    var chara = kernel.CharacterAI[SelectedScriptCharacter];
                     for (int i = 0; i < Script.SCRIPT_COUNT; ++i)
                     {
                         listBoxCharacterScripts.Items[i] = SCRIPT_LIST[i];
@@ -1449,11 +1464,7 @@ namespace FF7Scarlet.KernelEditor
                             }
                         }
                     }
-                    //select first script
-                    if (listBoxCharacterScripts.SelectedIndex == -1)
-                    {
-                        listBoxCharacterScripts.SelectedIndex = 0;
-                    }
+                    scriptControlCharacterAI.SelectedScriptIndex = SelectedScript;
                 }
                 catch (FormatException ex)
                 {
@@ -1587,7 +1598,7 @@ namespace FF7Scarlet.KernelEditor
         /// </summary>
         private void UpdateBattleAndGrowthData()
         {
-            UpdateCharacterAIScripts(SelectedCharacterIndex);
+            UpdateCharacterAIScripts();
             rngTableControl.SetValues(kernel.BattleAndGrowthData.RNGTable);
 
             //other stuff
@@ -2913,7 +2924,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading)
             {
-                UpdateCharacterAIScripts(listBoxCharacterAI.SelectedIndex);
+                UpdateCharacterAIScripts();
             }
         }
 
@@ -2940,7 +2951,7 @@ namespace FF7Scarlet.KernelEditor
 
         private void scriptControlCharacterAI_DataChanged(object? sender, EventArgs e)
         {
-            UpdateCharacterAIScripts(listBoxCharacterAI.SelectedIndex);
+            UpdateCharacterAIScripts();
             SetUnsaved(true);
         }
 

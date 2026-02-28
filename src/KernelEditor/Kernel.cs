@@ -76,75 +76,79 @@ namespace FF7Scarlet.KernelEditor
 
         private void ParseTextSectionStrings(KernelSection section, byte[] data)
         {
-            int length = GetCount(section);
-            var strings = new FFText[length];
-
-            using (var ms = new MemoryStream(data))
-            using (var reader = new BinaryReader(ms))
+            var textSection = GetTextSection(section);
+            if (textSection != null)
             {
-                //get headers
-                var headers = new ushort[length];
-                for (int i = 0; i < length; ++i)
-                {
-                    headers[i] = reader.ReadUInt16();
-                }
-                ms.Seek(headers[0], SeekOrigin.Begin);
+                var strings = textSection.Strings;
+                int length = strings.Length;
 
-                //read each line
-                var bytes = new List<byte>();
-                byte b;
-                int l;
-                for (int i = 0; i < length; ++i)
+                using (var ms = new MemoryStream(data))
+                using (var reader = new BinaryReader(ms))
                 {
-                    if (i == length - 1)
+                    //get headers
+                    var headers = new ushort[length];
+                    for (int i = 0; i < length; ++i)
                     {
-                        l = data.Length - headers[i];
+                        headers[i] = reader.ReadUInt16();
                     }
-                    else
+                    ms.Seek(headers[0], SeekOrigin.Begin);
+
+                    //read each line
+                    var bytes = new List<byte>();
+                    byte b;
+                    int l;
+                    for (int i = 0; i < length; ++i)
                     {
-                        l = headers[i + 1] - headers[i];
-                    }
-                    for (int j = 0; j < l; ++j)
-                    {
-                        b = reader.ReadByte();
-                        // This is an encoding technique designed to make the raw data smaller. It is based
-                        // on the LZS compression method, but optimized for smaller files with fewer large
-                        // similar blocks. A byte following this value will tell the game's memory the location
-                        // of, and how much, text to read.
-                        // More info at: http://wiki.ffrtt.ru/index.php/FF7/FF_Text
-                        if (b == 0xF9)
+                        if (i == length - 1)
                         {
-                            long currPos = ms.Position;
-                            var args = reader.ReadByte();
-                            // The args byte is split into length, and offset. The first two bits are
-                            // the length of data, and the remaining 6 are how far back to get it from.
-                            // Length needs further calculation (L * 2 + 4) to provide the correct value.
-                            var lookupLength = ((args & 0b11000000) >> 6) * 2 + 4;
-                            var lookupOffset = -(args & 0b00111111);
-
-                            ms.Seek(lookupOffset - 3, SeekOrigin.Current);
-                            for (int n = 0; n < lookupLength; ++n)
-                            {
-                                b = reader.ReadByte();
-                                if (b != 0xFF)
-                                {
-                                    bytes.Add(b);
-                                }
-                            }
-                            ms.Seek(currPos + 1, SeekOrigin.Begin);
-                            j++;
+                            l = data.Length - headers[i];
                         }
                         else
                         {
-                            bytes.Add(b);
+                            l = headers[i + 1] - headers[i];
                         }
+                        for (int j = 0; j < l; ++j)
+                        {
+                            b = reader.ReadByte();
+                            // This is an encoding technique designed to make the raw data smaller. It is based
+                            // on the LZS compression method, but optimized for smaller files with fewer large
+                            // similar blocks. A byte following this value will tell the game's memory the location
+                            // of, and how much, text to read.
+                            // More info at: http://wiki.ffrtt.ru/index.php/FF7/FF_Text
+                            if (b == 0xF9)
+                            {
+                                long currPos = ms.Position;
+                                var args = reader.ReadByte();
+                                // The args byte is split into length, and offset. The first two bits are
+                                // the length of data, and the remaining 6 are how far back to get it from.
+                                // Length needs further calculation (L * 2 + 4) to provide the correct value.
+                                var lookupLength = ((args & 0b11000000) >> 6) * 2 + 4;
+                                var lookupOffset = -(args & 0b00111111);
+
+                                ms.Seek(lookupOffset - 3, SeekOrigin.Current);
+                                for (int n = 0; n < lookupLength; ++n)
+                                {
+                                    b = reader.ReadByte();
+                                    if (b != 0xFF)
+                                    {
+                                        bytes.Add(b);
+                                    }
+                                }
+                                ms.Seek(currPos + 1, SeekOrigin.Begin);
+                                j++;
+                            }
+                            else
+                            {
+                                bytes.Add(b);
+                            }
+                        }
+                        if (bytes.Count == 0 || bytes.Last() != 0xFF) //make sure there's a null terminator
+                        {
+                            bytes.Add(0xFF);
+                        }
+                        strings[i] = new FFText(bytes.ToArray());
+                        bytes.Clear();
                     }
-                    if (bytes.Count == 0 || bytes.Last() != 0xFF) //make sure there's a null terminator
-                    {
-                        bytes.Add(0xFF);
-                    }
-                    strings[i] = new FFText(bytes.ToArray());
-                    bytes.Clear();
                 }
             }
         }
@@ -1156,6 +1160,7 @@ namespace FF7Scarlet.KernelEditor
                             byte[] lookup = GetLookupTable(),
                                 initData = GetSectionRawData(KernelSection.InitData);
 
+                            ScriptsLoaded = false;
                             BattleAndGrowthData = new BattleAndGrowthData(fileData);
                             CharacterData = new CharacterData(initData, fileData);
                             UpdateLookupTable(lookup);
