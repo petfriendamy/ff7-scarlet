@@ -1565,6 +1565,10 @@ namespace FF7Scarlet.KernelEditor
             bool wasAlreadyLoading = loading;
             loading = true;
 
+            if (SelectedCharacter != null)
+            {
+                textBoxCharacterName.Text = SelectedCharacter.Name.ToString(DisplayJapaneseText);
+            }
             PopulateInventoryListBoxes();
             if (kernel.InitialData.Party1 == 0xFF) { comboBoxParty1.SelectedIndex = 0; }
             else { comboBoxParty1.SelectedIndex = kernel.InitialData.Party1 + 1; }

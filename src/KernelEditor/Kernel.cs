@@ -1139,55 +1139,62 @@ namespace FF7Scarlet.KernelEditor
             {
                 try
                 {
+                    var fileData = File.ReadAllBytes(filePath);
                     switch (section)
                     {
                         case KernelSection.CommandData:
-                            CommandData = new CommandData(File.ReadAllBytes(filePath),
+                            CommandData = new CommandData(fileData,
                                 CommandNames.Strings, CommandDescriptions.Strings);
                             break;
 
                         case KernelSection.AttackData:
-                            AttackData = new AttackData(File.ReadAllBytes(filePath),
+                            AttackData = new AttackData(fileData,
                                 MagicNames.Strings, MagicDescriptions.Strings);
                             break;
 
                         case KernelSection.BattleAndGrowthData:
-                            var temp = GetLookupTable();
-                            BattleAndGrowthData = new BattleAndGrowthData(File.ReadAllBytes(filePath));
-                            UpdateLookupTable(temp);
+                            byte[] lookup = GetLookupTable(),
+                                initData = GetSectionRawData(KernelSection.InitData);
+
+                            BattleAndGrowthData = new BattleAndGrowthData(fileData);
+                            CharacterData = new CharacterData(initData, fileData);
+                            UpdateLookupTable(lookup);
                             break;
 
                         case KernelSection.InitData:
-                            InitialData = new InitialData(File.ReadAllBytes(filePath));
+                            var growthData = GetSectionRawData(KernelSection.BattleAndGrowthData);
+
+                            InitialData = new InitialData(fileData);
+                            CharacterData = new CharacterData(fileData, growthData);
                             break;
 
                         case KernelSection.ItemData:
-                            ItemData = new ItemData(File.ReadAllBytes(filePath),
+                            ItemData = new ItemData(fileData,
                                 ItemNames.Strings, ItemDescriptions.Strings);
                             break;
 
                         case KernelSection.WeaponData:
-                            WeaponData = new WeaponData(File.ReadAllBytes(filePath),
+                            WeaponData = new WeaponData(fileData,
                                 WeaponNames.Strings, WeaponDescriptions.Strings);
                             break;
 
                         case KernelSection.ArmorData:
-                            ArmorData = new ArmorData(File.ReadAllBytes(filePath),
+                            ArmorData = new ArmorData(fileData,
                                 ArmorNames.Strings, ArmorDescriptions.Strings);
                             break;
 
                         case KernelSection.AccessoryData:
-                            AccessoryData = new AccessoryData(File.ReadAllBytes(filePath),
+                            AccessoryData = new AccessoryData(fileData,
                                 AccessoryNames.Strings, AccessoryDescriptions.Strings);
                             break;
 
                         case KernelSection.MateriaData:
-                            MateriaData = new MateriaData(File.ReadAllBytes(filePath),
+                            MateriaData = new MateriaData(fileData,
                                 MateriaNames.Strings, MateriaDescriptions.Strings);
                             break;
 
                         default:
-                            ParseTextSectionStrings(section, File.ReadAllBytes(filePath));
+                            ParseTextSectionStrings(section, fileData);
                             break;
                     }
                     return true;
