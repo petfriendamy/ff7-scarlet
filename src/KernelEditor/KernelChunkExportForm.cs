@@ -77,28 +77,35 @@ namespace FF7Scarlet.KernelEditor
             }
             else
             {
-                bool test = false;
-                foreach (var cb in checkBoxes)
+                try
                 {
-                    if (cb.Checked) { test = true; }
-                }
-                if (!test)
-                {
-                    MessageBox.Show("No chunks selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                else //output the files
-                {
-                    for (int i = 0; i < Kernel.SECTION_COUNT; ++i)
+                    bool test = false;
+                    foreach (var cb in checkBoxes)
                     {
-                        if (checkBoxes[i].Checked)
-                        {
-                            string path = textBoxPath.Text + $"\\kernel.bin.chunk.{i + 1}";
-                            File.WriteAllBytes(path, kernel.GetSectionRawData((KernelSection)(i + 1), true));
-                        }
+                        if (cb.Checked) { test = true; }
                     }
-                    MessageBox.Show("Chunks exported successfully.", "Done!", MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    Close();
+                    if (!test)
+                    {
+                        MessageBox.Show("No chunks selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else //output the files
+                    {
+                        for (int i = 0; i < Kernel.SECTION_COUNT; ++i)
+                        {
+                            if (checkBoxes[i].Checked)
+                            {
+                                string path = textBoxPath.Text + $"\\kernel.bin.chunk.{i + 1}";
+                                File.WriteAllBytes(path, kernel.GetSectionRawData((KernelSection)(i + 1), true));
+                            }
+                        }
+                        MessageBox.Show("Chunks exported successfully.", "Done!", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, "Export");
                 }
             }
         }

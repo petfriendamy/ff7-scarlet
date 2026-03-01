@@ -1416,15 +1416,18 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 if (ScriptsLoaded) //don't update scripts if not loaded
                                 {
+                                    i = 0;
+                                    foreach (var o in characterAIoffsets)
+                                    {
+                                        var temp = BitConverter.GetBytes(o);
+                                        Array.Copy(temp, 0, CharacterData.CharacterAIBlock, i, 2);
+                                        i += 2;
+                                    }
                                     Array.Copy(AIContainer.GetGroupedScriptBlock(AI_BLOCK_COUNT, AI_BLOCK_SIZE,
-                                        CharacterAI, ref characterAIoffsets), CharacterData.CharacterAIBlock,
-                                        AI_BLOCK_SIZE);
+                                        CharacterAI, ref characterAIoffsets), 0, CharacterData.CharacterAIBlock,
+                                        AI_BLOCK_COUNT * 2, AI_BLOCK_SIZE);
                                 }
-                                foreach (var o in characterAIoffsets)
-                                {
-                                    writer.Write(BitConverter.GetBytes(o));
-                                }
-                                writer.Write(CharacterData.CharacterAIBlock, AI_BLOCK_COUNT * 2, AI_BLOCK_SIZE);
+                                writer.Write(CharacterData.CharacterAIBlock);
                             }
                             catch (ScriptTooLongException)
                             {

@@ -210,7 +210,6 @@ namespace FF7Scarlet.AIEditor
                             case ParameterTypes.Debug:
                                 data[1] = PopCount;
                                 Array.Copy(Parameter, 0, data, 2, Parameter.Length);
-                                data[data.Length - 1] = 0;
                                 break;
                             default:
                                 Array.Copy(Parameter, 0, data, 1, Parameter.Length);
@@ -262,7 +261,7 @@ namespace FF7Scarlet.AIEditor
                         if (Parameter != null) { length += Parameter.Length; }
                         break;
                     case ParameterTypes.Debug:
-                        if (Parameter != null) { length += Parameter.Length + 1; }
+                        if (Parameter != null) { length += Parameter.Length + 2; } //pop count + terminator
                         break;
                 }
             }
