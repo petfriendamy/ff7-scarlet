@@ -209,7 +209,7 @@ namespace FF7Scarlet.SceneEditor
                         path = save.FileName;
                     }
 
-                    if (result == DialogResult.OK && Path.Exists(path))
+                    if (result == DialogResult.OK)
                     {
                         Processing = true;
                         int finalCount = await ExportChunk(scenes, path, start, count);

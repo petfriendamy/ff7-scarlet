@@ -302,6 +302,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBox1.Controls.Add(buttonExportAllEnemyAI);
             groupBox1.Controls.Add(buttonExportSelectedEnemyAI);
             groupBox1.Location = new Point(6, 124);
@@ -333,6 +334,7 @@
             // 
             // groupBoxAttacks
             // 
+            groupBoxAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxAttacks.Controls.Add(buttonExportAllAttacks);
             groupBoxAttacks.Controls.Add(buttonExportSelectedAttacks);
             groupBoxAttacks.Location = new Point(6, 65);
@@ -364,6 +366,7 @@
             // 
             // groupBoxEnemies
             // 
+            groupBoxEnemies.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxEnemies.Controls.Add(buttonExportAllEnemies);
             groupBoxEnemies.Controls.Add(buttonExportSelectedEnemies);
             groupBoxEnemies.Location = new Point(6, 6);
