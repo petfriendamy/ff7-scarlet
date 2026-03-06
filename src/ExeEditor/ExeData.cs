@@ -165,6 +165,7 @@ namespace FF7Scarlet.ExeEditor
         private static readonly long[] MODEL_CAN_WALK_POS = { MODELS_POS, 0, 0x34BF83, 0x34C0CC, 0x34C17E, 0x34C1C9, 0x568040, 0x568044, 0x568048, 0x56804C, 0x568050, 0x34B7DB };
         private static readonly long[] MODEL_CAN_DISEMBARK_POS = { 0, 0x34C05F, 0x34BFC1, 0x34C118, 0x34C14C, 0x34C19A, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0 };
         private static readonly long[] MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS = { 0x34C0F3, 0x34C12D };
+        public bool LanguageAllowed => Language == Language.English || Language == Language.Japanese;
 
         //properties
         private Dictionary<long, ArrayInfo> ArrayInfoList { get; }
@@ -289,7 +290,12 @@ namespace FF7Scarlet.ExeEditor
 
         private int GetEXEOffset()
         {
-            if (Version == EXEVersion.Steam2026)
+            return GetEXEOffset(Version, Language);
+        }
+
+        private static int GetEXEOffset(EXEVersion version, Language language)
+        {
+            if (version == EXEVersion.Steam2026 && language == Language.English)
                 return EXE_OFFSET_2026;
             else
                 return EXE_OFFSET;
@@ -992,7 +998,10 @@ namespace FF7Scarlet.ExeEditor
         {
             if (File.Exists(path))
             {
-                int hashCheck = HashCheck(path);
+                int hashCheck = 1;
+                var language = GetLanguage(path);
+                if (language == Language.English) { hashCheck = HashCheck(path); }
+
                 if (hashCheck > 1) //unsupported EXE
                 {
                     return hashCheck;
@@ -1007,10 +1016,8 @@ namespace FF7Scarlet.ExeEditor
                     using (var reader = new BinaryReader(stream))
                     {
                         //check if header is correct
-                        if (Path.GetExtension(path).ToLower() == ".exe")
-                            stream.Seek(EXE_OFFSET, SeekOrigin.Begin);
-                        else
-                            stream.Seek(EXE_OFFSET_2026, SeekOrigin.Begin);
+                        var version = GetEXEVersion(path);
+                        stream.Seek(GetEXEOffset(version, language), SeekOrigin.Begin);
 
                         for (int i = 0; i < EXE_HEADER.Length; ++i)
                         {
@@ -1731,8 +1738,8 @@ namespace FF7Scarlet.ExeEditor
                         //get overall offset for EXE data
                         var exeOffset = GetEXEOffset();
 
-                        //English only stuff (for now)
-                        if (Language == Language.English)
+                        //language-specific stuff (for now)
+                        if (LanguageAllowed)
                         {
                             //get walkability data
                             for (i = 0; i < NUM_WALKABILITY_MODELS; i++)
@@ -1814,8 +1821,8 @@ namespace FF7Scarlet.ExeEditor
                         //get overall offset for EXE data
                         var exeOffset = GetEXEOffset();
 
-                        //English-only stuff (for now)
-                        if (Language == Language.English)
+                        //language-specific stuff (for now)
+                        if (LanguageAllowed)
                         {
                             //write walkability data
                             for (int i = 0; i < NUM_WALKABILITY_MODELS; i++)
@@ -2016,7 +2023,7 @@ namespace FF7Scarlet.ExeEditor
             output.AddRange(new FFText("SCARLET").GetBytes());
             output.Add((byte)Language);
 
-            if (Language == Language.English)
+            if (LanguageAllowed)
             {
                 //write walkability data
                 output.AddRange(GetDataHeader(MODEL_CAN_WALK_POS[0], 8, NUM_WALKABILITY_MODELS));
@@ -2305,8 +2312,8 @@ namespace FF7Scarlet.ExeEditor
                         stream.Seek(LimitWrong[i].ToString().Length + 1, SeekOrigin.Current);
                     }
 
-                    //English-only stuff (for now)
-                    if (Language == Language.English)
+                    //lanugage-specific stuff (for now)
+                    if (LanguageAllowed)
                     {
                         //read item sort list
                         for (i = 0; i < DataParser.MATERIA_START; ++i)
@@ -2613,7 +2620,7 @@ namespace FF7Scarlet.ExeEditor
         {
             try
             {
-                if (Language != Language.English)
+                if (original.Language != Language.English)
                 {
                     throw new NotImplementedException("Currently unavailable for this language.");
                 }

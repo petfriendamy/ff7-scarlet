@@ -830,7 +830,7 @@ namespace FF7Scarlet.KernelEditor
                 }
                 else
                 {
-                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv)} x{inv.Amount}");
+                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv, DisplayJapaneseText)} x{inv.Amount}");
                 }
             }
             listBoxInitInventory.SelectedIndex = i;
@@ -2013,7 +2013,7 @@ namespace FF7Scarlet.KernelEditor
 
                     DataParser.SetItem(item, type, index);
                     item.Amount = amount;
-                    var name = kernel.GetInventoryItemName(item);
+                    var name = kernel.GetInventoryItemName(item, DisplayJapaneseText);
                     listBoxInitInventory.Items[selectedItem] = $"{name} x{amount}";
                 }
                 loading = false;

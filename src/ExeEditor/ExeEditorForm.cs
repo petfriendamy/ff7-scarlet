@@ -8,7 +8,6 @@ using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Text;
-using System.Xml.Linq;
 
 #pragma warning disable CA1416
 namespace FF7Scarlet.ExeEditor
@@ -19,7 +18,6 @@ namespace FF7Scarlet.ExeEditor
 
         private readonly string WINDOW_TITLE = $"{Application.ProductName} v{Application.ProductVersion} - EXE Editor";
         private ExeData editor;
-        private List<StatusChangeType> statusChangeTypes = new();
         private TextBox[] nameTextBoxes;
         private NumericUpDown[] materiaNumerics;
         private ComboBox[] ShopItemList;
@@ -35,6 +33,8 @@ namespace FF7Scarlet.ExeEditor
         private readonly WaveFormat waveFormat;
         private readonly SoundBufferDescription bufferDesc, soundDesc;
         private readonly DataStream part1, part2;
+
+        private bool DisplayJapaneseText => editor.Language == Language.Japanese;
 
         private Character? SelectedCharacter
         {
@@ -142,9 +142,9 @@ namespace FF7Scarlet.ExeEditor
             for (i = 0; i < ExeData.NUM_LIMITS; ++i)
             {
                 string name = $"(Limit break #{i + 1})";
-                if (DataManager.BothKernelFilePathsExist && DataManager.Kernel != null)
+                if (DataManager.Kernel != null)
                 {
-                    name = DataManager.Kernel.GetLimitName(i);
+                    name = DataManager.Kernel.GetLimitName(i).ToString(DisplayJapaneseText);
                 }
                 listBoxLimits.Items.Add(name);
             }
@@ -179,8 +179,8 @@ namespace FF7Scarlet.ExeEditor
                 listBoxModels.Items.Add(name);
             }
 
-            //English-only stuff
-            if (editor.Language != Language.English)
+            //language-specific stuff
+            if (!editor.LanguageAllowed)
             {
                 foreach (Control c in tabPageWorldMapWalkability.Controls)
                 {
@@ -199,7 +199,7 @@ namespace FF7Scarlet.ExeEditor
                 //items
                 foreach (var item in DataManager.Kernel.ItemData.Items)
                 {
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(item));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(item), DisplayJapaneseText);
                     foreach (var shop in ShopItemList)
                     {
                         shop.Items.Add(name);
@@ -211,7 +211,7 @@ namespace FF7Scarlet.ExeEditor
                 //weapons
                 foreach (var weapon in DataManager.Kernel.WeaponData.Weapons)
                 {
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(weapon));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(weapon), DisplayJapaneseText);
                     comboBoxCharacterWeapon.Items.Add(name);
                     foreach (var shop in ShopItemList)
                     {
@@ -223,7 +223,7 @@ namespace FF7Scarlet.ExeEditor
                 //armors
                 foreach (var armor in DataManager.Kernel.ArmorData.Armors)
                 {
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(armor));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(armor), DisplayJapaneseText);
                     comboBoxCharacterArmor.Items.Add(name);
                     foreach (var shop in ShopItemList)
                     {
@@ -236,7 +236,7 @@ namespace FF7Scarlet.ExeEditor
                 comboBoxCharacterAccessory.Items.Add("None");
                 foreach (var accessory in DataManager.Kernel.AccessoryData.Accessories)
                 {
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(accessory));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(accessory), DisplayJapaneseText);
                     comboBoxCharacterAccessory.Items.Add(name);
                     foreach (var shop in ShopItemList)
                     {
@@ -248,7 +248,7 @@ namespace FF7Scarlet.ExeEditor
                 //materia
                 foreach (var materia in DataManager.Kernel.MateriaData.Materias)
                 {
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(materia));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(materia), DisplayJapaneseText);
                     foreach (var shop in ShopItemList)
                     {
                         shop.Items.Add(name);
@@ -355,55 +355,55 @@ namespace FF7Scarlet.ExeEditor
             //set character names
             for (i = 0; i < 10; ++i)
             {
-                nameTextBoxes[i].Text = editor.CharacterNames[i].ToString();
+                nameTextBoxes[i].Text = editor.CharacterNames[i].ToString(DisplayJapaneseText);
             }
 
             //set main menu text
             for (i = 0; i < ExeData.NUM_MENU_TEXTS; ++i)
             {
-                listBoxMainMenu.Items.Add(editor.MainMenuTexts[i].ToString());
+                listBoxMainMenu.Items.Add(editor.MainMenuTexts[i].ToString(DisplayJapaneseText));
             }
             //set item menu text
             for (i = 0; i < ExeData.NUM_ITEM_MENU_TEXTS; ++i)
             {
-                listBoxItemMenu.Items.Add(editor.ItemMenuTexts[i].ToString());
+                listBoxItemMenu.Items.Add(editor.ItemMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set magic menu text
             for (i = 0; i < ExeData.NUM_MAGIC_MENU_TEXTS; ++i)
             {
-                listBoxMagicMenu.Items.Add(editor.MagicMenuTexts[i].ToString());
+                listBoxMagicMenu.Items.Add(editor.MagicMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set materia menu text
             for (i = 0; i < ExeData.NUM_MATERIA_MENU_TEXTS; ++i)
             {
-                listBoxMateriaMenu.Items.Add(editor.MateriaMenuTexts[i].ToString());
+                listBoxMateriaMenu.Items.Add(editor.MateriaMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set unequip text
             for (i = 0; i < ExeData.NUM_UNEQUIP_TEXTS; ++i)
             {
-                listBoxUnequipText.Items.Add(editor.UnequipTexts[i].ToString());
+                listBoxUnequipText.Items.Add(editor.UnequipTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set equip menu text
             for (i = 0; i < ExeData.NUM_EQUIP_MENU_TEXTS; ++i)
             {
-                listBoxEquipMenu.Items.Add(editor.EquipMenuTexts[i].ToString());
+                listBoxEquipMenu.Items.Add(editor.EquipMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set status menu text
             for (i = 0; i < ExeData.NUM_STATUS_MENU_TEXTS; ++i)
             {
-                listBoxStatusMenuText.Items.Add(editor.StatusMenuTexts[i].ToString());
+                listBoxStatusMenuText.Items.Add(editor.StatusMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set status effects
             for (i = 0; i < ExeData.NUM_STATUS_EFFECTS; ++i)
             {
-                string se = editor.StatusEffectsBattle[i].ToString(),
-                    m = editor.StatusEffectsMenu[i].ToString();
+                string se = editor.StatusEffectsBattle[i].ToString(DisplayJapaneseText),
+                    m = editor.StatusEffectsMenu[i].ToString(DisplayJapaneseText);
                 if (!string.IsNullOrEmpty(m))
                 {
                     se = m;
@@ -414,69 +414,69 @@ namespace FF7Scarlet.ExeEditor
             //set element names
             for (i = 0; i < ExeData.NUM_ELEMENTS; ++i)
             {
-                listBoxElements.Items.Add(editor.ElementNames[i].ToString());
+                listBoxElements.Items.Add(editor.ElementNames[i].ToString(DisplayJapaneseText));
             }
 
             //set limit menu text
             for (i = 0; i < ExeData.NUM_LIMIT_MENU_TEXTS; ++i)
             {
-                listBoxLimitMenu.Items.Add(editor.LimitMenuTexts[i].ToString());
+                listBoxLimitMenu.Items.Add(editor.LimitMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set config menu text
             for (i = 0; i < ExeData.NUM_CONFIG_MENU_TEXTS; ++i)
             {
-                listBoxConfigMenu.Items.Add(editor.ConfigMenuTexts[i].ToString());
+                listBoxConfigMenu.Items.Add(editor.ConfigMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set save menu text
             for (i = 0; i < ExeData.NUM_SAVE_MENU_TEXTS; ++i)
             {
-                listBoxSaveMenu.Items.Add(editor.SaveMenuTexts[i].ToString());
+                listBoxSaveMenu.Items.Add(editor.SaveMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set quit menu text
             for (i = 0; i < ExeData.NUM_QUIT_TEXTS_1 + ExeData.NUM_QUIT_TEXTS_2; ++i)
             {
-                listBoxQuitTexts.Items.Add(editor.QuitMenuTexts[i].ToString());
+                listBoxQuitTexts.Items.Add(editor.QuitMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set shop names
             foreach (var s in editor.ShopNames)
             {
-                comboBoxShopType.Items.Add(s.ToString());
-                listBoxShopNames.Items.Add(s.ToString());
+                comboBoxShopType.Items.Add(s.ToString(DisplayJapaneseText));
+                listBoxShopNames.Items.Add(s.ToString(DisplayJapaneseText));
             }
             comboBoxShopType.SelectedIndex = shopType;
 
             //set shop text
             foreach (var s in editor.ShopText)
             {
-                listBoxShopText.Items.Add(s.ToString());
+                listBoxShopText.Items.Add(s.ToString(DisplayJapaneseText));
             }
 
             //set battle arena text
             for (i = 0; i < ExeData.GetNumBattleArenaTexts(); ++i)
             {
-                listBoxBattleArena.Items.Add(editor.BattleArenaTexts[i].ToString());
+                listBoxBattleArena.Items.Add(editor.BattleArenaTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set Bizarro menu text
             for (i = 0; i < ExeData.NUM_BIZARRO_MENU_TEXTS; ++i)
             {
-                listBoxBizarroMenu.Items.Add(editor.BizarroMenuTexts[i].ToString());
+                listBoxBizarroMenu.Items.Add(editor.BizarroMenuTexts[i].ToString(DisplayJapaneseText));
             }
 
             //set chocobo names
             foreach (var c in editor.ChocoboNames)
             {
-                listBoxChocoboNames.Items.Add(c.ToString());
+                listBoxChocoboNames.Items.Add(c.ToString(DisplayJapaneseText));
             }
 
             //set chocobo race prizes
             for (i = 0; i < ExeData.NUM_CHOCOBO_RACE_ITEMS; ++i)
             {
-                listBoxChocoboRacePrizes.Items.Add(editor.ChocoboRacePrizes[i].ToString());
+                listBoxChocoboRacePrizes.Items.Add(editor.ChocoboRacePrizes[i].ToString(DisplayJapaneseText));
             }
 
             //set L4 text
@@ -501,25 +501,25 @@ namespace FF7Scarlet.ExeEditor
                 for (i = 0; i < DataParser.ITEM_COUNT; ++i)
                 {
                     var item = DataManager.Kernel.ItemData.Items[i];
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(item));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(item), DisplayJapaneseText);
                     listBoxItemPrices.Items.Add($"{name} - {editor.ItemPrices[i]}");
                 }
                 for (i = 0; i < DataParser.WEAPON_COUNT; ++i)
                 {
                     var wpn = DataManager.Kernel.WeaponData.Weapons[i];
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(wpn));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(wpn), DisplayJapaneseText);
                     listBoxItemPrices.Items.Add($"{name} - {editor.WeaponPrices[i]}");
                 }
                 for (i = 0; i < DataParser.ARMOR_COUNT; ++i)
                 {
                     var armor = DataManager.Kernel.ArmorData.Armors[i];
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(armor));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(armor), DisplayJapaneseText);
                     listBoxItemPrices.Items.Add($"{name} - {editor.ArmorPrices[i]}");
                 }
                 for (i = 0; i < DataParser.ACCESSORY_COUNT; ++i)
                 {
                     var acc = DataManager.Kernel.AccessoryData.Accessories[i];
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(acc));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(acc), DisplayJapaneseText);
                     listBoxItemPrices.Items.Add($"{name} - {editor.AccessoryPrices[i]}");
                 }
 
@@ -527,15 +527,15 @@ namespace FF7Scarlet.ExeEditor
                 for (i = 0; i < DataManager.Kernel.MateriaData.Materias.Length; ++i)
                 {
                     var mat = DataManager.Kernel.MateriaData.Materias[i];
-                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(mat));
+                    string name = DataManager.Kernel.GetInventoryItemName(DataParser.GetCombinedItemIndex(mat), DisplayJapaneseText);
                     listBoxMateriaPrices.Items.Add($"{name} - {editor.MateriaPrices[i]}");
                 }
 
                 //materia priority list
                 LoadMateriaPriorityList();
 
-                //English-only stuff (kernel-specific)
-                if (editor.Language == Language.English)
+                //language-specific stuff (kernel-specific)
+                if (editor.LanguageAllowed)
                 {
                     //sorted items
                     var sortedItems =
@@ -544,7 +544,7 @@ namespace FF7Scarlet.ExeEditor
                         select item;
                     foreach (var item in sortedItems)
                     {
-                        listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(item.Key));
+                        listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(item.Key, DisplayJapaneseText));
                     }
                 }
             }
@@ -641,7 +641,7 @@ namespace FF7Scarlet.ExeEditor
                     {
                         if (m.EquipEffect == i)
                         {
-                            listBoxAffectedMateria.Items.Add(m.Name);
+                            listBoxAffectedMateria.Items.Add(m.Name.ToString(DisplayJapaneseText));
                         }
                     }
                     listBoxAffectedMateria.ResumeLayout();
@@ -681,7 +681,7 @@ namespace FF7Scarlet.ExeEditor
                 {
                     ExceptionHandler.Handle(ex);
                     loading = true;
-                    textBox.Text = editor.CharacterNames[charID].ToString();
+                    textBox.Text = editor.CharacterNames[charID].ToString(DisplayJapaneseText);
                     loading = false;
                 }
             }
@@ -745,7 +745,7 @@ namespace FF7Scarlet.ExeEditor
                     var m = DataManager.Kernel.GetMateriaByID(mat.Key);
                     if (m != null)
                     {
-                        string name = m.Name;
+                        string name = m.Name.ToString(DisplayJapaneseText);
                         if (string.IsNullOrEmpty(name)) { name = $"(Materia ID {mat.Key})"; }
                         if (mat.Value == 0) { name = "[null] " + name; }
                         listBoxMateriaPriority.Items.Add(name);
@@ -811,10 +811,10 @@ namespace FF7Scarlet.ExeEditor
                 }
                 else
                 {
-                    textBoxL4Success.Text = editor.LimitSuccess[i].ToString();
-                    textBoxL4Fail.Text = editor.LimitFail[i].ToString();
+                    textBoxL4Success.Text = editor.LimitSuccess[i].ToString(DisplayJapaneseText);
+                    textBoxL4Fail.Text = editor.LimitFail[i].ToString(DisplayJapaneseText);
                 }
-                textBoxL4Wrong.Text = editor.LimitWrong[i].ToString();
+                textBoxL4Wrong.Text = editor.LimitWrong[i].ToString(DisplayJapaneseText);
             }
             if (!wasAlreadyLoading) { loading = false; }
         }
@@ -828,7 +828,7 @@ namespace FF7Scarlet.ExeEditor
                 if (i >= 0 && i < length)
                 {
                     textBox.Enabled = true;
-                    textBox.Text = strings[i].ToString();
+                    textBox.Text = strings[i].ToString(DisplayJapaneseText);
                 }
                 loading = false;
             }
@@ -851,7 +851,7 @@ namespace FF7Scarlet.ExeEditor
                     if (cb != null) { length = cb.MaxLength; }
                 }
                 string text = StringParser.TruncateString(textBox.Text, length);
-                strings[i] = new FFText(text);
+                strings[i] = new FFText(text, isJapanese: DisplayJapaneseText);
                 listBox.Items[i] = text;
                 SetUnsaved(true);
                 loading = false;
@@ -891,7 +891,7 @@ namespace FF7Scarlet.ExeEditor
 
                 if (character != null)
                 {
-                    textBoxCharacterName.Text = character.Name.ToString();
+                    textBoxCharacterName.Text = character.Name.ToString(DisplayJapaneseText);
                     numericCharacterID.Value = character.ID;
                     numericCharacterLevel.Value = character.Level;
                     numericCharacterCurrentEXP.Value = character.CurrentEXP;
@@ -1220,7 +1220,7 @@ namespace FF7Scarlet.ExeEditor
                             name = DataManager.Kernel.GetLimitName(i);
                             desc = DataManager.Kernel.GetLimitDescription(i);
                         }
-                        attackFormControlLimit.UpdateForm(limit, i, name, desc, false);
+                        attackFormControlLimit.UpdateForm(limit, i, name, desc, DisplayJapaneseText);
                     }
                 }
                 prevLimit = i;
@@ -1361,22 +1361,22 @@ namespace FF7Scarlet.ExeEditor
                 if (type == ItemType.Weapon)
                 {
                     editor.WeaponPrices[index] = (uint)numericItemPrice.Value;
-                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.WeaponPrices[index]}";
+                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item, DisplayJapaneseText)} - {editor.WeaponPrices[index]}";
                 }
                 else if (type == ItemType.Armor)
                 {
                     editor.ArmorPrices[index] = (uint)numericItemPrice.Value;
-                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.ArmorPrices[index]}";
+                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item, DisplayJapaneseText)} - {editor.ArmorPrices[index]}";
                 }
                 else if (type == ItemType.Accessory)
                 {
                     editor.AccessoryPrices[index] = (uint)numericItemPrice.Value;
-                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.AccessoryPrices[index]}";
+                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item, DisplayJapaneseText)} - {editor.AccessoryPrices[index]}";
                 }
                 else
                 {
                     editor.ItemPrices[i] = (uint)numericItemPrice.Value;
-                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item)} - {editor.ItemPrices[i]}";
+                    listBoxItemPrices.Items[i] = $"{DataManager.Kernel.GetInventoryItemName(item, DisplayJapaneseText)} - {editor.ItemPrices[i]}";
                 }
                 SetUnsaved(true);
             }
@@ -1530,7 +1530,7 @@ namespace FF7Scarlet.ExeEditor
             {
                 var sortedItems =
                     (from item in editor.ItemsSortedByName
-                     let name = DataManager.Kernel.GetInventoryItemName(item.Key)
+                     let name = DataManager.Kernel.GetInventoryItemName(item.Key, DisplayJapaneseText)
                      orderby name.StartsWith("(Item ID"), name
                      select item).ToArray();
 
@@ -1540,7 +1540,7 @@ namespace FF7Scarlet.ExeEditor
                 for (ushort i = 0; i < sortedItems.Length; ++i)
                 {
                     editor.ItemsSortedByName.Add(sortedItems[i].Key, i);
-                    listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(sortedItems[i].Key));
+                    listBoxSortItemName.Items.Add(DataManager.Kernel.GetInventoryItemName(sortedItems[i].Key, DisplayJapaneseText));
                 }
                 listBoxSortItemName.ResumeLayout();
                 buttonItemsMoveUp.Enabled = false;
@@ -1797,10 +1797,10 @@ namespace FF7Scarlet.ExeEditor
                     else
                     {
                         textBoxStatusEffectMenu.Enabled = true;
-                        textBoxStatusEffectMenu.Text = editor.StatusEffectsMenu[i].ToString();
+                        textBoxStatusEffectMenu.Text = editor.StatusEffectsMenu[i].ToString(DisplayJapaneseText);
                     }
                     textBoxStatusEffectTextBattle.Enabled = true;
-                    textBoxStatusEffectTextBattle.Text = editor.StatusEffectsBattle[i].ToString();
+                    textBoxStatusEffectTextBattle.Text = editor.StatusEffectsBattle[i].ToString(DisplayJapaneseText);
                 }
                 loading = false;
             }
@@ -1956,7 +1956,7 @@ namespace FF7Scarlet.ExeEditor
                 loading = true;
                 int i = listBoxStatusEffects.SelectedIndex;
                 editor.StatusEffectsBattle[i] = new FFText(textBoxStatusEffectTextBattle.Text);
-                if (editor.Language != Language.English || editor.StatusEffectsMenu[i].IsEmpty())
+                if (!editor.LanguageAllowed || editor.StatusEffectsMenu[i].IsEmpty())
                 {
                     listBoxStatusEffects.Items[i] = textBoxStatusEffectTextBattle.Text;
                 }

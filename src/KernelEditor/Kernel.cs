@@ -726,7 +726,7 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
-        public string GetInventoryItemName(ushort id)
+        public string GetInventoryItemName(ushort id, bool isJapanese)
         {
             var type = DataParser.GetItemType(id);
             byte index = DataParser.GetItemIndex(id);
@@ -738,28 +738,28 @@ namespace FF7Scarlet.KernelEditor
                     {
                         return $"(Item ID {index})";
                     }
-                    else { return i.Name; }
+                    else { return i.Name.ToString(isJapanese); }
                 case ItemType.Weapon:
                     var w = GetWeaponByID(index);
                     if (w == null || string.IsNullOrEmpty(w.Name))
                     {
                         return $"(Weapon ID {index})";
                     }
-                    else { return w.Name; }
+                    else { return w.Name.ToString(isJapanese); }
                 case ItemType.Armor:
                     var ar = GetArmorByID(index);
                     if (ar == null || string.IsNullOrEmpty(ar.Name))
                     {
                         return $"(Armor ID {index})";
                     }
-                    else { return ar.Name; }
+                    else { return ar.Name.ToString(isJapanese); }
                 case ItemType.Accessory:
                     var acc = GetAccessoryByID(index);
                     if (acc == null || string.IsNullOrEmpty(acc.Name))
                     {
                         return $"(Accessory ID {index})";
                     }
-                    else { return acc.Name; }
+                    else { return acc.Name.ToString(isJapanese); }
                 case ItemType.Materia:
                     var m = GetMateriaByID(index);
                     if (m == null || string.IsNullOrEmpty(m.Name))
@@ -767,15 +767,15 @@ namespace FF7Scarlet.KernelEditor
                         return $"(Materia ID {index})";
                     }
 
-                    else { return m.Name; }
+                    else { return m.Name.ToString(isJapanese); }
                 default:
                     return "(none)";
             }
         }
 
-        public string GetInventoryItemName(InventoryItem item)
+        public string GetInventoryItemName(InventoryItem item, bool isJapanese)
         {
-            return GetInventoryItemName(item.Item);
+            return GetInventoryItemName(item.Item, isJapanese);
         }
 
         public ushort GetCameraMovementIDSingle(KernelSection section, int pos)

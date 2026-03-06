@@ -705,7 +705,7 @@ namespace FF7Scarlet.SceneEditor
                 //get item name
                 var item = new InventoryItem();
                 item.Item = rate.ItemID;
-                name = DataManager.Kernel.GetInventoryItemName(item);
+                name = DataManager.Kernel.GetInventoryItemName(item, DisplayJapaneseText);
             }
             sb.Append(name);
 
