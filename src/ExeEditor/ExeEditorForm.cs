@@ -834,12 +834,22 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        private void TextBoxTextChanged(ListBox listBox, Control textBox, FFText[] strings, int length = -1)
+        private void TextBoxTextChanged(ListBox listBox, Control textBox, FFText[] strings)
         {
             if (!loading)
             {
                 loading = true;
-                int i = listBox.SelectedIndex;
+                int i = listBox.SelectedIndex, length = -1;
+                if (textBox is TextBox)
+                {
+                    var tb = textBox as TextBox;
+                    if (tb != null) { length = tb.MaxLength; }
+                }
+                else if (textBox is ComboBox)
+                {
+                    var cb = textBox as ComboBox;
+                    if (cb != null) { length = cb.MaxLength; }
+                }
                 string text = StringParser.TruncateString(textBox.Text, length);
                 strings[i] = new FFText(text);
                 listBox.Items[i] = text;
@@ -2021,7 +2031,7 @@ namespace FF7Scarlet.ExeEditor
 
         private void comboBoxChocoboPrizes_TextChanged(object sender, EventArgs e)
         {
-            TextBoxTextChanged(listBoxChocoboRacePrizes, comboBoxChocoboRacePrizes, editor.ChocoboRacePrizes, editor.GetItemNameLength() - 1);
+            TextBoxTextChanged(listBoxChocoboRacePrizes, comboBoxChocoboRacePrizes, editor.ChocoboRacePrizes);
         }
 
         #endregion
