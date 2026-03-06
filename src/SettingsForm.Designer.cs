@@ -66,11 +66,11 @@
             groupBoxBattleLgp.Controls.Add(labelBattleLgp);
             groupBoxBattleLgp.Controls.Add(textBoxBattleLgp);
             groupBoxBattleLgp.Controls.Add(buttonBattleLgpBrowse);
-            groupBoxBattleLgp.Location = new Point(242, 222);
+            groupBoxBattleLgp.Location = new Point(242, 241);
             groupBoxBattleLgp.Margin = new Padding(4, 3, 4, 3);
             groupBoxBattleLgp.Name = "groupBoxBattleLgp";
             groupBoxBattleLgp.Padding = new Padding(4, 3, 4, 3);
-            groupBoxBattleLgp.Size = new Size(330, 109);
+            groupBoxBattleLgp.Size = new Size(330, 90);
             groupBoxBattleLgp.TabIndex = 1;
             groupBoxBattleLgp.TabStop = false;
             groupBoxBattleLgp.Text = "battle.lgp";
@@ -80,14 +80,14 @@
             labelBattleLgp.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             labelBattleLgp.Location = new Point(8, 19);
             labelBattleLgp.Name = "labelBattleLgp";
-            labelBattleLgp.Size = new Size(314, 55);
+            labelBattleLgp.Size = new Size(314, 36);
             labelBattleLgp.TabIndex = 6;
             labelBattleLgp.Text = "This file contains the battle models, and allows you to preview enemy models in the scene editor.";
             // 
             // textBoxBattleLgp
             // 
             textBoxBattleLgp.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxBattleLgp.Location = new Point(10, 78);
+            textBoxBattleLgp.Location = new Point(10, 59);
             textBoxBattleLgp.Margin = new Padding(4, 3, 4, 3);
             textBoxBattleLgp.Name = "textBoxBattleLgp";
             textBoxBattleLgp.Size = new Size(218, 23);
@@ -96,7 +96,7 @@
             // buttonBattleLgpBrowse
             // 
             buttonBattleLgpBrowse.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonBattleLgpBrowse.Location = new Point(236, 77);
+            buttonBattleLgpBrowse.Location = new Point(236, 58);
             buttonBattleLgpBrowse.Margin = new Padding(4, 3, 4, 3);
             buttonBattleLgpBrowse.Name = "buttonBattleLgpBrowse";
             buttonBattleLgpBrowse.Size = new Size(88, 23);
@@ -136,7 +136,7 @@
             groupBoxVanillaExe.Margin = new Padding(4, 3, 4, 3);
             groupBoxVanillaExe.Name = "groupBoxVanillaExe";
             groupBoxVanillaExe.Padding = new Padding(4, 3, 4, 3);
-            groupBoxVanillaExe.Size = new Size(330, 98);
+            groupBoxVanillaExe.Size = new Size(330, 116);
             groupBoxVanillaExe.TabIndex = 0;
             groupBoxVanillaExe.TabStop = false;
             groupBoxVanillaExe.Text = "Unedited ff7.exe";
@@ -146,14 +146,14 @@
             labelVanillaExe.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             labelVanillaExe.Location = new Point(9, 19);
             labelVanillaExe.Name = "labelVanillaExe";
-            labelVanillaExe.Size = new Size(312, 43);
+            labelVanillaExe.Size = new Size(312, 61);
             labelVanillaExe.TabIndex = 6;
             labelVanillaExe.Text = "This should be a completely unedited ff7.exe file, to be referenced when creating Hext files. Currently only English EXEs are supported.";
             // 
             // textBoxVanillaExe
             // 
             textBoxVanillaExe.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxVanillaExe.Location = new Point(10, 65);
+            textBoxVanillaExe.Location = new Point(10, 83);
             textBoxVanillaExe.Margin = new Padding(4, 3, 4, 3);
             textBoxVanillaExe.Name = "textBoxVanillaExe";
             textBoxVanillaExe.Size = new Size(218, 23);
@@ -162,7 +162,7 @@
             // buttonVanillaExeBrowse
             // 
             buttonVanillaExeBrowse.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonVanillaExeBrowse.Location = new Point(236, 64);
+            buttonVanillaExeBrowse.Location = new Point(236, 82);
             buttonVanillaExeBrowse.Margin = new Padding(4, 3, 4, 3);
             buttonVanillaExeBrowse.Name = "buttonVanillaExeBrowse";
             buttonVanillaExeBrowse.Size = new Size(88, 23);
@@ -173,7 +173,6 @@
             // 
             // groupBoxPS3Tweaks
             // 
-            groupBoxPS3Tweaks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxPS3Tweaks.Controls.Add(checkBoxPS3Tweaks);
             groupBoxPS3Tweaks.Controls.Add(labelPS3Tweaks);
             groupBoxPS3Tweaks.Location = new Point(16, 241);

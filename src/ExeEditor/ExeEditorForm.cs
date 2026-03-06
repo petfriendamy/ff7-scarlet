@@ -1,13 +1,14 @@
 using FF7Scarlet.KernelEditor;
 using FF7Scarlet.Shared;
 using FF7Scarlet.Shared.Controls;
+using SharpDX;
+using SharpDX.DirectSound;
+using SharpDX.Multimedia;
 using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Characters;
 using Shojy.FF7.Elena.Inventory;
 using Shojy.FF7.Elena.Text;
-using SharpDX;
-using SharpDX.DirectSound;
-using SharpDX.Multimedia;
+using System.Xml.Linq;
 
 #pragma warning disable CA1416
 namespace FF7Scarlet.ExeEditor
@@ -241,7 +242,7 @@ namespace FF7Scarlet.ExeEditor
                     {
                         shop.Items.Add(name);
                     }
-                    comboBoxChocoboRacePrizes.Items.Add(name);
+                    comboBoxChocoboRacePrizes.Items.Add(StringParser.TruncateString(name, editor.GetItemNameLength() - 1));
                 }
 
                 //materia
@@ -818,7 +819,7 @@ namespace FF7Scarlet.ExeEditor
             if (!wasAlreadyLoading) { loading = false; }
         }
 
-        private void ListBoxIndexChanged(ListBox listBox, TextBox textBox, FFText[] strings, int length)
+        private void ListBoxIndexChanged(ListBox listBox, Control textBox, FFText[] strings, int length)
         {
             if (!loading)
             {
@@ -833,14 +834,15 @@ namespace FF7Scarlet.ExeEditor
             }
         }
 
-        private void TextBoxTextChanged(ListBox listBox, TextBox textBox, FFText[] strings)
+        private void TextBoxTextChanged(ListBox listBox, Control textBox, FFText[] strings, int length = -1)
         {
             if (!loading)
             {
                 loading = true;
                 int i = listBox.SelectedIndex;
-                strings[i] = new FFText(textBox.Text);
-                listBox.Items[i] = textBox.Text;
+                string text = StringParser.TruncateString(textBox.Text, length);
+                strings[i] = new FFText(text);
+                listBox.Items[i] = text;
                 SetUnsaved(true);
                 loading = false;
             }
@@ -1830,12 +1832,14 @@ namespace FF7Scarlet.ExeEditor
 
         private void listBoxShopNames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxShopNames, textBoxShopNameText, editor.ShopNames, ExeData.NUM_SHOP_NAMES);
+            ListBoxIndexChanged(listBoxShopNames, textBoxShopNameText, editor.ShopNames,
+                ExeData.NUM_SHOP_NAMES);
         }
 
         private void listBoxShopText_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBoxIndexChanged(listBoxShopText, textBoxShopText, editor.ShopText, ExeData.NUM_SHOP_TEXTS);
+            ListBoxIndexChanged(listBoxShopText, textBoxShopText, editor.ShopText,
+                ExeData.NUM_SHOP_TEXTS);
         }
 
         private void listBoxChocoboNames_SelectedIndexChanged(object sender, EventArgs e)
@@ -1846,19 +1850,13 @@ namespace FF7Scarlet.ExeEditor
 
         private void listBoxChocoboRacePrizes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int i = listBoxChocoboRacePrizes.SelectedIndex;
-            if (i >= 0 && i < ExeData.NUM_CHOCOBO_RACE_ITEMS)
-            {
-                loading = true;
-                comboBoxChocoboRacePrizes.Enabled = true;
-                comboBoxChocoboRacePrizes.Text = editor.ChocoboRacePrizes[i].ToString();
-                loading = false;
-            }
+            ListBoxIndexChanged(listBoxChocoboRacePrizes, comboBoxChocoboRacePrizes,
+                editor.ChocoboRacePrizes, ExeData.NUM_CHOCOBO_RACE_ITEMS);
         }
 
         #endregion
 
-        #region Menu Text Textboxes
+        #region EXE Text Textboxes
 
         //textboxes
         private void textBoxMainMenuText_TextChanged(object sender, EventArgs e)
@@ -2023,15 +2021,7 @@ namespace FF7Scarlet.ExeEditor
 
         private void comboBoxChocoboPrizes_TextChanged(object sender, EventArgs e)
         {
-            if (!loading)
-            {
-                loading = true;
-                int i = listBoxChocoboRacePrizes.SelectedIndex;
-                editor.ChocoboRacePrizes[i] = new FFText(comboBoxChocoboRacePrizes.Text);
-                listBoxChocoboRacePrizes.Items[i] = comboBoxChocoboRacePrizes.Text;
-                SetUnsaved(true);
-                loading = false;
-            }
+            TextBoxTextChanged(listBoxChocoboRacePrizes, comboBoxChocoboRacePrizes, editor.ChocoboRacePrizes, editor.GetItemNameLength() - 1);
         }
 
         #endregion
@@ -2271,10 +2261,10 @@ namespace FF7Scarlet.ExeEditor
                 {
                     editor.WriteFile(path);
                 }
-                        catch (IOException ex)
-                        {
-                            ExceptionHandler.Handle(ex, "saving vanilla EXE to hext file");
-                        }
+                catch (IOException ex)
+                {
+                    ExceptionHandler.Handle(ex, "saving vanilla EXE to hext file");
+                }
             }
         }
 

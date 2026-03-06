@@ -1,4 +1,5 @@
 ﻿using Shojy.FF7.Elena.Text;
+using System.Xml.Linq;
 
 namespace FF7Scarlet.Shared
 {
@@ -46,6 +47,15 @@ namespace FF7Scarlet.Shared
                 } while (b != 0xFF);
             }
             return new FFText(bytes.ToArray(), length);
+        }
+
+        public static string TruncateString(string str, int length)
+        {
+            if (length > 0 && str.Length > length)
+            {
+                str = str.Substring(0, length);
+            }
+            return str;
         }
     }
 }
