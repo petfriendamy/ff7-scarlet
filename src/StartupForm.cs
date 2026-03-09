@@ -299,7 +299,7 @@ namespace FF7Scarlet
                 string file;
                 using (var loadFile = new OpenFileDialog())
                 {
-                    loadFile.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7_es.exe;ff7_fr.exe;ff7_de.exe;ff7.exe;ff7_en;ff7_ja;FFVII.exe";
+                    loadFile.Filter = ExeData.FILE_FILTER;
                     result = loadFile.ShowDialog();
                     file = loadFile.FileName;
                 }

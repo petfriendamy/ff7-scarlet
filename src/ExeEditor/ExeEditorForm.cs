@@ -2307,7 +2307,7 @@ namespace FF7Scarlet.ExeEditor
                         "EXE Needed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         using (var openDialog = new OpenFileDialog())
                         {
-                            openDialog.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7.exe";
+                            openDialog.Filter = ExeData.UNEDITED_FILE_FILTER;
                             result = openDialog.ShowDialog();
                             path = openDialog.FileName;
                         }

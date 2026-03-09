@@ -54,7 +54,7 @@ namespace FF7Scarlet
             string path;
             using (var loadFile = new OpenFileDialog())
             {
-                loadFile.Filter = "Final Fantasy VII executable|ff7_en.exe;ff7.exe;ff7_en.exe.bak;ff7.exe.bak";
+                loadFile.Filter = ExeData.UNEDITED_FILE_FILTER;
                 result = loadFile.ShowDialog();
                 path = loadFile.FileName;
             }
@@ -74,10 +74,11 @@ namespace FF7Scarlet
                             break;
 
                         case 3: //2026 version
+                            MessageDialog.ShowInfo(@"This is the wrong EXE. Redirecting to ff7\resources\ff7_1.02");
                             var newPath = ExeData.Get2026EXEPath(path);
                             if (!string.IsNullOrEmpty(newPath) && File.Exists(newPath))
                             {
-
+                                textBoxVanillaExe.Text = newPath;
                             }
                             else
                             {

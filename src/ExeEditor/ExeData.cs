@@ -165,6 +165,10 @@ namespace FF7Scarlet.ExeEditor
         private static readonly long[] MODEL_CAN_WALK_POS = { MODELS_POS, 0, 0x34BF83, 0x34C0CC, 0x34C17E, 0x34C1C9, 0x568040, 0x568044, 0x568048, 0x56804C, 0x568050, 0x34B7DB };
         private static readonly long[] MODEL_CAN_DISEMBARK_POS = { 0, 0x34C05F, 0x34BFC1, 0x34C118, 0x34C14C, 0x34C19A, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0x34BFEC, 0 };
         private static readonly long[] MODEL_CAN_WALK_TINY_BRONCO_ADDITIONAL_POS = { 0x34C0F3, 0x34C12D };
+
+        public const string FILE_FILTER = "Final Fantasy VII executable|ff7_en.exe;ff7_es.exe;ff7_fr.exe;ff7_de.exe;ff7.exe;ff7_en;ff7_ja;FFVII.exe",
+            UNEDITED_FILE_FILTER = "Final Fantasy VII executable|ff7_en.exe;ff7.exe;ff7_en.exe.bak;ff7.exe.bak;ff7_en;FFVII.exe";
+
         public bool LanguageAllowed => Language == Language.English || Language == Language.Japanese;
 
         //properties
