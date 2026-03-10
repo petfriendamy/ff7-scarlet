@@ -3128,13 +3128,13 @@ namespace FF7Scarlet.ExeEditor
                             SAVE_MENU_TEXT_POS, GetSaveTextLength(), NUM_SAVE_MENU_TEXTS, isJP));
 
                         //compare Teioh's name
-                        string name1 = ChocoboNames[GetNumChocoboNames(Language)].ToString(),
-                            name2 = original.ChocoboNames[GetNumChocoboNames(Language)].ToString();
+                        FFText name1 = ChocoboNames[GetNumChocoboNames(Language)],
+                            name2 = original.ChocoboNames[GetNumChocoboNames(Language)];
 
-                        if (name1 != name2)
+                        if (name1.CompareTo(name2) != 0)
                         {
                             checker = true;
-                            writer.WriteLine($"# {name2} -> {name1}");
+                            writer.WriteLine($"# {name2} -> {name1.ToString(isJP)}");
                             var temp = ChocoboNames[GetNumChocoboNames(Language)].GetBytes();
                             writer.Write($"{GetHextPosition(TEIOH_POS):X2} = ");
                             foreach (var x in temp)

@@ -1186,6 +1186,7 @@ namespace FF7Scarlet.KernelEditor
         {
             if (charIndex >= 0 && charIndex < 9)
             {
+                bool wasAlreadyLoading = loading;
                 loading = true;
                 if (!tabPageIsEnabled.ContainsKey(tabPageInitCharacterStats))
                 {
@@ -1253,7 +1254,7 @@ namespace FF7Scarlet.KernelEditor
                 limitRequirementControl3.SetCharacter(character);
                 limitRequirementControl4.SetCharacter(character);
 
-                loading = false;
+                loading = wasAlreadyLoading;
             }
         }
 
@@ -1578,7 +1579,7 @@ namespace FF7Scarlet.KernelEditor
 
             if (SelectedCharacter != null)
             {
-                textBoxCharacterName.Text = SelectedCharacter.Name.ToString(DisplayJapaneseText);
+                PopulateInitCharacterDataTab(SelectedCharacterIndex);    
             }
             PopulateInventoryListBoxes();
             if (kernel.InitialData.Party1 == 0xFF) { comboBoxParty1.SelectedIndex = 0; }
