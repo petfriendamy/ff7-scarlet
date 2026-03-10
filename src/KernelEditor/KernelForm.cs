@@ -1931,10 +1931,12 @@ namespace FF7Scarlet.KernelEditor
         /// </summary>
         private void SyncItemNames()
         {
+            loading = true;
             LoadItemLists();
             PopulateInitCharacterDataTab(SelectedCharacterIndex);
             PopulateInventoryListBoxes();
             itemNamesNeedSync = false;
+            loading = false;
         }
 
         /// <summary>
@@ -2185,6 +2187,7 @@ namespace FF7Scarlet.KernelEditor
                 }
                 prevCharacter = i;
                 PopulateInitCharacterDataTab(i);
+                loading = false;
             }
         }
 

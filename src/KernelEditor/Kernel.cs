@@ -1136,6 +1136,19 @@ namespace FF7Scarlet.KernelEditor
             }
         }
 
+        private void UpdateCharacterList()
+        {
+            CharacterList[0] = CharacterData.Cloud;
+            CharacterList[1] = CharacterData.Barret;
+            CharacterList[2] = CharacterData.Tifa;
+            CharacterList[3] = CharacterData.Aerith;
+            CharacterList[4] = CharacterData.RedXIII;
+            CharacterList[5] = CharacterData.Yuffie;
+            CharacterList[6] = CharacterData.CaitSithYoungCloud;
+            CharacterList[7] = CharacterData.VincentSephiroth;
+            CharacterList[8] = CharacterData.Cid;
+        }
+
 
         public bool ImportChunk(KernelSection section, string filePath)
         {
@@ -1163,6 +1176,7 @@ namespace FF7Scarlet.KernelEditor
                             ScriptsLoaded = false;
                             BattleAndGrowthData = new BattleAndGrowthData(fileData);
                             CharacterData = new CharacterData(initData, fileData);
+                            UpdateCharacterList();
                             UpdateLookupTable(lookup);
                             break;
 
@@ -1171,6 +1185,7 @@ namespace FF7Scarlet.KernelEditor
 
                             InitialData = new InitialData(fileData);
                             CharacterData = new CharacterData(fileData, growthData);
+                            UpdateCharacterList();
                             break;
 
                         case KernelSection.ItemData:
