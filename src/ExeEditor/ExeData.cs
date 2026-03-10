@@ -2592,19 +2592,19 @@ namespace FF7Scarlet.ExeEditor
 
         //private function to write text for a Hext file
         private string WriteHextStrings(FFText[] strings, FFText[] original, long position, int length, int count,
-            int offset = 0)
+            bool isJapanese, int offset = 0)
         {
             var output = new StringBuilder();
             bool checker = false;
 
             for (int i = 0; i < count; ++i)
             {
-                string? text1 = strings[i + offset].ToString(), text2 = original[i + offset].ToString();
+                FFText text1 = strings[i + offset], text2 = original[i + offset];
 
-                if (text1 != text2)
+                if (text1.CompareTo(text2) != 0)
                 {
                     checker = true;
-                    output.Append($"# {text2} -> {text1}");
+                    output.Append($"# {text2} -> {text1.ToString(isJapanese)}");
                     output.AppendLine();
                     var temp = strings[i + offset].GetBytes();
                     output.Append($"{GetHextPosition(position + (length * i)):X2} = ");
@@ -2641,7 +2641,7 @@ namespace FF7Scarlet.ExeEditor
                     writer.WriteLine();
 
                     long pos;
-                    bool checker = false, diff;
+                    bool checker = false, diff, isJP = Language == Language.Japanese;
                     int i, j;
 
                     //compare AP price multiplier
@@ -2757,22 +2757,22 @@ namespace FF7Scarlet.ExeEditor
 
                     //write quit menu text
                     writer.Write(WriteHextStrings(QuitMenuTexts, original.QuitMenuTexts,
-                        QUIT_TEXT_POS_1, QUIT_TEXT_LENGTH_1, NUM_QUIT_TEXTS_1));
+                        QUIT_TEXT_POS_1, QUIT_TEXT_LENGTH_1, NUM_QUIT_TEXTS_1, isJP));
 
                     writer.Write(WriteHextStrings(QuitMenuTexts, original.QuitMenuTexts,
-                        QUIT_TEXT_POS_2, GetQuitTextLength(), NUM_QUIT_TEXTS_2, NUM_QUIT_TEXTS_1));
+                        QUIT_TEXT_POS_2, GetQuitTextLength(), NUM_QUIT_TEXTS_2, isJP, NUM_QUIT_TEXTS_1));
 
                     //write config menu text
                     writer.Write(WriteHextStrings(ConfigMenuTexts, original.ConfigMenuTexts,
-                        CONFIG_MENU_TEXT_POS, GetConfigTextLength(), NUM_CONFIG_MENU_TEXTS));
+                        CONFIG_MENU_TEXT_POS, GetConfigTextLength(), NUM_CONFIG_MENU_TEXTS, isJP));
 
                     //write main menu text
                     writer.Write(WriteHextStrings(MainMenuTexts, original.MainMenuTexts,
-                        MAIN_MENU_TEXT_POS, MENU_TEXT_LENGTH, NUM_MENU_TEXTS));
+                        MAIN_MENU_TEXT_POS, MENU_TEXT_LENGTH, NUM_MENU_TEXTS, isJP));
 
                     //write status effects (battle)
                     writer.Write(WriteHextStrings(StatusEffectsBattle, original.StatusEffectsBattle,
-                        STATUS_EFFECT_BATTLE_POS, GetStatusEffectBattleLength(), NUM_STATUS_EFFECTS));
+                        STATUS_EFFECT_BATTLE_POS, GetStatusEffectBattleLength(), NUM_STATUS_EFFECTS, isJP));
 
                     //write battle arena text
                     int offset = 0;
@@ -2781,18 +2781,18 @@ namespace FF7Scarlet.ExeEditor
                     for (i = 0; i < lengths.Length; ++i)
                     {
                         writer.Write(WriteHextStrings(BattleArenaTexts, original.BattleArenaTexts,
-                            pos, lengths[i].Length, lengths[i].Count, offset));
+                            pos, lengths[i].Length, lengths[i].Count, isJP, offset));
                         offset += lengths[i].Count;
                         pos += (lengths[i].Length * lengths[i].Count);
                     }
 
                     //write Bizarro menu text
                     writer.Write(WriteHextStrings(BizarroMenuTexts, original.BizarroMenuTexts,
-                        BIZARRO_MENU_TEXT_POS, GetBizarroTextLength(), NUM_BIZARRO_MENU_TEXTS));
+                        BIZARRO_MENU_TEXT_POS, GetBizarroTextLength(), NUM_BIZARRO_MENU_TEXTS, isJP));
 
                     //write limit menu text
                     writer.Write(WriteHextStrings(LimitMenuTexts, original.LimitMenuTexts,
-                        LIMIT_MENU_TEXT_POS, GetLimitMenuTextLength(), NUM_LIMIT_MENU_TEXTS));
+                        LIMIT_MENU_TEXT_POS, GetLimitMenuTextLength(), NUM_LIMIT_MENU_TEXTS, isJP));
 
                     //compare limits
                     for (i = 0; i < NUM_LIMITS; ++i)
@@ -2810,51 +2810,51 @@ namespace FF7Scarlet.ExeEditor
 
                     //write element names
                     writer.Write(WriteHextStrings(ElementNames, original.ElementNames,
-                        STATUS_MENU_ELEMENT_POS, GetElementNameLength(), NUM_ELEMENTS));
+                        STATUS_MENU_ELEMENT_POS, GetElementNameLength(), NUM_ELEMENTS, isJP));
 
                     //write status effects (menu)
                     writer.Write(WriteHextStrings(StatusEffectsMenu, original.StatusEffectsMenu,
-                        STATUS_EFFECTS_MENU_POS, MENU_TEXT_LENGTH, NUM_STATUS_EFFECTS));
+                        STATUS_EFFECTS_MENU_POS, MENU_TEXT_LENGTH, NUM_STATUS_EFFECTS, isJP));
 
                     //write status menu text
                     writer.Write(WriteHextStrings(StatusMenuTexts, original.StatusMenuTexts,
-                        STATUS_MENU_TEXT_POS, GetStatusMenuTextLength(), NUM_STATUS_MENU_TEXTS));
+                        STATUS_MENU_TEXT_POS, GetStatusMenuTextLength(), NUM_STATUS_MENU_TEXTS, isJP));
 
                     //write equip menu text
                     writer.Write(WriteHextStrings(EquipMenuTexts, original.EquipMenuTexts,
-                        EQUIP_MENU_TEXT_POS, GetEquipMenuTextLength(), NUM_EQUIP_MENU_TEXTS));
+                        EQUIP_MENU_TEXT_POS, GetEquipMenuTextLength(), NUM_EQUIP_MENU_TEXTS, isJP));
 
                     //write unequip text
                     writer.Write(WriteHextStrings(UnequipTexts, original.UnequipTexts,
-                        UNEQUIP_TEXT_POS, GetUnequipTextLength(), NUM_UNEQUIP_TEXTS));
+                        UNEQUIP_TEXT_POS, GetUnequipTextLength(), NUM_UNEQUIP_TEXTS, isJP));
 
                     //write materia menu text
                     writer.Write(WriteHextStrings(MateriaMenuTexts, original.MateriaMenuTexts,
-                        MATERIA_MENU_TEXT_POS, GetMateriaMenuTextLength(), NUM_MATERIA_MENU_TEXTS));
+                        MATERIA_MENU_TEXT_POS, GetMateriaMenuTextLength(), NUM_MATERIA_MENU_TEXTS, isJP));
 
                     //write magic menu text
                     writer.Write(WriteHextStrings(MagicMenuTexts, original.MagicMenuTexts,
-                        MAGIC_MENU_TEXT_POS, GetMagicMenuTextLength(), NUM_MAGIC_MENU_TEXTS));
+                        MAGIC_MENU_TEXT_POS, GetMagicMenuTextLength(), NUM_MAGIC_MENU_TEXTS, isJP));
 
                     //write item menu text
                     writer.Write(WriteHextStrings(ItemMenuTexts, original.ItemMenuTexts,
-                        ITEM_MENU_TEXT_POS, GetItemMenuTextLength(), NUM_ITEM_MENU_TEXTS));
+                        ITEM_MENU_TEXT_POS, GetItemMenuTextLength(), NUM_ITEM_MENU_TEXTS, isJP));
 
                     //compare limit text
                     j = 0;
                     for (i = 0; i < Kernel.PLAYABLE_CHARACTER_COUNT; ++i)
                     {
-                        string text1, text2;
+                        FFText text1, text2;
                         if (i < Kernel.PLAYABLE_CHARACTER_COUNT - 1)
                         {
                             //limit success
-                            text1 = LimitSuccess[i].ToString();
-                            text2 = original.LimitSuccess[i].ToString();
+                            text1 = LimitSuccess[i];
+                            text2 = original.LimitSuccess[i];
 
-                            if (text1 != text2)
+                            if (text1.CompareTo(text2) != 0)
                             {
                                 checker = true;
-                                writer.WriteLine($"# {text2} -> {text1}");
+                                writer.WriteLine($"# {text2} -> {text1.ToString(isJP)}");
                                 var temp = LimitSuccess[i].GetBytes();
                                 pos = GetHextPosition(LIMIT_TEXT_POS + (GetLimitTextLength() * j));
                                 writer.Write($"{pos:X2} = ");
@@ -2867,13 +2867,13 @@ namespace FF7Scarlet.ExeEditor
                             j++;
 
                             //limit fail
-                            text1 = LimitFail[i].ToString();
-                            text2 = original.LimitFail[i].ToString();
+                            text1 = LimitFail[i];
+                            text2 = original.LimitFail[i];
 
-                            if (text1 != text2)
+                            if (text1.CompareTo(text2) != 0)
                             {
                                 checker = true;
-                                writer.WriteLine($"# {text2} -> {text1}");
+                                writer.WriteLine($"# {text2} -> {text1.ToString(isJP)}");
                                 var temp = LimitFail[i].GetBytes();
                                 pos = GetHextPosition(LIMIT_TEXT_POS + (GetLimitTextLength() * j));
                                 writer.Write($"{pos:X2} = ");
@@ -2887,13 +2887,13 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //limit wrong
-                        text1 = LimitWrong[i].ToString();
-                        text2 = original.LimitWrong[i].ToString();
+                        text1 = LimitWrong[i];
+                        text2 = original.LimitWrong[i];
 
-                        if (text1 != text2)
+                        if (text1.CompareTo(text2) != 0)
                         {
                             checker = true;
-                            writer.WriteLine($"# {text2} -> {text1}");
+                            writer.WriteLine($"# {text2} -> {text1.ToString(isJP)}");
                             var temp = LimitWrong[i].GetBytes();
                             pos = GetHextPosition(LIMIT_TEXT_POS + (GetLimitTextLength() * j));
                             writer.Write($"{pos:X2} = ");
@@ -2958,7 +2958,7 @@ namespace FF7Scarlet.ExeEditor
 
                     //write character names
                     writer.Write(WriteHextStrings(CharacterNames, original.CharacterNames,
-                        CHARACTER_NAMES_POS, DataParser.CHARACTER_NAME_LENGTH, NUM_CHARACTER_NAMES));
+                        CHARACTER_NAMES_POS, DataParser.CHARACTER_NAME_LENGTH, NUM_CHARACTER_NAMES, isJP));
 
                     //compare materia priority list
                     var p1 =
@@ -3019,11 +3019,11 @@ namespace FF7Scarlet.ExeEditor
 
                     //write shop names
                     writer.Write(WriteHextStrings(ShopNames, original.ShopNames,
-                        SHOP_NAME_POS, GetShopNameLength(), NUM_SHOP_NAMES));
+                        SHOP_NAME_POS, GetShopNameLength(), NUM_SHOP_NAMES, isJP));
 
                     //write shop text
                     writer.Write(WriteHextStrings(ShopText, original.ShopText,
-                        SHOP_TEXT_POS, SHOP_TEXT_LENGTH, NUM_SHOP_TEXTS));
+                        SHOP_TEXT_POS, SHOP_TEXT_LENGTH, NUM_SHOP_TEXTS, isJP));
 
                     //compare shop inventories
                     if (DataManager.Kernel != null)
@@ -3125,7 +3125,7 @@ namespace FF7Scarlet.ExeEditor
 
                         //write save menu text
                         writer.Write(WriteHextStrings(SaveMenuTexts, original.SaveMenuTexts,
-                            SAVE_MENU_TEXT_POS, GetSaveTextLength(), NUM_SAVE_MENU_TEXTS));
+                            SAVE_MENU_TEXT_POS, GetSaveTextLength(), NUM_SAVE_MENU_TEXTS, isJP));
 
                         //compare Teioh's name
                         string name1 = ChocoboNames[GetNumChocoboNames(Language)].ToString(),
@@ -3197,11 +3197,11 @@ namespace FF7Scarlet.ExeEditor
 
                         //write chocobo race prizes
                         writer.Write(WriteHextStrings(ChocoboRacePrizes, original.ChocoboRacePrizes,
-                            CHOCOBO_RACE_ITEMS_POS, GetItemNameLength(), NUM_CHOCOBO_RACE_ITEMS));
+                            CHOCOBO_RACE_ITEMS_POS, GetItemNameLength(), NUM_CHOCOBO_RACE_ITEMS, isJP));
 
                         //write chocobo racer names (besides Teioh)
                         writer.Write(WriteHextStrings(ChocoboNames, original.ChocoboNames,
-                            CHOCOBO_NAMES_POS, GetChocoboNameLength(), GetNumChocoboNames(Language)));
+                            CHOCOBO_NAMES_POS, GetChocoboNameLength(), GetNumChocoboNames(Language), isJP));
                     }
                 }
             }
