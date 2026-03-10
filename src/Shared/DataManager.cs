@@ -118,27 +118,41 @@ namespace FF7Scarlet.Shared
                             exeDir = Directory.GetParent(path)?.FullName;
                             if (!string.IsNullOrEmpty(exeDir))
                             {
+                                bool foundWorkingDir = false;
+                                temp = exeDir;
                                 if (version == EXEVersion.Steam2026) //completely different file structure
                                 {
-                                    temp = Directory.GetParent(exeDir)?.FullName;
-                                    if (!string.IsNullOrEmpty(temp))
+                                    //check if this is in workingdir or not
+                                    var temp2 = Path.GetFileName(temp);
+                                    if (!string.IsNullOrEmpty(temp2))
                                     {
-                                        temp = Directory.GetParent(temp)?.FullName;
+                                        foundWorkingDir = (temp2 == "workingdir");
+                                    }
+
+                                    //if this is not workingdir, keep looking
+                                    if (!foundWorkingDir)
+                                    {
+                                        temp = Directory.GetParent(exeDir)?.FullName;
                                         if (!string.IsNullOrEmpty(temp))
                                         {
-                                            temp = Path.Combine(temp, "workingdir");
+                                            temp = Directory.GetParent(temp)?.FullName;
                                             if (!string.IsNullOrEmpty(temp))
                                             {
-                                                kernelDir = Path.Combine(temp, "data");
-                                                battleDir = Path.Combine(temp, "data");
+                                                temp = Path.Combine(temp, "workingdir");
+                                                if (!string.IsNullOrEmpty(temp))
+                                                {
+                                                    foundWorkingDir = true;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                                else
+
+                                //get the data dir
+                                if (!string.IsNullOrEmpty(temp))
                                 {
-                                    kernelDir = Path.Combine(exeDir, "data");
-                                    battleDir = Path.Combine(exeDir, "data");
+                                    kernelDir = Path.Combine(temp, "data");
+                                    battleDir = Path.Combine(temp, "data");
                                 }
                                 
                                 //get the file paths

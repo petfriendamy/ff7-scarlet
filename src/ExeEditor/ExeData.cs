@@ -46,7 +46,7 @@ namespace FF7Scarlet.ExeEditor
         }
 
         //constants
-        private static readonly int[] EXE_HEADER = { 0x55, 0x8B, 0xEC, 0xC7 };
+        private static readonly byte[] EXE_HEADER = { 0x55, 0x8B, 0xEC, 0xC7 };
         private const int EXE_OFFSET = 0x400, EXE_OFFSET_2026 = 0x200;
         public const string
             CONFIG_KEY = "ExePath",
@@ -1014,24 +1014,11 @@ namespace FF7Scarlet.ExeEditor
                 {
                     return 0;
                 }
-                else
+                else //check if header is correct
                 {
-                    using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-                    using (var reader = new BinaryReader(stream))
-                    {
-                        //check if header is correct
-                        var version = GetEXEVersion(path);
-                        stream.Seek(GetEXEOffset(version, language), SeekOrigin.Begin);
-
-                        for (int i = 0; i < EXE_HEADER.Length; ++i)
-                        {
-                            if (reader.ReadByte() != EXE_HEADER[i])
-                            {
-                                return 0;
-                            }
-                        }
-                        return 1;
-                    }
+                    var version = GetEXEVersion(path);
+                    var header = GetHeader(path, version);
+                    return (header.SequenceEqual(EXE_HEADER) ? 1 : 0);
                 }
             }
             return 0;
@@ -1080,6 +1067,23 @@ namespace FF7Scarlet.ExeEditor
                 }
             }
             return 0;
+        }
+
+        private static byte[] GetHeader(string path, EXEVersion version)
+        {
+            var bytes = new byte[EXE_HEADER.Length];
+            var language = GetLanguage(path);
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var reader = new BinaryReader(stream))
+            {
+                stream.Seek(GetEXEOffset(version, language), SeekOrigin.Begin);
+
+                for (int i = 0; i < EXE_HEADER.Length; ++i)
+                {
+                    bytes[i] = reader.ReadByte();
+                }
+            }
+            return bytes;
         }
 
         //user selected the wrong EXE, direct them to the right one
@@ -1152,11 +1156,12 @@ namespace FF7Scarlet.ExeEditor
             {
                 if (fileName.Contains('_'))
                 {
-                    var extension = Path.GetExtension(path).ToLower();
-                    if (extension == ".exe")
-                        return EXEVersion.Steam2013;
-                    else
+                    //check if this is the 2026 version
+                    var header = GetHeader(path, EXEVersion.Steam2026);
+                    if (header.SequenceEqual(EXE_HEADER))
                         return EXEVersion.Steam2026;
+                    else
+                        return EXEVersion.Steam2013;
                 }
             }
             return EXEVersion.Original;
