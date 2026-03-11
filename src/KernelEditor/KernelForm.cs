@@ -1021,17 +1021,9 @@ namespace FF7Scarlet.KernelEditor
                         if (statusChangeComboBoxes.ContainsKey(section))
                         {
                             var change = kernel.GetStatusChange(section, i);
-                            if (change.Type == StatusChangeType.None)
-                            {
-                                statusChangeComboBoxes[section].SelectedIndex = 0;
-                                statusLists[section].Enabled = false;
-                            }
-                            else
-                            {
-                                var temp = DataManager.StatusChangeTypes.ToList();
-                                statusChangeComboBoxes[section].SelectedIndex = temp.IndexOf(change.Type) + 1;
-                                statusLists[section].Enabled = true;
-                            }
+                            var temp = DataManager.StatusChangeTypes.ToList();
+                            statusChangeComboBoxes[section].SelectedIndex = temp.IndexOf(change.Type);
+                            //statusLists[section].Enabled = (change.Type != StatusChangeType.None);
                         }
 
                         //special attack flags
@@ -2434,14 +2426,17 @@ namespace FF7Scarlet.KernelEditor
                 bool hasStatus = i > 0;
                 if (hasStatus)
                 {
-                    status = DataManager.StatusChangeTypes[i - 1];
+                    status = DataManager.StatusChangeTypes[i];
                 }
                 statusLists[CurrentSection].Enabled = hasStatus;
-                if (CurrentSection == KernelSection.ItemData && SelectedItem != null)
+                if (!loading)
                 {
-                    SelectedItem.StatusChange.Type = status;
+                    if (CurrentSection == KernelSection.ItemData && SelectedItem != null)
+                    {
+                        SelectedItem.StatusChange.Type = status;
+                    }
+                    SetUnsaved(true);
                 }
-                if (!loading) { SetUnsaved(true); }
             }
         }
 
