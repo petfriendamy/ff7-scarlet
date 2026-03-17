@@ -351,6 +351,9 @@ namespace FF7Scarlet.Shared
 
         public static ushort GetItemValue(InventoryItem item)
         {
+            if (item.Item == HexParser.NULL_OFFSET_16_BIT)
+                return item.Item;
+
             var indexBytes = BitConverter.GetBytes(item.Item);
             var amountBytes = new byte[1] { (byte)item.Amount };
             var indexBits = new BitArray(indexBytes);

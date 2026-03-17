@@ -1023,7 +1023,6 @@ namespace FF7Scarlet.KernelEditor
                             var change = kernel.GetStatusChange(section, i);
                             var temp = DataManager.StatusChangeTypes.ToList();
                             statusChangeComboBoxes[section].SelectedIndex = temp.IndexOf(change.Type);
-                            //statusLists[section].Enabled = (change.Type != StatusChangeType.None);
                         }
 
                         //special attack flags
@@ -1670,6 +1669,8 @@ namespace FF7Scarlet.KernelEditor
             UpdateSelectedDescription(KernelSection.KeyItemNames);
             UpdateBattleText();
             UpdateLimitNamesAndDesc();
+            LoadItemLists();
+            SyncItemNames();
             foreach (var ks in Enum.GetValues<KernelSection>())
             {
                 PopulateTabWithSelected(ks, true);
@@ -1980,16 +1981,17 @@ namespace FF7Scarlet.KernelEditor
         private void SetInventoryItem()
         {
             int selectedItem = listBoxInitInventory.SelectedIndex,
-                newItemIndex = comboBoxInitItem.SelectedIndex,
+                newItemIndex = comboBoxInitItem.SelectedIndex - 1,
                 amount = (int)numericInitItemAmount.Value;
 
             if (selectedItem >= 0 && selectedItem < Kernel.INVENTORY_SIZE)
             {
                 loading = true;
                 var item = kernel.InitialData.Inventory[selectedItem];
-                if (newItemIndex == 0) //none
+                if (newItemIndex < 0) //none
                 {
                     DataParser.SetItem(item, ItemType.None, 0);
+                    item.Amount = 0;
                     listBoxInitInventory.Items[selectedItem] = "(empty)";
                     numericInitItemAmount.Value = 0;
                     numericInitItemAmount.Enabled = false;
@@ -2003,8 +2005,8 @@ namespace FF7Scarlet.KernelEditor
                     }
                     numericInitItemAmount.Enabled = true;
 
-                    var type = DataParser.GetItemType((ushort)(newItemIndex - 1));
-                    byte index = DataParser.GetItemIndex((ushort)(newItemIndex - 1));
+                    var type = DataParser.GetItemType((ushort)newItemIndex);
+                    byte index = DataParser.GetItemIndex((ushort)newItemIndex);
 
                     DataParser.SetItem(item, type, index);
                     item.Amount = amount;

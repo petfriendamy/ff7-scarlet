@@ -632,35 +632,6 @@ namespace FF7Scarlet.KernelEditor
             if (names.Length > 0)
             {
                 names[pos] = new FFText(n);
-                /*switch (ds) //update associated item name (if it exists)
-                {
-                    case KernelSection.AttackData:
-                        if (pos < ATTACK_COUNT)
-                        {
-                            AttackData.Attacks[pos].Name = n;
-                        }
-                        break;
-
-                    case KernelSection.ItemData:
-                        ItemData.Items[pos].Name = n;
-                        break;
-
-                    case KernelSection.WeaponData:
-                        WeaponData.Weapons[pos].Name = n;
-                        break;
-
-                    case KernelSection.ArmorData:
-                        ArmorData.Armors[pos].Name = n;
-                        break;
-
-                    case KernelSection.AccessoryData:
-                        AccessoryData.Accessories[pos].Name = n;
-                        break;
-
-                    case KernelSection.MateriaData:
-                        MateriaData.Materias[pos].Name = n;
-                        break;
-                }*/
             }
         }
 
@@ -673,35 +644,6 @@ namespace FF7Scarlet.KernelEditor
             if (descs.Length > 0)
             {
                 descs[pos] = new FFText(d);
-                /*switch (ds) //update associated item description (if it exists)
-                {
-                    case KernelSection.AttackData:
-                        if (pos < ATTACK_COUNT)
-                        {
-                            AttackData.Attacks[pos].Description = d;
-                        }
-                        break;
-
-                    case KernelSection.ItemData:
-                        ItemData.Items[pos].Description = d;
-                        break;
-
-                    case KernelSection.WeaponData:
-                        WeaponData.Weapons[pos].Description = d;
-                        break;
-
-                    case KernelSection.ArmorData:
-                        ArmorData.Armors[pos].Description = d;
-                        break;
-
-                    case KernelSection.AccessoryData:
-                        AccessoryData.Accessories[pos].Description = d;
-                        break;
-
-                    case KernelSection.MateriaData:
-                        MateriaData.Materias[pos].Description = d;
-                        break;
-                }*/
             }
         }
 
