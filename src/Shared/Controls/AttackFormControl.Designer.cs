@@ -267,6 +267,7 @@
             comboBoxAttackCamMovementIDMulti.Name = "comboBoxAttackCamMovementIDMulti";
             comboBoxAttackCamMovementIDMulti.Size = new Size(152, 23);
             comboBoxAttackCamMovementIDMulti.TabIndex = 36;
+            comboBoxAttackCamMovementIDMulti.TextUpdate += comboBoxCamMovementIDMulti_TextChanged;
             comboBoxAttackCamMovementIDMulti.TextChanged += ValueChanged;
             // 
             // textBoxAttackName
@@ -308,6 +309,7 @@
             comboBoxAttackCamMovementIDSingle.Name = "comboBoxAttackCamMovementIDSingle";
             comboBoxAttackCamMovementIDSingle.Size = new Size(152, 23);
             comboBoxAttackCamMovementIDSingle.TabIndex = 34;
+            comboBoxAttackCamMovementIDSingle.TextUpdate += comboBoxCamMovementIDSingle_TextChanged;
             comboBoxAttackCamMovementIDSingle.TextChanged += ValueChanged;
             // 
             // labelSummonText
