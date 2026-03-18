@@ -154,16 +154,19 @@ namespace FF7Scarlet.SceneEditor
             sceneCopyToolStripMenuItem = new ToolStripMenuItem();
             scenePasteToolStripMenuItem = new ToolStripMenuItem();
             sceneClearToolStripMenuItem = new ToolStripMenuItem();
+            sceneImportToolStripMenuItem = new ToolStripMenuItem();
             enemyToolStripMenuItem = new ToolStripMenuItem();
             createNewEnemyToolStripMenuItem = new ToolStripMenuItem();
             enemyCopyToolStripMenuItem = new ToolStripMenuItem();
             enemyPasteToolStripMenuItem = new ToolStripMenuItem();
             enemyDeleteToolStripMenuItem = new ToolStripMenuItem();
+            enemyImportToolStripMenuItem = new ToolStripMenuItem();
             selectedAttackToolStripMenuItem = new ToolStripMenuItem();
             createNewAttackToolStripMenuItem = new ToolStripMenuItem();
             attackCopyToolStripMenuItem = new ToolStripMenuItem();
             attackPasteToolStripMenuItem = new ToolStripMenuItem();
             attackDeleteToolStripMenuItem = new ToolStripMenuItem();
+            attackImportToolStripMenuItem = new ToolStripMenuItem();
             selectedFormationToolStripMenuItem = new ToolStripMenuItem();
             formationCopyToolStripMenuItem = new ToolStripMenuItem();
             formationPasteToolStripMenuItem = new ToolStripMenuItem();
@@ -180,9 +183,6 @@ namespace FF7Scarlet.SceneEditor
             buttonExport = new Button();
             buttonImport = new Button();
             buttonSave = new Button();
-            enemyImportToolStripMenuItem = new ToolStripMenuItem();
-            attackImportToolStripMenuItem = new ToolStripMenuItem();
-            sceneImportToolStripMenuItem = new ToolStripMenuItem();
             tabControlMain.SuspendLayout();
             tabPageEnemyData.SuspendLayout();
             tabControlEnemyData.SuspendLayout();
@@ -1026,7 +1026,7 @@ namespace FF7Scarlet.SceneEditor
             attackFormControl.Size = new Size(581, 454);
             attackFormControl.TabIndex = 39;
             attackFormControl.DataChanged += AttackDataChanged;
-            attackFormControl.NameChanged += textBoxEnemyName_TextChanged;
+            attackFormControl.NameChanged += textBoxAttackName_TextChanged;
             attackFormControl.DescriptionChanged += AttackDataChanged;
             // 
             // listBoxAttacks
@@ -1534,23 +1534,30 @@ namespace FF7Scarlet.SceneEditor
             // sceneCopyToolStripMenuItem
             // 
             sceneCopyToolStripMenuItem.Name = "sceneCopyToolStripMenuItem";
-            sceneCopyToolStripMenuItem.Size = new Size(180, 22);
+            sceneCopyToolStripMenuItem.Size = new Size(119, 22);
             sceneCopyToolStripMenuItem.Text = "Copy";
             sceneCopyToolStripMenuItem.Click += sceneCopyToolStripMenuItem_Click;
             // 
             // scenePasteToolStripMenuItem
             // 
             scenePasteToolStripMenuItem.Name = "scenePasteToolStripMenuItem";
-            scenePasteToolStripMenuItem.Size = new Size(180, 22);
+            scenePasteToolStripMenuItem.Size = new Size(119, 22);
             scenePasteToolStripMenuItem.Text = "Paste";
             scenePasteToolStripMenuItem.Click += scenePasteToolStripMenuItem_Click;
             // 
             // sceneClearToolStripMenuItem
             // 
             sceneClearToolStripMenuItem.Name = "sceneClearToolStripMenuItem";
-            sceneClearToolStripMenuItem.Size = new Size(180, 22);
+            sceneClearToolStripMenuItem.Size = new Size(119, 22);
             sceneClearToolStripMenuItem.Text = "Clear";
             sceneClearToolStripMenuItem.Click += sceneClearToolStripMenuItem_Click;
+            // 
+            // sceneImportToolStripMenuItem
+            // 
+            sceneImportToolStripMenuItem.Name = "sceneImportToolStripMenuItem";
+            sceneImportToolStripMenuItem.Size = new Size(119, 22);
+            sceneImportToolStripMenuItem.Text = "Import...";
+            sceneImportToolStripMenuItem.Click += buttonImport_Click;
             // 
             // enemyToolStripMenuItem
             // 
@@ -1587,6 +1594,13 @@ namespace FF7Scarlet.SceneEditor
             enemyDeleteToolStripMenuItem.Text = "Delete";
             enemyDeleteToolStripMenuItem.Click += enemyDeleteToolStripMenuItem_Click;
             // 
+            // enemyImportToolStripMenuItem
+            // 
+            enemyImportToolStripMenuItem.Name = "enemyImportToolStripMenuItem";
+            enemyImportToolStripMenuItem.Size = new Size(172, 22);
+            enemyImportToolStripMenuItem.Text = "Import...";
+            enemyImportToolStripMenuItem.Click += buttonImport_Click;
+            // 
             // selectedAttackToolStripMenuItem
             // 
             selectedAttackToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewAttackToolStripMenuItem, attackCopyToolStripMenuItem, attackPasteToolStripMenuItem, attackDeleteToolStripMenuItem, attackImportToolStripMenuItem });
@@ -1597,28 +1611,35 @@ namespace FF7Scarlet.SceneEditor
             // createNewAttackToolStripMenuItem
             // 
             createNewAttackToolStripMenuItem.Name = "createNewAttackToolStripMenuItem";
-            createNewAttackToolStripMenuItem.Size = new Size(180, 22);
+            createNewAttackToolStripMenuItem.Size = new Size(168, 22);
             createNewAttackToolStripMenuItem.Text = "Create new attack";
             // 
             // attackCopyToolStripMenuItem
             // 
             attackCopyToolStripMenuItem.Name = "attackCopyToolStripMenuItem";
-            attackCopyToolStripMenuItem.Size = new Size(180, 22);
+            attackCopyToolStripMenuItem.Size = new Size(168, 22);
             attackCopyToolStripMenuItem.Text = "Copy";
             attackCopyToolStripMenuItem.Click += attackCopyToolStripMenuItem_Click;
             // 
             // attackPasteToolStripMenuItem
             // 
             attackPasteToolStripMenuItem.Name = "attackPasteToolStripMenuItem";
-            attackPasteToolStripMenuItem.Size = new Size(180, 22);
+            attackPasteToolStripMenuItem.Size = new Size(168, 22);
             attackPasteToolStripMenuItem.Text = "Paste";
             attackPasteToolStripMenuItem.Click += attackPasteToolStripMenuItem_Click;
             // 
             // attackDeleteToolStripMenuItem
             // 
             attackDeleteToolStripMenuItem.Name = "attackDeleteToolStripMenuItem";
-            attackDeleteToolStripMenuItem.Size = new Size(180, 22);
+            attackDeleteToolStripMenuItem.Size = new Size(168, 22);
             attackDeleteToolStripMenuItem.Text = "Delete";
+            // 
+            // attackImportToolStripMenuItem
+            // 
+            attackImportToolStripMenuItem.Name = "attackImportToolStripMenuItem";
+            attackImportToolStripMenuItem.Size = new Size(168, 22);
+            attackImportToolStripMenuItem.Text = "Import...";
+            attackImportToolStripMenuItem.Click += buttonImport_Click;
             // 
             // selectedFormationToolStripMenuItem
             // 
@@ -1766,27 +1787,6 @@ namespace FF7Scarlet.SceneEditor
             buttonSave.Text = "Save scene.bin";
             buttonSave.UseVisualStyleBackColor = true;
             buttonSave.Click += buttonSave_Click;
-            // 
-            // enemyImportToolStripMenuItem
-            // 
-            enemyImportToolStripMenuItem.Name = "enemyImportToolStripMenuItem";
-            enemyImportToolStripMenuItem.Size = new Size(172, 22);
-            enemyImportToolStripMenuItem.Text = "Import...";
-            enemyImportToolStripMenuItem.Click += buttonImport_Click;
-            // 
-            // attackImportToolStripMenuItem
-            // 
-            attackImportToolStripMenuItem.Name = "attackImportToolStripMenuItem";
-            attackImportToolStripMenuItem.Size = new Size(180, 22);
-            attackImportToolStripMenuItem.Text = "Import...";
-            attackImportToolStripMenuItem.Click += buttonImport_Click;
-            // 
-            // sceneImportToolStripMenuItem
-            // 
-            sceneImportToolStripMenuItem.Name = "sceneImportToolStripMenuItem";
-            sceneImportToolStripMenuItem.Size = new Size(180, 22);
-            sceneImportToolStripMenuItem.Text = "Import...";
-            sceneImportToolStripMenuItem.Click += buttonImport_Click;
             // 
             // SceneEditorForm
             // 
