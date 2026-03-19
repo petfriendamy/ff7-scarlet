@@ -63,5 +63,29 @@ namespace FF7Scarlet.Shared
                 }
             }
         }
+
+        /// <summary>
+        /// Recursively updates all inner controls.
+        /// </summary>
+        /// <param name="ctrl">The control to update.</param>
+        public static void ForceUpdate(Control ctrl)
+        {
+            ctrl.Update();
+            foreach (Control c in ctrl.Controls)
+            {
+                ForceUpdate(c);
+            }
+            if (ctrl is TabControl) //get inner tabs
+            {
+                var innerTab = ctrl as TabControl;
+                if (innerTab != null)
+                {
+                    for (int j = 0; j < innerTab.TabCount; ++j)
+                    {
+                        ForceUpdate(innerTab.TabPages[j]);
+                    }
+                }
+            }
+        }
     }
 }

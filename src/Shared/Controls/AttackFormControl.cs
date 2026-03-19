@@ -230,6 +230,7 @@ namespace FF7Scarlet.Shared.Controls
 
         public void SyncAttackData(Attack attack)
         {
+            FormFunctions.ForceUpdate(this);
             attack.AccuracyRate = (byte)numericAttackAttackPercent.Value;
             attack.MPCost = (ushort)numericAttackMPCost.Value;
             attack.TargetFlags = targetDataControlAttack.GetTargetData();

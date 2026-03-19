@@ -40,7 +40,7 @@ namespace FF7Scarlet.KernelEditor
         private List<ushort> syncedAttackIDs = new();
         private List<IndependentMateriaTypes> independentMateriaTypes = new();
         private List<SpellIndex>[] SpellIndexes = new List<SpellIndex>[(int)SpellType.Unlisted];
-        private int prevCommand, prevCharacter, prevItem, prevWeapon, prevArmor, prevAccessory, prevMateria;
+        private int prevCommand, prevAttack, prevCharacter, prevItem, prevWeapon, prevArmor, prevAccessory, prevMateria;
         private bool
             commandNeedsSync = false,
             attackNeedsSync = false,
@@ -1697,6 +1697,7 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="command">The selected command</param>
         private void SyncCommandData(Command command)
         {
+            FormFunctions.ForceUpdate(tabPageCommandData);
             int i = comboBoxCommandInitialCursorAction.SelectedIndex;
             if (i <= 0)
             {
@@ -1711,11 +1712,22 @@ namespace FF7Scarlet.KernelEditor
         }
 
         /// <summary>
+        /// Update the selected attack with info from controls
+        /// </summary>
+        /// <param name="attack">The selected attack</param>
+        private void SyncAttackData(Attack attack)
+        {
+            attackFormControl.SyncAttackData(attack);
+            attackNeedsSync = false;
+        }
+
+        /// <summary>
         /// Update the selected character with info from controls
         /// </summary>
         /// <param name="chara">The selected character</param>
         private void SyncInitialStats(Character chara)
         {
+            FormFunctions.ForceUpdate(tabPageInitCharacterStats);
             chara.Name = new FFText(textBoxCharacterName.Text, isJapanese: DisplayJapaneseText);
             chara.Level = (byte)numericCharacterLevel.Value;
             chara.CurrentEXP = (uint)numericCharacterCurrentEXP.Value;
@@ -1756,6 +1768,7 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="item">The selected item</param>
         private void SyncItemData(Item item)
         {
+            FormFunctions.ForceUpdate(tabPageItemData);
             item.DamageCalculationId = damageCalculationControlItem.ActualValue;
             item.AttackPower = damageCalculationControlItem.AttackPower;
             item.TargetData = targetDataControlItem.GetTargetData();
@@ -1773,6 +1786,7 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="weapon">The selected weapon</param>
         private void SyncWeaponData(Weapon weapon)
         {
+            FormFunctions.ForceUpdate(tabPageWeaponData);
             weapon.AccuracyRate = (byte)numericWeaponHitChance.Value;
             weapon.CriticalRate = (byte)numericWeaponCritChance.Value;
             byte modelIndex = HexParser.MergeNybbles((byte)numericWeaponAnimationIndex.Value,
@@ -1814,6 +1828,7 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="armor">The selected armor</param>
         private void SyncArmorData(Armor armor)
         {
+            FormFunctions.ForceUpdate(tabPageArmorData);
             armor.Defense = (byte)numericArmorDefense.Value;
             armor.Evade = (byte)numericArmorDefensePercent.Value;
             armor.MagicDefense = (byte)numericArmorMagicDefense.Value;
@@ -1861,6 +1876,7 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="acc">The selected accessory</param>
         private void SyncAccessoryData(Accessory acc)
         {
+            FormFunctions.ForceUpdate(tabPageAccessoryData);
             acc.ElementalDefense = elementsControlAccessory.GetElements();
             int temp = comboBoxAccessoryElementModifier.SelectedIndex;
             if (temp == 0)
@@ -1900,6 +1916,7 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="materia">The selected materia</param>
         private void SyncMateriaData(Materia materia)
         {
+            FormFunctions.ForceUpdate(tabPageMateriaData);
             var elem = Enum.GetValues<MateriaElements>();
             if (comboBoxMateriaElement.SelectedIndex == 0)
             {
@@ -1943,7 +1960,7 @@ namespace FF7Scarlet.KernelEditor
             }
             if (attackNeedsSync && SelectedAttack != null)
             {
-                attackFormControl.SyncAttackData(SelectedAttack);
+                SyncAttackData(SelectedAttack);
             }
             if (initialStatsNeedSync && SelectedCharacter != null)
             {
@@ -2153,6 +2170,15 @@ namespace FF7Scarlet.KernelEditor
         {
             if (!loading)
             {
+                if (attackNeedsSync) //sync unsaved attack data
+                {
+                    var atk = kernel.AttackData.Attacks[prevAttack];
+                    if (atk != null)
+                    {
+                        SyncAttackData(atk);
+                    }
+                }
+                prevAttack = SelectedAttackIndex;
                 PopulateTabWithSelected(KernelSection.AttackData);
             }
         }

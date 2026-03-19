@@ -718,6 +718,7 @@ namespace FF7Scarlet.SceneEditor
 
         private void SyncEnemyData(Enemy enemy)
         {
+            FormFunctions.ForceUpdate(tabControlEnemyData);
             enemy.Level = (byte)numericEnemyLevel.Value;
             enemy.Speed = (byte)numericEnemySpeed.Value;
             enemy.Luck = (byte)numericEnemyLuck.Value;
@@ -944,6 +945,7 @@ namespace FF7Scarlet.SceneEditor
 
         private void SyncFormationEnemyData(EnemyLocation enemy)
         {
+            FormFunctions.ForceUpdate(tabPageFormationData);
             enemy.Location = new Point3D((short)numericFormationEnemyX.Value, (short)numericFormationEnemyY.Value,
                 (short)numericFormationEnemyZ.Value);
             enemy.Row = (ushort)numericFormationEnemyRow.Value;
