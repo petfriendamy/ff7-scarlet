@@ -925,6 +925,8 @@ namespace FF7Scarlet.SceneEditor
 
         private void SyncFormationData(Formation formation)
         {
+            FormFunctions.ForceUpdate(tabPageFormationDataInner);
+
             //battle setup data
             formation.BattleSetupData.Location = locationList[comboBoxFormationLocation.SelectedIndex];
             formation.BattleSetupData.BattleFlags = battleFlagsControlFormation.GetFlags();
@@ -945,7 +947,7 @@ namespace FF7Scarlet.SceneEditor
 
         private void SyncFormationEnemyData(EnemyLocation enemy)
         {
-            FormFunctions.ForceUpdate(tabPageFormationData);
+            FormFunctions.ForceUpdate(tabPageFormationDataInner);
             enemy.Location = new Point3D((short)numericFormationEnemyX.Value, (short)numericFormationEnemyY.Value,
                 (short)numericFormationEnemyZ.Value);
             enemy.Row = (ushort)numericFormationEnemyRow.Value;
