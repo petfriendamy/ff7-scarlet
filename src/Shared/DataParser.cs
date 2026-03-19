@@ -238,7 +238,7 @@ namespace FF7Scarlet.Shared
 
         public static string GetAttackNameString(Attack atk, bool jpText)
         {
-            if (string.IsNullOrEmpty(atk.Name)) { return $"Unnamed ({atk.Index:X4})"; }
+            if (atk.Name == null) { return $"Unnamed ({atk.Index:X4})"; }
             else { return atk.Name.ToString(jpText); }
         }
 

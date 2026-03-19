@@ -119,12 +119,12 @@ namespace FF7Scarlet.KernelEditor.Controls
 
         private void comboBoxStat3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            EnableOrDisableNumeric(3, sender, e);
+            EnableOrDisableNumeric(2, sender, e);
         }
 
         private void comboBoxStat4_SelectedIndexChanged(object sender, EventArgs e)
         {
-            EnableOrDisableNumeric(4, sender, e);
+            EnableOrDisableNumeric(3, sender, e);
         }
 
         private void InvokeDataChanged(object? sender, EventArgs e)
