@@ -1598,6 +1598,7 @@ namespace FF7Scarlet.SceneEditor
                 if (newItem == 0)
                 {
                     SelectedEnemy.ItemDropRates[selectedItem] = null;
+                    listBoxEnemyItemDropRates.Items[selectedItem] = "(none)";
                     EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, true, comboBoxEnemyDropItemID);
                 }
                 else
