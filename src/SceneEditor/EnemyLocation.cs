@@ -69,7 +69,7 @@ namespace FF7Scarlet.SceneEditor
                 {
                     writer.Write(b);
                 }
-                writer.Write((uint)InitialConditionFlags);
+                writer.Write((int)InitialConditionFlags);
             }
             return data;
         }

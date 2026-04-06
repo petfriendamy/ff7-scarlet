@@ -1,4 +1,6 @@
-﻿namespace FF7Scarlet.SceneEditor
+﻿using FF7Scarlet.Shared;
+
+namespace FF7Scarlet.SceneEditor
 {
     public partial class InitialConditionControl : UserControl
     {
@@ -27,10 +29,10 @@
 
         public InitialConditions GetFlags()
         {
-            InitialConditions flags = 0;
+            InitialConditions flags = (InitialConditions)HexParser.NULL_OFFSET_32_BIT;
             for (int i = 0; i < conditionFlags.Length; ++i)
             {
-                if (checkBoxes[i].Checked) { flags |= conditionFlags[i]; }
+                if (!checkBoxes[i].Checked) { flags &= ~conditionFlags[i]; }
             }
             return flags;
         }

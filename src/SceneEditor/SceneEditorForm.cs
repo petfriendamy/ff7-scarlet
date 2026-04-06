@@ -684,7 +684,7 @@ namespace FF7Scarlet.SceneEditor
                         int j = validEnemies.IndexOf(e);
                         if (j >= 0)
                         {
-                            comboBoxFormationSelectedEnemy.Items[j] = name;
+                            comboBoxFormationSelectedEnemy.Items[j + 1] = name;
                         }
                     }
                     loading = false;
@@ -997,7 +997,7 @@ namespace FF7Scarlet.SceneEditor
                     }
                     if (formationEnemyNeedsSync)
                     {
-                        int fe = comboBoxFormationSelectedEnemy.SelectedIndex;
+                        int fe = SelectedFormationEnemyIndex;
                         if (prev) { fe = prevFormationEnemy; }
                         SyncFormationEnemyData(form.EnemyLocations[fe]);
                     }
@@ -2295,7 +2295,7 @@ namespace FF7Scarlet.SceneEditor
                     //remove enemy from valid enemies list
                     i = validEnemies.IndexOf(SelectedEnemy);
                     validEnemies.RemoveAt(i);
-                    comboBoxFormationSelectedEnemy.Items.RemoveAt(i);
+                    comboBoxFormationSelectedEnemy.Items.RemoveAt(i + 1);
 
                     //delete the enemy
                     SelectedScene.Enemies[SelectedEnemyIndex] = null;
