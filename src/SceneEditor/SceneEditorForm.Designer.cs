@@ -1800,6 +1800,7 @@ namespace FF7Scarlet.SceneEditor
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(800, 600);
             Name = "SceneEditorForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Scarlet - Scene Editor";
             FormClosing += SceneEditorForm_FormClosing;
             FormClosed += SceneEditorForm_FormClosed;

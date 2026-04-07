@@ -327,6 +327,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(600, 420);
             Name = "SettingsForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Scarlet - Settings";
             groupBoxBattleLgp.ResumeLayout(false);
             groupBoxBattleLgp.PerformLayout();

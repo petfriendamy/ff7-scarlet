@@ -307,6 +307,7 @@ namespace FF7Scarlet.AIEditor
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4, 3, 4, 3);
             Name = "CodeForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Add/edit code";
             tabControlOptions.ResumeLayout(false);
             tabPageGenerate.ResumeLayout(false);

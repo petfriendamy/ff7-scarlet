@@ -257,6 +257,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(760, 460);
             Name = "Formation3DEditorForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Edit formation";
             FormClosing += Formation3DEditorForm_FormClosing;
             FormClosed += Formation3DEditorForm_FormClosed;

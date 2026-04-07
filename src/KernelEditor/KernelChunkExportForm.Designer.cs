@@ -192,7 +192,7 @@
             // buttonExport
             // 
             buttonExport.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            buttonExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             buttonExport.Location = new Point(14, 380);
             buttonExport.Margin = new Padding(4, 3, 4, 3);
             buttonExport.Name = "buttonExport";
@@ -502,6 +502,7 @@
             MinimumSize = new Size(600, 460);
             Name = "KernelChunkExportForm";
             SizeGripStyle = SizeGripStyle.Hide;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Export kernel chunks";
             Load += KernelChunkExportForm_Load;
             groupBoxKernel1Chunks.ResumeLayout(false);

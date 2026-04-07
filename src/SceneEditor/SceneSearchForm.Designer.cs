@@ -204,6 +204,7 @@
             DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "SceneSearchForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Search scene";
             panelBottom.ResumeLayout(false);
             tabControlMain.ResumeLayout(false);

@@ -193,6 +193,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(430, 215);
             Name = "MateriaSpellsForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Scarlet - Materia attributes";
             groupBoxSpells.ResumeLayout(false);
             groupBoxSpells.PerformLayout();

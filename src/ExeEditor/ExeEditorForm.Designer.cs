@@ -3211,6 +3211,7 @@ namespace FF7Scarlet.ExeEditor
             Margin = new Padding(4, 3, 4, 3);
             MinimumSize = new Size(800, 640);
             Name = "ExeEditorForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Scarlet - EXE Editor";
             FormClosing += ExeEditorForm_FormClosing;
             tabControlMain.ResumeLayout(false);

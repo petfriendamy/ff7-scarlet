@@ -77,7 +77,6 @@
             // 
             listBoxSpellList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBoxSpellList.FormattingEnabled = true;
-            listBoxSpellList.ItemHeight = 15;
             listBoxSpellList.Location = new Point(6, 22);
             listBoxSpellList.Name = "listBoxSpellList";
             listBoxSpellList.Size = new Size(248, 199);
@@ -117,6 +116,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(240, 280);
             Name = "MagicOrderForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Set magic order";
             groupBoxSpellList.ResumeLayout(false);
             ResumeLayout(false);

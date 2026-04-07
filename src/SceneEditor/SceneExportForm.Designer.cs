@@ -407,6 +407,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(500, 380);
             Name = "SceneExportForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Export scenes";
             FormClosing += SceneExportForm_FormClosing;
             groupBoxExport.ResumeLayout(false);

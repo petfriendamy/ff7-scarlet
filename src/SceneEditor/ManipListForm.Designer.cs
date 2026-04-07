@@ -114,7 +114,6 @@
             // 
             listBoxAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             listBoxAttacks.FormattingEnabled = true;
-            listBoxAttacks.ItemHeight = 15;
             listBoxAttacks.Location = new Point(6, 22);
             listBoxAttacks.Name = "listBoxAttacks";
             listBoxAttacks.Size = new Size(328, 49);
@@ -133,6 +132,7 @@
             Controls.Add(buttonOK);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ManipListForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Manipulate list";
             groupBoxAttacks.ResumeLayout(false);
             ResumeLayout(false);

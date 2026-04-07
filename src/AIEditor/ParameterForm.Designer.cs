@@ -96,24 +96,18 @@ namespace FF7Scarlet.AIEditor
             // parameterControl2
             // 
             parameterControl2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            parameterControl2.Checked = false;
             parameterControl2.Location = new Point(13, 39);
             parameterControl2.Margin = new Padding(4, 3, 4, 3);
-            parameterControl2.Modifier = 55;
             parameterControl2.Name = "parameterControl2";
-            parameterControl2.Operand = 255;
             parameterControl2.Size = new Size(538, 27);
             parameterControl2.TabIndex = 18;
             // 
             // parameterControl1
             // 
             parameterControl1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            parameterControl1.Checked = false;
             parameterControl1.Location = new Point(13, 6);
             parameterControl1.Margin = new Padding(4, 3, 4, 3);
-            parameterControl1.Modifier = 55;
             parameterControl1.Name = "parameterControl1";
-            parameterControl1.Operand = 255;
             parameterControl1.Size = new Size(538, 27);
             parameterControl1.TabIndex = 17;
             // 
@@ -180,6 +174,7 @@ namespace FF7Scarlet.AIEditor
             Margin = new Padding(4, 3, 4, 3);
             MinimumSize = new Size(580, 256);
             Name = "ParameterForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Add/edit parameter";
             panelButtons.ResumeLayout(false);
             panelMain.ResumeLayout(false);

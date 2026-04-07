@@ -217,6 +217,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(428, 260);
             Name = "MateriaEffectScaleForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Materia attributes";
             groupBoxSpells.ResumeLayout(false);
             groupBoxSpells.PerformLayout();

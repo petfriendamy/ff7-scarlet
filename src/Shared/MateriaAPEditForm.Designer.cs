@@ -148,6 +148,7 @@
             Controls.Add(labelMateriaID);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MateriaAPEditForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Edit Materia";
             ((System.ComponentModel.ISupportInitialize)numericCurrentAP).EndInit();
             groupBoxEnemySkills.ResumeLayout(false);

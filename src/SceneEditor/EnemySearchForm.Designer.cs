@@ -47,7 +47,6 @@
             // 
             listBoxResults.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBoxResults.FormattingEnabled = true;
-            listBoxResults.ItemHeight = 15;
             listBoxResults.Location = new Point(12, 27);
             listBoxResults.Name = "listBoxResults";
             listBoxResults.Size = new Size(322, 124);
@@ -81,7 +80,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = buttonCancel;
-            ClientSize = new Size(346, 196);
+            ClientSize = new Size(342, 192);
             ControlBox = false;
             Controls.Add(buttonCancel);
             Controls.Add(buttonSelect);
@@ -91,6 +90,7 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "EnemySearchForm";
             ShowIcon = false;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Search results";
             ResumeLayout(false);
             PerformLayout();

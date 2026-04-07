@@ -598,6 +598,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "CurveEditForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Edit base curve";
             groupBoxUsedBy.ResumeLayout(false);
             groupBoxBracket1.ResumeLayout(false);

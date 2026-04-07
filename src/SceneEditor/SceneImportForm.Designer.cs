@@ -78,6 +78,7 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "SceneImportForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Scene chunk import";
             ResumeLayout(false);
             PerformLayout();

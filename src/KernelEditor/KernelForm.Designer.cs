@@ -3479,14 +3479,14 @@
             // useKernel2StringsToolStripMenuItem
             // 
             useKernel2StringsToolStripMenuItem.Name = "useKernel2StringsToolStripMenuItem";
-            useKernel2StringsToolStripMenuItem.Size = new Size(180, 22);
+            useKernel2StringsToolStripMenuItem.Size = new Size(172, 22);
             useKernel2StringsToolStripMenuItem.Text = "Use kernel2 strings";
             useKernel2StringsToolStripMenuItem.Click += useKernel2StringsToolStripMenuItem_Click;
             // 
             // japaneseTextToolStripMenuItem
             // 
             japaneseTextToolStripMenuItem.Name = "japaneseTextToolStripMenuItem";
-            japaneseTextToolStripMenuItem.Size = new Size(180, 22);
+            japaneseTextToolStripMenuItem.Size = new Size(172, 22);
             japaneseTextToolStripMenuItem.Text = "Use Japanese text";
             japaneseTextToolStripMenuItem.Click += japaneseTextToolStripMenuItem_Click;
             // 
@@ -3503,6 +3503,7 @@
             Margin = new Padding(4, 3, 4, 3);
             MinimumSize = new Size(800, 600);
             Name = "KernelForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Scarlet - Kernel Editor";
             FormClosing += KernelForm_FormClosing;
             tabControlMain.ResumeLayout(false);

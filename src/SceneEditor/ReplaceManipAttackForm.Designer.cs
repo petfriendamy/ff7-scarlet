@@ -48,7 +48,6 @@
             // 
             listBoxAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             listBoxAttacks.FormattingEnabled = true;
-            listBoxAttacks.ItemHeight = 15;
             listBoxAttacks.Location = new Point(12, 27);
             listBoxAttacks.Name = "listBoxAttacks";
             listBoxAttacks.Size = new Size(340, 49);
@@ -91,6 +90,7 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "ReplaceManipAttackForm";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Manip list full";
             ResumeLayout(false);
             PerformLayout();
