@@ -342,6 +342,13 @@ namespace FF7Scarlet.SceneEditor
             if (ScriptsLoaded) { ParseAIScripts(); }
         }
 
+        public ushort GetUnusedModelID()
+        {
+            ushort value = 0;
+            while (GetEnemyByID(value) != null) { value++; }
+            return value;
+        }
+
         public void ParseAIScripts()
         {
             if (!IsEmpty()) //no need to parse an empty scene

@@ -2257,7 +2257,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedEnemyIndex != -1 && SelectedScene != null && DataManager.CopiedEnemy != null)
             {
-                var temp = new Enemy(DataManager.CopiedEnemy);
+                var temp = new Enemy(DataManager.CopiedEnemy, SelectedScene);
                 bool result = LoadEnemyData(temp, true, true);
                 if (result)
                 {

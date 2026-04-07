@@ -81,7 +81,7 @@ namespace FF7Scarlet.SceneEditor
             get { return itemDropRates; }
         }
 
-        public Enemy(Scene parent, ushort modelID, FFText name, byte[]? data) :base(parent)
+        public Enemy(Scene parent, ushort modelID, FFText name, byte[]? data) : base(parent)
         {
             if (name.Length > NAME_LENGTH)
             {
@@ -107,7 +107,7 @@ namespace FF7Scarlet.SceneEditor
             else { ParseData(data); }
         }
 
-        public Enemy(Enemy other) :base(other.Parent)
+        public Enemy(Enemy other) : base(new Scene())
         {
             ModelID = other.ModelID;
             Name = other.Name;
@@ -116,6 +116,16 @@ namespace FF7Scarlet.SceneEditor
             {
                 Scripts[i] = new Script(other.Scripts[i]);
             }
+        }
+
+        public Enemy(Enemy other, Scene parent) : this(other)
+        {
+            if (parent.GetEnemyByID(ModelID) != null)
+            {
+                //set to a new model ID if it's already being used in the scene
+                ModelID = parent.GetUnusedModelID();
+            }
+            Parent = parent;
         }
 
         private void ParseData(byte[] data)
