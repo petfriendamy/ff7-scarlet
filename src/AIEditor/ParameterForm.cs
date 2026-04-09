@@ -230,6 +230,16 @@ namespace FF7Scarlet.AIEditor
                                 //add modifier
                                 if (p.Modifier != 0xFF)
                                 {
+                                    var mod = OpcodeInfo.GetInfo(p.Modifier);
+                                    if (mod != null && mod.Group == OpcodeGroups.BitOperation)
+                                    {
+                                        //clear the stack for bit operation modifiers
+                                        while (operandStack.Count > 0)
+                                        {
+                                            firstParse.Add(new CodeLine(parentScript,
+                                                HexParser.NULL_OFFSET_16_BIT, operandStack.Pop().Code));
+                                        }
+                                    }
                                     firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
                                         p.Modifier));
                                 }
