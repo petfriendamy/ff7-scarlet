@@ -73,6 +73,47 @@ namespace FF7Scarlet.SceneEditor
             return (Enemies[0] == null && Enemies[1] == null && Enemies[2] == null);
         }
 
+        public void ChangeEnemyAtSlot(Enemy? newEnemy, int i, bool replaceInFormations)
+        {
+            if (i >= 0 && i < ENEMY_COUNT)
+            {
+                var currEnemy = Enemies[i];
+                if (currEnemy != null)
+                {
+                    ushort newID = HexParser.NULL_OFFSET_16_BIT;
+
+                    //get the new enemy ID
+                    if (replaceInFormations)
+                    {
+                        if (newEnemy != null)
+                        {
+                            if (currEnemy.ModelID != newEnemy.ModelID)
+                            {
+                                newID = newEnemy.ModelID;
+                            }
+                            else
+                            {
+                                newID = currEnemy.ModelID;
+                            }
+                        }
+                    }
+
+                    //find all instances of the current enemy in formations
+                    foreach (var form in Formations)
+                    {
+                        foreach (var loc in form.EnemyLocations)
+                        {
+                            if (loc.EnemyID == currEnemy.ModelID)
+                            {
+                                loc.EnemyID = newID;
+                            }
+                        }
+                    }
+                }
+                Enemies[i] = newEnemy;
+            }
+        }
+
         public Enemy? GetEnemyByID(ushort id)
         {
             if (id != HexParser.NULL_OFFSET_16_BIT)

@@ -627,28 +627,29 @@ namespace FF7Scarlet.SceneEditor
             {
                 //get a valid model ID
                 ushort id = 0;
+                bool replace = false;
                 var enemy = scene.Enemies[enemyIndex];
                 if (enemy != null)
                 {
                     id = enemy.ModelID;
+                    var dialog = MessageDialog.AskYesNoCancel("Replace the existing enemy in formations?");
+                    if (dialog == DialogResult.Cancel) { return; }
+                    replace = dialog == DialogResult.Yes;
                 }
                 else
                 {
-                    while (scene.GetEnemyByID(id) != null)
-                    {
-                        id++;
-                    }
+                    id = scene.GetUnusedModelID();
                 }
 
-                enemy = new Enemy(scene, id, new FFText(), null);
-                scene.Enemies[enemyIndex] = enemy;
-                validEnemies.Add(enemy);
-                comboBoxFormationSelectedEnemy.Items.Add(enemy.GetNameString(DisplayJapaneseText));
+                enemy = new Enemy(scene, id, new FFText("(New enemy)"), null);
+                scene.ChangeEnemyAtSlot(enemy, enemyIndex, replace);
+                validEnemies[enemyIndex] = enemy;
+                comboBoxFormationSelectedEnemy.Items[enemyIndex + 1] = enemy.GetNameString(DisplayJapaneseText);
                 tabControlMain.SelectedTab = tabPageEnemyData;
                 UpdateSelectedEnemyName(sceneIndex, enemyIndex, formationIndex);
                 enemyNeedsSync = false;
                 SetUnsaved(true);
-                LoadEnemyData(enemy, false, true);
+                LoadEnemyData(enemy, true, true);
             }
         }
 
@@ -2258,10 +2259,19 @@ namespace FF7Scarlet.SceneEditor
             if (SelectedEnemyIndex != -1 && SelectedScene != null && DataManager.CopiedEnemy != null)
             {
                 var temp = new Enemy(DataManager.CopiedEnemy, SelectedScene);
+                bool replace = false;
+                if (SelectedEnemy != null)
+                {
+                    var dialog = MessageDialog.AskYesNoCancel("Replace the existing enemy in formations?");
+                    if (dialog == DialogResult.Cancel) { return; }
+                    replace = dialog == DialogResult.Yes;
+                }
+
+                //load the new enemy
                 bool result = LoadEnemyData(temp, true, true);
                 if (result)
                 {
-                    SelectedScene.Enemies[SelectedEnemyIndex] = temp;
+                    SelectedScene.ChangeEnemyAtSlot(temp, SelectedEnemyIndex, replace);
                     UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
                     tabControlMain.SelectedTab = tabPageEnemyData;
                     enemyNeedsSync = false;
@@ -2298,7 +2308,7 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxFormationSelectedEnemy.Items.RemoveAt(i + 1);
 
                     //delete the enemy
-                    SelectedScene.Enemies[SelectedEnemyIndex] = null;
+                    SelectedScene.ChangeEnemyAtSlot(null, SelectedEnemyIndex, false);
                     UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
                     tabControlEnemyData.Enabled = false;
                     enemyDeleteToolStripMenuItem.Enabled = false;
