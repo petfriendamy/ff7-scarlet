@@ -177,7 +177,7 @@ namespace FF7Scarlet.AIEditor
                         pop1 = block[1] as CodeLine;
                         if (pop1 != null && pop1.Parameter != null)
                         {
-                            sb.Append($"If ({block[0].Disassemble(jpText, false)}) (else goto label {BitConverter.ToUInt16(pop1.Parameter)})");
+                            sb.Append($"If ({block[0].Disassemble(jpText, false)}) (else goto label {BitConverter.ToUInt16(pop1.Parameter.Length == 1 ? [0x00, pop1.Parameter[0]] : pop1.Parameter)})");
                         }
                         break;
                     case Opcodes.JumpNotEqual:
