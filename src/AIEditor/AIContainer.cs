@@ -47,12 +47,13 @@ namespace FF7Scarlet.AIEditor
             return -1;
         }
 
-        public void ParseScripts(byte[] data, int headerSize, int offset, int nextOffset)
+        public void ParseScripts(byte[] data, int headerSize, ushort offset, ushort nextOffset)
         {
-            int i, j, next, start, length;
+            int i, j;
+            ushort next, start, length;
 
             //get script offsets
-            var scriptOffsets = new int[SCRIPT_NUMBER];
+            var scriptOffsets = new ushort[SCRIPT_NUMBER];
             for (i = 0; i < SCRIPT_NUMBER; ++i)
             {
                 scriptOffsets[i] = BitConverter.ToUInt16(data, (i * 2) + offset - headerSize);
@@ -63,31 +64,31 @@ namespace FF7Scarlet.AIEditor
             {
                 if (scriptOffsets[i] != HexParser.NULL_OFFSET_16_BIT) //check if the script exists
                 {
-                    next = -1;
-                    for (j = i + 1; j < SCRIPT_NUMBER && next == -1; ++j) //check for next script (if it exists)
+                    next = HexParser.NULL_OFFSET_16_BIT;
+                    for (j = i + 1; j < SCRIPT_NUMBER && next == HexParser.NULL_OFFSET_16_BIT; ++j) //check for next script (if it exists)
                     {
                         if (scriptOffsets[j] != HexParser.NULL_OFFSET_16_BIT)
                         {
                             next = scriptOffsets[j];
                         }
                     }
-                    if (next == -1) //no more scripts after this one
+                    if (next == HexParser.NULL_OFFSET_16_BIT) //no more scripts after this one
                     {
                         next = nextOffset;
                     }
 
                     //figure out script position and length
-                    start = offset + scriptOffsets[i] - headerSize;
-                    if (next == -1)
+                    start = (ushort)(offset + scriptOffsets[i] - headerSize);
+                    if (next == HexParser.NULL_OFFSET_16_BIT)
                     {
-                        length = data.Length - start;
+                        length = (ushort)(data.Length - start);
                     }
                     else
                     {
-                        length = next + offset - headerSize - start;
+                        length = (ushort)(next + offset - headerSize - start);
                         if (start + length > data.Length)
                         {
-                            length = data.Length - start;
+                            length = (ushort)(data.Length - start);
                         }
                     }
 

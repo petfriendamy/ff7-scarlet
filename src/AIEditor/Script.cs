@@ -26,7 +26,7 @@ namespace FF7Scarlet.AIEditor
             Parent = parent;
         }
 
-        public Script(AIContainer parent, ref byte[] data, int offset, int nextOffset) :this(parent)
+        public Script(AIContainer parent, ref byte[] data, ushort offset, ushort nextOffset) :this(parent)
         {
             ParseScript(ref data, offset, nextOffset);
         }

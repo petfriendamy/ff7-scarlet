@@ -293,7 +293,8 @@ namespace FF7Scarlet.KernelEditor
 
         public void ParseAIScripts()
         {
-            int i, j, next;
+            int i, j;
+            ushort next;
             var blockWithoutHeaders = new byte[AI_BLOCK_SIZE];
             Array.Copy(CharacterData.CharacterAIBlock, 24, blockWithoutHeaders, 0, AI_BLOCK_SIZE);
 
@@ -302,8 +303,8 @@ namespace FF7Scarlet.KernelEditor
                 CharacterAI[i] = new CharacterAI(this);
                 if (characterAIoffsets[i] != HexParser.NULL_OFFSET_16_BIT)
                 {
-                    next = -1;
-                    for (j = i + 1; j < AI_BLOCK_COUNT && next == -1; ++j)
+                    next = HexParser.NULL_OFFSET_16_BIT;
+                    for (j = i + 1; j < AI_BLOCK_COUNT && next == HexParser.NULL_OFFSET_16_BIT; ++j)
                     {
                         if (characterAIoffsets[j] != HexParser.NULL_OFFSET_16_BIT)
                         {
@@ -1373,6 +1374,12 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 if (ScriptsLoaded) //don't update scripts if not loaded
                                 {
+                                    //recompile scripts
+                                    Array.Copy(AIContainer.GetGroupedScriptBlock(AI_BLOCK_COUNT, AI_BLOCK_SIZE,
+                                        CharacterAI, ref characterAIoffsets), 0, CharacterData.CharacterAIBlock,
+                                        AI_BLOCK_COUNT * 2, AI_BLOCK_SIZE);
+
+                                    //write updated offsets
                                     i = 0;
                                     foreach (var o in characterAIoffsets)
                                     {
@@ -1380,9 +1387,6 @@ namespace FF7Scarlet.KernelEditor
                                         Array.Copy(temp, 0, CharacterData.CharacterAIBlock, i, 2);
                                         i += 2;
                                     }
-                                    Array.Copy(AIContainer.GetGroupedScriptBlock(AI_BLOCK_COUNT, AI_BLOCK_SIZE,
-                                        CharacterAI, ref characterAIoffsets), 0, CharacterData.CharacterAIBlock,
-                                        AI_BLOCK_COUNT * 2, AI_BLOCK_SIZE);
                                 }
                                 writer.Write(CharacterData.CharacterAIBlock);
                             }

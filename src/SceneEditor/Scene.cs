@@ -394,15 +394,16 @@ namespace FF7Scarlet.SceneEditor
         {
             if (!IsEmpty()) //no need to parse an empty scene
             {
-                int i, j, next;
+                int i, j;
+                ushort next;
 
                 //parse formation scripts
                 for (i = 0; i < FORMATION_COUNT; ++i)
                 {
                     if (formationAIoffset[i] != HexParser.NULL_OFFSET_16_BIT)
                     {
-                        next = -1;
-                        for (j = i + 1; j < FORMATION_COUNT && next == -1; ++j)
+                        next = HexParser.NULL_OFFSET_16_BIT;
+                        for (j = i + 1; j < FORMATION_COUNT && next == HexParser.NULL_OFFSET_16_BIT; ++j)
                         {
                             if (formationAIoffset[j] != HexParser.NULL_OFFSET_16_BIT)
                             {
@@ -437,8 +438,8 @@ namespace FF7Scarlet.SceneEditor
                     var e = Enemies[i];
                     if (e != null && enemyAIoffset[i] != HexParser.NULL_OFFSET_16_BIT)
                     {
-                        next = -1;
-                        for (j = i + 1; j < ENEMY_COUNT && next == -1; ++j)
+                        next = HexParser.NULL_OFFSET_16_BIT;
+                        for (j = i + 1; j < ENEMY_COUNT && next == HexParser.NULL_OFFSET_16_BIT; ++j)
                         {
                             if (enemyAIoffset[j] != HexParser.NULL_OFFSET_16_BIT)
                             {
