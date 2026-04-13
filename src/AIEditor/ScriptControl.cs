@@ -229,7 +229,7 @@ namespace FF7Scarlet.AIEditor
                     SelectedScript.InsertCodeAtPosition(pos, new CodeLine(SelectedScript,
                         HexParser.NULL_OFFSET_16_BIT, (byte)Opcodes.Label, label));
                 }
-                SelectedScript.AddLabel(BitConverter.ToUInt16(label));
+                SelectedScript.AddLabel(HexParser.BytesToInt(label));
             }
         }
 

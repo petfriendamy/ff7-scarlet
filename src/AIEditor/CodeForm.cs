@@ -507,7 +507,10 @@ namespace FF7Scarlet.AIEditor
 
                                     var cb = new CodeBlock(parentScript, new CodeLine(parentScript,
                                         HexParser.NULL_OFFSET_16_BIT, (byte)command.Opcode, param));
-                                    if (param2 != null) { cb.AddToTop(param2); }
+                                    if (param2 != null && command.ParameterType2 != ParameterTypes.Label)
+                                    {
+                                        cb.AddToTop(param2);
+                                    }
 
                                     cb.AddToTop(param1);
                                     Code = cb;

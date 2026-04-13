@@ -284,7 +284,7 @@ namespace FF7Scarlet.AIEditor
                 var p = newCode.GetParameter();
                 if (p != null)
                 {
-                    AddLabel(BitConverter.ToUInt16(p));
+                    AddLabel(HexParser.BytesToInt(p));
                 }
             }
             headersAreCorrect = false;
@@ -309,7 +309,7 @@ namespace FF7Scarlet.AIEditor
                     var p = newCode.GetParameter();
                     if (p != null)
                     {
-                        AddLabel(BitConverter.ToUInt16(p));
+                        AddLabel(HexParser.BytesToInt(p));
                     }
                 }
                 headersAreCorrect = false;
@@ -365,7 +365,7 @@ namespace FF7Scarlet.AIEditor
             return labels.Keys.ToArray();
         }
 
-        public void AddLabel(ushort label)
+        public void AddLabel(int label)
         {
             if (!labels.ContainsKey(label))
             {

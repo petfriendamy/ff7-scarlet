@@ -118,5 +118,12 @@ namespace FF7Scarlet.Shared
             }
             return str.ToString();
         }
+
+        public static int BytesToInt(byte[] bytes)
+        {
+            var temp = new byte[4];
+            Array.Copy(bytes, temp, Math.Min(bytes.Length, 4));
+            return BitConverter.ToInt32(temp);
+        }
     }
 }

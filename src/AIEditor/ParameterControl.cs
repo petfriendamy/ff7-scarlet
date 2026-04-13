@@ -338,24 +338,27 @@ namespace FF7Scarlet.AIEditor
                 int curr;
                 if (int.TryParse(comboBoxParameter.Text, out curr))
                 {
+                    int selected = 0;
                     comboBoxParameter.BeginUpdate();
                     comboBoxParameter.Items.Clear();
                     if (op.EnumValue == Opcodes.Label)
                     {
+                        //only current or new label (so as not to repeat labels)
                         if (curr != -1) { comboBoxParameter.Items.Add(curr); }
                     }
                     else
                     {
+                        //show all labels
                         foreach (var label in labels)
                         {
                             comboBoxParameter.Items.Add(label);
                         }
+                        selected = labels.ToList().IndexOf(curr);
+                        if (selected < 0) { selected = comboBoxParameter.Items.Count - 1; }
                     }
                     comboBoxParameter.Items.Add("--Add new label--");
                     comboBoxParameter.DropDownStyle = ComboBoxStyle.DropDownList;
                     comboBoxParameter.EndUpdate();
-                    int selected = labels.ToList().IndexOf(curr);
-                    if (selected < 0) { selected = comboBoxParameter.Items.Count - 1; }
                     comboBoxParameter.SelectedIndex = selected;
                 }
             }
