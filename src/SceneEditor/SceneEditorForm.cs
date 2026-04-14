@@ -1666,8 +1666,8 @@ namespace FF7Scarlet.SceneEditor
         private void comboBoxEnemyModelID_SelectedIndexChanged(object sender, EventArgs e)
         {
             //this one runs when battle.lgp is loaded
-            if (!loading && SelectedEnemy != null && DataManager.BattleLgpPathExists
-                && DataManager.BattleLgp != null)
+            if (!loading && SelectedScene != null && SelectedEnemy != null
+                && DataManager.BattleLgpPathExists && DataManager.BattleLgp != null)
             {
                 ushort newID = (ushort)comboBoxEnemyModelID.SelectedIndex, oldID = SelectedEnemy.ModelID;
                 if (newID >= 0 && newID < DataManager.BattleLgp.Models.Length)
@@ -1675,7 +1675,7 @@ namespace FF7Scarlet.SceneEditor
                     loading = true;
                     try
                     {
-                        SelectedEnemy.ModelID = newID;
+                        SelectedScene.ChangeEnemyModelID(SelectedEnemyIndex, newID);
                         if (DataManager.BattleLgp != null)
                         {
                             enemyModelPreviewControl.LoadModel(newID);
@@ -1695,7 +1695,8 @@ namespace FF7Scarlet.SceneEditor
         private void comboBoxEnemyModelID_TextChanged(object sender, EventArgs e)
         {
             //this one runs when battle.lgp is NOT loaded
-            if (!loading && !DataManager.BattleLgpPathExists && SelectedEnemy != null)
+            if (!loading && SelectedScene != null && SelectedEnemy != null
+                && !DataManager.BattleLgpPathExists)
             {
                 string text = comboBoxEnemyModelID.Text;
                 if (text.Length == 4)
@@ -1705,7 +1706,7 @@ namespace FF7Scarlet.SceneEditor
                     {
                         try
                         {
-                            SelectedEnemy.ModelID = newID;
+                            SelectedScene.ChangeEnemyModelID(SelectedEnemyIndex, newID);
                             SetUnsaved(true);
                         }
                         catch (ArgumentException ex)

@@ -73,6 +73,32 @@ namespace FF7Scarlet.SceneEditor
             return (Enemies[0] == null && Enemies[1] == null && Enemies[2] == null);
         }
 
+        public void ChangeEnemyModelID(int enemyID, ushort modelID)
+        {
+            if (enemyID >= 0 && enemyID < ENEMY_COUNT)
+            {
+                var enemy = Enemies[enemyID];
+                if (enemy != null)
+                {
+                    //attempt to change the model ID
+                    var oldID = enemy.ModelID;
+                    enemy.ModelID = modelID;
+
+                    //find all instances of the current enemy in formations
+                    foreach (var form in Formations)
+                    {
+                        foreach (var loc in form.EnemyLocations)
+                        {
+                            if (loc.EnemyID == oldID)
+                            {
+                                loc.EnemyID = modelID;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public void ChangeEnemyAtSlot(Enemy? newEnemy, int i, bool replaceInFormations)
         {
             if (i >= 0 && i < ENEMY_COUNT)
@@ -97,18 +123,7 @@ namespace FF7Scarlet.SceneEditor
                             }
                         }
                     }
-
-                    //find all instances of the current enemy in formations
-                    foreach (var form in Formations)
-                    {
-                        foreach (var loc in form.EnemyLocations)
-                        {
-                            if (loc.EnemyID == currEnemy.ModelID)
-                            {
-                                loc.EnemyID = newID;
-                            }
-                        }
-                    }
+                    ChangeEnemyModelID(i, newID);
                 }
                 Enemies[i] = newEnemy;
             }
