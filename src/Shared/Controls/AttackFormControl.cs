@@ -92,7 +92,7 @@ namespace FF7Scarlet.Shared.Controls
             {
                 if (c != AttackConditions.None)
                 {
-                    comboBoxAttackConditionSubMenu.Items.Add(c);
+                    comboBoxAttackConditionSubMenu.Items.Add(StringParser.AddSpaces(Enum.GetName(c)));
                 }
             }
             EnableOrDisableControls(false, false);

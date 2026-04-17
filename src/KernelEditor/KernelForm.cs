@@ -589,6 +589,16 @@ namespace FF7Scarlet.KernelEditor
                 }
             }
 
+            //condition sub-menu
+            comboBoxItemConditionSubMenu.Items.Add("None");
+            foreach (var c in Enum.GetValues<AttackConditions>())
+            {
+                if (c != AttackConditions.None)
+                {
+                    comboBoxItemConditionSubMenu.Items.Add(StringParser.AddSpaces(Enum.GetName(c)));
+                }
+            }
+
             //spell type
             for (int i = 0; i < (int)SpellType.Unlisted; ++i)
             {
@@ -1077,6 +1087,15 @@ namespace FF7Scarlet.KernelEditor
                             {
                                 var item = kernel.ItemData.Items[i];
                                 comboBoxItemAttackEffectID.Text = item.AttackEffectId.ToString("X2");
+                                numericItemStatusChangeChance.Value = item.StatusChange.Amount;
+                                if (item.ConditionSubmenu == ConditionSubmenu.None)
+                                {
+                                    comboBoxItemConditionSubMenu.SelectedIndex = 0;
+                                }
+                                else
+                                {
+                                    comboBoxItemConditionSubMenu.SelectedIndex = (int)item.ConditionSubmenu + 1;
+                                }
                             }
                             break;
 
@@ -1570,7 +1589,7 @@ namespace FF7Scarlet.KernelEditor
 
             if (SelectedCharacter != null)
             {
-                PopulateInitCharacterDataTab(SelectedCharacterIndex);    
+                PopulateInitCharacterDataTab(SelectedCharacterIndex);
             }
             PopulateInventoryListBoxes();
             if (kernel.InitialData.Party1 == 0xFF) { comboBoxParty1.SelectedIndex = 0; }
@@ -1775,6 +1794,15 @@ namespace FF7Scarlet.KernelEditor
             item.Restrictions = itemRestrictionsItem.GetItemRestrictions();
             item.Element = elementsControlItem.GetElements();
             item.Status = statusesControlItem.GetStatuses();
+            item.StatusChange.Amount = (int)numericItemStatusChangeChance.Value;
+            if (comboBoxItemConditionSubMenu.SelectedIndex == 0)
+            {
+                item.ConditionSubmenu = ConditionSubmenu.None;
+            }
+            else
+            {
+                item.ConditionSubmenu = (ConditionSubmenu)(comboBoxItemConditionSubMenu.SelectedIndex - 1);
+            }
             item.Special = specialAttackFlagsControlItem.GetFlags();
 
             itemDataNeedsSync = false;
@@ -2441,29 +2469,6 @@ namespace FF7Scarlet.KernelEditor
                         SetUnsaved(true);
                     }
                     else { SystemSounds.Exclamation.Play(); }
-                }
-            }
-        }
-
-        private void comboBoxStatusChange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (statusChangeComboBoxes.ContainsKey(CurrentSection))
-            {
-                int i = statusChangeComboBoxes[CurrentSection].SelectedIndex;
-                var status = StatusChangeType.None;
-                bool hasStatus = i > 0;
-                if (hasStatus)
-                {
-                    status = DataManager.StatusChangeTypes[i];
-                }
-                statusLists[CurrentSection].Enabled = hasStatus;
-                if (!loading)
-                {
-                    if (CurrentSection == KernelSection.ItemData && SelectedItem != null)
-                    {
-                        SelectedItem.StatusChange.Type = status;
-                    }
-                    SetUnsaved(true);
                 }
             }
         }
@@ -3290,6 +3295,18 @@ namespace FF7Scarlet.KernelEditor
                     }
                     else { SystemSounds.Exclamation.Play(); }
                 }
+            }
+        }
+
+        private void comboBoxItemStatusChange_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedItem != null)
+            {
+                int i = comboBoxItemStatusChange.SelectedIndex;
+                var status = DataManager.StatusChangeTypes[i];
+                statusesControlItem.Enabled = numericItemStatusChangeChance.Enabled =
+                    (status != StatusChangeType.None);
+                SelectedItem.StatusChange.Type = status;
             }
         }
 

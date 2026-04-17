@@ -175,7 +175,11 @@
             labelItemAttackEffectID = new Label();
             comboBoxItemCamMovementID = new ComboBox();
             tabPageItems2 = new TabPage();
+            numericItemStatusChangeChance = new NumericUpDown();
+            comboBoxItemConditionSubMenu = new ComboBox();
+            labelItemStatusChangeChance = new Label();
             comboBoxItemStatusChange = new ComboBox();
+            labelItemConditionSubMenu = new Label();
             labelItemStatusChange = new Label();
             statusesControlItem = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
             elementsControlItem = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
@@ -372,6 +376,7 @@
             tabControlItems.SuspendLayout();
             tabPageItems1.SuspendLayout();
             tabPageItems2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericItemStatusChangeChance).BeginInit();
             tabPageItems3.SuspendLayout();
             tabPageWeaponData.SuspendLayout();
             tabControlWeapons.SuspendLayout();
@@ -1971,7 +1976,11 @@
             // 
             // tabPageItems2
             // 
+            tabPageItems2.Controls.Add(numericItemStatusChangeChance);
+            tabPageItems2.Controls.Add(comboBoxItemConditionSubMenu);
+            tabPageItems2.Controls.Add(labelItemStatusChangeChance);
             tabPageItems2.Controls.Add(comboBoxItemStatusChange);
+            tabPageItems2.Controls.Add(labelItemConditionSubMenu);
             tabPageItems2.Controls.Add(labelItemStatusChange);
             tabPageItems2.Controls.Add(statusesControlItem);
             tabPageItems2.Controls.Add(elementsControlItem);
@@ -1983,15 +1992,52 @@
             tabPageItems2.Text = "Page 2";
             tabPageItems2.UseVisualStyleBackColor = true;
             // 
+            // numericItemStatusChangeChance
+            // 
+            numericItemStatusChangeChance.Location = new Point(149, 364);
+            numericItemStatusChangeChance.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
+            numericItemStatusChangeChance.Name = "numericItemStatusChangeChance";
+            numericItemStatusChangeChance.Size = new Size(108, 23);
+            numericItemStatusChangeChance.TabIndex = 48;
+            numericItemStatusChangeChance.ValueChanged += ItemDataChanged;
+            // 
+            // comboBoxItemConditionSubMenu
+            // 
+            comboBoxItemConditionSubMenu.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxItemConditionSubMenu.FormattingEnabled = true;
+            comboBoxItemConditionSubMenu.Location = new Point(6, 407);
+            comboBoxItemConditionSubMenu.Name = "comboBoxItemConditionSubMenu";
+            comboBoxItemConditionSubMenu.Size = new Size(251, 23);
+            comboBoxItemConditionSubMenu.TabIndex = 50;
+            comboBoxItemConditionSubMenu.SelectedIndexChanged += ItemDataChanged;
+            // 
+            // labelItemStatusChangeChance
+            // 
+            labelItemStatusChangeChance.AutoSize = true;
+            labelItemStatusChangeChance.Location = new Point(149, 346);
+            labelItemStatusChangeChance.Name = "labelItemStatusChangeChance";
+            labelItemStatusChangeChance.Size = new Size(108, 15);
+            labelItemStatusChangeChance.TabIndex = 47;
+            labelItemStatusChangeChance.Text = "Chance (out of 63):";
+            // 
             // comboBoxItemStatusChange
             // 
             comboBoxItemStatusChange.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxItemStatusChange.FormattingEnabled = true;
             comboBoxItemStatusChange.Location = new Point(6, 363);
             comboBoxItemStatusChange.Name = "comboBoxItemStatusChange";
-            comboBoxItemStatusChange.Size = new Size(185, 23);
-            comboBoxItemStatusChange.TabIndex = 33;
-            comboBoxItemStatusChange.SelectedIndexChanged += comboBoxStatusChange_SelectedIndexChanged;
+            comboBoxItemStatusChange.Size = new Size(137, 23);
+            comboBoxItemStatusChange.TabIndex = 46;
+            comboBoxItemStatusChange.SelectedIndexChanged += comboBoxItemStatusChange_SelectedIndexChanged;
+            // 
+            // labelItemConditionSubMenu
+            // 
+            labelItemConditionSubMenu.AutoSize = true;
+            labelItemConditionSubMenu.Location = new Point(6, 389);
+            labelItemConditionSubMenu.Name = "labelItemConditionSubMenu";
+            labelItemConditionSubMenu.Size = new Size(121, 15);
+            labelItemConditionSubMenu.TabIndex = 49;
+            labelItemConditionSubMenu.Text = "Condition sub-menu:";
             // 
             // labelItemStatusChange
             // 
@@ -1999,7 +2045,7 @@
             labelItemStatusChange.Location = new Point(6, 345);
             labelItemStatusChange.Name = "labelItemStatusChange";
             labelItemStatusChange.Size = new Size(84, 15);
-            labelItemStatusChange.TabIndex = 32;
+            labelItemStatusChange.TabIndex = 45;
             labelItemStatusChange.Text = "Status change:";
             // 
             // statusesControlItem
@@ -3572,6 +3618,7 @@
             tabPageItems1.PerformLayout();
             tabPageItems2.ResumeLayout(false);
             tabPageItems2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericItemStatusChangeChance).EndInit();
             tabPageItems3.ResumeLayout(false);
             tabPageWeaponData.ResumeLayout(false);
             tabControlWeapons.ResumeLayout(false);
@@ -3727,8 +3774,6 @@
         private Controls.StatIncreaseControl statIncreaseControlWeapon;
         private Controls.StatIncreaseControl statIncreaseControlArmor;
         private Controls.StatIncreaseControl statIncreaseControlAccessory;
-        private ComboBox comboBoxItemStatusChange;
-        private Label labelItemStatusChange;
         private Label labelArmorElementModifier;
         private ComboBox comboBoxArmorElementModifier;
         private NumericUpDown numericArmorDefense;
@@ -3907,5 +3952,11 @@
         private ToolStripMenuItem useKernel2StringsToolStripMenuItem;
         private Shared.Controls.AttackFormControl attackFormControl;
         private ToolStripMenuItem japaneseTextToolStripMenuItem;
+        private NumericUpDown numericItemStatusChangeChance;
+        private ComboBox comboBoxItemConditionSubMenu;
+        private Label labelItemStatusChangeChance;
+        private ComboBox comboBoxItemStatusChange;
+        private Label labelItemConditionSubMenu;
+        private Label labelItemStatusChange;
     }
 }
