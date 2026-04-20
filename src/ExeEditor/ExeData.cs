@@ -1041,6 +1041,10 @@ namespace FF7Scarlet.ExeEditor
                     case EXEVersion.Steam2026:
                         hash = Convert.FromHexString("ac306ae92615af75ff36bba6347c67ca1284151d");
                         if (hash.SequenceEqual(compare)) { return 1; }
+
+                        //4GB patch
+                        hash = Convert.FromHexString("D270E690A0EA2C9D57AF506D102CF1A794E2ADCD");
+                        if (hash.SequenceEqual(compare)) { return 1; }
                         break;
 
                     default:
