@@ -241,6 +241,30 @@ namespace FF7Scarlet.AIEditor
             {
                 comboBoxParameter.Items.Add(gv);
             }
+            comboBoxParameter.SelectionChangeCommitted += (sender, arguments) =>
+            {
+                var globals = CommonVarInfo<CommonVars.Globals>.GLOBALS_LIST.Where(eachGlobal =>
+                {
+                    var globalName = Enum.GetName(eachGlobal.EnumValue);
+                    return globalName is not null && globalName.Equals(comboBoxParameter.SelectedItem?.ToString(), StringComparison.OrdinalIgnoreCase);
+                });
+                var actorGlobals = CommonVarInfo<CommonVars.ActorGlobals>.ACTOR_GLOBALS_LIST.Where(eachGlobal =>
+                {
+                    var globalName = Enum.GetName(eachGlobal.EnumValue);
+                    return globalName is not null && globalName.Equals(comboBoxParameter.SelectedItem?.ToString(), StringComparison.OrdinalIgnoreCase);
+                });
+                comboBoxType.BeginUpdate();
+                comboBoxType.Items.Clear();
+                foreach (var global in globals)
+                {
+                    comboBoxType.Items.Add(paramTypes.Single(eachParamType => eachParamType.EnumValue == global.Type).ShortName);
+                }
+                foreach (var actorGlobal in actorGlobals)
+                {
+                    comboBoxType.Items.Add(paramTypes.Single(eachParamType => eachParamType.EnumValue == actorGlobal.Type).ShortName);
+                }
+                comboBoxType.EndUpdate();
+            };
             comboBoxParameter.EndUpdate();
             loading = false;
         }
