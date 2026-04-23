@@ -241,30 +241,7 @@ namespace FF7Scarlet.AIEditor
             {
                 comboBoxParameter.Items.Add(gv);
             }
-            comboBoxParameter.SelectionChangeCommitted += (sender, arguments) =>
-            {
-                var globals = CommonVarInfo<CommonVars.Globals>.GLOBALS_LIST.Where(eachGlobal =>
-                {
-                    var globalName = Enum.GetName(eachGlobal.EnumValue);
-                    return globalName is not null && globalName.Equals(comboBoxParameter.SelectedItem?.ToString(), StringComparison.OrdinalIgnoreCase);
-                });
-                var actorGlobals = CommonVarInfo<CommonVars.ActorGlobals>.ACTOR_GLOBALS_LIST.Where(eachGlobal =>
-                {
-                    var globalName = Enum.GetName(eachGlobal.EnumValue);
-                    return globalName is not null && globalName.Equals(comboBoxParameter.SelectedItem?.ToString(), StringComparison.OrdinalIgnoreCase);
-                });
-                comboBoxType.BeginUpdate();
-                comboBoxType.Items.Clear();
-                foreach (var global in globals)
-                {
-                    comboBoxType.Items.Add(paramTypes.Single(eachParamType => eachParamType.EnumValue == global.Type).ShortName);
-                }
-                foreach (var actorGlobal in actorGlobals)
-                {
-                    comboBoxType.Items.Add(paramTypes.Single(eachParamType => eachParamType.EnumValue == actorGlobal.Type).ShortName);
-                }
-                comboBoxType.EndUpdate();
-            };
+            comboBoxParameter.SelectionChangeCommitted += (sender, arguments) => FilterTypeByParameter(paramTypes, comboBoxParameter.SelectedItem?.ToString());
             comboBoxParameter.EndUpdate();
             loading = false;
         }
@@ -272,6 +249,35 @@ namespace FF7Scarlet.AIEditor
         #endregion
 
         #region User Methods
+
+        private void FilterTypeByParameter(List<OpcodeInfo> paramTypes, string? parameterName)
+        {
+            List<CommonVarInfo> allGlobals = [.. CommonVarInfo.GLOBALS_LIST];
+            allGlobals.AddRange(CommonVarInfo.ACTOR_GLOBALS_LIST);
+            var deezGlobals = allGlobals.Where(eachGlobal =>
+            {
+                var globalName = eachGlobal.GetEnumValueName();
+                return globalName is not null && globalName.Equals(parameterName, StringComparison.OrdinalIgnoreCase);
+            });
+            comboBoxType.BeginUpdate();
+            comboBoxType.Items.Clear();
+            if (deezGlobals.Any())
+            {
+                foreach (var global in deezGlobals)
+                {
+                    comboBoxType.Items.Add(paramTypes.Single(eachParamType => eachParamType.EnumValue == global.Type).ShortName);
+                }
+            }
+            else
+            {
+                foreach (var op in paramTypes)
+                {
+                    comboBoxType.Items.Add(op.ShortName);
+                }
+                comboBoxType.Items.Add("(Modify above)");
+            }
+            comboBoxType.EndUpdate();
+        }
 
         public void SetAsFirst()
         {

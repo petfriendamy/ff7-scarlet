@@ -1,18 +1,25 @@
 namespace FF7Scarlet.AIEditor
 {
-    public class CommonVarInfo<T>(T global, Opcodes type)
+    public class CommonVarInfo
     {
-        public static readonly CommonVarInfo<CommonVars.Globals>[] GLOBALS_LIST =
-        [
-            new CommonVarInfo<CommonVars.Globals>(CommonVars.Globals.Self, Opcodes.PushAddress02),
-            new CommonVarInfo<CommonVars.Globals>(CommonVars.Globals.Target, Opcodes.PushValue12),
-        ];
+        public static readonly CommonVarInfo[] GLOBALS_LIST = [];
+        public static readonly CommonVarInfo[] ACTOR_GLOBALS_LIST = [];
 
-        public static readonly CommonVarInfo<CommonVars.ActorGlobals>[] ACTOR_GLOBALS_LIST = [
-            new CommonVarInfo<CommonVars.ActorGlobals>(CommonVars.ActorGlobals.Target, Opcodes.PushAddress02),
-        ];
+        public Enum Global { get; }
+        public Opcodes Type { get; }
 
-        public T EnumValue { get; } = global;
-        public Opcodes Type { get; } = type;
-    }
+        public CommonVarInfo(CommonVars.Globals global, Opcodes type)
+        {
+            Global = global;
+            Type = type;
+        }
+
+        public CommonVarInfo(CommonVars.ActorGlobals global, Opcodes type)
+        {
+            Global = global;
+            Type = type;
+        }
+
+        public string? GetEnumValueName() => Enum.GetName(Global.GetType(), Global);
+    };
 }
