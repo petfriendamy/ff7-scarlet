@@ -2,7 +2,9 @@ namespace FF7Scarlet.AIEditor
 {
     public class CommonVarInfo
     {
-        public static readonly CommonVarInfo[] GLOBALS_LIST = [];
+        public static readonly CommonVarInfo[] GLOBALS_LIST = [
+            new CommonVarInfo(CommonVars.Globals.Self, Opcodes.PushAddress02)
+        ];
         public static readonly CommonVarInfo[] ACTOR_GLOBALS_LIST = [];
 
         public Enum Global { get; }
