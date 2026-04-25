@@ -12,6 +12,7 @@ namespace FF7Scarlet.AIEditor
         #region Properties
 
         private readonly List<OpcodeInfo> operands, modifiers, paramTypes;
+        private List<OpcodeInfo> validTypes;
         private byte operand = 0xFF, modifier = 0xFF, paramType = 0xFF;
         private bool singleParameter = false, modifyAbove = false, jpText, loading = true;
 
@@ -62,7 +63,7 @@ namespace FF7Scarlet.AIEditor
                 }
                 else if (!singleParameter && comboBoxType.SelectedIndex != -1)
                 {
-                    return paramTypes[comboBoxType.SelectedIndex].Code;
+                    return validTypes[comboBoxType.SelectedIndex].Code;
                 }
                 else { return paramType; }
             }
@@ -208,6 +209,8 @@ namespace FF7Scarlet.AIEditor
                             && op.ParameterType != ParameterTypes.Debug)
                           select op).ToList();
 
+            validTypes = [.. paramTypes];
+
             comboBoxOperand.BeginUpdate();
             foreach (var op in operands)
             {
@@ -241,6 +244,7 @@ namespace FF7Scarlet.AIEditor
             {
                 comboBoxParameter.Items.Add(gv);
             }
+            comboBoxParameter.SelectionChangeCommitted += (sender, arguments) => FilterTypeByParameter(paramTypes, comboBoxParameter.SelectedItem?.ToString());
             comboBoxParameter.EndUpdate();
             loading = false;
         }
@@ -248,6 +252,55 @@ namespace FF7Scarlet.AIEditor
         #endregion
 
         #region User Methods
+
+        private void FilterTypeByParameter(List<OpcodeInfo> paramTypes, string? parameterName)
+        {
+            var currType = OpcodeInfo.GetInfo(ParamType);
+
+            List<CommonVarInfo> allGlobals = [.. CommonVarInfo.GLOBALS_LIST];
+            allGlobals.AddRange(CommonVarInfo.ACTOR_GLOBALS_LIST);
+            var deezGlobals = allGlobals.Where(eachGlobal =>
+            {
+                var globalName = eachGlobal.GetEnumValueName();
+                return globalName is not null && globalName.Equals(parameterName, StringComparison.OrdinalIgnoreCase);
+            });
+            comboBoxType.BeginUpdate();
+            comboBoxType.Items.Clear();
+            if (deezGlobals.Any())
+            {
+                validTypes = [];
+                foreach (var global in deezGlobals)
+                {
+                    foreach (var op in global.Types)
+                    {
+                        var info = OpcodeInfo.GetInfo(op);
+                        if (info != null)
+                        {
+                            validTypes.Add(info);
+                            comboBoxType.Items.Add(paramTypes.Single(eachParamType => eachParamType.EnumValue == op).ShortName);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                validTypes = [.. paramTypes];
+                foreach (var op in paramTypes)
+                {
+                    comboBoxType.Items.Add(op.ShortName);
+                }
+                comboBoxType.Items.Add("(Modify above)");
+            }
+            comboBoxType.EndUpdate();
+
+            //re-select the previous opcode (if still valid)
+            int i = 0;
+            if (currType != null)
+            {
+                i = Math.Max(0, validTypes.IndexOf(currType));
+            }
+            comboBoxType.SelectedIndex = i;
+        }
 
         public void SetAsFirst()
         {
