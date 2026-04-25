@@ -268,16 +268,18 @@ namespace FF7Scarlet.AIEditor
             comboBoxType.Items.Clear();
             if (deezGlobals.Any())
             {
-                var deezOpcodes =
-                (from op in deezGlobals
-                 select op.Type);
-                validTypes = (from op in paramTypes
-                              where deezOpcodes.Contains(op.EnumValue)
-                              select op).ToList();
-
+                validTypes = [];
                 foreach (var global in deezGlobals)
                 {
-                    comboBoxType.Items.Add(paramTypes.Single(eachParamType => eachParamType.EnumValue == global.Type).ShortName);
+                    foreach (var op in global.Types)
+                    {
+                        var info = OpcodeInfo.GetInfo(op);
+                        if (info != null)
+                        {
+                            validTypes.Add(info);
+                            comboBoxType.Items.Add(paramTypes.Single(eachParamType => eachParamType.EnumValue == op).ShortName);
+                        }
+                    }
                 }
             }
             else
