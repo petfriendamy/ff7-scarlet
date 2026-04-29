@@ -103,7 +103,8 @@ namespace FF7Scarlet.AIEditor
 
             panelContainer.SuspendLayout();
             panelContainer.Controls.Add(newLine);
-            panelContainer.Height += parameterControl1.Height + 5;
+            panelContainer.Height += offset;
+            panelMain.AutoScrollPosition = new Point(0, panelContainer.Size.Height);
             panelContainer.ResumeLayout(true);
 
             paramList.Add(newLine);
