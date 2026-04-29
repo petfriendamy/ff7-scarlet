@@ -2,13 +2,13 @@
 {
     public enum OpcodeGroups
     {
-        Push, Mathematical, Logical, Jump, BitOperation, Command
+        Push, Mathematical, Logical, Jump, BitOperation, Command, Special
     }
 
     public class OpcodeInfo
     {
-        public static readonly OpcodeInfo[] OPCODE_LIST = new OpcodeInfo[]
-        {
+        public static readonly OpcodeInfo[] OPCODE_LIST =
+        [
             new OpcodeInfo(Opcodes.PushAddress00, OpcodeGroups.Push, ParameterTypes.TwoByte, 0, "Address Type 0"),
             new OpcodeInfo(Opcodes.PushAddress01, OpcodeGroups.Push, ParameterTypes.TwoByte, 0, "Address Type 1"),
             new OpcodeInfo(Opcodes.PushAddress02, OpcodeGroups.Push, ParameterTypes.TwoByte, 0, "Address Type 2"),
@@ -56,8 +56,9 @@
             new OpcodeInfo(Opcodes.CountBits, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
             new OpcodeInfo(Opcodes.MaskGreatest, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
             new OpcodeInfo(Opcodes.MaskLeast, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
-            new OpcodeInfo(Opcodes.MPCost, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
             new OpcodeInfo(Opcodes.TopBit, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
+
+            new OpcodeInfo(Opcodes.MPCost, OpcodeGroups.Special, ParameterTypes.None, 1),
 
             new OpcodeInfo(Opcodes.Assign, OpcodeGroups.Command, ParameterTypes.None, 2),
             new OpcodeInfo(Opcodes.Pop, OpcodeGroups.Command, ParameterTypes.None, 0),
@@ -70,7 +71,7 @@
             new OpcodeInfo(Opcodes.Pop2, OpcodeGroups.Command, ParameterTypes.None, 0),
 
             new OpcodeInfo(Opcodes.Label, OpcodeGroups.Jump, ParameterTypes.Label, 0),
-        };
+        ];
 
         private string? shortName;
 
@@ -108,7 +109,8 @@
             get
             {
                 return (Group == OpcodeGroups.Mathematical || Group == OpcodeGroups.Logical
-                    || Group == OpcodeGroups.BitOperation) && PopCount > 0;
+                    || Group == OpcodeGroups.BitOperation || Group == OpcodeGroups.Special)
+                    && PopCount > 0;
             }
         }
 

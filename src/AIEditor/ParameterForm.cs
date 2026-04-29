@@ -12,7 +12,7 @@ namespace FF7Scarlet.AIEditor
         private readonly Script parentScript;
         private readonly int xx, yy, offset;
         private readonly ParameterTypes type;
-        private bool loading = false, jpText;
+        private readonly bool loading, jpText;
 
         public ParameterForm(Script script, List<Code> code, Opcodes opcode, ParameterTypes type, bool jpText)
         {
