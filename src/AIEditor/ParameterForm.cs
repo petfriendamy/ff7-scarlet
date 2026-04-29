@@ -88,22 +88,25 @@ namespace FF7Scarlet.AIEditor
                     ++i;
                 }
             }
-            ResumeLayout();
+            ResumeLayout(true);
             loading = false;
         }
 
         private void AddParameter()
         {
-            SuspendLayout();
             var newLine = new ParameterControl();
             newLine.SetAsJP(jpText);
             newLine.Name = $"parameterControl{paramList.Count}";
-            newLine.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right);
-            newLine.Size = new Size(parameterControl1.Size.Width, parameterControl1.Size.Height);
-            newLine.Location = new Point(xx, yy + (offset * paramList.Count) + panelMain.AutoScrollPosition.Y);
-            panelMain.Controls.Add(newLine);
+            newLine.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            newLine.Size = new Size(parameterControl1.Width, parameterControl1.Height);
+            newLine.Location = new Point(xx, yy + (offset * paramList.Count));
+
+            panelContainer.SuspendLayout();
+            panelContainer.Controls.Add(newLine);
+            panelContainer.Height += parameterControl1.Height + 5;
+            panelContainer.ResumeLayout(true);
+
             paramList.Add(newLine);
-            if (!loading) { ResumeLayout(); }
         }
 
         public void UpdateParamList(ParameterControl caller, bool isChecked)

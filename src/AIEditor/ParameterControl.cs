@@ -166,9 +166,9 @@ namespace FF7Scarlet.AIEditor
         {
             get
             {
-                if (Parent?.Parent is ParameterForm)
+                if (Parent?.Parent?.Parent is ParameterForm)
                 {
-                    return Parent.Parent as ParameterForm;
+                    return Parent.Parent.Parent as ParameterForm;
                 }
                 return null;
             }

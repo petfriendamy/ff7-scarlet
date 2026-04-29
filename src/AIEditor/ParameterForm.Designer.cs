@@ -34,8 +34,9 @@ namespace FF7Scarlet.AIEditor
             buttonOK = new Button();
             buttonCancel = new Button();
             panelMain = new Panel();
-            parameterControl2 = new ParameterControl();
+            panelContainer = new Panel();
             parameterControl1 = new ParameterControl();
+            parameterControl2 = new ParameterControl();
             panelHeader = new Panel();
             labelParameter = new Label();
             labelType = new Label();
@@ -43,6 +44,7 @@ namespace FF7Scarlet.AIEditor
             labelOperand = new Label();
             panelButtons.SuspendLayout();
             panelMain.SuspendLayout();
+            panelContainer.SuspendLayout();
             panelHeader.SuspendLayout();
             SuspendLayout();
             // 
@@ -84,8 +86,7 @@ namespace FF7Scarlet.AIEditor
             // panelMain
             // 
             panelMain.AutoScroll = true;
-            panelMain.Controls.Add(parameterControl2);
-            panelMain.Controls.Add(parameterControl1);
+            panelMain.Controls.Add(panelContainer);
             panelMain.Dock = DockStyle.Fill;
             panelMain.Location = new Point(0, 28);
             panelMain.Margin = new Padding(4, 3, 4, 3);
@@ -93,23 +94,33 @@ namespace FF7Scarlet.AIEditor
             panelMain.Size = new Size(564, 143);
             panelMain.TabIndex = 10;
             // 
-            // parameterControl2
+            // panelContainer
             // 
-            parameterControl2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            parameterControl2.Location = new Point(13, 39);
-            parameterControl2.Margin = new Padding(4, 3, 4, 3);
-            parameterControl2.Name = "parameterControl2";
-            parameterControl2.Size = new Size(538, 27);
-            parameterControl2.TabIndex = 18;
+            panelContainer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panelContainer.Controls.Add(parameterControl1);
+            panelContainer.Controls.Add(parameterControl2);
+            panelContainer.Location = new Point(3, 6);
+            panelContainer.Name = "panelContainer";
+            panelContainer.Size = new Size(558, 66);
+            panelContainer.TabIndex = 19;
             // 
             // parameterControl1
             // 
             parameterControl1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            parameterControl1.Location = new Point(13, 6);
+            parameterControl1.Location = new Point(4, 3);
             parameterControl1.Margin = new Padding(4, 3, 4, 3);
             parameterControl1.Name = "parameterControl1";
-            parameterControl1.Size = new Size(538, 27);
+            parameterControl1.Size = new Size(550, 27);
             parameterControl1.TabIndex = 17;
+            // 
+            // parameterControl2
+            // 
+            parameterControl2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            parameterControl2.Location = new Point(4, 36);
+            parameterControl2.Margin = new Padding(4, 3, 4, 3);
+            parameterControl2.Name = "parameterControl2";
+            parameterControl2.Size = new Size(550, 27);
+            parameterControl2.TabIndex = 18;
             // 
             // panelHeader
             // 
@@ -178,6 +189,7 @@ namespace FF7Scarlet.AIEditor
             Text = "Add/edit parameter";
             panelButtons.ResumeLayout(false);
             panelMain.ResumeLayout(false);
+            panelContainer.ResumeLayout(false);
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
             ResumeLayout(false);
@@ -196,5 +208,6 @@ namespace FF7Scarlet.AIEditor
         private Label labelType;
         private Label labelModifier;
         private Label labelOperand;
+        private Panel panelContainer;
     }
 }
