@@ -5,7 +5,7 @@ namespace FF7Scarlet.SceneEditor
 {
     public enum ResistRates : byte
     {
-        Death, Double = 2, Half = 4, Null, Absorb, FullCure
+        Death, NeverMiss = 1, Double = 2, Half = 4, Null, Absorb, FullCure
     }
 
     public abstract class ResistanceRate
@@ -19,6 +19,8 @@ namespace FF7Scarlet.SceneEditor
             {
                 case ResistRates.Death:
                     return "Killed by";
+                case ResistRates.NeverMiss:
+                    return "Can't be missed by";
                 case ResistRates.Double:
                     return "2x damage from";
                 case ResistRates.Half:
