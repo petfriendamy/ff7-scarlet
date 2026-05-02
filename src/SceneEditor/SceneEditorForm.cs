@@ -2355,10 +2355,8 @@ namespace FF7Scarlet.SceneEditor
                                 listBoxAttacks.SelectedIndex = SelectedScene.GetAttackIndex(atkID);
                                 break;
                             case DialogResult.No:
-                                while (SelectedScene.GetAttackByID(atkID) != null && atkID < HexParser.NULL_OFFSET_16_BIT)
-                                {
-                                    atkID++;
-                                }
+                                lastAttackID++;
+                                atkID = lastAttackID;
                                 atk.Index = atkID;
                                 changedID = true;
                                 break;
