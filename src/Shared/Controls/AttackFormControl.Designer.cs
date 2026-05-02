@@ -30,24 +30,25 @@
         {
             tabControlAttacks = new TabControl();
             tabPageAttacks1 = new TabPage();
+            textBoxID = new TextBox();
             labelAttackId = new Label();
             checkBoxAttackIsLimit = new CheckBox();
             labelAttackHurtActionIndex = new Label();
-            comboBoxAttackHurtActionIndex = new ComboBox();
+            comboBoxHurtActionIndex = new ComboBox();
             labelAttackAttackEffectID = new Label();
             elementsControlAttack = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
-            comboBoxAttackAttackEffectID = new ComboBox();
+            comboBoxAttackEffectID = new ComboBox();
             labelAttackImpactEffectID = new Label();
             comboBoxAttackImpactEffectID = new ComboBox();
             textBoxAttackDescription = new TextBox();
             damageCalculationControlAttack = new FF7Scarlet.KernelEditor.Controls.DamageCalculationControl();
             labelAttackCamMovementIDMulti = new Label();
             labelAttackName = new Label();
-            comboBoxAttackCamMovementIDMulti = new ComboBox();
+            comboBoxCamMovementIDMulti = new ComboBox();
             textBoxAttackName = new TextBox();
             labelAttackCamMovementIDSingle = new Label();
             labelAttackDescription = new Label();
-            comboBoxAttackCamMovementIDSingle = new ComboBox();
+            comboBoxCamMovementIDSingle = new ComboBox();
             labelSummonText = new Label();
             numericAttackAttackPercent = new NumericUpDown();
             textBoxSummonText = new TextBox();
@@ -56,10 +57,10 @@
             numericAttackMPCost = new NumericUpDown();
             tabPageAttacks2 = new TabPage();
             specialAttackFlagsControlAttack = new SpecialAttackFlagsControl();
-            numericAttackStatusChangeChance = new NumericUpDown();
+            numericStatusChangeChance = new NumericUpDown();
             comboBoxAttackConditionSubMenu = new ComboBox();
             labelAttackStatusChangeChance = new Label();
-            comboBoxAttackStatusChange = new ComboBox();
+            comboBoxStatusChange = new ComboBox();
             labelAttackConditionSubMenu = new Label();
             labelAttackStatusChange = new Label();
             statusesControlAttack = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
@@ -76,7 +77,7 @@
             ((System.ComponentModel.ISupportInitialize)numericAttackAttackPercent).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).BeginInit();
             tabPageAttacks2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericStatusChangeChance).BeginInit();
             tabPageAttacks3.SuspendLayout();
             groupBoxAttackSpecialActions.SuspendLayout();
             SuspendLayout();
@@ -95,24 +96,25 @@
             // 
             // tabPageAttacks1
             // 
+            tabPageAttacks1.Controls.Add(textBoxID);
             tabPageAttacks1.Controls.Add(labelAttackId);
             tabPageAttacks1.Controls.Add(checkBoxAttackIsLimit);
             tabPageAttacks1.Controls.Add(labelAttackHurtActionIndex);
-            tabPageAttacks1.Controls.Add(comboBoxAttackHurtActionIndex);
+            tabPageAttacks1.Controls.Add(comboBoxHurtActionIndex);
             tabPageAttacks1.Controls.Add(labelAttackAttackEffectID);
             tabPageAttacks1.Controls.Add(elementsControlAttack);
-            tabPageAttacks1.Controls.Add(comboBoxAttackAttackEffectID);
+            tabPageAttacks1.Controls.Add(comboBoxAttackEffectID);
             tabPageAttacks1.Controls.Add(labelAttackImpactEffectID);
             tabPageAttacks1.Controls.Add(comboBoxAttackImpactEffectID);
             tabPageAttacks1.Controls.Add(textBoxAttackDescription);
             tabPageAttacks1.Controls.Add(damageCalculationControlAttack);
             tabPageAttacks1.Controls.Add(labelAttackCamMovementIDMulti);
             tabPageAttacks1.Controls.Add(labelAttackName);
-            tabPageAttacks1.Controls.Add(comboBoxAttackCamMovementIDMulti);
+            tabPageAttacks1.Controls.Add(comboBoxCamMovementIDMulti);
             tabPageAttacks1.Controls.Add(textBoxAttackName);
             tabPageAttacks1.Controls.Add(labelAttackCamMovementIDSingle);
             tabPageAttacks1.Controls.Add(labelAttackDescription);
-            tabPageAttacks1.Controls.Add(comboBoxAttackCamMovementIDSingle);
+            tabPageAttacks1.Controls.Add(comboBoxCamMovementIDSingle);
             tabPageAttacks1.Controls.Add(labelSummonText);
             tabPageAttacks1.Controls.Add(numericAttackAttackPercent);
             tabPageAttacks1.Controls.Add(textBoxSummonText);
@@ -127,15 +129,22 @@
             tabPageAttacks1.Text = "Page 1";
             tabPageAttacks1.UseVisualStyleBackColor = true;
             // 
+            // textBoxID
+            // 
+            textBoxID.Location = new Point(7, 24);
+            textBoxID.Name = "textBoxID";
+            textBoxID.Size = new Size(64, 23);
+            textBoxID.TabIndex = 45;
+            textBoxID.TextChanged += textBoxID_TextChanged;
+            // 
             // labelAttackId
             // 
-            labelAttackId.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            labelAttackId.Location = new Point(504, 6);
+            labelAttackId.AutoSize = true;
+            labelAttackId.Location = new Point(7, 6);
             labelAttackId.Name = "labelAttackId";
-            labelAttackId.Size = new Size(62, 15);
+            labelAttackId.Size = new Size(21, 15);
             labelAttackId.TabIndex = 44;
-            labelAttackId.Text = "ID: ??";
-            labelAttackId.TextAlign = ContentAlignment.TopRight;
+            labelAttackId.Text = "ID:";
             // 
             // checkBoxAttackIsLimit
             // 
@@ -159,16 +168,16 @@
             labelAttackHurtActionIndex.TabIndex = 42;
             labelAttackHurtActionIndex.Text = "Hurt action index:";
             // 
-            // comboBoxAttackHurtActionIndex
+            // comboBoxHurtActionIndex
             // 
-            comboBoxAttackHurtActionIndex.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            comboBoxAttackHurtActionIndex.FormattingEnabled = true;
-            comboBoxAttackHurtActionIndex.Location = new Point(413, 248);
-            comboBoxAttackHurtActionIndex.MaxLength = 2;
-            comboBoxAttackHurtActionIndex.Name = "comboBoxAttackHurtActionIndex";
-            comboBoxAttackHurtActionIndex.Size = new Size(152, 23);
-            comboBoxAttackHurtActionIndex.TabIndex = 41;
-            comboBoxAttackHurtActionIndex.TextChanged += comboBoxAttackHurtActionIndex_TextChanged;
+            comboBoxHurtActionIndex.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            comboBoxHurtActionIndex.FormattingEnabled = true;
+            comboBoxHurtActionIndex.Location = new Point(413, 248);
+            comboBoxHurtActionIndex.MaxLength = 2;
+            comboBoxHurtActionIndex.Name = "comboBoxHurtActionIndex";
+            comboBoxHurtActionIndex.Size = new Size(152, 23);
+            comboBoxHurtActionIndex.TabIndex = 41;
+            comboBoxHurtActionIndex.TextChanged += comboBoxAttackHurtActionIndex_TextChanged;
             // 
             // labelAttackAttackEffectID
             // 
@@ -189,16 +198,16 @@
             elementsControlAttack.TabIndex = 0;
             elementsControlAttack.ElementsChanged += ValueChanged;
             // 
-            // comboBoxAttackAttackEffectID
+            // comboBoxAttackEffectID
             // 
-            comboBoxAttackAttackEffectID.FormattingEnabled = true;
-            comboBoxAttackAttackEffectID.Location = new Point(219, 112);
-            comboBoxAttackAttackEffectID.MaxLength = 2;
-            comboBoxAttackAttackEffectID.Name = "comboBoxAttackAttackEffectID";
-            comboBoxAttackAttackEffectID.Size = new Size(100, 23);
-            comboBoxAttackAttackEffectID.TabIndex = 39;
-            comboBoxAttackAttackEffectID.TextUpdate += comboBoxAttackAttackEffectID_TextUpdate;
-            comboBoxAttackAttackEffectID.TextChanged += ValueChanged;
+            comboBoxAttackEffectID.FormattingEnabled = true;
+            comboBoxAttackEffectID.Location = new Point(219, 112);
+            comboBoxAttackEffectID.MaxLength = 2;
+            comboBoxAttackEffectID.Name = "comboBoxAttackEffectID";
+            comboBoxAttackEffectID.Size = new Size(100, 23);
+            comboBoxAttackEffectID.TabIndex = 39;
+            comboBoxAttackEffectID.TextUpdate += comboBoxAttackAttackEffectID_TextUpdate;
+            comboBoxAttackEffectID.TextChanged += ValueChanged;
             // 
             // labelAttackImpactEffectID
             // 
@@ -251,29 +260,29 @@
             // labelAttackName
             // 
             labelAttackName.AutoSize = true;
-            labelAttackName.Location = new Point(7, 6);
+            labelAttackName.Location = new Point(76, 6);
             labelAttackName.Margin = new Padding(4, 0, 4, 0);
             labelAttackName.Name = "labelAttackName";
             labelAttackName.Size = new Size(42, 15);
             labelAttackName.TabIndex = 1;
             labelAttackName.Text = "Name:";
             // 
-            // comboBoxAttackCamMovementIDMulti
+            // comboBoxCamMovementIDMulti
             // 
-            comboBoxAttackCamMovementIDMulti.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            comboBoxAttackCamMovementIDMulti.FormattingEnabled = true;
-            comboBoxAttackCamMovementIDMulti.Location = new Point(413, 204);
-            comboBoxAttackCamMovementIDMulti.MaxLength = 4;
-            comboBoxAttackCamMovementIDMulti.Name = "comboBoxAttackCamMovementIDMulti";
-            comboBoxAttackCamMovementIDMulti.Size = new Size(152, 23);
-            comboBoxAttackCamMovementIDMulti.TabIndex = 36;
-            comboBoxAttackCamMovementIDMulti.TextUpdate += comboBoxCamMovementIDMulti_TextChanged;
-            comboBoxAttackCamMovementIDMulti.TextChanged += ValueChanged;
+            comboBoxCamMovementIDMulti.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            comboBoxCamMovementIDMulti.FormattingEnabled = true;
+            comboBoxCamMovementIDMulti.Location = new Point(413, 204);
+            comboBoxCamMovementIDMulti.MaxLength = 4;
+            comboBoxCamMovementIDMulti.Name = "comboBoxCamMovementIDMulti";
+            comboBoxCamMovementIDMulti.Size = new Size(152, 23);
+            comboBoxCamMovementIDMulti.TabIndex = 36;
+            comboBoxCamMovementIDMulti.TextUpdate += comboBoxCamMovementIDMulti_TextChanged;
+            comboBoxCamMovementIDMulti.TextChanged += ValueChanged;
             // 
             // textBoxAttackName
             // 
             textBoxAttackName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxAttackName.Location = new Point(7, 24);
+            textBoxAttackName.Location = new Point(76, 24);
             textBoxAttackName.Margin = new Padding(4, 3, 4, 3);
             textBoxAttackName.Name = "textBoxAttackName";
             textBoxAttackName.Size = new Size(226, 23);
@@ -300,23 +309,23 @@
             labelAttackDescription.TabIndex = 3;
             labelAttackDescription.Text = "Description:";
             // 
-            // comboBoxAttackCamMovementIDSingle
+            // comboBoxCamMovementIDSingle
             // 
-            comboBoxAttackCamMovementIDSingle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            comboBoxAttackCamMovementIDSingle.FormattingEnabled = true;
-            comboBoxAttackCamMovementIDSingle.Location = new Point(413, 160);
-            comboBoxAttackCamMovementIDSingle.MaxLength = 4;
-            comboBoxAttackCamMovementIDSingle.Name = "comboBoxAttackCamMovementIDSingle";
-            comboBoxAttackCamMovementIDSingle.Size = new Size(152, 23);
-            comboBoxAttackCamMovementIDSingle.TabIndex = 34;
-            comboBoxAttackCamMovementIDSingle.TextUpdate += comboBoxCamMovementIDSingle_TextChanged;
-            comboBoxAttackCamMovementIDSingle.TextChanged += ValueChanged;
+            comboBoxCamMovementIDSingle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            comboBoxCamMovementIDSingle.FormattingEnabled = true;
+            comboBoxCamMovementIDSingle.Location = new Point(413, 160);
+            comboBoxCamMovementIDSingle.MaxLength = 4;
+            comboBoxCamMovementIDSingle.Name = "comboBoxCamMovementIDSingle";
+            comboBoxCamMovementIDSingle.Size = new Size(152, 23);
+            comboBoxCamMovementIDSingle.TabIndex = 34;
+            comboBoxCamMovementIDSingle.TextUpdate += comboBoxCamMovementIDSingle_TextChanged;
+            comboBoxCamMovementIDSingle.TextChanged += ValueChanged;
             // 
             // labelSummonText
             // 
             labelSummonText.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             labelSummonText.AutoSize = true;
-            labelSummonText.Location = new Point(241, 6);
+            labelSummonText.Location = new Point(310, 6);
             labelSummonText.Margin = new Padding(4, 0, 4, 0);
             labelSummonText.Name = "labelSummonText";
             labelSummonText.Size = new Size(127, 15);
@@ -336,10 +345,10 @@
             // 
             textBoxSummonText.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             textBoxSummonText.Enabled = false;
-            textBoxSummonText.Location = new Point(241, 24);
+            textBoxSummonText.Location = new Point(310, 24);
             textBoxSummonText.Margin = new Padding(4, 3, 4, 3);
             textBoxSummonText.Name = "textBoxSummonText";
-            textBoxSummonText.Size = new Size(256, 23);
+            textBoxSummonText.Size = new Size(255, 23);
             textBoxSummonText.TabIndex = 6;
             textBoxSummonText.TextChanged += textBoxSummonText_TextChanged;
             // 
@@ -373,10 +382,10 @@
             // tabPageAttacks2
             // 
             tabPageAttacks2.Controls.Add(specialAttackFlagsControlAttack);
-            tabPageAttacks2.Controls.Add(numericAttackStatusChangeChance);
+            tabPageAttacks2.Controls.Add(numericStatusChangeChance);
             tabPageAttacks2.Controls.Add(comboBoxAttackConditionSubMenu);
             tabPageAttacks2.Controls.Add(labelAttackStatusChangeChance);
-            tabPageAttacks2.Controls.Add(comboBoxAttackStatusChange);
+            tabPageAttacks2.Controls.Add(comboBoxStatusChange);
             tabPageAttacks2.Controls.Add(labelAttackConditionSubMenu);
             tabPageAttacks2.Controls.Add(labelAttackStatusChange);
             tabPageAttacks2.Controls.Add(statusesControlAttack);
@@ -397,14 +406,14 @@
             specialAttackFlagsControlAttack.TabIndex = 43;
             specialAttackFlagsControlAttack.FlagsChanged += ValueChanged;
             // 
-            // numericAttackStatusChangeChance
+            // numericStatusChangeChance
             // 
-            numericAttackStatusChangeChance.Location = new Point(149, 333);
-            numericAttackStatusChangeChance.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
-            numericAttackStatusChangeChance.Name = "numericAttackStatusChangeChance";
-            numericAttackStatusChangeChance.Size = new Size(108, 23);
-            numericAttackStatusChangeChance.TabIndex = 5;
-            numericAttackStatusChangeChance.ValueChanged += numericAttackStatusChangeChance_ValueChanged;
+            numericStatusChangeChance.Location = new Point(149, 333);
+            numericStatusChangeChance.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
+            numericStatusChangeChance.Name = "numericStatusChangeChance";
+            numericStatusChangeChance.Size = new Size(108, 23);
+            numericStatusChangeChance.TabIndex = 5;
+            numericStatusChangeChance.ValueChanged += numericAttackStatusChangeChance_ValueChanged;
             // 
             // comboBoxAttackConditionSubMenu
             // 
@@ -425,15 +434,15 @@
             labelAttackStatusChangeChance.TabIndex = 4;
             labelAttackStatusChangeChance.Text = "Chance (out of 63):";
             // 
-            // comboBoxAttackStatusChange
+            // comboBoxStatusChange
             // 
-            comboBoxAttackStatusChange.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxAttackStatusChange.FormattingEnabled = true;
-            comboBoxAttackStatusChange.Location = new Point(6, 333);
-            comboBoxAttackStatusChange.Name = "comboBoxAttackStatusChange";
-            comboBoxAttackStatusChange.Size = new Size(137, 23);
-            comboBoxAttackStatusChange.TabIndex = 3;
-            comboBoxAttackStatusChange.SelectedIndexChanged += comboBoxStatusChange_SelectedIndexChanged;
+            comboBoxStatusChange.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxStatusChange.FormattingEnabled = true;
+            comboBoxStatusChange.Location = new Point(6, 333);
+            comboBoxStatusChange.Name = "comboBoxStatusChange";
+            comboBoxStatusChange.Size = new Size(137, 23);
+            comboBoxStatusChange.TabIndex = 3;
+            comboBoxStatusChange.SelectedIndexChanged += comboBoxStatusChange_SelectedIndexChanged;
             // 
             // labelAttackConditionSubMenu
             // 
@@ -566,7 +575,7 @@
             ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).EndInit();
             tabPageAttacks2.ResumeLayout(false);
             tabPageAttacks2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackStatusChangeChance).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericStatusChangeChance).EndInit();
             tabPageAttacks3.ResumeLayout(false);
             tabPageAttacks3.PerformLayout();
             groupBoxAttackSpecialActions.ResumeLayout(false);
@@ -581,21 +590,21 @@
         private Label labelAttackId;
         private CheckBox checkBoxAttackIsLimit;
         private Label labelAttackHurtActionIndex;
-        private ComboBox comboBoxAttackHurtActionIndex;
+        private ComboBox comboBoxHurtActionIndex;
         private Label labelAttackAttackEffectID;
         private KernelEditor.Controls.ElementsControl elementsControlAttack;
-        private ComboBox comboBoxAttackAttackEffectID;
+        private ComboBox comboBoxAttackEffectID;
         private Label labelAttackImpactEffectID;
         private ComboBox comboBoxAttackImpactEffectID;
         private TextBox textBoxAttackDescription;
         private KernelEditor.Controls.DamageCalculationControl damageCalculationControlAttack;
         private Label labelAttackCamMovementIDMulti;
         private Label labelAttackName;
-        private ComboBox comboBoxAttackCamMovementIDMulti;
+        private ComboBox comboBoxCamMovementIDMulti;
         private TextBox textBoxAttackName;
         private Label labelAttackCamMovementIDSingle;
         private Label labelAttackDescription;
-        private ComboBox comboBoxAttackCamMovementIDSingle;
+        private ComboBox comboBoxCamMovementIDSingle;
         private Label labelSummonText;
         private NumericUpDown numericAttackAttackPercent;
         private TextBox textBoxSummonText;
@@ -604,10 +613,10 @@
         private NumericUpDown numericAttackMPCost;
         private TabPage tabPageAttacks2;
         private SpecialAttackFlagsControl specialAttackFlagsControlAttack;
-        private NumericUpDown numericAttackStatusChangeChance;
+        private NumericUpDown numericStatusChangeChance;
         private ComboBox comboBoxAttackConditionSubMenu;
         private Label labelAttackStatusChangeChance;
-        private ComboBox comboBoxAttackStatusChange;
+        private ComboBox comboBoxStatusChange;
         private Label labelAttackConditionSubMenu;
         private Label labelAttackStatusChange;
         private KernelEditor.Controls.StatusesControl statusesControlAttack;
@@ -619,5 +628,6 @@
         private GroupBox groupBoxAttackSpecialActions;
         private Button buttonAttackSyncAll;
         private CheckBox checkBoxAttackSyncWithSceneBin;
+        private TextBox textBoxID;
     }
 }

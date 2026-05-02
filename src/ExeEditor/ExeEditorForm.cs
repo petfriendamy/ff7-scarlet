@@ -106,6 +106,7 @@ namespace FF7Scarlet.ExeEditor
             attackFormControlLimit.SetIsKernel(false);
             attackFormControlLimit.NameEnabled = false;
             attackFormControlLimit.DescriptionEnabled = false;
+            attackFormControlLimit.IDEnabled = false;
             numericItemPrice.Maximum = uint.MaxValue;
             numericMateriaPrice.Maximum = uint.MaxValue;
 

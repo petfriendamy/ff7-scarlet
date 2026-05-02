@@ -650,6 +650,7 @@ namespace FF7Scarlet.KernelEditor
             UpdateLimitNamesAndDesc();
 
             //show/hide controls that are invalid
+            attackFormControl.SetIsKernel(true);
             itemRestrictionsWeapon.ShowThrowable = true;
             materiaSlotSelectorCharacterWeapon.SlotSelectorType = SlotSelectorType.Materia;
             materiaSlotSelectorCharacterArmor.SlotSelectorType = SlotSelectorType.Materia;

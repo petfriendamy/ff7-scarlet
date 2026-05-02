@@ -119,6 +119,13 @@ namespace FF7Scarlet.Shared
             return str.ToString();
         }
 
+        public static ushort BytesToShort(byte[] bytes)
+        {
+            var temp = new byte[2];
+            Array.Copy(bytes, temp, Math.Min(bytes.Length, 2));
+            return BitConverter.ToUInt16(temp);
+        }
+
         public static int BytesToInt(byte[] bytes)
         {
             var temp = new byte[4];

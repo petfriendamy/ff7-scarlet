@@ -1,8 +1,11 @@
 ﻿using FF7Scarlet.Shared.Controls;
+using Shojy.FF7.Elena.Attacks;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -86,6 +89,34 @@ namespace FF7Scarlet.Shared
                     }
                 }
             }
+        }
+
+        public static byte ValidateHexByte(string text, byte current)
+        {
+            if (text.Length == 2)
+            {
+                byte newID;
+                if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                {
+                    return newID;
+                }
+                else { SystemSounds.Exclamation.Play(); }
+            }
+            return current;
+        }
+
+        public static ushort ValidateHexShort(string text, ushort current)
+        {
+            if (text.Length == 4)
+            {
+                ushort newID;
+                if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
+                {
+                    return newID;
+                }
+                else { SystemSounds.Exclamation.Play(); }
+            }
+            return current;
         }
     }
 }

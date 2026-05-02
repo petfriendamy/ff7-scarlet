@@ -374,6 +374,29 @@ namespace FF7Scarlet.AIEditor
             }
         }
 
+        public void ChangeAttackID(ushort currID, ushort newID)
+        {
+            foreach (var c in code)
+            {
+                if (c.GetPrimaryOpcode() == (byte)Opcodes.Attack)
+                {
+                    var cb = c as CodeBlock;
+                    if (cb != null && cb.Length > 1)
+                    {
+                        var param = cb.GetCodeAtPosition(1) as CodeLine;
+                        if (param != null && param.Opcode == (byte)Opcodes.PushConst02)
+                        {
+                            ushort atkID = HexParser.BytesToShort(param.Parameter);
+                            if (atkID == currID)
+                            {
+                                param.Parameter = BitConverter.GetBytes(newID);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public string[] Disassemble(bool jpText)
         {
             var output = new List<string> { };

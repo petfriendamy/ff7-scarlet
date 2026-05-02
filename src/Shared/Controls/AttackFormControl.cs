@@ -3,7 +3,6 @@ using Shojy.FF7.Elena.Attacks;
 using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Text;
 using System.ComponentModel;
-using System.Globalization;
 using System.Media;
 
 #pragma warning disable CA1416
@@ -23,16 +22,16 @@ namespace FF7Scarlet.Shared.Controls
         public event EventHandler? SyncAll;
 
         private Attack? attack;
-        private bool nameEnabled = true;
-        private bool descriptionEnabled = true;
-        private bool loading, jpText;
+        private bool nameEnabled = true,
+            descriptionEnabled = true,
+            idEnabled = true,
+            loading, jpText;
 
         public string AttackName => textBoxAttackName.Text;
         public string AttackDescription => textBoxAttackDescription.Text;
         public string SummonText => textBoxSummonText.Text;
         public bool IsLimit => checkBoxAttackIsLimit.Checked;
         public SpellType SpellType => (SpellType)comboBoxMagicType.SelectedIndex;
-
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool NameEnabled
@@ -64,6 +63,20 @@ namespace FF7Scarlet.Shared.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IDEnabled
+        {
+            get { return idEnabled; }
+            set
+            {
+                idEnabled = value;
+                if (attack != null)
+                {
+                    textBoxID.Enabled = value;
+                }
+            }
+        }
+
         public AttackFormControl()
         {
             InitializeComponent();
@@ -71,12 +84,12 @@ namespace FF7Scarlet.Shared.Controls
             textBoxAttackName.MaxLength = Scene.NAME_LENGTH - 1;
 
             //status change
-            comboBoxAttackStatusChange.Items.Add("None");
+            comboBoxStatusChange.Items.Add("None");
             foreach (var s in DataManager.StatusChangeTypes)
             {
                 if (s != StatusChangeType.None)
                 {
-                    comboBoxAttackStatusChange.Items.Add(s);
+                    comboBoxStatusChange.Items.Add(s);
                 }
             }
 
@@ -100,6 +113,7 @@ namespace FF7Scarlet.Shared.Controls
 
         public void SetIsKernel(bool isKernel)
         {
+            if (isKernel) { IDEnabled = false; }
             labelSummonText.Visible = isKernel;
             textBoxSummonText.Visible = isKernel;
             checkBoxAttackIsLimit.Visible = isKernel;
@@ -118,11 +132,12 @@ namespace FF7Scarlet.Shared.Controls
             }
             this.attack = attack;
             this.jpText = jpText;
+            textBoxID.Enabled = IDEnabled;
             EnableOrDisableControls(true, true);
             loading = true;
 
             //page 1
-            labelAttackId.Text = $"ID: {id:X2}";
+            textBoxID.Text = $"{id:X4}";
             textBoxAttackName.Text = attack.Name.ToString(jpText);
             textBoxAttackDescription.Text = attack.Description?.ToString(jpText);
 
@@ -139,22 +154,22 @@ namespace FF7Scarlet.Shared.Controls
             checkBoxAttackIsLimit.Checked = isLimit;
             numericAttackAttackPercent.Value = attack.AccuracyRate;
             numericAttackMPCost.Value = attack.MPCost;
-            comboBoxAttackAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
+            comboBoxAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
             comboBoxAttackImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
             elementsControlAttack.SetElements(attack.Elements);
-            comboBoxAttackCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
-            comboBoxAttackCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
-            comboBoxAttackHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
+            comboBoxCamMovementIDSingle.Text = attack.CameraMovementIDSingle.ToString("X4");
+            comboBoxCamMovementIDMulti.Text = attack.CameraMovementIDMulti.ToString("X4");
+            comboBoxHurtActionIndex.Text = attack.TargetHurtActionIndex.ToString("X2");
             damageCalculationControlAttack.Reload(attack.DamageCalculationID, attack.AttackStrength);
 
             //page 2
             specialAttackFlagsControlAttack.SetFlags(attack.SpecialAttackFlags);
             statusesControlAttack.SetStatuses(attack.Statuses);
             var temp = DataManager.StatusChangeTypes.ToList();
-            comboBoxAttackStatusChange.SelectedIndex = temp.IndexOf(attack.StatusChange.Type);
-            statusesControlAttack.Enabled = numericAttackStatusChangeChance.Enabled =
+            comboBoxStatusChange.SelectedIndex = temp.IndexOf(attack.StatusChange.Type);
+            statusesControlAttack.Enabled = numericStatusChangeChance.Enabled =
                 (attack.StatusChange.Type != StatusChangeType.None);
-            numericAttackStatusChangeChance.Value = attack.StatusChange.Amount;
+            numericStatusChangeChance.Value = attack.StatusChange.Amount;
             if (attack.ConditionSubmenu == ConditionSubmenu.None)
             {
                 comboBoxAttackConditionSubMenu.SelectedIndex = 0;
@@ -190,7 +205,7 @@ namespace FF7Scarlet.Shared.Controls
 
         public void UpdateForm(int id, FFText name, FFText desc, bool jpText)
         {
-            labelAttackId.Text = $"ID: {id:X2}";
+            textBoxID.Text = $"{id:X4}";
             this.jpText = jpText;
             textBoxAttackName.Text = name.ToString(jpText);
             textBoxAttackDescription.Text = desc.ToString(jpText);
@@ -209,6 +224,10 @@ namespace FF7Scarlet.Shared.Controls
             var ignoreList = new List<Control>();
             if (ignore)
             {
+                if (!IDEnabled)
+                {
+                    ignoreList.Add(textBoxID);
+                }
                 if (!NameEnabled)
                 {
                     ignoreList.Add(labelAttackName);
@@ -249,11 +268,55 @@ namespace FF7Scarlet.Shared.Controls
             attack.SpecialAttackFlags = specialAttackFlagsControlAttack.GetFlags();
         }
 
+        private Scene? GetParentScene()
+        {
+            var parent = Parent;
+            while (parent != null)
+            {
+                if (parent is SceneEditorForm)
+                {
+                    var form = parent as SceneEditorForm;
+                    if (form != null)
+                    {
+                        return form.SelectedScene;
+                    }
+                }
+                parent = parent.Parent;
+            }
+            return null;
+        }
+
         private void ValueChanged(object sender, EventArgs e)
         {
             if (!loading)
             {
                 InvokeDataChanged(sender, e);
+            }
+        }
+
+        private void textBoxID_TextChanged(object sender, EventArgs e)
+        {
+            if (!loading && attack != null)
+            {
+                ushort currID = (ushort)attack.Index,
+                    newID = FormFunctions.ValidateHexShort(textBoxID.Text, currID);
+                if (currID != newID)
+                {
+                    //check if the ID is already being used
+                    var scene = GetParentScene();
+                    if (scene != null)
+                    {
+                        if (scene.GetAttackByID(newID) != null)
+                        {
+                            SystemSounds.Exclamation.Play();
+                        }
+                        else
+                        {
+                            scene.ChangeAttackID(currID, newID);
+                            InvokeDataChanged(sender, e);
+                        }
+                    }
+                }
             }
         }
 
@@ -295,9 +358,9 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading)
             {
-                int i = comboBoxAttackStatusChange.SelectedIndex;
+                int i = comboBoxStatusChange.SelectedIndex;
                 var status = DataManager.StatusChangeTypes[i];
-                statusesControlAttack.Enabled = numericAttackStatusChangeChance.Enabled =
+                statusesControlAttack.Enabled = numericStatusChangeChance.Enabled =
                     (status != StatusChangeType.None);
 
                 if (attack != null)
@@ -312,16 +375,12 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading && attack != null)
             {
-                var text = comboBoxAttackAttackEffectID.Text;
-                if (text.Length == 2)
+                byte currID = attack.AttackEffectID,
+                    newID = FormFunctions.ValidateHexByte(comboBoxAttackEffectID.Text, currID);
+                if (currID != newID)
                 {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        attack.AttackEffectID = newID;
-                        InvokeDataChanged(sender, e);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
+                    attack.AttackEffectID = newID;
+                    InvokeDataChanged(sender, e);
                 }
             }
         }
@@ -330,16 +389,12 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading && attack != null)
             {
-                var text = comboBoxAttackImpactEffectID.Text;
-                if (text.Length == 2)
+                byte currID = attack.ImpactEffectID,
+                    newID = FormFunctions.ValidateHexByte(comboBoxAttackImpactEffectID.Text, currID);
+                if (currID != newID)
                 {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        attack.ImpactEffectID = newID;
-                        InvokeDataChanged(sender, e);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
+                    attack.ImpactEffectID = newID;
+                    InvokeDataChanged(sender, e);
                 }
             }
         }
@@ -348,16 +403,12 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading && attack != null)
             {
-                var text = comboBoxAttackCamMovementIDSingle.Text;
-                if (text.Length == 4)
+                ushort currID = attack.CameraMovementIDSingle,
+                    newID = FormFunctions.ValidateHexShort(comboBoxCamMovementIDSingle.Text, currID);
+                if (currID != newID)
                 {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        attack.CameraMovementIDSingle = newID;
-                        InvokeDataChanged(sender, e);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
+                    attack.CameraMovementIDSingle = newID;
+                    InvokeDataChanged(sender, e);
                 }
             }
         }
@@ -366,16 +417,12 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading && attack != null)
             {
-                var text = comboBoxAttackCamMovementIDMulti.Text;
-                if (text.Length == 4)
+                ushort currID = attack.CameraMovementIDMulti,
+                    newID = FormFunctions.ValidateHexShort(comboBoxCamMovementIDMulti.Text, currID);
+                if (currID != newID)
                 {
-                    ushort newID;
-                    if (ushort.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        attack.CameraMovementIDMulti = newID;
-                        InvokeDataChanged(sender, e);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
+                    attack.CameraMovementIDMulti = newID;
+                    InvokeDataChanged(sender, e);
                 }
             }
         }
@@ -384,16 +431,12 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading && attack != null)
             {
-                var text = comboBoxAttackHurtActionIndex.Text;
-                if (text.Length == 2)
+                byte currID = attack.TargetHurtActionIndex,
+                    newID = FormFunctions.ValidateHexByte(comboBoxHurtActionIndex.Text, currID);
+                if (currID != newID)
                 {
-                    byte newID;
-                    if (byte.TryParse(text, NumberStyles.HexNumber, HexParser.CultureInfo, out newID))
-                    {
-                        attack.TargetHurtActionIndex = newID;
-                        InvokeDataChanged(sender, e);
-                    }
-                    else { SystemSounds.Exclamation.Play(); }
+                    attack.TargetHurtActionIndex = newID;
+                    InvokeDataChanged(sender, e);
                 }
             }
         }
@@ -402,7 +445,7 @@ namespace FF7Scarlet.Shared.Controls
         {
             if (!loading && attack != null)
             {
-                attack.StatusChange.Amount = (byte)numericAttackStatusChangeChance.Value;
+                attack.StatusChange.Amount = (byte)numericStatusChangeChance.Value;
                 InvokeDataChanged(sender, e);
             }
         }

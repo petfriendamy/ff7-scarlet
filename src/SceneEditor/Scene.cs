@@ -206,6 +206,47 @@ namespace FF7Scarlet.SceneEditor
             return $"Unknown ({id:X4})";
         }
 
+        public void ChangeAttackID(ushort currID, ushort newID)
+        {
+            var atk = GetAttackByID(currID);
+            if (atk != null)
+            {
+                int i;
+                atk.Index = newID;
+
+                //update enemy data
+                foreach (var e in Enemies)
+                {
+                    if (e != null)
+                    {
+                        //update enemy attack IDs
+                        for (i = 0; i < Enemy.ATTACK_COUNT; ++i)
+                        {
+                            if (e.AttackIDs[i] == currID)
+                            {
+                                e.AttackIDs[i] = newID;
+                            }
+                        }
+
+                        //update manip attacks
+                        for (i = 0; i < Enemy.MANIP_ATTACK_COUNT; ++i)
+                        {
+                            if (e.ManipAttackIDs[i] == currID)
+                            {
+                                e.ManipAttackIDs[i] = newID;
+                            }
+                        }
+
+                        //update A.I. scripts
+                        foreach (var script in e.Scripts)
+                        {
+                            script.ChangeAttackID(currID, newID);
+                        }
+                    }
+                }
+            }
+        }
+
         public string GetFormationEnemyNames(int formation, bool isJapanese)
         {
             if (formation < 0 || formation >= FORMATION_COUNT)

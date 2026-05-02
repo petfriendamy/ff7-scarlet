@@ -56,7 +56,7 @@ namespace FF7Scarlet.SceneEditor
             unsavedChanges = false,
             processing = false;
 
-        private Scene? SelectedScene
+        public Scene? SelectedScene
         {
             get
             {

@@ -8,6 +8,8 @@ namespace FF7Scarlet.AIEditor
     {
         private readonly List<Code> block = new List<Code> { };
 
+        public int Length => block.Count;
+
         public CodeBlock(Script parent, Code first) :base(parent)
         {
             AddToEnd(first);
