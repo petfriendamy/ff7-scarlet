@@ -206,6 +206,18 @@ namespace FF7Scarlet.SceneEditor
             return $"Unknown ({id:X4})";
         }
 
+        public int GetAttackIndex(ushort id)
+        {
+            for (int i = 0; i < ATTACK_COUNT; ++i)
+            {
+                if (AttackList[i]?.Index == id)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         public void ChangeAttackID(ushort currID, ushort newID)
         {
             var atk = GetAttackByID(currID);

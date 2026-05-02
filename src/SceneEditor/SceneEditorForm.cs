@@ -753,8 +753,11 @@ namespace FF7Scarlet.SceneEditor
         private void LoadAttackData(Attack? attack, bool clearLoadingWhenDone, bool ignoreNull = false)
         {
             loading = true;
-            selectedAttackToolStripMenuItem.Enabled = true;
-            attackPasteToolStripMenuItem.Enabled = DataManager.CopiedAttack != null;
+            if (SelectedAttackIndex >= 0)
+            {
+                selectedAttackToolStripMenuItem.Enabled = true;
+                attackPasteToolStripMenuItem.Enabled = DataManager.CopiedAttack != null;
+            }
 
             if (attack == null)
             {
@@ -770,12 +773,14 @@ namespace FF7Scarlet.SceneEditor
                 {
                     attackFormControl.EnableOrDisableControls(false, false);
                     attackDeleteToolStripMenuItem.Enabled = false;
+                    attackCopyToolStripMenuItem.Enabled = false;
                 }
             }
             else
             {
                 attackFormControl.UpdateForm(attack, attack.Index, DisplayJapaneseText);
                 attackDeleteToolStripMenuItem.Enabled = true;
+                attackCopyToolStripMenuItem.Enabled = true;
             }
 
             if (clearLoadingWhenDone) { loading = false; }
@@ -2332,9 +2337,38 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedAttackIndex != -1 && SelectedScene != null && DataManager.CopiedAttack != null)
             {
+                //check if the attack ID is already in use
+                var atk = DataParser.CopyAttack(DataManager.CopiedAttack);
+                ushort atkID = (ushort)atk.Index;
+                bool changedID = false;
+                if (SelectedAttack?.Index != atkID)
+                {
+                    if (SelectedScene.GetAttackByID(atkID) != null)
+                    {
+                        var result = MessageDialog.AskYesNoCancel("This attack ID is already in use! Would you like to replace the attack with the same ID? (Otherwise the ID will be changed.)",
+                                "Replace existing?");
+                        switch (result)
+                        {
+                            case DialogResult.Cancel:
+                                return;
+                            case DialogResult.Yes:
+                                listBoxAttacks.SelectedIndex = SelectedScene.GetAttackIndex(atkID);
+                                break;
+                            case DialogResult.No:
+                                while (SelectedScene.GetAttackByID(atkID) != null && atkID < HexParser.NULL_OFFSET_16_BIT)
+                                {
+                                    atkID++;
+                                }
+                                atk.Index = atkID;
+                                changedID = true;
+                                break;
+                        }
+                    }
+                }
+
                 //check if this is a synced attack
                 bool getSynced = false;
-                if (syncedAttacks.ContainsKey((ushort)DataManager.CopiedAttack.Index))
+                if (syncedAttacks.ContainsKey(atkID) && !changedID)
                 {
                     var result = MessageDialog.AskYesNoCancel("The copied enemy is a synced attack. Would you like to sync this one as well?",
                         "Sync Attack?");
@@ -2345,11 +2379,11 @@ namespace FF7Scarlet.SceneEditor
                 //set the new attack data
                 if (getSynced)
                 {
-                    SelectedScene.AttackList[SelectedAttackIndex] = syncedAttacks[(ushort)DataManager.CopiedAttack.Index];
+                    SelectedScene.AttackList[SelectedAttackIndex] = syncedAttacks[atkID];
                 }
                 else
                 {
-                    SelectedScene.AttackList[SelectedAttackIndex] = DataParser.CopyAttack(DataManager.CopiedAttack);
+                    SelectedScene.AttackList[SelectedAttackIndex] = atk;
                 }
                 LoadAttackData(SelectedAttack, true);
                 UpdateSelectedAttackName(SelectedScene, SelectedEnemy, SelectedAttackIndex);
