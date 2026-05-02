@@ -1,11 +1,4 @@
-﻿using FF7Scarlet.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FF7Scarlet.AIEditor
+﻿namespace FF7Scarlet.AIEditor
 {
     public enum ParameterTypes
     {
@@ -19,24 +12,24 @@ namespace FF7Scarlet.AIEditor
 
     public class ParameterInfo
     {
-        public static readonly ParameterInfo[] PARAMETER_LIST = new ParameterInfo[]
-        {
-            new ParameterInfo(ParameterTypes.None, ParameterValidData.None, 0),
+        public static readonly ParameterInfo[] PARAMETER_LIST =
+        [
+            new ParameterInfo(ParameterTypes.None, ParameterValidData.None),
             new ParameterInfo(ParameterTypes.OneByte, ParameterValidData.Hex, 1),
             new ParameterInfo(ParameterTypes.TwoByte, ParameterValidData.Hex, 2),
             new ParameterInfo(ParameterTypes.ThreeByte, ParameterValidData.Hex, 3),
-            new ParameterInfo(ParameterTypes.String, ParameterValidData.String, 0),
-            new ParameterInfo(ParameterTypes.Debug, ParameterValidData.String, 0),
+            new ParameterInfo(ParameterTypes.String, ParameterValidData.String),
+            new ParameterInfo(ParameterTypes.Debug, ParameterValidData.String),
             new ParameterInfo(ParameterTypes.ReadWrite, ParameterValidData.Hex, 2),
             new ParameterInfo(ParameterTypes.Label, ParameterValidData.Hex, 2),
-            new ParameterInfo(ParameterTypes.Other, ParameterValidData.Hex, 0)
-        };
+            new ParameterInfo(ParameterTypes.Other, ParameterValidData.Hex)
+        ];
 
         public ParameterTypes Type { get; }
         public ParameterValidData ValidData { get; }
         public int MaxLength { get; }
 
-        public ParameterInfo(ParameterTypes type, ParameterValidData validData, int maxLength)
+        public ParameterInfo(ParameterTypes type, ParameterValidData validData, int maxLength = 0)
         {
             Type = type;
             ValidData = validData;
@@ -57,7 +50,7 @@ namespace FF7Scarlet.AIEditor
             switch (ValidData)
             {
                 case ParameterValidData.None:
-                    return false;
+                    return true;
                 case ParameterValidData.Hex:
                     if (data.Length == 0)
                     {

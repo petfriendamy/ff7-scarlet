@@ -339,6 +339,7 @@ namespace FF7Scarlet.AIEditor
             ParamType = paramType;
             Modifier = 0xFF;
             ModifyAbove = isModifier;
+            bool hasParam = true;
 
             var op = OpcodeInfo.GetInfo(paramType);
             if (op != null)
@@ -359,8 +360,19 @@ namespace FF7Scarlet.AIEditor
                     comboBoxType.SelectedIndex = paramTypes.IndexOf(op);
                 }
                 checkBoxEnabled.Checked = true;
+
+                //disable combobox if no parameter
+                var pinfo = ParameterInfo.GetInfo(op.ParameterType);
+                if (pinfo != null)
+                {
+                    hasParam = pinfo.ValidData != ParameterValidData.None;
+                    comboBoxParameter.Enabled = hasParam;
+                }
             }
-            Parameter = parameter; //this sets the combobox text
+            if (hasParam)
+            {
+                Parameter = parameter; //this sets the combobox text
+            }
             loading = false;
         }
 
@@ -471,8 +483,14 @@ namespace FF7Scarlet.AIEditor
                 }
                 else
                 {
-                    ParamType = (byte)paramTypes[comboBoxType.SelectedIndex].ParameterType;
+                    var type = paramTypes[comboBoxType.SelectedIndex].ParameterType;
+                    ParamType = (byte)type;
                     ModifyAbove = false;
+                    var info = ParameterInfo.GetInfo(type);
+                    if (info != null)
+                    {
+                        comboBoxParameter.Enabled = info.ValidData != ParameterValidData.None;
+                    }
                 }
             }
         }
