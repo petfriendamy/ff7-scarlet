@@ -235,10 +235,12 @@ namespace FF7Scarlet.AIEditor
                                 if (p.Modifier != 0xFF)
                                 {
                                     var mod = OpcodeInfo.GetInfo(p.Modifier);
-                                    if (mod != null && mod.Group == OpcodeGroups.BitOperation)
+                                    if (mod != null)
                                     {
-                                        //clear the stack for bit operation modifiers
-                                        while (operandStack.Count > 0)
+                                        //emit more operators as needed
+                                        var prec = OpcodeInfo.GetOperandPrecedence(mod);
+                                        while (operandStack.Count > 0
+                                            && OpcodeInfo.GetOperandPrecedence(operandStack.Peek()) >= prec)
                                         {
                                             firstParse.Add(new CodeLine(parentScript,
                                                 HexParser.NULL_OFFSET_16_BIT, operandStack.Pop().Code));
