@@ -1,6 +1,4 @@
 ﻿using FF7Scarlet.Shared;
-using System.Globalization;
-using System.Text;
 
 namespace FF7Scarlet.AIEditor
 {
@@ -9,7 +7,7 @@ namespace FF7Scarlet.AIEditor
         public const int SCRIPT_COUNT = 16;
         private List<Code> code = new();
         private Dictionary<int, ushort> labels = new();
-        private bool headersAreCorrect = false;
+        //private bool headersAreCorrect = false;
 
         public bool IsEmpty
         {
@@ -74,7 +72,7 @@ namespace FF7Scarlet.AIEditor
             {
                 labels.Add(l.Key, l.Value);
             }
-            headersAreCorrect = other.headersAreCorrect;
+            //headersAreCorrect = other.headersAreCorrect;
         }
 
         public bool HasOpcode(Opcodes op)
@@ -202,7 +200,7 @@ namespace FF7Scarlet.AIEditor
 
             //the final parsing
             code = GetParsedCode(firstParse, this);
-            headersAreCorrect = true;
+            //headersAreCorrect = true;
         }
 
         public static List<Code> GetParsedCode(List<CodeLine> list, Script parent)
@@ -287,7 +285,7 @@ namespace FF7Scarlet.AIEditor
                     AddLabel(HexParser.BytesToInt(p));
                 }
             }
-            headersAreCorrect = false;
+            //headersAreCorrect = false;
         }
 
         public void InsertCodeAtPosition(int pos, IEnumerable<Code> code)
@@ -312,7 +310,7 @@ namespace FF7Scarlet.AIEditor
                         AddLabel(HexParser.BytesToInt(p));
                     }
                 }
-                headersAreCorrect = false;
+                //headersAreCorrect = false;
             }
         }
 
@@ -329,7 +327,7 @@ namespace FF7Scarlet.AIEditor
                     }
                 }
                 code.RemoveAt(pos);
-                headersAreCorrect = false;
+                //headersAreCorrect = false;
             }
         }
 
@@ -338,7 +336,7 @@ namespace FF7Scarlet.AIEditor
             if (pos > 0 && pos < code.Count)
             {
                 code.Reverse(pos - 1, 2);
-                headersAreCorrect = false;
+                //headersAreCorrect = false;
             }
         }
 
@@ -347,13 +345,15 @@ namespace FF7Scarlet.AIEditor
             if (pos >= 0 && pos < code.Count - 1)
             {
                 code.Reverse(pos, 2);
-                headersAreCorrect = false;
+                //headersAreCorrect = false;
             }
         }
 
         public ushort GetLabelPosition(int label)
         {
-            if (!headersAreCorrect) { CorrectHeaders(); }
+            //if (!headersAreCorrect) {
+                CorrectHeaders();
+            //}
             if (labels.ContainsKey(label)) { return labels[label]; }
 
             //label doesn't exist
@@ -370,7 +370,7 @@ namespace FF7Scarlet.AIEditor
             if (!labels.ContainsKey(label))
             {
                 labels.Add(label, HexParser.NULL_OFFSET_16_BIT);
-                headersAreCorrect = false;
+                //headersAreCorrect = false;
             }
         }
 
@@ -445,7 +445,9 @@ namespace FF7Scarlet.AIEditor
 
         public byte[] GetRawData()
         {
-            if (!headersAreCorrect) { CorrectHeaders(); }
+            //if (!headersAreCorrect) {
+                CorrectHeaders();
+            //}
 
             //convert data to bytes
             var data = new List<byte> { };
@@ -480,7 +482,7 @@ namespace FF7Scarlet.AIEditor
                 currPos = c.SetHeader(currPos);
                 c.SetParent(this);
             }
-            headersAreCorrect = true;
+            //headersAreCorrect = true;
         }
     }
 }
