@@ -187,6 +187,8 @@
                     return 3;
                 case OpcodeGroups.Mathematical:
                     return 2;
+                case OpcodeGroups.Special:
+                    return 5;
                 default:
                     return 0;
             }
