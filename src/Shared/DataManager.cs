@@ -46,7 +46,8 @@ namespace FF7Scarlet.Shared
 
         //clipboard
         public static Scene? CopiedScene { get; set; }
-        public static Enemy? CopiedEnemy { get; set; }
+        public static Enemy? CopiedEnemy { get; private set; }
+        public static Attack?[] CopiedEnemyAttacks { get; private set; } = [];
         public static Attack? CopiedAttack { get; set; }
         public static Formation? CopiedFormation { get; set; }
 
@@ -562,6 +563,12 @@ namespace FF7Scarlet.Shared
             dest.HPCurveIndex = source.HPCurveIndex;
             dest.MPCurveIndex = source.MPCurveIndex;
             dest.EXPCurveIndex = source.EXPCurveIndex;
+        }
+
+        public static void CopyEnemy(Enemy enemy, Scene scene)
+        {
+            CopiedEnemy = new Enemy(enemy);
+            CopiedEnemyAttacks = scene.GetEnemyAttacks(enemy);
         }
 
         public static int SyncAttack(Attack attack, bool syncInternal)

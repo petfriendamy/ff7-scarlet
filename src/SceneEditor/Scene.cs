@@ -99,7 +99,7 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        public void ChangeEnemyAtSlot(Enemy? newEnemy, int i, bool replaceInFormations)
+        public bool ChangeEnemyAtSlot(Enemy? newEnemy, Attack?[] attacks, int i, bool replaceInFormations)
         {
             if (i >= 0 && i < ENEMY_COUNT)
             {
@@ -126,7 +126,28 @@ namespace FF7Scarlet.SceneEditor
                     ChangeEnemyModelID(i, newID);
                 }
                 Enemies[i] = newEnemy;
+
+                //attempt to copy the attacks
+                int slot = 0;
+                while (AttackList[slot] != null && slot < ATTACK_COUNT)
+                {
+                    slot++;
+                }
+                for (int j = 0; j < attacks.Length; ++j)
+                {
+                    var atk = attacks[j];
+                    if (atk != null && GetAttackByID((ushort)atk.Index) == null)
+                    {
+                        AttackList[slot] = DataParser.CopyAttack(atk);
+                        while (AttackList[slot] != null)
+                        {
+                            slot++;
+                            if (slot >= ATTACK_COUNT) { return false; }
+                        }
+                    }
+                }
             }
+            return true;
         }
 
         public Enemy? GetEnemyByID(ushort id)
@@ -178,6 +199,20 @@ namespace FF7Scarlet.SceneEditor
                 }
                 return sb.ToString();
             }
+        }
+
+        public Attack?[] GetEnemyAttacks(Enemy enemy)
+        {
+            var attacks = new Attack?[Enemy.ATTACK_COUNT];
+            for (int i = 0; i < Enemy.ATTACK_COUNT; ++i)
+            {
+                var atk = GetAttackByID(enemy.AttackIDs[i]);
+                if (atk != null)
+                {
+                    attacks[i] = DataParser.CopyAttack(atk);
+                }
+            }
+            return attacks;
         }
 
         public Attack? GetAttackByID(ushort id)

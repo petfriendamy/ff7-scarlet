@@ -1,4 +1,5 @@
 ﻿using FF7Scarlet.AIEditor;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -32,7 +33,7 @@ namespace FF7Scarlet.SceneEditor
             Array.Copy(enemyLocations, EnemyLocations, ENEMY_COUNT);
         }
 
-        public Formation(Formation other) :base(other.Parent)
+        public Formation(Formation other, IAttackContainer parent) : base(parent)
         {
             BattleSetupData = new BattleSetupData(other.BattleSetupData);
             CameraPlacementData = new CameraPlacementData(other.CameraPlacementData);
@@ -41,5 +42,7 @@ namespace FF7Scarlet.SceneEditor
                 EnemyLocations[i] = new EnemyLocation(other.EnemyLocations[i]);
             }
         }
+
+        public Formation(Formation other) : this(other, other.Parent) { }
     }
 }

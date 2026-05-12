@@ -1651,20 +1651,24 @@ namespace FF7Scarlet.SceneEditor
             // formationCopyToolStripMenuItem
             // 
             formationCopyToolStripMenuItem.Name = "formationCopyToolStripMenuItem";
-            formationCopyToolStripMenuItem.Size = new Size(102, 22);
+            formationCopyToolStripMenuItem.Size = new Size(180, 22);
             formationCopyToolStripMenuItem.Text = "Copy";
+            formationCopyToolStripMenuItem.Click += formationCopyToolStripMenuItem_Click;
             // 
             // formationPasteToolStripMenuItem
             // 
+            formationPasteToolStripMenuItem.Enabled = false;
             formationPasteToolStripMenuItem.Name = "formationPasteToolStripMenuItem";
-            formationPasteToolStripMenuItem.Size = new Size(102, 22);
+            formationPasteToolStripMenuItem.Size = new Size(180, 22);
             formationPasteToolStripMenuItem.Text = "Paste";
+            formationPasteToolStripMenuItem.Click += formationPasteToolStripMenuItem_Click;
             // 
             // formationClearToolStripMenuItem
             // 
             formationClearToolStripMenuItem.Name = "formationClearToolStripMenuItem";
-            formationClearToolStripMenuItem.Size = new Size(102, 22);
+            formationClearToolStripMenuItem.Size = new Size(180, 22);
             formationClearToolStripMenuItem.Text = "Clear";
+            formationClearToolStripMenuItem.Click += formationClearToolStripMenuItem_Click;
             // 
             // toolStripDropDownTools
             // 

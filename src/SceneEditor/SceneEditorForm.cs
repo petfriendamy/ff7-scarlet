@@ -642,7 +642,7 @@ namespace FF7Scarlet.SceneEditor
                 }
 
                 enemy = new Enemy(scene, id, new FFText("(New enemy)"), null);
-                scene.ChangeEnemyAtSlot(enemy, enemyIndex, replace);
+                scene.ChangeEnemyAtSlot(enemy, [], enemyIndex, replace);
                 validEnemies[enemyIndex] = enemy;
                 comboBoxFormationSelectedEnemy.Items[enemyIndex + 1] = enemy.GetNameString(DisplayJapaneseText);
                 tabControlMain.SelectedTab = tabPageEnemyData;
@@ -653,7 +653,12 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        private void UpdateSelectedEnemyName(int scene, int enemy, int formation)
+        private void UpdateSceneEnemies(int scene)
+        {
+            comboBoxSceneList.Items[scene] = $"{scene}: {sceneList[scene].GetEnemyNames(DisplayJapaneseText)}";
+        }
+
+        private void UpdateSelectedEnemyName(int scene, int enemy, int formation, bool select = true)
         {
             if (scene >= 0 && scene < Scene.SCENE_COUNT)
             {
@@ -661,10 +666,10 @@ namespace FF7Scarlet.SceneEditor
                 if (enemy >= 0 && enemy < Scene.ENEMY_COUNT)
                 {
                     var e = sceneList[scene].Enemies[enemy];
-                    comboBoxEnemy.SelectedIndex = enemy;
+                    if (select) { comboBoxEnemy.SelectedIndex = enemy; }
 
                     loading = true;
-                    comboBoxSceneList.Items[scene] = $"{scene}: {sceneList[scene].GetEnemyNames(DisplayJapaneseText)}";
+                    UpdateSceneEnemies(scene);
                     string name;
                     if (e == null) { name = "(none)"; }
                     else { name = sceneList[scene].GetEnemyName(e.ModelID, DisplayJapaneseText); }
@@ -1830,6 +1835,7 @@ namespace FF7Scarlet.SceneEditor
                     SelectedFormation.EnemyLocations[selectedEnemy].EnemyID = enemy.ModelID;
                     listBoxFormationEnemies.Items[selectedEnemy] = enemy.GetNameString(DisplayJapaneseText);
                 }
+                UpdateFormations(SelectedSceneIndex, true);
                 SetUnsaved(true);
             }
         }
@@ -2253,9 +2259,9 @@ namespace FF7Scarlet.SceneEditor
 
         private void enemyCopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (SelectedEnemy != null)
+            if (SelectedScene != null && SelectedEnemy != null)
             {
-                DataManager.CopiedEnemy = new Enemy(SelectedEnemy);
+                DataManager.CopyEnemy(SelectedEnemy, SelectedScene);
                 enemyPasteToolStripMenuItem.Enabled = true;
             }
         }
@@ -2277,8 +2283,17 @@ namespace FF7Scarlet.SceneEditor
                 bool result = LoadEnemyData(temp, true, true);
                 if (result)
                 {
-                    SelectedScene.ChangeEnemyAtSlot(temp, SelectedEnemyIndex, replace);
-                    UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
+                    bool result2 = SelectedScene.ChangeEnemyAtSlot(temp, DataManager.CopiedEnemyAttacks, SelectedEnemyIndex, replace);
+                    if (!result2)
+                    {
+                        MessageDialog.ShowWarning("Unable to copy all enemy attacks. There may be errors.");
+                    }
+                    int enemy = SelectedEnemyIndex,
+                        formation = SelectedFormationIndex;
+                    LoadSceneData(SelectedSceneIndex, true, true);
+                    UpdateSceneEnemies(SelectedSceneIndex);
+                    comboBoxEnemy.SelectedIndex = enemy;
+                    comboBoxFormation.SelectedIndex = formation;
                     tabControlMain.SelectedTab = tabPageEnemyData;
                     enemyNeedsSync = false;
                     SetUnsaved(true);
@@ -2314,7 +2329,7 @@ namespace FF7Scarlet.SceneEditor
                     comboBoxFormationSelectedEnemy.Items.RemoveAt(i + 1);
 
                     //delete the enemy
-                    SelectedScene.ChangeEnemyAtSlot(null, SelectedEnemyIndex, false);
+                    SelectedScene.ChangeEnemyAtSlot(null, [], SelectedEnemyIndex, false);
                     UpdateSelectedEnemyName(SelectedSceneIndex, SelectedEnemyIndex, SelectedFormationIndex);
                     tabControlEnemyData.Enabled = false;
                     enemyDeleteToolStripMenuItem.Enabled = false;
@@ -2386,6 +2401,85 @@ namespace FF7Scarlet.SceneEditor
                 LoadAttackData(SelectedAttack, true);
                 UpdateSelectedAttackName(SelectedScene, SelectedEnemy, SelectedAttackIndex);
                 SetUnsaved(true);
+            }
+        }
+
+        private void formationCopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedFormation != null)
+            {
+                DataManager.CopiedFormation = new Formation(SelectedFormation);
+                formationPasteToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        private void formationPasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedScene != null && DataManager.CopiedFormation != null)
+            {
+                //check if the same enemies exist in this scene
+                var form = new Formation(DataManager.CopiedFormation);
+                var originalScene = form.Parent as Scene;
+                bool addedEnemy = false;
+
+                foreach (var enemy in form.EnemyLocations)
+                {
+                    if (enemy.EnemyID != HexParser.NULL_OFFSET_16_BIT &&
+                        SelectedScene.GetEnemyByID(enemy.EnemyID) == null)
+                    {
+                        Enemy? originalEnemy = null;
+                        Attack?[] attacks = [];
+                        if (originalScene != null)
+                        {
+                            originalEnemy = originalScene.GetEnemyByID(enemy.EnemyID);
+                            if (originalEnemy != null)
+                            {
+                                attacks = originalScene.GetEnemyAttacks(originalEnemy);
+                            }
+                        }
+
+                        DialogResult result;
+                        using (var copy = new EnemyCopyForm(SelectedScene, form, originalEnemy, attacks, DisplayJapaneseText))
+                        {
+                            result = copy.ShowDialog();
+                            if (copy.AddedEnemy) { addedEnemy = true; }
+                        }
+                        if (result == DialogResult.Cancel) { return; }
+                    }
+                }
+
+                //finally, copy the formation
+                SelectedScene.Formations[SelectedFormationIndex] = new Formation(form, SelectedScene);
+                if (addedEnemy)
+                {
+                    int enemy = SelectedEnemyIndex,
+                        formation = SelectedFormationIndex;
+                    LoadSceneData(SelectedSceneIndex, false, true);
+                    comboBoxEnemy.SelectedIndex = enemy;
+                    comboBoxFormation.SelectedIndex = formation;
+                    UpdateSceneEnemies(SelectedSceneIndex);
+                }
+                if (SelectedFormation != null)
+                {
+                    LoadFormationData(SelectedFormation, false);
+                    UpdateFormations(SelectedSceneIndex, true);
+                }
+                SetUnsaved(true);
+            }
+        }
+
+        private void formationClearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedScene != null && SelectedFormation != null)
+            {
+                if (MessageDialog.AskYesNo("Are you sure you want to clear all data from this formation? This can't be undone!",
+                        "Clear Formation?"))
+                {
+                    SelectedScene.Formations[SelectedFormationIndex] = new Formation(SelectedScene);
+                    LoadFormationData(SelectedFormation, false);
+                    UpdateFormations(SelectedSceneIndex, true);
+                    SetUnsaved(true);
+                }
             }
         }
 
