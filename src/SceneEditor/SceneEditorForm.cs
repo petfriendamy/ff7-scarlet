@@ -643,8 +643,16 @@ namespace FF7Scarlet.SceneEditor
 
                 enemy = new Enemy(scene, id, new FFText("(New enemy)"), null);
                 scene.ChangeEnemyAtSlot(enemy, [], enemyIndex, replace);
-                validEnemies[enemyIndex] = enemy;
-                comboBoxFormationSelectedEnemy.Items[enemyIndex + 1] = enemy.GetNameString(DisplayJapaneseText);
+                if (validEnemies.Count <= enemyIndex)
+                {
+                    validEnemies.Add(enemy);
+                    comboBoxFormationSelectedEnemy.Items.Add(enemy.GetNameString(DisplayJapaneseText));
+                }
+                else
+                {
+                    validEnemies[enemyIndex] = enemy;
+                    comboBoxFormationSelectedEnemy.Items[enemyIndex + 1] = enemy.GetNameString(DisplayJapaneseText);
+                }
                 tabControlMain.SelectedTab = tabPageEnemyData;
                 UpdateSelectedEnemyName(sceneIndex, enemyIndex, formationIndex);
                 enemyNeedsSync = false;
