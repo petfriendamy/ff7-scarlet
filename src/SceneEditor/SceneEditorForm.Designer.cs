@@ -89,6 +89,7 @@ namespace FF7Scarlet.SceneEditor
             buttonViewManipList = new Button();
             numericAttackAnimationIndex = new NumericUpDown();
             labelEnemyAttackAnimationIndex = new Label();
+            labelAnimPreviewWarning = new Label();
             checkBoxEnemyAttackIsManipable = new CheckBox();
             comboBoxEnemyAttackCamID = new ComboBox();
             labelEnemyAttackCamID = new Label();
@@ -835,6 +836,7 @@ namespace FF7Scarlet.SceneEditor
             // 
             groupBoxEnemyAttacks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxEnemyAttacks.Controls.Add(buttonViewManipList);
+            groupBoxEnemyAttacks.Controls.Add(labelAnimPreviewWarning);
             groupBoxEnemyAttacks.Controls.Add(numericAttackAnimationIndex);
             groupBoxEnemyAttacks.Controls.Add(labelEnemyAttackAnimationIndex);
             groupBoxEnemyAttacks.Controls.Add(checkBoxEnemyAttackIsManipable);
@@ -845,7 +847,7 @@ namespace FF7Scarlet.SceneEditor
             groupBoxEnemyAttacks.Controls.Add(listBoxEnemyAttacks);
             groupBoxEnemyAttacks.Location = new Point(9, 8);
             groupBoxEnemyAttacks.Name = "groupBoxEnemyAttacks";
-            groupBoxEnemyAttacks.Size = new Size(363, 394);
+            groupBoxEnemyAttacks.Size = new Size(363, 420);
             groupBoxEnemyAttacks.TabIndex = 45;
             groupBoxEnemyAttacks.TabStop = false;
             groupBoxEnemyAttacks.Text = "Attacks";
@@ -879,7 +881,19 @@ namespace FF7Scarlet.SceneEditor
             labelEnemyAttackAnimationIndex.Name = "labelEnemyAttackAnimationIndex";
             labelEnemyAttackAnimationIndex.Size = new Size(98, 15);
             labelEnemyAttackAnimationIndex.TabIndex = 6;
-            labelEnemyAttackAnimationIndex.Text = "Animation index:";
+            labelEnemyAttackAnimationIndex.Text = "Animation script ID:";
+            //
+            // labelAnimPreviewWarning
+            //
+            labelAnimPreviewWarning.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelAnimPreviewWarning.AutoSize = true;
+            labelAnimPreviewWarning.ForeColor = Color.OrangeRed;
+            labelAnimPreviewWarning.Location = new Point(6, 388);
+            labelAnimPreviewWarning.Name = "labelAnimPreviewWarning";
+            labelAnimPreviewWarning.Size = new Size(98, 15);
+            labelAnimPreviewWarning.TabIndex = 8;
+            labelAnimPreviewWarning.Text = "";
+            labelAnimPreviewWarning.Visible = false;
             // 
             // checkBoxEnemyAttackIsManipable
             // 
@@ -1946,6 +1960,7 @@ namespace FF7Scarlet.SceneEditor
         private CheckBox checkBoxEnemyItemIsSteal;
         private NumericUpDown numericAttackAnimationIndex;
         private Label labelEnemyAttackAnimationIndex;
+        private Label labelAnimPreviewWarning;
         private Label labelEnemyScripts;
         private ListBox listBoxEnemyScripts;
         private AIEditor.ScriptControl scriptControlEnemyAI;
