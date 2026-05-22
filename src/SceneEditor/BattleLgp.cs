@@ -85,50 +85,32 @@ namespace FF7Scarlet.SceneEditor
                      select f).ToArray();
 
                 models = new ModelData[modelNames.Count()];
-                var pFilesList = new List<byte[]> { };
-                var texturesList = new List<byte[]> { };
-                bool processPFiles = false, processTextures = false;
-                string currentModel = string.Empty;
+
+                // Use skeleton header to look up p-files and textures by their expected names
                 i = -1;
+                string currentModel = string.Empty;
+
                 foreach (var f in sortedFiles)
                 {
-                    if (f.EndsWith("da")) //animation file
+                    if (f.EndsWith("aa") && f != currentModel) //new skeleton
                     {
-                        models[i] = new ModelData(modelNames[i], files[modelNames[i]],
-                            pFilesList.ToArray(), files[f], texturesList.ToArray());
-                        pFilesList.Clear();
-                        texturesList.Clear();
-                        processPFiles = false;
-                        processTextures = false;
+                        if (i >= 0)
+                        {
+                            models[i] = BuildModelData(modelNames[i], files[modelNames[i]],
+                                Array.Empty<byte>(), files);
+                        }
+                        currentModel = f;
+                        i++;
+                    }
+                    else if (f.EndsWith("da")) //animation file
+                    {
+                        models[i] = BuildModelData(modelNames[i], files[modelNames[i]],
+                            files[f], files);
                         i++;
                         if (i < modelNames.Length)
                         {
                             currentModel = modelNames[i];
                         }
-                    }
-                    else if (f.EndsWith("aa") && f != currentModel) //lacking animation data
-                    {
-                        if (i >= 0)
-                        {
-                            models[i] = new ModelData(modelNames[i], files[currentModel],
-                                pFilesList.ToArray(), Array.Empty<byte>(), texturesList.ToArray());
-                        }
-                        pFilesList.Clear();
-                        texturesList.Clear();
-                        processPFiles = false;
-                        processTextures = false;
-                        currentModel = f;
-                        i++;
-                    }
-                    else if (processPFiles || f.EndsWith('m')) //P file
-                    {
-                        processPFiles = true;
-                        pFilesList.Add(files[f]);
-                    }
-                    else if (processTextures || f.EndsWith('c')) //textures
-                    {
-                        processTextures = true;
-                        texturesList.Add(files[f]);
                     }
                 }
             }
@@ -140,7 +122,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 return new BattleSkeleton(models[modelID].Skeleton,
                     models[modelID].PFiles, models[modelID].Textures, models[modelID].Name);
-                
+
             }
             return null;
         }
@@ -158,6 +140,66 @@ namespace FF7Scarlet.SceneEditor
         public BattleSkeleton? GetBattleArena(ushort modelID)
         {
             return GetModelData((ushort)(modelID + ARENA_OFFSET));
+        }
+
+        /// <summary>
+        /// Build ModelData by reading skeleton header to determine p-file and texture counts,
+        /// then looking up files by their expected names from the archive.
+        /// </summary>
+        private static ModelData BuildModelData(string skeletonName, byte[] skeletonData,
+            byte[] animationData, Dictionary<string, byte[]> archiveFiles)
+        {
+            // Read nTextures and nBones from skeleton header
+            int nTextures = 0;
+            int nBones = 0;
+            using (var ms = new MemoryStream(skeletonData))
+            using (var br = new BinaryReader(ms))
+            {
+                br.ReadInt32(); // skeletonType
+                br.ReadInt32(); // unk1
+                br.ReadInt32(); // unk2
+                nBones = br.ReadInt32();
+                br.ReadInt32(); // unk3
+                br.ReadInt32(); // nJoints
+                nTextures = br.ReadInt32();
+            }
+
+            string prefix = skeletonName.Substring(0, 2);
+
+            // Load textures by expected names: {prefix}ac, {prefix}ad, etc.
+            var texturesList = new List<byte[]>();
+            char texSuffix = 'c';
+            for (int t = 0; t < nTextures && texSuffix <= 'z'; t++, texSuffix++)
+            {
+                string texName = prefix + "a" + texSuffix;
+                if (archiveFiles.TryGetValue(texName, out var texData))
+                {
+                    texturesList.Add(texData);
+                }
+            }
+
+            // Load p-files by expected bone names: {prefix}am, {prefix}an, etc.
+            // Counter increments for each bone, matching BattleSkeleton constructor logic
+            var pFilesList = new List<byte[]>();
+            char s1 = 'a', s2 = 'm';
+            for (int b = 0; b < nBones; b++)
+            {
+                string pFileName = prefix + s1 + s2;
+                if (archiveFiles.TryGetValue(pFileName, out var pData))
+                {
+                    pFilesList.Add(pData);
+                }
+
+                s2++;
+                if (s2 > 'z')
+                {
+                    s1++;
+                    s2 = 'a';
+                }
+            }
+
+            return new ModelData(skeletonName, skeletonData,
+                pFilesList.ToArray(), animationData, texturesList.ToArray());
         }
     }
 }
