@@ -149,9 +149,8 @@ namespace FF7Scarlet.SceneEditor
         private static ModelData BuildModelData(string skeletonName, byte[] skeletonData,
             byte[] animationData, Dictionary<string, byte[]> archiveFiles)
         {
-            // Read nTextures and nBones from skeleton header
-            int nTextures = 0;
-            int nBones = 0;
+            // Read nTextures and nBones/nJoints from skeleton header
+            int nTextures = 0, nBones = 0, nJoints = 0;
             using (var ms = new MemoryStream(skeletonData))
             using (var br = new BinaryReader(ms))
             {
@@ -160,9 +159,12 @@ namespace FF7Scarlet.SceneEditor
                 br.ReadInt32(); // unk2
                 nBones = br.ReadInt32();
                 br.ReadInt32(); // unk3
-                br.ReadInt32(); // nJoints
+                nJoints = br.ReadInt32();
                 nTextures = br.ReadInt32();
             }
+
+            // Battle locations use nJoints for p-file count, enemies use nBones
+            int pFileCount = Math.Max(nBones, nJoints);
 
             string prefix = skeletonName.Substring(0, 2);
 
@@ -182,7 +184,7 @@ namespace FF7Scarlet.SceneEditor
             // Counter increments for each bone, matching BattleSkeleton constructor logic
             var pFilesList = new List<byte[]>();
             char s1 = 'a', s2 = 'm';
-            for (int b = 0; b < nBones; b++)
+            for (int b = 0; b < pFileCount; b++)
             {
                 string pFileName = prefix + s1 + s2;
                 if (archiveFiles.TryGetValue(pFileName, out var pData))
