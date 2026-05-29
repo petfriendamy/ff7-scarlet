@@ -1072,22 +1072,16 @@ namespace FF7Scarlet.SceneEditor
             {
                 int animIndex = SelectedEnemy.ActionAnimationIndexes[attackSlotIndex];
 
-                try
+                if (!enemyModelPreviewControl.SetAnimation(animIndex))
                 {
-                    enemyModelPreviewControl.SetAnimation(animIndex);
+                    int animCount = enemyModelPreviewControl.AnimationCount;
+                    labelAnimPreviewWarning.Text =
+                        $"Script ID {animIndex} out of range (0-{animCount - 1}). Showing fallback.";
+                    labelAnimPreviewWarning.Visible = true;
                 }
-                catch (ArgumentOutOfRangeException)
+                else
                 {
-                    MessageDialog.ShowError(
-                        $"Animation index {animIndex} is invalid for this model.\n" +
-                        $"Model has {enemyModelPreviewControl.FrameInfo.Total + 1} animations (0-{enemyModelPreviewControl.FrameInfo.Total}).",
-                        "Animation Error");
-                    enemyModelPreviewControl.StopAnimation();
-                }
-                catch (Exception ex)
-                {
-                    ExceptionHandler.Handle(ex, "playing attack animation");
-                    enemyModelPreviewControl.StopAnimation();
+                    labelAnimPreviewWarning.Visible = false;
                 }
             }
         }
@@ -1380,6 +1374,7 @@ namespace FF7Scarlet.SceneEditor
                 var atk = SelectedScene.GetAttackByID(SelectedEnemy.AttackIDs[i]);
                 if (atk == null) //no attack selected
                 {
+                    labelAnimPreviewWarning.Visible = false;
                     if (enemyModelPreviewControl.ModelLoaded)
                     {
                         enemyModelPreviewControl.SetAnimation(0);

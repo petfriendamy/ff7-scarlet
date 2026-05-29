@@ -320,7 +320,6 @@ void main()
             io.MouseWheelH = offset.X;
         }
 
-        private static bool _diagDone = false;
 
         private void RenderImDrawData(ImDrawDataPtr draw_data)
         {

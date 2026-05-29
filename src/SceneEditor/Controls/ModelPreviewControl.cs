@@ -97,14 +97,19 @@ namespace FF7Scarlet.SceneEditor.Controls
 
         }
 
-        public void SetAnimation(int animationIndex)
+        public int AnimationCount => loadedAnimations?.SkeletonAnimations.Count ?? 0;
+
+        /// <returns>true if the exact animation was set, false if the index was clamped</returns>
+        public bool SetAnimation(int animationIndex)
         {
             if (renderContext != null && loadedAnimations != null)
             {
-                if (animationIndex < 0 || animationIndex >= loadedAnimations.Value.SkeletonAnimations.Count)
+                int count = loadedAnimations.Value.SkeletonAnimations.Count;
+                bool exact = true;
+                if (animationIndex < 0 || animationIndex >= count)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(animationIndex),
-                        $"Animation index {animationIndex} is out of range. Available animations: 0-{loadedAnimations.Value.SkeletonAnimations.Count - 1}");
+                    animationIndex = Math.Clamp(animationIndex, 0, count - 1);
+                    exact = false;
                 }
 
                 currentAnimationState.AnimationIndex = animationIndex;
@@ -126,7 +131,9 @@ namespace FF7Scarlet.SceneEditor.Controls
                 }
 
                 glControl.Invalidate();
+                return exact;
             }
+            return false;
         }
 
         private void StartAnimation()

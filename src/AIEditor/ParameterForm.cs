@@ -12,7 +12,7 @@ namespace FF7Scarlet.AIEditor
         private readonly Script parentScript;
         private readonly int xx, yy, offset;
         private readonly ParameterTypes type;
-        private readonly bool loading, jpText;
+        private readonly bool jpText;
 
         public ParameterForm(Script script, List<Code> code, Opcodes opcode, ParameterTypes type, bool jpText)
         {
@@ -35,7 +35,6 @@ namespace FF7Scarlet.AIEditor
             offset = parameterControl2.Location.Y - yy;
 
             SuspendLayout();
-            loading = true;
             int i = 0;
             foreach (var c in Code)
             {
@@ -89,7 +88,6 @@ namespace FF7Scarlet.AIEditor
                 }
             }
             ResumeLayout(true);
-            loading = false;
         }
 
         private void AddParameter()
