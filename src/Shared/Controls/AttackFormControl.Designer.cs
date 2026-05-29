@@ -50,7 +50,7 @@
             labelAttackDescription = new Label();
             comboBoxCamMovementIDSingle = new ComboBox();
             labelSummonText = new Label();
-            numericAttackAttackPercent = new NumericUpDown();
+            numericAttackPercent = new NumericUpDown();
             textBoxSummonText = new TextBox();
             labelAttackAttackPercent = new Label();
             labelAttackMPCost = new Label();
@@ -74,7 +74,7 @@
             checkBoxAttackSyncWithSceneBin = new CheckBox();
             tabControlAttacks.SuspendLayout();
             tabPageAttacks1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackAttackPercent).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericAttackPercent).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).BeginInit();
             tabPageAttacks2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericStatusChangeChance).BeginInit();
@@ -116,7 +116,7 @@
             tabPageAttacks1.Controls.Add(labelAttackDescription);
             tabPageAttacks1.Controls.Add(comboBoxCamMovementIDSingle);
             tabPageAttacks1.Controls.Add(labelSummonText);
-            tabPageAttacks1.Controls.Add(numericAttackAttackPercent);
+            tabPageAttacks1.Controls.Add(numericAttackPercent);
             tabPageAttacks1.Controls.Add(textBoxSummonText);
             tabPageAttacks1.Controls.Add(labelAttackAttackPercent);
             tabPageAttacks1.Controls.Add(labelAttackMPCost);
@@ -334,12 +334,12 @@
             // 
             // numericAttackAttackPercent
             // 
-            numericAttackAttackPercent.Location = new Point(7, 112);
-            numericAttackAttackPercent.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
-            numericAttackAttackPercent.Name = "numericAttackAttackPercent";
-            numericAttackAttackPercent.Size = new Size(100, 23);
-            numericAttackAttackPercent.TabIndex = 10;
-            numericAttackAttackPercent.ValueChanged += ValueChanged;
+            numericAttackPercent.Location = new Point(7, 112);
+            numericAttackPercent.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numericAttackPercent.Name = "numericAttackAttackPercent";
+            numericAttackPercent.Size = new Size(100, 23);
+            numericAttackPercent.TabIndex = 10;
+            numericAttackPercent.ValueChanged += ValueChanged;
             // 
             // textBoxSummonText
             // 
@@ -571,7 +571,7 @@
             tabControlAttacks.ResumeLayout(false);
             tabPageAttacks1.ResumeLayout(false);
             tabPageAttacks1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericAttackAttackPercent).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericAttackPercent).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericAttackMPCost).EndInit();
             tabPageAttacks2.ResumeLayout(false);
             tabPageAttacks2.PerformLayout();
@@ -606,7 +606,7 @@
         private Label labelAttackDescription;
         private ComboBox comboBoxCamMovementIDSingle;
         private Label labelSummonText;
-        private NumericUpDown numericAttackAttackPercent;
+        private NumericUpDown numericAttackPercent;
         private TextBox textBoxSummonText;
         private Label labelAttackAttackPercent;
         private Label labelAttackMPCost;

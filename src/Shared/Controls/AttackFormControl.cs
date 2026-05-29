@@ -82,6 +82,8 @@ namespace FF7Scarlet.Shared.Controls
             InitializeComponent();
 
             textBoxAttackName.MaxLength = Scene.NAME_LENGTH - 1;
+            numericAttackPercent.Maximum = byte.MaxValue;
+            numericAttackMPCost.Maximum = ushort.MaxValue;
 
             //status change
             comboBoxStatusChange.Items.Add("None");
@@ -152,7 +154,7 @@ namespace FF7Scarlet.Shared.Controls
                 textBoxSummonText.Text = summonAttackName.ToString(jpText);
             }
             checkBoxAttackIsLimit.Checked = isLimit;
-            numericAttackAttackPercent.Value = attack.AccuracyRate;
+            numericAttackPercent.Value = attack.AccuracyRate;
             numericAttackMPCost.Value = attack.MPCost;
             comboBoxAttackEffectID.Text = attack.AttackEffectID.ToString("X2");
             comboBoxAttackImpactEffectID.Text = attack.ImpactEffectID.ToString("X2");
@@ -188,7 +190,7 @@ namespace FF7Scarlet.Shared.Controls
             }
             else
             {
-                comboBoxMagicType.SelectedIndex = (int)spellType + 1;
+                comboBoxMagicType.SelectedIndex = (int)spellType;
                 buttonMagicOrder.Enabled = true;
             }
             checkBoxAttackSyncWithSceneBin.Checked = synced;
@@ -250,7 +252,7 @@ namespace FF7Scarlet.Shared.Controls
         public void SyncAttackData(Attack attack)
         {
             FormFunctions.ForceUpdate(this);
-            attack.AccuracyRate = (byte)numericAttackAttackPercent.Value;
+            attack.AccuracyRate = (byte)numericAttackPercent.Value;
             attack.MPCost = (ushort)numericAttackMPCost.Value;
             attack.TargetFlags = targetDataControlAttack.GetTargetData();
             attack.DamageCalculationID = damageCalculationControlAttack.ActualValue;
