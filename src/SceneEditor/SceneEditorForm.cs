@@ -709,7 +709,7 @@ namespace FF7Scarlet.SceneEditor
         private string GetItemDropText(ItemDropRate rate)
         {
             //get drop rate
-            float percentage = (rate.DropRate / 64F) * 100;
+            float percentage = (rate.DropRate / 63F) * 100;
             var sb = new StringBuilder($"{percentage:N1}% ");
 
             //get name
