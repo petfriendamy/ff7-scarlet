@@ -65,6 +65,10 @@
             labelAttackStatusChange = new Label();
             statusesControlAttack = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
             tabPageAttacks3 = new TabPage();
+            labelEffectModifier = new Label();
+            numericEffectModifier = new NumericUpDown();
+            comboBoxAdditionalEffects = new ComboBox();
+            labelAdditionalEffects = new Label();
             buttonMagicOrder = new Button();
             comboBoxMagicType = new ComboBox();
             labelMagicType = new Label();
@@ -79,6 +83,7 @@
             tabPageAttacks2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericStatusChangeChance).BeginInit();
             tabPageAttacks3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericEffectModifier).BeginInit();
             groupBoxAttackSpecialActions.SuspendLayout();
             SuspendLayout();
             // 
@@ -332,11 +337,11 @@
             labelSummonText.TabIndex = 5;
             labelSummonText.Text = "Summon attack name:";
             // 
-            // numericAttackAttackPercent
+            // numericAttackPercent
             // 
             numericAttackPercent.Location = new Point(7, 112);
             numericAttackPercent.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
-            numericAttackPercent.Name = "numericAttackAttackPercent";
+            numericAttackPercent.Name = "numericAttackPercent";
             numericAttackPercent.Size = new Size(100, 23);
             numericAttackPercent.TabIndex = 10;
             numericAttackPercent.ValueChanged += ValueChanged;
@@ -474,6 +479,10 @@
             // 
             // tabPageAttacks3
             // 
+            tabPageAttacks3.Controls.Add(labelEffectModifier);
+            tabPageAttacks3.Controls.Add(numericEffectModifier);
+            tabPageAttacks3.Controls.Add(comboBoxAdditionalEffects);
+            tabPageAttacks3.Controls.Add(labelAdditionalEffects);
             tabPageAttacks3.Controls.Add(buttonMagicOrder);
             tabPageAttacks3.Controls.Add(comboBoxMagicType);
             tabPageAttacks3.Controls.Add(labelMagicType);
@@ -485,6 +494,44 @@
             tabPageAttacks3.TabIndex = 2;
             tabPageAttacks3.Text = "Page 3";
             tabPageAttacks3.UseVisualStyleBackColor = true;
+            // 
+            // labelEffectModifier
+            // 
+            labelEffectModifier.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelEffectModifier.AutoSize = true;
+            labelEffectModifier.Location = new Point(449, 134);
+            labelEffectModifier.Name = "labelEffectModifier";
+            labelEffectModifier.Size = new Size(55, 15);
+            labelEffectModifier.TabIndex = 52;
+            labelEffectModifier.Text = "Modifier:";
+            // 
+            // numericEffectModifier
+            // 
+            numericEffectModifier.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            numericEffectModifier.Location = new Point(449, 152);
+            numericEffectModifier.Name = "numericEffectModifier";
+            numericEffectModifier.Size = new Size(120, 23);
+            numericEffectModifier.TabIndex = 51;
+            numericEffectModifier.ValueChanged += ValueChanged;
+            // 
+            // comboBoxAdditionalEffects
+            // 
+            comboBoxAdditionalEffects.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxAdditionalEffects.FormattingEnabled = true;
+            comboBoxAdditionalEffects.Location = new Point(6, 152);
+            comboBoxAdditionalEffects.Name = "comboBoxAdditionalEffects";
+            comboBoxAdditionalEffects.Size = new Size(437, 23);
+            comboBoxAdditionalEffects.TabIndex = 50;
+            comboBoxAdditionalEffects.SelectedIndexChanged += comboBoxAdditionalEffects_SelectedIndexChanged;
+            // 
+            // labelAdditionalEffects
+            // 
+            labelAdditionalEffects.AutoSize = true;
+            labelAdditionalEffects.Location = new Point(6, 134);
+            labelAdditionalEffects.Name = "labelAdditionalEffects";
+            labelAdditionalEffects.Size = new Size(103, 15);
+            labelAdditionalEffects.TabIndex = 49;
+            labelAdditionalEffects.Text = "Additional effects:";
             // 
             // buttonMagicOrder
             // 
@@ -531,7 +578,7 @@
             groupBoxAttackSpecialActions.Controls.Add(buttonAttackSyncAll);
             groupBoxAttackSpecialActions.Controls.Add(checkBoxAttackSyncWithSceneBin);
             groupBoxAttackSpecialActions.Enabled = false;
-            groupBoxAttackSpecialActions.Location = new Point(6, 137);
+            groupBoxAttackSpecialActions.Location = new Point(6, 369);
             groupBoxAttackSpecialActions.Name = "groupBoxAttackSpecialActions";
             groupBoxAttackSpecialActions.Size = new Size(563, 50);
             groupBoxAttackSpecialActions.TabIndex = 45;
@@ -578,6 +625,7 @@
             ((System.ComponentModel.ISupportInitialize)numericStatusChangeChance).EndInit();
             tabPageAttacks3.ResumeLayout(false);
             tabPageAttacks3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericEffectModifier).EndInit();
             groupBoxAttackSpecialActions.ResumeLayout(false);
             groupBoxAttackSpecialActions.PerformLayout();
             ResumeLayout(false);
@@ -629,5 +677,9 @@
         private Button buttonAttackSyncAll;
         private CheckBox checkBoxAttackSyncWithSceneBin;
         private TextBox textBoxID;
+        private ComboBox comboBoxAdditionalEffects;
+        private Label labelAdditionalEffects;
+        private Label labelEffectModifier;
+        private NumericUpDown numericEffectModifier;
     }
 }

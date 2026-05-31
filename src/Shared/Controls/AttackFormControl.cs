@@ -84,6 +84,7 @@ namespace FF7Scarlet.Shared.Controls
             textBoxAttackName.MaxLength = Scene.NAME_LENGTH - 1;
             numericAttackPercent.Maximum = byte.MaxValue;
             numericAttackMPCost.Maximum = ushort.MaxValue;
+            numericEffectModifier.Maximum = byte.MaxValue;
 
             //status change
             comboBoxStatusChange.Items.Add("None");
@@ -110,6 +111,13 @@ namespace FF7Scarlet.Shared.Controls
                     comboBoxAttackConditionSubMenu.Items.Add(StringParser.AddSpaces(Enum.GetName(c)));
                 }
             }
+
+            //additional effects
+            foreach (var m in AdditionalEffects.Effects)
+            {
+                comboBoxAdditionalEffects.Items.Add(m.Description);
+            }
+
             EnableOrDisableControls(false, false);
         }
 
@@ -193,6 +201,10 @@ namespace FF7Scarlet.Shared.Controls
                 comboBoxMagicType.SelectedIndex = (int)spellType;
                 buttonMagicOrder.Enabled = true;
             }
+            int i = AdditionalEffects.GetIndex(attack.AditionalEffects);
+            comboBoxAdditionalEffects.SelectedIndex = i;
+            numericEffectModifier.Value = attack.AdditionalEffectsModifier;
+            numericEffectModifier.Enabled = AdditionalEffects.Effects[i].HasModifier;
             checkBoxAttackSyncWithSceneBin.Checked = synced;
 
             loading = false;
@@ -268,6 +280,7 @@ namespace FF7Scarlet.Shared.Controls
             attack.Statuses = statusesControlAttack.GetStatuses();
             attack.Elements = elementsControlAttack.GetElements();
             attack.SpecialAttackFlags = specialAttackFlagsControlAttack.GetFlags();
+            attack.AdditionalEffectsModifier = (byte)numericEffectModifier.Value;
         }
 
         private Scene? GetParentScene()
@@ -460,6 +473,17 @@ namespace FF7Scarlet.Shared.Controls
         private void buttonMagicOrder_Click(object sender, EventArgs e)
         {
             InvokeChangeMagicOrder(sender, e);
+        }
+
+        private void comboBoxAdditionalEffects_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && attack != null)
+            {
+                var effect = AdditionalEffects.Effects[comboBoxAdditionalEffects.SelectedIndex];
+                numericEffectModifier.Enabled = effect.HasModifier;
+                attack.AditionalEffects = effect.Value;
+                InvokeDataChanged(sender, e);
+            }
         }
 
         private void checkBoxAttackSyncWithSceneBin_CheckedChanged(object sender, EventArgs e)

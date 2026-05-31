@@ -609,6 +609,12 @@ namespace FF7Scarlet.KernelEditor
                      select s).ToList();
             }
 
+            //additional effects
+            foreach (var m in AdditionalEffects.Effects)
+            {
+                comboBoxItemAdditionalEffects.Items.Add(m.Description);
+            }
+
             //materia info
             foreach (var g in Enum.GetNames<GrowthRate>())
             {
@@ -1097,6 +1103,10 @@ namespace FF7Scarlet.KernelEditor
                                 {
                                     comboBoxItemConditionSubMenu.SelectedIndex = (int)item.ConditionSubmenu + 1;
                                 }
+                                int k = AdditionalEffects.GetIndex(item.AdditionalEffects);
+                                comboBoxItemAdditionalEffects.SelectedIndex = k;
+                                numericItemEffectModifier.Value = item.AdditionalEffectsModifier;
+                                numericItemEffectModifier.Enabled = AdditionalEffects.Effects[k].HasModifier;
                             }
                             break;
 
@@ -1805,6 +1815,7 @@ namespace FF7Scarlet.KernelEditor
                 item.ConditionSubmenu = (ConditionSubmenu)(comboBoxItemConditionSubMenu.SelectedIndex - 1);
             }
             item.Special = specialAttackFlagsControlItem.GetFlags();
+            item.AdditionalEffectsModifier = (byte)numericItemEffectModifier.Value;
 
             itemDataNeedsSync = false;
         }
@@ -3296,6 +3307,17 @@ namespace FF7Scarlet.KernelEditor
                     }
                     else { SystemSounds.Exclamation.Play(); }
                 }
+            }
+        }
+
+        private void comboBoxItemAdditionalEffects_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading && SelectedItem != null)
+            {
+                var effect = AdditionalEffects.Effects[comboBoxItemAdditionalEffects.SelectedIndex];
+                numericItemEffectModifier.Enabled = effect.HasModifier;
+                SelectedItem.AdditionalEffects = effect.Value;
+                SetUnsaved(true);
             }
         }
 

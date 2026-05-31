@@ -184,6 +184,10 @@
             statusesControlItem = new FF7Scarlet.KernelEditor.Controls.StatusesControl();
             elementsControlItem = new FF7Scarlet.KernelEditor.Controls.ElementsControl();
             tabPageItems3 = new TabPage();
+            labelitemEffectModifier = new Label();
+            numericItemEffectModifier = new NumericUpDown();
+            comboBoxItemAdditionalEffects = new ComboBox();
+            labelItemAdditionalEffects = new Label();
             specialAttackFlagsControlItem = new FF7Scarlet.Shared.SpecialAttackFlagsControl();
             listBoxItems = new ListBox();
             tabPageWeaponData = new TabPage();
@@ -378,6 +382,7 @@
             tabPageItems2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericItemStatusChangeChance).BeginInit();
             tabPageItems3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericItemEffectModifier).BeginInit();
             tabPageWeaponData.SuspendLayout();
             tabControlWeapons.SuspendLayout();
             tabPageWeapon1.SuspendLayout();
@@ -2070,6 +2075,10 @@
             // 
             // tabPageItems3
             // 
+            tabPageItems3.Controls.Add(labelitemEffectModifier);
+            tabPageItems3.Controls.Add(numericItemEffectModifier);
+            tabPageItems3.Controls.Add(comboBoxItemAdditionalEffects);
+            tabPageItems3.Controls.Add(labelItemAdditionalEffects);
             tabPageItems3.Controls.Add(specialAttackFlagsControlItem);
             tabPageItems3.Location = new Point(4, 24);
             tabPageItems3.Name = "tabPageItems3";
@@ -2077,6 +2086,44 @@
             tabPageItems3.TabIndex = 2;
             tabPageItems3.Text = "Page 3";
             tabPageItems3.UseVisualStyleBackColor = true;
+            // 
+            // labelitemEffectModifier
+            // 
+            labelitemEffectModifier.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            labelitemEffectModifier.AutoSize = true;
+            labelitemEffectModifier.Location = new Point(441, 106);
+            labelitemEffectModifier.Name = "labelitemEffectModifier";
+            labelitemEffectModifier.Size = new Size(55, 15);
+            labelitemEffectModifier.TabIndex = 56;
+            labelitemEffectModifier.Text = "Modifier:";
+            // 
+            // numericItemEffectModifier
+            // 
+            numericItemEffectModifier.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            numericItemEffectModifier.Location = new Point(441, 124);
+            numericItemEffectModifier.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericItemEffectModifier.Name = "numericItemEffectModifier";
+            numericItemEffectModifier.Size = new Size(120, 23);
+            numericItemEffectModifier.TabIndex = 55;
+            // 
+            // comboBoxItemAdditionalEffects
+            // 
+            comboBoxItemAdditionalEffects.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxItemAdditionalEffects.FormattingEnabled = true;
+            comboBoxItemAdditionalEffects.Location = new Point(3, 124);
+            comboBoxItemAdditionalEffects.Name = "comboBoxItemAdditionalEffects";
+            comboBoxItemAdditionalEffects.Size = new Size(432, 23);
+            comboBoxItemAdditionalEffects.TabIndex = 54;
+            comboBoxItemAdditionalEffects.SelectedIndexChanged += comboBoxItemAdditionalEffects_SelectedIndexChanged;
+            // 
+            // labelItemAdditionalEffects
+            // 
+            labelItemAdditionalEffects.AutoSize = true;
+            labelItemAdditionalEffects.Location = new Point(3, 106);
+            labelItemAdditionalEffects.Name = "labelItemAdditionalEffects";
+            labelItemAdditionalEffects.Size = new Size(103, 15);
+            labelItemAdditionalEffects.TabIndex = 53;
+            labelItemAdditionalEffects.Text = "Additional effects:";
             // 
             // specialAttackFlagsControlItem
             // 
@@ -3620,6 +3667,8 @@
             tabPageItems2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericItemStatusChangeChance).EndInit();
             tabPageItems3.ResumeLayout(false);
+            tabPageItems3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericItemEffectModifier).EndInit();
             tabPageWeaponData.ResumeLayout(false);
             tabControlWeapons.ResumeLayout(false);
             tabPageWeapon1.ResumeLayout(false);
@@ -3958,5 +4007,9 @@
         private ComboBox comboBoxItemStatusChange;
         private Label labelItemConditionSubMenu;
         private Label labelItemStatusChange;
+        private Label labelitemEffectModifier;
+        private NumericUpDown numericItemEffectModifier;
+        private ComboBox comboBoxItemAdditionalEffects;
+        private Label labelItemAdditionalEffects;
     }
 }
