@@ -79,6 +79,24 @@ namespace FF7Scarlet.Shared
             {
                 ctrl.BackColor = SystemColors.ControlLightLight;
             }
+            else if (ctrl is Chart)
+            {
+                var chart = ctrl as Chart;
+                if (chart != null)
+                {
+                    chart.BackColor = SystemColors.ControlLightLight;
+                    foreach (var ca in chart.ChartAreas)
+                    {
+                        ca.BackColor = SystemColors.ControlLightLight;
+                        foreach (var a in ca.Axes)
+                        {
+                            a.LineColor = Color.Gray;
+                            a.MajorGrid.LineColor = Color.Gray;
+                            a.LabelStyle.ForeColor = SystemColors.ControlText;
+                        }
+                    }
+                }
+            }
             else if (ctrl.Parent != null)
             {
                 if (ctrl.Parent is CharacterLimitControl)
@@ -113,22 +131,6 @@ namespace FF7Scarlet.Shared
                     {
                         ForceUpdate(innerTab.TabPages[j]);
                     }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Recursively invalidates all inner controls.
-        /// </summary>
-        /// <param name="ctrl">The control to invalidate.</param>
-        public static void InvalidateAll(Control? ctrl)
-        {
-            if (ctrl != null)
-            {
-                ctrl.Invalidate();
-                foreach (Control c in ctrl.Controls)
-                {
-                    InvalidateAll(c);
                 }
             }
         }

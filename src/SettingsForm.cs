@@ -134,7 +134,7 @@ namespace FF7Scarlet
                 {
                     int i = comboBoxColorMode.SelectedIndex;
                     DataManager.SetColorMode(i);
-                    FormFunctions.InvalidateAll(this);
+                    Refresh();
 
                     //this updates the setting instantly
                     var config = ConfigurationManager.OpenMappedExeConfiguration(DataManager.ConfigFile,

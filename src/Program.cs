@@ -16,6 +16,7 @@ namespace FF7Scarlet
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetColorMode(SystemColorMode.System);
             Application.Run(new StartupForm());
         }
     }

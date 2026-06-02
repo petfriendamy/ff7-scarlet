@@ -107,15 +107,15 @@ namespace FF7Scarlet.Shared
                     Application.SetColorMode(SystemColorMode.Dark);
                     break;
             }
-            InvalidateAllForms();
+            RefreshAllForms();
         }
 
-        public static void InvalidateAllForms()
+        private static void RefreshAllForms()
         {
-            FormFunctions.InvalidateAll(startupForm);
-            FormFunctions.InvalidateAll(kernelForm);
-            FormFunctions.InvalidateAll(sceneEditorForm);
-            FormFunctions.InvalidateAll(exeEditorForm);
+            startupForm?.Refresh();
+            kernelForm?.Refresh();
+            sceneEditorForm?.Refresh();
+            exeEditorForm?.Refresh();
         }
 
         public static void SetFilePath(FileClass fileClass, string path, bool suppressRelativeCheck = false, bool isJPoriginal = false)
