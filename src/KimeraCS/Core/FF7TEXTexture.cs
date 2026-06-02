@@ -292,10 +292,10 @@ namespace KimeraCS.Core
 
             int texId = GL.GenTexture();
             inTEXTexture.texID = (uint)texId;
-            GL.BindTexture(TextureTarget.Texture2d, texId);
+            GL.BindTexture(TextureTarget.Texture2D, texId);
 
-            GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameteri(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.TexParameteri(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
 
             switch (inTEXTexture.bitDepth)
             {
@@ -326,7 +326,7 @@ namespace KimeraCS.Core
 
             if (textureImg != null)
             {
-                GL.TexImage2D(TextureTarget.Texture2d, 0, internalformat,
+                GL.TexImage2D(TextureTarget.Texture2D, 0, internalformat,
                     inTEXTexture.width, inTEXTexture.height, 0, format,
                     PixelType.UnsignedByte, textureImg);
             }

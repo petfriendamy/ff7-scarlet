@@ -169,27 +169,27 @@ void main()
 
             int prevActiveTexture = GL.GetInteger(GetPName.ActiveTexture);
             GL.ActiveTexture(TextureUnit.Texture0);
-            int prevTexture2d = GL.GetInteger(GetPName.TextureBinding2d);
+            int prevTexture2D = GL.GetInteger(GetPName.TextureBinding2D);
 
             _fontTexture = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2d, _fontTexture);
-            GL.TexStorage2D(TextureTarget.Texture2d, mips, SizedInternalFormat.Rgba8, width, height);
+            GL.BindTexture(TextureTarget.Texture2D, _fontTexture);
+            GL.TexStorage2D(TextureTarget.Texture2D, mips, SizedInternalFormat.Rgba8, width, height);
             LabelObject(ObjectIdentifier.Texture, _fontTexture, "ImGui Text Atlas");
 
-            GL.TexSubImage2D(TextureTarget.Texture2d, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+            GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
 
-            GL.GenerateMipmap(TextureTarget.Texture2d);
+            GL.GenerateMipmap(TextureTarget.Texture2D);
 
-            GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-            GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+            GL.TexParameteri(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameteri(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
 
-            GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMaxLevel, mips - 1);
+            GL.TexParameteri(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, mips - 1);
 
-            GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameteri(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.TexParameteri(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
 
             // Restore state
-            GL.BindTexture(TextureTarget.Texture2d, prevTexture2d);
+            GL.BindTexture(TextureTarget.Texture2D, prevTexture2D);
             GL.ActiveTexture((TextureUnit)prevActiveTexture);
 
             io.Fonts.SetTexID(_fontTexture);
@@ -345,7 +345,7 @@ void main()
             bool prevAlphaTestEnabled = GL.GetBoolean(GetPName.AlphaTest);
             int prevActiveTexture = GL.GetInteger(GetPName.ActiveTexture);
             GL.ActiveTexture(TextureUnit.Texture0);
-            int prevTexture2d = GL.GetInteger(GetPName.TextureBinding2d);
+            int prevTexture2D = GL.GetInteger(GetPName.TextureBinding2D);
             Span<int> prevScissorBox = stackalloc int[4];
             GL.GetInteger(GetPName.ScissorBox, prevScissorBox);
             Span<int> prevPolygonMode = stackalloc int[2];
@@ -420,7 +420,7 @@ void main()
                     else
                     {
                         GL.ActiveTexture(TextureUnit.Texture0);
-                        GL.BindTexture(TextureTarget.Texture2d, (int)pcmd.GetTexID());
+                        GL.BindTexture(TextureTarget.Texture2D, (int)pcmd.GetTexID());
                         CheckGLError("Texture");
 
                         // We do _windowHeight - (int)clip.W instead of (int)clip.Y because gl has flipped Y when it comes to these coordinates
@@ -445,7 +445,7 @@ void main()
             GL.Disable(EnableCap.ScissorTest);
 
             // Reset state
-            GL.BindTexture(TextureTarget.Texture2d, prevTexture2d);
+            GL.BindTexture(TextureTarget.Texture2D, prevTexture2D);
             GL.ActiveTexture((TextureUnit)prevActiveTexture);
             GL.UseProgram(prevProgram);
             GL.BindVertexArray(prevVAO);
@@ -489,7 +489,7 @@ void main()
         public static void LabelObject(ObjectIdentifier objLabelIdent, int glObject, string name)
         {
             if (KHRDebugAvailable)
-                GL.ObjectLabel(objLabelIdent, (uint)glObject, name.Length, name);
+                GL.ObjectLabel(objLabelIdent, glObject, name.Length, name);
         }
 
         static bool IsExtensionSupported(string name)

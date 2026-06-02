@@ -338,7 +338,7 @@ namespace KimeraCS.Rendering
                     if (texId > 0 && GL.IsTexture((int)texId))
                     {
                         GL.ActiveTexture(TextureUnit.Texture0);
-                        GL.BindTexture(TextureTarget.Texture2d, (int)texId);
+                        GL.BindTexture(TextureTarget.Texture2D, (int)texId);
                         ctx.ModelShader.SetBool("useTexture", true);
                     }
                     else
