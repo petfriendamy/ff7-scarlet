@@ -87,9 +87,9 @@ namespace FF7Scarlet.SceneEditor
             listBoxEnemyItemDropRates = new ListBox();
             groupBoxEnemyAttacks = new GroupBox();
             buttonViewManipList = new Button();
+            labelAnimPreviewWarning = new Label();
             numericAttackAnimationIndex = new NumericUpDown();
             labelEnemyAttackAnimationIndex = new Label();
-            labelAnimPreviewWarning = new Label();
             checkBoxEnemyAttackIsManipable = new CheckBox();
             comboBoxEnemyAttackCamID = new ComboBox();
             labelEnemyAttackCamID = new Label();
@@ -863,6 +863,17 @@ namespace FF7Scarlet.SceneEditor
             buttonViewManipList.UseVisualStyleBackColor = true;
             buttonViewManipList.Click += buttonViewManipList_Click;
             // 
+            // labelAnimPreviewWarning
+            // 
+            labelAnimPreviewWarning.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelAnimPreviewWarning.AutoSize = true;
+            labelAnimPreviewWarning.ForeColor = Color.OrangeRed;
+            labelAnimPreviewWarning.Location = new Point(6, 388);
+            labelAnimPreviewWarning.Name = "labelAnimPreviewWarning";
+            labelAnimPreviewWarning.Size = new Size(0, 15);
+            labelAnimPreviewWarning.TabIndex = 8;
+            labelAnimPreviewWarning.Visible = false;
+            // 
             // numericAttackAnimationIndex
             // 
             numericAttackAnimationIndex.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -879,21 +890,9 @@ namespace FF7Scarlet.SceneEditor
             labelEnemyAttackAnimationIndex.AutoSize = true;
             labelEnemyAttackAnimationIndex.Location = new Point(259, 314);
             labelEnemyAttackAnimationIndex.Name = "labelEnemyAttackAnimationIndex";
-            labelEnemyAttackAnimationIndex.Size = new Size(98, 15);
+            labelEnemyAttackAnimationIndex.Size = new Size(112, 15);
             labelEnemyAttackAnimationIndex.TabIndex = 6;
             labelEnemyAttackAnimationIndex.Text = "Animation script ID:";
-            //
-            // labelAnimPreviewWarning
-            //
-            labelAnimPreviewWarning.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelAnimPreviewWarning.AutoSize = true;
-            labelAnimPreviewWarning.ForeColor = Color.OrangeRed;
-            labelAnimPreviewWarning.Location = new Point(6, 388);
-            labelAnimPreviewWarning.Name = "labelAnimPreviewWarning";
-            labelAnimPreviewWarning.Size = new Size(98, 15);
-            labelAnimPreviewWarning.TabIndex = 8;
-            labelAnimPreviewWarning.Text = "";
-            labelAnimPreviewWarning.Visible = false;
             // 
             // checkBoxEnemyAttackIsManipable
             // 
@@ -1665,7 +1664,7 @@ namespace FF7Scarlet.SceneEditor
             // formationCopyToolStripMenuItem
             // 
             formationCopyToolStripMenuItem.Name = "formationCopyToolStripMenuItem";
-            formationCopyToolStripMenuItem.Size = new Size(180, 22);
+            formationCopyToolStripMenuItem.Size = new Size(102, 22);
             formationCopyToolStripMenuItem.Text = "Copy";
             formationCopyToolStripMenuItem.Click += formationCopyToolStripMenuItem_Click;
             // 
@@ -1673,14 +1672,14 @@ namespace FF7Scarlet.SceneEditor
             // 
             formationPasteToolStripMenuItem.Enabled = false;
             formationPasteToolStripMenuItem.Name = "formationPasteToolStripMenuItem";
-            formationPasteToolStripMenuItem.Size = new Size(180, 22);
+            formationPasteToolStripMenuItem.Size = new Size(102, 22);
             formationPasteToolStripMenuItem.Text = "Paste";
             formationPasteToolStripMenuItem.Click += formationPasteToolStripMenuItem_Click;
             // 
             // formationClearToolStripMenuItem
             // 
             formationClearToolStripMenuItem.Name = "formationClearToolStripMenuItem";
-            formationClearToolStripMenuItem.Size = new Size(180, 22);
+            formationClearToolStripMenuItem.Size = new Size(102, 22);
             formationClearToolStripMenuItem.Text = "Clear";
             formationClearToolStripMenuItem.Click += formationClearToolStripMenuItem_Click;
             // 

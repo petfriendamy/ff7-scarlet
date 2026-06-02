@@ -6,7 +6,6 @@ using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.ExeEditor;
 
-#pragma warning disable WFO5001
 namespace FF7Scarlet.Shared
 {
     public enum FormType { KernelEditor, SceneEditor, ExeEditor }

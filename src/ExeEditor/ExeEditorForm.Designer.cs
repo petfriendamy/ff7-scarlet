@@ -699,6 +699,7 @@ namespace FF7Scarlet.ExeEditor
             // characterLimitControl
             // 
             characterLimitControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            characterLimitControl.BackColor = SystemColors.Control;
             characterLimitControl.Location = new Point(158, 301);
             characterLimitControl.Name = "characterLimitControl";
             characterLimitControl.Size = new Size(378, 148);
@@ -3006,7 +3007,7 @@ namespace FF7Scarlet.ExeEditor
             // trackBarAudioPan
             // 
             trackBarAudioPan.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            trackBarAudioPan.BackColor = Color.White;
+            trackBarAudioPan.BackColor = SystemColors.ControlLightLight;
             trackBarAudioPan.Enabled = false;
             trackBarAudioPan.LargeChange = 1000;
             trackBarAudioPan.Location = new Point(6, 438);
@@ -3078,7 +3079,7 @@ namespace FF7Scarlet.ExeEditor
             // trackBarAudioVolume
             // 
             trackBarAudioVolume.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            trackBarAudioVolume.BackColor = Color.White;
+            trackBarAudioVolume.BackColor = SystemColors.ControlLightLight;
             trackBarAudioVolume.Enabled = false;
             trackBarAudioVolume.LargeChange = 1000;
             trackBarAudioVolume.Location = new Point(6, 438);

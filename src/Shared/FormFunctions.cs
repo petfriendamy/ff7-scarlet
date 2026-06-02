@@ -97,7 +97,8 @@ namespace FF7Scarlet.Shared
                     }
                 }
             }
-            else if (ctrl.Parent != null)
+
+            if (ctrl.Parent != null)
             {
                 if (ctrl.Parent is CharacterLimitControl)
                 {
