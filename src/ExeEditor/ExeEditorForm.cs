@@ -76,6 +76,7 @@ namespace FF7Scarlet.ExeEditor
         {
             InitializeComponent();
             Text = WINDOW_TITLE;
+            FormFunctions.FixColors(this);
 
             editor = new ExeData(DataManager.ExePath);
             int i;

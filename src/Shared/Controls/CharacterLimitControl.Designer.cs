@@ -48,7 +48,6 @@
             // 
             // groupBoxMain
             // 
-            groupBoxMain.BackColor = Color.White;
             groupBoxMain.Controls.Add(checkBoxCharacterLimit4);
             groupBoxMain.Controls.Add(checkBoxCharacterLimit3_2);
             groupBoxMain.Controls.Add(checkBoxCharacterLimit3_1);
@@ -207,6 +206,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.Control;
             Controls.Add(groupBoxMain);
             DoubleBuffered = true;
             Name = "CharacterLimitControl";

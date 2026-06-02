@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KernelForm));
             tabControlMain = new TabControl();
             tabPageCommandData = new TabPage();
@@ -440,6 +440,7 @@
             // 
             // tabPageCommandData
             // 
+            tabPageCommandData.BackColor = SystemColors.ControlLightLight;
             tabPageCommandData.Controls.Add(labelCommandID);
             tabPageCommandData.Controls.Add(comboBoxCommandInitialCursorAction);
             tabPageCommandData.Controls.Add(labelCommandInitialCursorAction);
@@ -460,7 +461,6 @@
             tabPageCommandData.Size = new Size(776, 502);
             tabPageCommandData.TabIndex = 0;
             tabPageCommandData.Text = "Command";
-            tabPageCommandData.UseVisualStyleBackColor = true;
             // 
             // labelCommandID
             // 
@@ -590,6 +590,7 @@
             // 
             // tabPageAttackData
             // 
+            tabPageAttackData.BackColor = SystemColors.ControlLightLight;
             tabPageAttackData.Controls.Add(attackFormControl);
             tabPageAttackData.Controls.Add(comboBoxAttackType);
             tabPageAttackData.Controls.Add(listBoxAttacks);
@@ -600,7 +601,6 @@
             tabPageAttackData.Size = new Size(776, 502);
             tabPageAttackData.TabIndex = 1;
             tabPageAttackData.Text = "Attacks";
-            tabPageAttackData.UseVisualStyleBackColor = true;
             // 
             // attackFormControl
             // 
@@ -641,6 +641,7 @@
             // 
             // tabPageCharacters
             // 
+            tabPageCharacters.BackColor = SystemColors.ControlLightLight;
             tabPageCharacters.Controls.Add(tabControlCharacters);
             tabPageCharacters.Location = new Point(4, 24);
             tabPageCharacters.Margin = new Padding(4, 3, 4, 3);
@@ -648,7 +649,6 @@
             tabPageCharacters.Size = new Size(776, 502);
             tabPageCharacters.TabIndex = 2;
             tabPageCharacters.Text = "Characters";
-            tabPageCharacters.UseVisualStyleBackColor = true;
             // 
             // tabControlCharacters
             // 
@@ -1443,30 +1443,30 @@
             // 
             chartMainCurve.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             chartMainCurve.BackColor = SystemColors.Control;
-            chartArea1.AxisX.Interval = 10D;
-            chartArea1.AxisX.IntervalOffset = 9D;
-            chartArea1.AxisX.IsStartedFromZero = false;
-            chartArea1.AxisX.Maximum = 99D;
-            chartArea1.AxisX.Minimum = 1D;
-            chartArea1.Name = "ChartArea1";
-            chartMainCurve.ChartAreas.Add(chartArea1);
+            chartArea2.AxisX.Interval = 10D;
+            chartArea2.AxisX.IntervalOffset = 9D;
+            chartArea2.AxisX.IsStartedFromZero = false;
+            chartArea2.AxisX.Maximum = 99D;
+            chartArea2.AxisX.Minimum = 1D;
+            chartArea2.Name = "ChartArea1";
+            chartMainCurve.ChartAreas.Add(chartArea2);
             chartMainCurve.Location = new Point(6, 22);
             chartMainCurve.Name = "chartMainCurve";
             chartMainCurve.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Color = Color.SteelBlue;
-            series1.Name = "Min";
-            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Color = Color.Firebrick;
-            series2.Name = "Max";
-            series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
-            chartMainCurve.Series.Add(series1);
-            chartMainCurve.Series.Add(series2);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Color = Color.SteelBlue;
+            series3.Name = "Min";
+            series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series3.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Color = Color.Firebrick;
+            series4.Name = "Max";
+            series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            series4.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int32;
+            chartMainCurve.Series.Add(series3);
+            chartMainCurve.Series.Add(series4);
             chartMainCurve.Size = new Size(500, 262);
             chartMainCurve.TabIndex = 0;
             chartMainCurve.Text = "Main curve";
@@ -1563,6 +1563,7 @@
             // 
             // tabPageInitData
             // 
+            tabPageInitData.BackColor = SystemColors.ControlLightLight;
             tabPageInitData.Controls.Add(numericStartingGil);
             tabPageInitData.Controls.Add(labelStartingGil);
             tabPageInitData.Controls.Add(groupBoxStartingParty);
@@ -1575,7 +1576,6 @@
             tabPageInitData.Size = new Size(776, 502);
             tabPageInitData.TabIndex = 1;
             tabPageInitData.Text = "Initial Data";
-            tabPageInitData.UseVisualStyleBackColor = true;
             // 
             // numericStartingGil
             // 
@@ -1822,6 +1822,7 @@
             // 
             // tabPageItemData
             // 
+            tabPageItemData.BackColor = SystemColors.ControlLightLight;
             tabPageItemData.Controls.Add(tabControlItems);
             tabPageItemData.Controls.Add(listBoxItems);
             tabPageItemData.Location = new Point(4, 24);
@@ -1830,7 +1831,6 @@
             tabPageItemData.Size = new Size(776, 502);
             tabPageItemData.TabIndex = 9;
             tabPageItemData.Text = "Items";
-            tabPageItemData.UseVisualStyleBackColor = true;
             // 
             // tabControlItems
             // 
@@ -2147,6 +2147,7 @@
             // 
             // tabPageWeaponData
             // 
+            tabPageWeaponData.BackColor = SystemColors.ControlLightLight;
             tabPageWeaponData.Controls.Add(tabControlWeapons);
             tabPageWeaponData.Controls.Add(listBoxWeapons);
             tabPageWeaponData.Location = new Point(4, 24);
@@ -2155,7 +2156,6 @@
             tabPageWeaponData.Size = new Size(776, 502);
             tabPageWeaponData.TabIndex = 4;
             tabPageWeaponData.Text = "Weapons";
-            tabPageWeaponData.UseVisualStyleBackColor = true;
             // 
             // tabControlWeapons
             // 
@@ -2479,6 +2479,7 @@
             // 
             // tabPageArmorData
             // 
+            tabPageArmorData.BackColor = SystemColors.ControlLightLight;
             tabPageArmorData.Controls.Add(tabControlArmor);
             tabPageArmorData.Controls.Add(listBoxArmor);
             tabPageArmorData.Location = new Point(4, 24);
@@ -2487,7 +2488,6 @@
             tabPageArmorData.Size = new Size(776, 502);
             tabPageArmorData.TabIndex = 5;
             tabPageArmorData.Text = "Armor";
-            tabPageArmorData.UseVisualStyleBackColor = true;
             // 
             // tabControlArmor
             // 
@@ -2802,6 +2802,7 @@
             // 
             // tabPageAccessoryData
             // 
+            tabPageAccessoryData.BackColor = SystemColors.ControlLightLight;
             tabPageAccessoryData.Controls.Add(tabControlAccessories);
             tabPageAccessoryData.Controls.Add(listBoxAccessories);
             tabPageAccessoryData.Location = new Point(4, 24);
@@ -2810,7 +2811,6 @@
             tabPageAccessoryData.Size = new Size(776, 502);
             tabPageAccessoryData.TabIndex = 6;
             tabPageAccessoryData.Text = "Accessories";
-            tabPageAccessoryData.UseVisualStyleBackColor = true;
             // 
             // tabControlAccessories
             // 
@@ -2825,6 +2825,7 @@
             // 
             // tabPageAccessory1
             // 
+            tabPageAccessory1.BackColor = SystemColors.ControlLightLight;
             tabPageAccessory1.Controls.Add(labelAccessoryID);
             tabPageAccessory1.Controls.Add(labelAccessoryElementModifier);
             tabPageAccessory1.Controls.Add(comboBoxAccessoryElementModifier);
@@ -2841,7 +2842,6 @@
             tabPageAccessory1.Size = new Size(570, 441);
             tabPageAccessory1.TabIndex = 0;
             tabPageAccessory1.Text = "Page 1";
-            tabPageAccessory1.UseVisualStyleBackColor = true;
             // 
             // labelAccessoryID
             // 
@@ -2945,6 +2945,7 @@
             // 
             // tabPageAccessory2
             // 
+            tabPageAccessory2.BackColor = SystemColors.ControlLightLight;
             tabPageAccessory2.Controls.Add(comboBoxAccessorySpecialEffects);
             tabPageAccessory2.Controls.Add(labelAccessorySpecialEffects);
             tabPageAccessory2.Controls.Add(equipableListAccessory);
@@ -2955,7 +2956,6 @@
             tabPageAccessory2.Size = new Size(570, 441);
             tabPageAccessory2.TabIndex = 1;
             tabPageAccessory2.Text = "Page 2";
-            tabPageAccessory2.UseVisualStyleBackColor = true;
             // 
             // comboBoxAccessorySpecialEffects
             // 
@@ -3010,6 +3010,7 @@
             // 
             // tabPageMateriaData
             // 
+            tabPageMateriaData.BackColor = SystemColors.ControlLightLight;
             tabPageMateriaData.Controls.Add(labelMateriaID);
             tabPageMateriaData.Controls.Add(buttonMateriaAttributes);
             tabPageMateriaData.Controls.Add(comboBoxMateriaEquipAttributes);
@@ -3033,7 +3034,6 @@
             tabPageMateriaData.Size = new Size(776, 502);
             tabPageMateriaData.TabIndex = 7;
             tabPageMateriaData.Text = "Materia";
-            tabPageMateriaData.UseVisualStyleBackColor = true;
             // 
             // labelMateriaID
             // 
@@ -3206,6 +3206,7 @@
             // 
             // tabPageKeyItemText
             // 
+            tabPageKeyItemText.BackColor = SystemColors.ControlLightLight;
             tabPageKeyItemText.Controls.Add(textBoxKeyItemDescription);
             tabPageKeyItemText.Controls.Add(labelKeyItemDescription);
             tabPageKeyItemText.Controls.Add(textBoxKeyItemName);
@@ -3217,7 +3218,6 @@
             tabPageKeyItemText.Size = new Size(776, 502);
             tabPageKeyItemText.TabIndex = 8;
             tabPageKeyItemText.Text = "Key Items";
-            tabPageKeyItemText.UseVisualStyleBackColor = true;
             // 
             // textBoxKeyItemDescription
             // 
@@ -3271,13 +3271,13 @@
             // 
             // tabPageMisc
             // 
+            tabPageMisc.BackColor = SystemColors.ControlLightLight;
             tabPageMisc.Controls.Add(tabControlMisc);
             tabPageMisc.Location = new Point(4, 24);
             tabPageMisc.Name = "tabPageMisc";
             tabPageMisc.Size = new Size(776, 502);
             tabPageMisc.TabIndex = 10;
             tabPageMisc.Text = "Misc";
-            tabPageMisc.UseVisualStyleBackColor = true;
             // 
             // tabControlMisc
             // 
@@ -3293,6 +3293,7 @@
             // 
             // tabPageLimitBreaks
             // 
+            tabPageLimitBreaks.BackColor = SystemColors.ControlLightLight;
             tabPageLimitBreaks.Controls.Add(textBoxLimitDescription);
             tabPageLimitBreaks.Controls.Add(labelLimitDescription);
             tabPageLimitBreaks.Controls.Add(textBoxLimitName);
@@ -3303,7 +3304,6 @@
             tabPageLimitBreaks.Size = new Size(768, 474);
             tabPageLimitBreaks.TabIndex = 3;
             tabPageLimitBreaks.Text = "Limit Breaks";
-            tabPageLimitBreaks.UseVisualStyleBackColor = true;
             // 
             // textBoxLimitDescription
             // 
@@ -3361,6 +3361,7 @@
             // 
             // tabPageBattleText
             // 
+            tabPageBattleText.BackColor = SystemColors.ControlLightLight;
             tabPageBattleText.Controls.Add(listBoxBattleText);
             tabPageBattleText.Controls.Add(textBoxBattleText);
             tabPageBattleText.Controls.Add(labelBattleText);
@@ -3370,7 +3371,6 @@
             tabPageBattleText.Size = new Size(768, 474);
             tabPageBattleText.TabIndex = 0;
             tabPageBattleText.Text = "Battle Text";
-            tabPageBattleText.UseVisualStyleBackColor = true;
             // 
             // listBoxBattleText
             // 
@@ -3419,6 +3419,7 @@
             // rngTableControl
             // 
             rngTableControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            rngTableControl.BackColor = SystemColors.ControlLightLight;
             rngTableControl.Location = new Point(6, 6);
             rngTableControl.Name = "rngTableControl";
             rngTableControl.Size = new Size(757, 340);

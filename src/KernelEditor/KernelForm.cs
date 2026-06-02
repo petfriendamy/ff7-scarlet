@@ -388,6 +388,7 @@ namespace FF7Scarlet.KernelEditor
         {
             InitializeComponent();
             Text = WINDOW_TITLE;
+            FormFunctions.FixColors(this);
 
             kernel = DataManager.CopyKernel();
             DataManager.MergeCharacterData(kernel);

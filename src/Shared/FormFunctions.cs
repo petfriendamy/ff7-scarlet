@@ -8,6 +8,7 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FF7Scarlet.Shared
 {
@@ -68,6 +69,31 @@ namespace FF7Scarlet.Shared
         }
 
         /// <summary>
+        /// Recursively fixes the colors for the inner controls so they look correct
+        /// in dark mode.
+        /// </summary>
+        /// <param name="ctrl">The control to update.</param>
+        public static void FixColors(Control ctrl)
+        {
+            if (ctrl is TabPage)
+            {
+                ctrl.BackColor = SystemColors.ControlLightLight;
+            }
+            else if (ctrl.Parent != null)
+            {
+                if (ctrl.Parent is CharacterLimitControl)
+                {
+                    ctrl.BackColor = ctrl.Parent.BackColor;
+                }
+            }
+
+            foreach (Control c in ctrl.Controls)
+            {
+                FixColors(c);
+            }
+        }
+
+        /// <summary>
         /// Recursively updates all inner controls.
         /// </summary>
         /// <param name="ctrl">The control to update.</param>
@@ -91,7 +117,10 @@ namespace FF7Scarlet.Shared
             }
         }
 
-        //recursively invalidates all inner controls
+        /// <summary>
+        /// Recursively invalidates all inner controls.
+        /// </summary>
+        /// <param name="ctrl">The control to invalidate.</param>
         public static void InvalidateAll(Control? ctrl)
         {
             if (ctrl != null)

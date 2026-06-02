@@ -144,6 +144,7 @@ namespace FF7Scarlet.SceneEditor
         {
             InitializeComponent();
             Text = WINDOW_TITLE;
+            FormFunctions.FixColors(this);
 
             //set max values for various controls
             attackFormControl.SetIsKernel(false);
