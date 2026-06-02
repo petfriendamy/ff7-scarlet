@@ -6,6 +6,7 @@ using FF7Scarlet.KernelEditor;
 using FF7Scarlet.SceneEditor;
 using FF7Scarlet.ExeEditor;
 
+#pragma warning disable WFO5001
 namespace FF7Scarlet.Shared
 {
     public enum FormType { KernelEditor, SceneEditor, ExeEditor }
@@ -36,13 +37,15 @@ namespace FF7Scarlet.Shared
         public static bool RememberLastOpened { get; set; } = true;
         public static CompressionType CompressionType { get; set; } = CompressionType.Standard;
         public static bool PS3TweaksEnabled { get; set; }
+        public static int ColorMode { get; set; }
         public static ExeConfigurationFileMap ConfigFile { get; } = new ExeConfigurationFileMap();
         public static ScarletUpdater Updater { get; } = new ScarletUpdater();
 
         public const string
             REMEMBER_LAST_OPENED_KEY = "RememberLastOpened",
             COMPRESSION_TYPE_KEY = "CompressionType",
-            PS3_TWEAKS_KEY = "PS3TweaksEnabled";
+            PS3_TWEAKS_KEY = "PS3TweaksEnabled",
+            COLOR_MODE_KEY = "ColorMode";
 
         //clipboard
         public static Scene? CopiedScene { get; set; }
@@ -88,6 +91,31 @@ namespace FF7Scarlet.Shared
                 throw new ArgumentException("Startup form already exists.");
             }
             startupForm = form;
+        }
+
+        public static void SetColorMode(int mode)
+        {
+            switch (mode)
+            {
+                case 0:
+                    Application.SetColorMode(SystemColorMode.System);
+                    break;
+                case 1:
+                    Application.SetColorMode(SystemColorMode.Classic);
+                    break;
+                case 2:
+                    Application.SetColorMode(SystemColorMode.Dark);
+                    break;
+            }
+            InvalidateAllForms();
+        }
+
+        public static void InvalidateAllForms()
+        {
+            FormFunctions.InvalidateAll(startupForm);
+            FormFunctions.InvalidateAll(kernelForm);
+            FormFunctions.InvalidateAll(sceneEditorForm);
+            FormFunctions.InvalidateAll(exeEditorForm);
         }
 
         public static void SetFilePath(FileClass fileClass, string path, bool suppressRelativeCheck = false, bool isJPoriginal = false)

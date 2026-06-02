@@ -91,6 +91,19 @@ namespace FF7Scarlet.Shared
             }
         }
 
+        //recursively invalidates all inner controls
+        public static void InvalidateAll(Control? ctrl)
+        {
+            if (ctrl != null)
+            {
+                ctrl.Invalidate();
+                foreach (Control c in ctrl.Controls)
+                {
+                    InvalidateAll(c);
+                }
+            }
+        }
+
         public static byte ValidateHexByte(string text, byte current)
         {
             if (text.Length == 2)

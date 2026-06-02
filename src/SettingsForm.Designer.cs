@@ -52,12 +52,16 @@
             comboBoxUpdateChannel = new ComboBox();
             groupBoxCompression = new GroupBox();
             comboBoxCompression = new ComboBox();
+            groupBoxMisc = new GroupBox();
+            comboBoxColorMode = new ComboBox();
+            labelColorMode = new Label();
             groupBoxBattleLgp.SuspendLayout();
             groupBoxVanillaExe.SuspendLayout();
             groupBoxPS3Tweaks.SuspendLayout();
             groupBoxRememberLastOpened.SuspendLayout();
             groupBoxCheckForUpdates.SuspendLayout();
             groupBoxCompression.SuspendLayout();
+            groupBoxMisc.SuspendLayout();
             SuspendLayout();
             // 
             // groupBoxBattleLgp
@@ -108,7 +112,7 @@
             // buttonOK
             // 
             buttonOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonOK.Location = new Point(497, 346);
+            buttonOK.Location = new Point(497, 406);
             buttonOK.Name = "buttonOK";
             buttonOK.Size = new Size(75, 23);
             buttonOK.TabIndex = 3;
@@ -119,7 +123,7 @@
             // buttonCancel
             // 
             buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonCancel.Location = new Point(416, 346);
+            buttonCancel.Location = new Point(416, 406);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(75, 23);
             buttonCancel.TabIndex = 2;
@@ -309,13 +313,46 @@
             comboBoxCompression.Size = new Size(203, 23);
             comboBoxCompression.TabIndex = 8;
             // 
+            // groupBoxMisc
+            // 
+            groupBoxMisc.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxMisc.Controls.Add(labelColorMode);
+            groupBoxMisc.Controls.Add(comboBoxColorMode);
+            groupBoxMisc.Location = new Point(16, 337);
+            groupBoxMisc.Name = "groupBoxMisc";
+            groupBoxMisc.Size = new Size(556, 63);
+            groupBoxMisc.TabIndex = 8;
+            groupBoxMisc.TabStop = false;
+            groupBoxMisc.Text = "Miscellaneous";
+            // 
+            // comboBoxColorMode
+            // 
+            comboBoxColorMode.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxColorMode.FormattingEnabled = true;
+            comboBoxColorMode.Items.AddRange(new object[] { "System Default", "Light", "Dark" });
+            comboBoxColorMode.Location = new Point(85, 22);
+            comboBoxColorMode.Name = "comboBoxColorMode";
+            comboBoxColorMode.Size = new Size(200, 23);
+            comboBoxColorMode.TabIndex = 0;
+            comboBoxColorMode.SelectedIndexChanged += comboBoxColorMode_SelectedIndexChanged;
+            // 
+            // labelColorMode
+            // 
+            labelColorMode.AutoSize = true;
+            labelColorMode.Location = new Point(6, 25);
+            labelColorMode.Name = "labelColorMode";
+            labelColorMode.Size = new Size(73, 15);
+            labelColorMode.TabIndex = 1;
+            labelColorMode.Text = "Color mode:";
+            // 
             // SettingsForm
             // 
             AcceptButton = buttonOK;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = buttonCancel;
-            ClientSize = new Size(584, 381);
+            ClientSize = new Size(584, 441);
+            Controls.Add(groupBoxMisc);
             Controls.Add(groupBoxCompression);
             Controls.Add(groupBoxCheckForUpdates);
             Controls.Add(groupBoxRememberLastOpened);
@@ -325,7 +362,7 @@
             Controls.Add(buttonOK);
             Controls.Add(groupBoxBattleLgp);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(600, 420);
+            MinimumSize = new Size(600, 480);
             Name = "SettingsForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Scarlet - Settings";
@@ -340,6 +377,8 @@
             groupBoxCheckForUpdates.ResumeLayout(false);
             groupBoxCheckForUpdates.PerformLayout();
             groupBoxCompression.ResumeLayout(false);
+            groupBoxMisc.ResumeLayout(false);
+            groupBoxMisc.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -368,5 +407,8 @@
         private CheckBox checkBoxUpdateOnLaunch;
         private GroupBox groupBoxCompression;
         private ComboBox comboBoxCompression;
+        private GroupBox groupBoxMisc;
+        private Label labelColorMode;
+        private ComboBox comboBoxColorMode;
     }
 }

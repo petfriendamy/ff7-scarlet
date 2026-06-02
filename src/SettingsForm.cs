@@ -9,6 +9,8 @@ namespace FF7Scarlet
 {
     public partial class SettingsForm : Form
     {
+        private bool loading = true;
+
         private static readonly string[] channelDescriptions =
         {
             "The most tested version with fewest updates. Least likely to cause issues.",
@@ -32,6 +34,8 @@ namespace FF7Scarlet
             checkBoxRemeberLastOpened.Checked = DataManager.RememberLastOpened;
             comboBoxCompression.SelectedIndex = (int)DataManager.CompressionType;
             checkBoxPS3Tweaks.Checked = DataManager.PS3TweaksEnabled;
+            comboBoxColorMode.SelectedIndex = DataManager.ColorMode;
+            loading = false;
         }
 
         private void comboBoxUpdateChannel_SelectedIndexChanged(object sender, EventArgs e)
@@ -118,6 +122,39 @@ namespace FF7Scarlet
                 else
                 {
                     MessageDialog.ShowError("File not found.");
+                }
+            }
+        }
+
+        private void comboBoxColorMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!loading)
+            {
+                try
+                {
+                    int i = comboBoxColorMode.SelectedIndex;
+                    DataManager.SetColorMode(i);
+                    FormFunctions.InvalidateAll(this);
+
+                    //this updates the setting instantly
+                    var config = ConfigurationManager.OpenMappedExeConfiguration(DataManager.ConfigFile,
+                                ConfigurationUserLevel.None);
+                    var settings = config.AppSettings.Settings;
+
+                    if (settings == null) //failed to load config file
+                    {
+                        MessageDialog.ShowError("Config file could not be loaded.");
+                    }
+                    else
+                    {
+                        DataManager.ColorMode = i;
+                        UpdateSetting(ref settings, DataManager.COLOR_MODE_KEY, $"{i}");
+                        config.Save();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, "SettingsForm SaveSettings");
                 }
             }
         }

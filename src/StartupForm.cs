@@ -15,7 +15,7 @@ namespace FF7Scarlet
         public StartupForm()
         {
             InitializeComponent();
-            this.Text = $"{Application.ProductName} v{Application.ProductVersion} - Main Menu";
+            Text = $"{Application.ProductName} v{Application.ProductVersion} - Main Menu";
 
             DataManager.SetStartupForm(this);
             toolTipHoverText.SetToolTip(groupBoxKernel2, "kernel2 cannot be loaded without kernel.bin.");
@@ -136,6 +136,20 @@ namespace FF7Scarlet
                     if (bool.TryParse(settings[DataManager.PS3_TWEAKS_KEY].Value, out temp))
                     {
                         DataManager.PS3TweaksEnabled = temp;
+                    }
+                }
+
+                //check color mode
+                if (settings[DataManager.COLOR_MODE_KEY] != null)
+                {
+                    int temp;
+                    if (int.TryParse(settings[DataManager.COLOR_MODE_KEY].Value, out temp))
+                    {
+                        DataManager.ColorMode = temp;
+                        if (temp > 0)
+                        {
+                            DataManager.SetColorMode(temp);
+                        }
                     }
                 }
             }
