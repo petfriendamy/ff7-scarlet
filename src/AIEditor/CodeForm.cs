@@ -27,6 +27,7 @@ namespace FF7Scarlet.AIEditor
         public CodeForm(Script script, bool jpText, Code? code = null)
         {
             InitializeComponent();
+            FormFunctions.FixColors(this);
             parentScript = script;
             this.jpText = jpText;
 

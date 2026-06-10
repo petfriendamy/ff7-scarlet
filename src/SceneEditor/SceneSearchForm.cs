@@ -1,13 +1,6 @@
-﻿using FF7Scarlet.AIEditor;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
+using FF7Scarlet.AIEditor;
+using FF7Scarlet.Shared;
 
 namespace FF7Scarlet.SceneEditor
 {
@@ -21,6 +14,7 @@ namespace FF7Scarlet.SceneEditor
         public SceneSearchForm(Scene[] sceneList)
         {
             InitializeComponent();
+            FormFunctions.FixColors(this);
             scenes = sceneList;
             opcodes = Enum.GetValues<Opcodes>();
 

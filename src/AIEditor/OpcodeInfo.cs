@@ -2,7 +2,7 @@
 {
     public enum OpcodeGroups
     {
-        Push, Mathematical, Logical, Jump, BitOperation, Command, Special
+        Push, Mathematical, Logical, Logical2, Jump, BitOperation, Command, Special
     }
 
     public class OpcodeInfo
@@ -35,9 +35,9 @@
             new OpcodeInfo(Opcodes.GreaterThan, OpcodeGroups.Logical, ParameterTypes.None, 2, ">"),
             new OpcodeInfo(Opcodes.LessThan, OpcodeGroups.Logical, ParameterTypes.None, 2, "<"),
 
-            new OpcodeInfo(Opcodes.LogicalAnd, OpcodeGroups.Logical, ParameterTypes.None, 2, "&&"),
-            new OpcodeInfo(Opcodes.LogicalOr, OpcodeGroups.Logical, ParameterTypes.None, 2, "||"),
-            new OpcodeInfo(Opcodes.LogicalNot, OpcodeGroups.Logical, ParameterTypes.None, 1, "!"),
+            new OpcodeInfo(Opcodes.LogicalAnd, OpcodeGroups.Logical2, ParameterTypes.None, 2, "&&"),
+            new OpcodeInfo(Opcodes.LogicalOr, OpcodeGroups.Logical2, ParameterTypes.None, 2, "||"),
+            new OpcodeInfo(Opcodes.LogicalNot, OpcodeGroups.Logical2, ParameterTypes.None, 1, "!"),
 
             new OpcodeInfo(Opcodes.PushConst01, OpcodeGroups.Push, ParameterTypes.OneByte, 0, "Const Type 1"),
             new OpcodeInfo(Opcodes.PushConst02, OpcodeGroups.Push, ParameterTypes.TwoByte, 0, "Const Type 2"),
@@ -109,8 +109,8 @@
             get
             {
                 return (Group == OpcodeGroups.Mathematical || Group == OpcodeGroups.Logical
-                    || Group == OpcodeGroups.BitOperation || Group == OpcodeGroups.Special)
-                    && PopCount > 0;
+                    || Group == OpcodeGroups.Logical2 || Group == OpcodeGroups.BitOperation
+                    || Group == OpcodeGroups.Special) && PopCount > 0;
             }
         }
 
@@ -179,13 +179,17 @@
         {
             switch (op.Group)
             {
+                case OpcodeGroups.Push:
+                    return 6;
                 case OpcodeGroups.Special:
-                    return 4;
+                    return 5;
                 case OpcodeGroups.BitOperation:
-                    return 3;
+                    return 4;
                 case OpcodeGroups.Mathematical:
-                    return 2;
+                    return 3;
                 case OpcodeGroups.Logical:
+                    return 2;
+                case OpcodeGroups.Logical2:
                     return 1;
                 default:
                     return 0;

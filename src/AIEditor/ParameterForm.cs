@@ -243,9 +243,8 @@ namespace FF7Scarlet.AIEditor
                                             firstParse.Add(new CodeLine(parentScript,
                                                 HexParser.NULL_OFFSET_16_BIT, operandStack.Pop().Code));
                                         }
+                                        operandStack.Push(mod);
                                     }
-                                    firstParse.Add(new CodeLine(parentScript, HexParser.NULL_OFFSET_16_BIT,
-                                        p.Modifier));
                                 }
                             }
                         }
