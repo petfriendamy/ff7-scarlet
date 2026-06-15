@@ -187,7 +187,9 @@ namespace FF7Scarlet.AIEditor
             var op = OpcodeInfo.GetInfo(code.Opcode);
             if (op != null)
             {
-                comboBoxOpcodeGroups.SelectedIndex = (int)op.Group;
+                int group = (int)op.Group;
+                if (op.Group >= OpcodeGroups.Logical2) { group--; }
+                comboBoxOpcodeGroups.SelectedIndex = group;
                 comboBoxOpcodes.SelectedIndex = currList.IndexOf(op);
 
                 if (op.ParameterType != ParameterTypes.None && code.Parameter != null)
@@ -205,7 +207,8 @@ namespace FF7Scarlet.AIEditor
                 var currGroup = (OpcodeGroups)selected;
                 currList =
                     (from o in OpcodeInfo.OPCODE_LIST
-                     where o.Group == currGroup
+                     where o.Group == currGroup || (currGroup == OpcodeGroups.Logical &&
+                        o.Group == OpcodeGroups.Logical2)
                      select o).ToList();
 
                 comboBoxOpcodes.BeginUpdate();
