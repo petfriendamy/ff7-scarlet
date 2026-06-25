@@ -1,7 +1,9 @@
 using FF7Scarlet.Shared;
+using Shojy.FF7.Elena.Battle;
 using Shojy.FF7.Elena.Text;
 using System.ComponentModel;
 using System.Data;
+using System.Numerics;
 using System.Text;
 
 #pragma warning disable CA1416
@@ -23,6 +25,16 @@ namespace FF7Scarlet.AIEditor
         private List<OpcodeInfo> currList = new();
         private Script parentScript;
         private bool loading = true, unsavedChanges = false, jpText;
+
+        private OpcodeGroups[] MANUAL_GROUPS = [
+            OpcodeGroups.Push,
+            OpcodeGroups.Mathematical,
+            OpcodeGroups.Logical,
+            OpcodeGroups.Jump,
+            OpcodeGroups.BitOperation,
+            OpcodeGroups.Command,
+            OpcodeGroups.Special
+        ];
 
         public CodeForm(Script script, bool jpText, Code? code = null)
         {
@@ -201,32 +213,39 @@ namespace FF7Scarlet.AIEditor
 
         private void UpdateOpcodesList()
         {
-            int selected = comboBoxOpcodeGroups.SelectedIndex;
-            if (Enum.IsDefined((OpcodeGroups)selected))
+            var currGroup = MANUAL_GROUPS[comboBoxOpcodeGroups.SelectedIndex];
+            if (currGroup == OpcodeGroups.Special)
             {
-                var currGroup = (OpcodeGroups)selected;
                 currList =
                     (from o in OpcodeInfo.OPCODE_LIST
-                     where o.Group == currGroup || (currGroup == OpcodeGroups.Logical &&
-                        o.Group == OpcodeGroups.Logical2)
+                     where !MANUAL_GROUPS.Contains(o.SimplifiedGroup)
+                     orderby o.Code
                      select o).ToList();
-
-                comboBoxOpcodes.BeginUpdate();
-                comboBoxOpcodes.Items.Clear();
-                foreach (var opcode in currList)
-                {
-                    if (opcode.EnumValue == Opcodes.Label)
-                    {
-                        comboBoxOpcodes.Items.Add("LABEL");
-                    }
-                    else
-                    {
-                        comboBoxOpcodes.Items.Add($"{opcode.Code:X2} -- {opcode.Name}");
-                    }
-                }
-                comboBoxOpcodes.EndUpdate();
-                comboBoxOpcodes.SelectedIndex = 0;
             }
+            else
+            {
+                currList =
+                    (from o in OpcodeInfo.OPCODE_LIST
+                     where o.SimplifiedGroup == currGroup
+                     orderby o.Code
+                     select o).ToList();
+            }
+
+            comboBoxOpcodes.BeginUpdate();
+            comboBoxOpcodes.Items.Clear();
+            foreach (var opcode in currList)
+            {
+                if (opcode.EnumValue == Opcodes.Label)
+                {
+                    comboBoxOpcodes.Items.Add("LABEL");
+                }
+                else
+                {
+                    comboBoxOpcodes.Items.Add($"{opcode.Code:X2} -- {opcode.Name}");
+                }
+            }
+            comboBoxOpcodes.EndUpdate();
+            comboBoxOpcodes.SelectedIndex = 0;
             if (!loading) { unsavedChanges = true; }
         }
 

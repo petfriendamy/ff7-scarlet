@@ -2,7 +2,7 @@
 {
     public enum OpcodeGroups
     {
-        Push, Mathematical, Logical, Logical2, Jump, BitOperation, Command, Special
+        Push, Mathematical, Logical, Logical2, Jump, BitOperation, Command, Random, Special
     }
 
     public class OpcodeInfo
@@ -51,13 +51,13 @@
             new OpcodeInfo(Opcodes.ShareScripts, OpcodeGroups.Command, ParameterTypes.None, 1),
 
             new OpcodeInfo(Opcodes.Mask, OpcodeGroups.BitOperation, ParameterTypes.None, 2, "."),
-            new OpcodeInfo(Opcodes.RandomWord, OpcodeGroups.BitOperation, ParameterTypes.None, 0, "Random"),
-            new OpcodeInfo(Opcodes.RandomByte, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
             new OpcodeInfo(Opcodes.CountBits, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
             new OpcodeInfo(Opcodes.MaskGreatest, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
             new OpcodeInfo(Opcodes.MaskLeast, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
             new OpcodeInfo(Opcodes.TopBit, OpcodeGroups.BitOperation, ParameterTypes.None, 1),
 
+            new OpcodeInfo(Opcodes.RandomWord, OpcodeGroups.Random, ParameterTypes.None, 0, "Random"),
+            new OpcodeInfo(Opcodes.RandomByte, OpcodeGroups.Random, ParameterTypes.None, 1),
             new OpcodeInfo(Opcodes.MPCost, OpcodeGroups.Special, ParameterTypes.None, 1),
 
             new OpcodeInfo(Opcodes.Assign, OpcodeGroups.Command, ParameterTypes.None, 2),
@@ -104,13 +104,33 @@
             }
         }
 
+        public OpcodeGroups SimplifiedGroup
+        {
+            get
+            {
+                if (IsLogical(Group)) { return OpcodeGroups.Logical; }
+                else if (IsBitOperation(Group)) { return OpcodeGroups.BitOperation; }
+                else { return Group; }
+            }
+        }
+
+        private bool IsLogical(OpcodeGroups group)
+        {
+            return group == OpcodeGroups.Logical || group == OpcodeGroups.Logical2;
+        }
+
+        private bool IsBitOperation(OpcodeGroups group)
+        {
+            return group == OpcodeGroups.BitOperation || group == OpcodeGroups.Random
+                || group == OpcodeGroups.Special;
+        }
+
         public bool IsOperand
         {
             get
             {
-                return (Group == OpcodeGroups.Mathematical || Group == OpcodeGroups.Logical
-                    || Group == OpcodeGroups.Logical2 || Group == OpcodeGroups.BitOperation
-                    || Group == OpcodeGroups.Special) && PopCount > 0;
+                return (Group == OpcodeGroups.Mathematical || IsLogical(Group)
+                    || IsBitOperation(Group)) && PopCount > 0;
             }
         }
 
@@ -180,16 +200,18 @@
             switch (op.Group)
             {
                 case OpcodeGroups.Push:
-                    return 6;
+                    return 7;
                 case OpcodeGroups.Special:
-                    return 5;
+                    return 6;
                 case OpcodeGroups.BitOperation:
-                    return 4;
+                    return 5;
                 case OpcodeGroups.Mathematical:
-                    return 3;
+                    return 4;
                 case OpcodeGroups.Logical:
-                    return 2;
+                    return 3;
                 case OpcodeGroups.Logical2:
+                    return 2;
+                case OpcodeGroups.Random:
                     return 1;
                 default:
                     return 0;
