@@ -1496,7 +1496,7 @@ namespace FF7Scarlet.KernelEditor
                                     writer.Write(w.BoostedStat4Bonus);
                                     for (i = 0; i < 8; ++i)
                                     {
-                                        writer.Write((byte)w.MateriaSlots[i]);
+                                        writer.Write(MateriaSlotExt.GetSlotByte(w.MateriaSlots[i]));
                                     }
                                     writer.Write(w.NormalHitSoundID);
                                     writer.Write(w.CriticalHitSoundID);
@@ -1521,7 +1521,7 @@ namespace FF7Scarlet.KernelEditor
                                 writer.Seek(2, SeekOrigin.Current); //unknown
                                 for (i = 0; i < 8; ++i)
                                 {
-                                    writer.Write((byte)a.MateriaSlots[i]);
+                                    writer.Write(MateriaSlotExt.GetSlotByte(a.MateriaSlots[i]));
                                 }
                                 writer.Write((byte)a.GrowthRate);
                                 writer.Write((ushort)a.EquipableBy);

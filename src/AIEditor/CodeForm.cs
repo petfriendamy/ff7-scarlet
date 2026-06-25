@@ -190,7 +190,7 @@ namespace FF7Scarlet.AIEditor
                 int group = (int)op.Group;
                 if (op.Group >= OpcodeGroups.Logical2) { group--; }
                 comboBoxOpcodeGroups.SelectedIndex = group;
-                comboBoxOpcodes.SelectedIndex = currList.IndexOf(op);
+                comboBoxOpcodes.SelectedIndex = Math.Max(0, currList.IndexOf(op));
 
                 if (op.ParameterType != ParameterTypes.None && code.Parameter != null)
                 {

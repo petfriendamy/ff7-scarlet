@@ -12,9 +12,6 @@ namespace FF7Scarlet.Shared.Controls
     public partial class MateriaSlotSelectorControl : UserControl
     {
         private const int SLOT_COUNT = 8;
-        private const MateriaSlot
-            DOUBLE_LINKED_EMPTY = (MateriaSlot)8,
-            DOUBLE_LINKED_NORMAL = (MateriaSlot)9;
 
         private SlotSelectorType slotSelectorType;
         private readonly MateriaSlot[] slots = new MateriaSlot[SLOT_COUNT];
@@ -183,7 +180,7 @@ namespace FF7Scarlet.Shared.Controls
                                 return Properties.Resources.materia_slot_command3;
                         }
                         break;
-                    case DOUBLE_LINKED_NORMAL:
+                    case MateriaSlotExt.DOUBLE_LINKED_NORMAL:
                         switch (MateriaExt.GetMateriaType(equipped.MateriaTypeByte))
                         {
                             case MateriaType.Independent:
@@ -216,9 +213,9 @@ namespace FF7Scarlet.Shared.Controls
                         return Properties.Resources.materia_slot5;
                     case MateriaSlot.EmptyRightLinkedSlot:
                         return Properties.Resources.materia_slot6;
-                    case DOUBLE_LINKED_NORMAL:
+                    case MateriaSlotExt.DOUBLE_LINKED_NORMAL:
                         return Properties.Resources.materia_slot_dl1;
-                    case DOUBLE_LINKED_EMPTY:
+                    case MateriaSlotExt.DOUBLE_LINKED_EMPTY:
                         return Properties.Resources.materia_slot_dl2;
                 }
             }
@@ -280,7 +277,7 @@ namespace FF7Scarlet.Shared.Controls
                         //if multi-linked slots are enabled, correct the previous slot
                         if (multiLinkEnabled)
                         {
-                            SetSlotInner(i - 1, DOUBLE_LINKED_NORMAL, rate, true, true);
+                            SetSlotInner(i - 1, MateriaSlotExt.DOUBLE_LINKED_NORMAL, rate, true, true);
                         }
                     }
                     InvokeDataChanged(this, EventArgs.Empty);
@@ -313,12 +310,19 @@ namespace FF7Scarlet.Shared.Controls
                     slots[slot] = newValue;
                     if (SlotSelectorType == SlotSelectorType.Slots)
                     {
-                        for (int i = 0; i < 4; ++i)
+                        for (int i = 0; i < 5; ++i)
                         {
                             var mi = menuStrips[slot].Items[i] as ToolStripMenuItem;
                             if (mi != null)
                             {
-                                mi.Checked = (newValue == GetMatchingSlot(rate, (MateriaSlot)i));
+                                if (SlotIsDoubleLinked(newValue))
+                                {
+                                    mi.Checked = i == 4;
+                                }
+                                else
+                                {
+                                    mi.Checked = (newValue == GetMatchingSlot(rate, (MateriaSlot)i));
+                                }
                             }
                         }
                     }
@@ -333,7 +337,7 @@ namespace FF7Scarlet.Shared.Controls
                             {
                                 if (DataManager.PS3TweaksEnabled && SlotIsRightLinked(prevValue))
                                 {
-                                    SetSlotInner(slot - 1, DOUBLE_LINKED_NORMAL, rate, true, true);
+                                    SetSlotInner(slot - 1, MateriaSlotExt.DOUBLE_LINKED_NORMAL, rate, true, true);
                                 }
                                 else
                                 {
@@ -360,7 +364,7 @@ namespace FF7Scarlet.Shared.Controls
                             {
                                 if (DataManager.PS3TweaksEnabled && SlotIsLeftLinked(nextValue))
                                 {
-                                    SetSlotInner(slot + 1, DOUBLE_LINKED_NORMAL, rate, true, true);
+                                    SetSlotInner(slot + 1, MateriaSlotExt.DOUBLE_LINKED_NORMAL, rate, true, true);
                                 }
                                 else
                                 {
@@ -443,7 +447,7 @@ namespace FF7Scarlet.Shared.Controls
 
         private bool SlotIsDoubleLinked(MateriaSlot slot)
         {
-            return (slot == DOUBLE_LINKED_NORMAL || slot == DOUBLE_LINKED_EMPTY);
+            return (slot == MateriaSlotExt.DOUBLE_LINKED_NORMAL || slot == MateriaSlotExt.DOUBLE_LINKED_EMPTY);
         }
 
         private MateriaSlot GetMatchingSlot(MateriaSlot slot)
@@ -460,8 +464,8 @@ namespace FF7Scarlet.Shared.Controls
             }
             else if (SlotIsDoubleLinked(slot))
             {
-                if (rate == GrowthRate.None) { return DOUBLE_LINKED_EMPTY; }
-                else { return DOUBLE_LINKED_NORMAL; }
+                if (rate == GrowthRate.None) { return MateriaSlotExt.DOUBLE_LINKED_EMPTY; }
+                else { return MateriaSlotExt.DOUBLE_LINKED_NORMAL; }
             }
             else if (SlotIsLeftLinked(slot))
             {
@@ -538,7 +542,7 @@ namespace FF7Scarlet.Shared.Controls
             if (sender != null)
             {
                 int slot = GetSlotFromSender(sender);
-                SetSlot(slot, GetMatchingSlot(DOUBLE_LINKED_NORMAL));
+                SetSlot(slot, GetMatchingSlot(MateriaSlotExt.DOUBLE_LINKED_NORMAL));
             }
         }
 
