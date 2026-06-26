@@ -237,7 +237,6 @@ namespace FF7Scarlet.AIEditor
                                     {
                                         //emit more operators as needed
                                         int prec = OpcodeInfo.GetOperandPrecedence(mod);
-                                        int next = OpcodeInfo.GetOperandPrecedence(operandStack.Peek());
                                         while (operandStack.Count > 0
                                             && OpcodeInfo.GetOperandPrecedence(operandStack.Peek()) >= prec)
                                         {
