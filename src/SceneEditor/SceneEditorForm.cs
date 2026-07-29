@@ -248,73 +248,80 @@ namespace FF7Scarlet.SceneEditor
 
         private void LoadKernelData()
         {
-            int drop = comboBoxEnemyDropItemID.SelectedIndex,
-                steal = comboBoxEnemyMorphItem.SelectedIndex;
-            if (drop < 0) { drop = 0; }
-            comboBoxEnemyDropItemID.BeginUpdate();
-            comboBoxEnemyMorphItem.BeginUpdate();
-            comboBoxEnemyDropItemID.Items.Clear();
-            comboBoxEnemyMorphItem.Items.Clear();
-            itemList.Clear();
-
-            comboBoxEnemyDropItemID.Items.Add("None");
-            comboBoxEnemyMorphItem.Items.Add("None");
-            if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
+            try
             {
-                foreach (var item in DataManager.Kernel.ItemData.Items)
+                int drop = comboBoxEnemyDropItemID.SelectedIndex,
+                steal = comboBoxEnemyMorphItem.SelectedIndex;
+                if (drop < 0) { drop = 0; }
+                comboBoxEnemyDropItemID.BeginUpdate();
+                comboBoxEnemyMorphItem.BeginUpdate();
+                comboBoxEnemyDropItemID.Items.Clear();
+                comboBoxEnemyMorphItem.Items.Clear();
+                itemList.Clear();
+
+                comboBoxEnemyDropItemID.Items.Add("None");
+                comboBoxEnemyMorphItem.Items.Add("None");
+                if (DataManager.KernelFilePathExists && DataManager.Kernel != null)
                 {
-                    comboBoxEnemyDropItemID.Items.Add(item.Name);
-                    comboBoxEnemyMorphItem.Items.Add(item.Name);
-                    var inv = new InventoryItem();
-                    inv.Item = DataParser.GetCombinedItemIndex(ItemType.Item, (byte)item.Index);
-                    itemList.Add(inv);
-                }
-                foreach (var wpn in DataManager.Kernel.WeaponData.Weapons)
-                {
-                    comboBoxEnemyDropItemID.Items.Add(wpn.Name);
-                    comboBoxEnemyMorphItem.Items.Add(wpn.Name);
-                    var inv = new InventoryItem();
-                    inv.Item = DataParser.GetCombinedItemIndex(ItemType.Weapon, (byte)wpn.Index);
-                    itemList.Add(inv);
-                }
-                foreach (var armor in DataManager.Kernel.ArmorData.Armors)
-                {
-                    comboBoxEnemyDropItemID.Items.Add(armor.Name);
-                    comboBoxEnemyMorphItem.Items.Add(armor.Name);
-                    var inv = new InventoryItem();
-                    inv.Item = DataParser.GetCombinedItemIndex(ItemType.Armor, (byte)armor.Index);
-                    itemList.Add(inv);
-                }
-                foreach (var acc in DataManager.Kernel.AccessoryData.Accessories)
-                {
-                    comboBoxEnemyDropItemID.Items.Add(acc.Name);
-                    comboBoxEnemyMorphItem.Items.Add(acc.Name);
-                    var inv = new InventoryItem();
-                    inv.Item = DataParser.GetCombinedItemIndex(ItemType.Accessory, (byte)acc.Index);
-                    itemList.Add(inv);
-                }
-                if (DataManager.PS3TweaksEnabled)
-                {
-                    foreach (var mat in DataManager.Kernel.MateriaData.Materias)
+                    foreach (var item in DataManager.Kernel.ItemData.Items)
                     {
-                        comboBoxEnemyDropItemID.Items.Add(mat.Name);
-                        comboBoxEnemyMorphItem.Items.Add(mat.Name);
+                        comboBoxEnemyDropItemID.Items.Add(item.Name);
+                        comboBoxEnemyMorphItem.Items.Add(item.Name);
                         var inv = new InventoryItem();
-                        inv.Item = DataParser.GetCombinedItemIndex(ItemType.Materia, (byte)mat.Index);
+                        inv.Item = DataParser.GetCombinedItemIndex(ItemType.Item, (byte)item.Index);
                         itemList.Add(inv);
                     }
+                    foreach (var wpn in DataManager.Kernel.WeaponData.Weapons)
+                    {
+                        comboBoxEnemyDropItemID.Items.Add(wpn.Name);
+                        comboBoxEnemyMorphItem.Items.Add(wpn.Name);
+                        var inv = new InventoryItem();
+                        inv.Item = DataParser.GetCombinedItemIndex(ItemType.Weapon, (byte)wpn.Index);
+                        itemList.Add(inv);
+                    }
+                    foreach (var armor in DataManager.Kernel.ArmorData.Armors)
+                    {
+                        comboBoxEnemyDropItemID.Items.Add(armor.Name);
+                        comboBoxEnemyMorphItem.Items.Add(armor.Name);
+                        var inv = new InventoryItem();
+                        inv.Item = DataParser.GetCombinedItemIndex(ItemType.Armor, (byte)armor.Index);
+                        itemList.Add(inv);
+                    }
+                    foreach (var acc in DataManager.Kernel.AccessoryData.Accessories)
+                    {
+                        comboBoxEnemyDropItemID.Items.Add(acc.Name);
+                        comboBoxEnemyMorphItem.Items.Add(acc.Name);
+                        var inv = new InventoryItem();
+                        inv.Item = DataParser.GetCombinedItemIndex(ItemType.Accessory, (byte)acc.Index);
+                        itemList.Add(inv);
+                    }
+                    if (DataManager.PS3TweaksEnabled)
+                    {
+                        foreach (var mat in DataManager.Kernel.MateriaData.Materias)
+                        {
+                            comboBoxEnemyDropItemID.Items.Add(mat.Name);
+                            comboBoxEnemyMorphItem.Items.Add(mat.Name);
+                            var inv = new InventoryItem();
+                            inv.Item = DataParser.GetCombinedItemIndex(ItemType.Materia, (byte)mat.Index);
+                            itemList.Add(inv);
+                        }
+                    }
                 }
+                else
+                {
+                    groupBoxEnemyItemDropRates.Enabled = false;
+                    comboBoxEnemyMorphItem.Enabled = false;
+                }
+                comboBoxEnemyDropItemID.EndUpdate();
+                comboBoxEnemyMorphItem.EndUpdate();
+                comboBoxEnemyDropItemID.SelectedIndex = drop;
+                comboBoxEnemyMorphItem.SelectedIndex = steal;
+                EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, false);
             }
-            else
+            catch (Exception ex)
             {
-                groupBoxEnemyItemDropRates.Enabled = false;
-                comboBoxEnemyMorphItem.Enabled = false;
+                MessageDialog.ShowException(ex, "Loading kernel data");
             }
-            comboBoxEnemyDropItemID.EndUpdate();
-            comboBoxEnemyMorphItem.EndUpdate();
-            comboBoxEnemyDropItemID.SelectedIndex = drop;
-            comboBoxEnemyMorphItem.SelectedIndex = steal;
-            EnableOrDisableGroupBox(groupBoxEnemyItemDropRates, false, false);
         }
 
         private void LoadModelData()

@@ -747,70 +747,77 @@ namespace FF7Scarlet.KernelEditor
         {
             bool wasAlreadyLoading = loading;
             loading = true;
-            if (!wasAlreadyLoading)
+            try
             {
-                comboBoxInitItem.SuspendLayout();
-                comboBoxCharacterWeapon.SuspendLayout();
-                comboBoxCharacterArmor.SuspendLayout();
-                comboBoxCharacterAccessory.SuspendLayout();
-                comboBoxInitMateria.SuspendLayout();
-            }
+                if (!wasAlreadyLoading)
+                {
+                    comboBoxInitItem.SuspendLayout();
+                    comboBoxCharacterWeapon.SuspendLayout();
+                    comboBoxCharacterArmor.SuspendLayout();
+                    comboBoxCharacterAccessory.SuspendLayout();
+                    comboBoxInitMateria.SuspendLayout();
+                }
 
-            //items
-            int i = comboBoxInitItem.SelectedIndex;
-            comboBoxInitItem.Items.Clear();
-            comboBoxInitItem.Items.Add("None");
-            foreach (var item in kernel.ItemData.Items)
-            {
-                comboBoxInitItem.Items.Add(item.Name.ToString(DisplayJapaneseText));
-            }
-            comboBoxInitItem.SelectedIndex = i;
+                //items
+                int i = comboBoxInitItem.SelectedIndex;
+                comboBoxInitItem.Items.Clear();
+                comboBoxInitItem.Items.Add("None");
+                foreach (var item in kernel.ItemData.Items)
+                {
+                    comboBoxInitItem.Items.Add(item.Name.ToString(DisplayJapaneseText));
+                }
+                comboBoxInitItem.SelectedIndex = i;
 
-            //weapons
-            i = comboBoxCharacterWeapon.SelectedIndex;
-            comboBoxCharacterWeapon.Items.Clear();
-            foreach (var wpn in kernel.WeaponData.Weapons)
-            {
-                comboBoxCharacterWeapon.Items.Add(wpn.Name.ToString(DisplayJapaneseText));
-                comboBoxInitItem.Items.Add(wpn.Name.ToString(DisplayJapaneseText));
-            }
-            comboBoxCharacterWeapon.SelectedIndex = i;
+                //weapons
+                i = comboBoxCharacterWeapon.SelectedIndex;
+                comboBoxCharacterWeapon.Items.Clear();
+                foreach (var wpn in kernel.WeaponData.Weapons)
+                {
+                    comboBoxCharacterWeapon.Items.Add(wpn.Name.ToString(DisplayJapaneseText));
+                    comboBoxInitItem.Items.Add(wpn.Name.ToString(DisplayJapaneseText));
+                }
+                comboBoxCharacterWeapon.SelectedIndex = i;
 
-            //armor
-            i = comboBoxCharacterArmor.SelectedIndex;
-            comboBoxCharacterArmor.Items.Clear();
-            foreach (var armor in kernel.ArmorData.Armors)
-            {
-                comboBoxCharacterArmor.Items.Add(armor.Name.ToString(DisplayJapaneseText));
-                comboBoxInitItem.Items.Add(armor.Name.ToString(DisplayJapaneseText));
-            }
-            comboBoxCharacterArmor.SelectedIndex = i;
+                //armor
+                i = comboBoxCharacterArmor.SelectedIndex;
+                comboBoxCharacterArmor.Items.Clear();
+                foreach (var armor in kernel.ArmorData.Armors)
+                {
+                    comboBoxCharacterArmor.Items.Add(armor.Name.ToString(DisplayJapaneseText));
+                    comboBoxInitItem.Items.Add(armor.Name.ToString(DisplayJapaneseText));
+                }
+                comboBoxCharacterArmor.SelectedIndex = i;
 
-            //accessories
-            i = comboBoxCharacterAccessory.SelectedIndex;
-            comboBoxCharacterAccessory.Items.Clear();
-            comboBoxCharacterAccessory.Items.Add("None");
-            foreach (var acc in kernel.AccessoryData.Accessories)
-            {
-                comboBoxCharacterAccessory.Items.Add(acc.Name.ToString(DisplayJapaneseText));
-                comboBoxInitItem.Items.Add(acc.Name.ToString(DisplayJapaneseText));
-            }
-            comboBoxCharacterAccessory.SelectedIndex = i;
+                //accessories
+                i = comboBoxCharacterAccessory.SelectedIndex;
+                comboBoxCharacterAccessory.Items.Clear();
+                comboBoxCharacterAccessory.Items.Add("None");
+                foreach (var acc in kernel.AccessoryData.Accessories)
+                {
+                    comboBoxCharacterAccessory.Items.Add(acc.Name.ToString(DisplayJapaneseText));
+                    comboBoxInitItem.Items.Add(acc.Name.ToString(DisplayJapaneseText));
+                }
+                comboBoxCharacterAccessory.SelectedIndex = i;
 
-            //materia
-            i = comboBoxInitMateria.SelectedIndex;
-            int j = comboBoxInitMateriaStolen.SelectedIndex;
-            comboBoxInitMateria.Items.Clear();
-            comboBoxInitMateriaStolen.Items.Clear();
-            comboBoxInitMateria.Items.Add("None");
-            comboBoxInitMateriaStolen.Items.Add("None");
-            foreach (var mat in kernel.MateriaData.Materias)
-            {
-                comboBoxInitMateria.Items.Add(mat.Name.ToString(DisplayJapaneseText));
-                comboBoxInitMateriaStolen.Items.Add(mat.Name.ToString(DisplayJapaneseText));
+                //materia
+                i = comboBoxInitMateria.SelectedIndex;
+                int j = comboBoxInitMateriaStolen.SelectedIndex;
+                comboBoxInitMateria.Items.Clear();
+                comboBoxInitMateriaStolen.Items.Clear();
+                comboBoxInitMateria.Items.Add("None");
+                comboBoxInitMateriaStolen.Items.Add("None");
+                foreach (var mat in kernel.MateriaData.Materias)
+                {
+                    comboBoxInitMateria.Items.Add(mat.Name.ToString(DisplayJapaneseText));
+                    comboBoxInitMateriaStolen.Items.Add(mat.Name.ToString(DisplayJapaneseText));
+                }
+                comboBoxInitMateria.SelectedIndex = i;
+                comboBoxInitMateriaStolen.SelectedIndex = j;
             }
-            comboBoxInitMateria.SelectedIndex = i;
-            comboBoxInitMateriaStolen.SelectedIndex = j;
+            catch (Exception ex)
+            {
+                MessageDialog.ShowException(ex, "Loading item lists");
+            }
 
             if (!wasAlreadyLoading)
             {
@@ -830,64 +837,71 @@ namespace FF7Scarlet.KernelEditor
         {
             bool wasAlreadyLoading = loading;
             loading = true;
-            if (!wasAlreadyLoading)
+            try
             {
-                listBoxInitInventory.SuspendLayout();
-                listBoxInitMateria.SuspendLayout();
-                listBoxInitMateriaStolen.SuspendLayout();
-            }
+                if (!wasAlreadyLoading)
+                {
+                    listBoxInitInventory.SuspendLayout();
+                    listBoxInitMateria.SuspendLayout();
+                    listBoxInitMateriaStolen.SuspendLayout();
+                }
 
-            //inventory
-            int i = listBoxInitInventory.SelectedIndex;
-            listBoxInitInventory.Items.Clear();
-            foreach (var inv in kernel.InitialData.Inventory)
+                //inventory
+                int i = listBoxInitInventory.SelectedIndex;
+                listBoxInitInventory.Items.Clear();
+                foreach (var inv in kernel.InitialData.Inventory)
+                {
+                    if (DataParser.GetItemType(inv.Item) == ItemType.None)
+                    {
+                        listBoxInitInventory.Items.Add("(empty)");
+                    }
+                    else
+                    {
+                        listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv, DisplayJapaneseText)} x{inv.Amount}");
+                    }
+                }
+                listBoxInitInventory.SelectedIndex = i;
+
+
+                //materia
+                i = listBoxInitMateria.SelectedIndex;
+                listBoxInitMateria.Items.Clear();
+                foreach (var invm in kernel.InitialData.Materia)
+                {
+                    var m = kernel.GetMateriaByID(invm.Index);
+                    if (m == null)
+                    {
+                        listBoxInitMateria.Items.Add("(empty)");
+                    }
+                    else
+                    {
+                        listBoxInitMateria.Items.Add(m.Name.ToString(DisplayJapaneseText));
+                    }
+                }
+                listBoxInitMateria.SelectedIndex = i;
+                SetInitMateria(false);
+
+                //stolen materia
+                i = listBoxInitMateriaStolen.SelectedIndex;
+                listBoxInitMateriaStolen.Items.Clear();
+                foreach (var sm in kernel.InitialData.StolenMateria)
+                {
+                    var m = kernel.GetMateriaByID(sm.Index);
+                    if (m == null)
+                    {
+                        listBoxInitMateriaStolen.Items.Add("(empty)");
+                    }
+                    else
+                    {
+                        listBoxInitMateriaStolen.Items.Add(m.Name.ToString(DisplayJapaneseText));
+                    }
+                }
+                listBoxInitMateriaStolen.SelectedIndex = i;
+            }
+            catch (Exception ex)
             {
-                if (DataParser.GetItemType(inv.Item) == ItemType.None)
-                {
-                    listBoxInitInventory.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitInventory.Items.Add($"{kernel.GetInventoryItemName(inv, DisplayJapaneseText)} x{inv.Amount}");
-                }
+                MessageDialog.ShowException(ex, "Loading inventory data");
             }
-            listBoxInitInventory.SelectedIndex = i;
-
-
-            //materia
-            i = listBoxInitMateria.SelectedIndex;
-            listBoxInitMateria.Items.Clear();
-            foreach (var invm in kernel.InitialData.Materia)
-            {
-                var m = kernel.GetMateriaByID(invm.Index);
-                if (m == null)
-                {
-                    listBoxInitMateria.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitMateria.Items.Add(m.Name.ToString(DisplayJapaneseText));
-                }
-            }
-            listBoxInitMateria.SelectedIndex = i;
-            SetInitMateria(false);
-
-            //stolen materia
-            i = listBoxInitMateriaStolen.SelectedIndex;
-            listBoxInitMateriaStolen.Items.Clear();
-            foreach (var sm in kernel.InitialData.StolenMateria)
-            {
-                var m = kernel.GetMateriaByID(sm.Index);
-                if (m == null)
-                {
-                    listBoxInitMateriaStolen.Items.Add("(empty)");
-                }
-                else
-                {
-                    listBoxInitMateriaStolen.Items.Add(m.Name.ToString(DisplayJapaneseText));
-                }
-            }
-            listBoxInitMateriaStolen.SelectedIndex = i;
 
             if (!wasAlreadyLoading)
             {
@@ -906,296 +920,303 @@ namespace FF7Scarlet.KernelEditor
         private void PopulateTabWithSelected(KernelSection section, bool textOnly = false)
         {
             loading = true;
-            if (listBoxes.ContainsKey(section))
+            try
             {
-                int i = listBoxes[section].SelectedIndex, j;
-                if (i >= 0 && i < kernel.GetCount(section))
+                if (listBoxes.ContainsKey(section))
                 {
-                    if (section == KernelSection.AttackData)
+                    int i = listBoxes[section].SelectedIndex, j;
+                    if (i >= 0 && i < kernel.GetCount(section))
                     {
-                        if (SelectedAttackType == AttackTypes.Summon && i > AttackCount - 3)
+                        if (section == KernelSection.AttackData)
                         {
-                            i = Kernel.SPECIAL_SUMMON_OFFSET + (i - AttackCount) + 2;
+                            if (SelectedAttackType == AttackTypes.Summon && i > AttackCount - 3)
+                            {
+                                i = Kernel.SPECIAL_SUMMON_OFFSET + (i - AttackCount) + 2;
+                            }
+                            else
+                            {
+                                i += AttackOffset;
+                            }
+                        }
+                        EnableOrDisableTabPageControls(section, true);
+
+                        //check for name
+                        if (nameTextBoxes.ContainsKey(section))
+                        {
+                            nameTextBoxes[section].Text = kernel.GetAssociatedNames(section)[i].ToString(DisplayJapaneseText);
+                        }
+
+                        //check for description
+                        if (descriptionTextBoxes.ContainsKey(section))
+                        {
+                            descriptionTextBoxes[section].Text = kernel.GetAssociatedDescriptions(section)[i].ToString(DisplayJapaneseText);
+                        }
+
+                        if (!textOnly)
+                        {
+                            //check for ID
+                            if (idLabels.ContainsKey(section))
+                            {
+                                idLabels[section].Text = $"ID: {i:X2}";
+                            }
+
+                            //check for toolstrips
+                            if (toolStrips.ContainsKey(section))
+                            {
+                                toolStrips[section].Enabled = true;
+                            }
+
+                            //check for camera movement ID(s)
+                            if (cameraMovementSingle.ContainsKey(section))
+                            {
+                                cameraMovementSingle[section].Text = kernel.GetCameraMovementIDSingle(section, i).ToString("X4");
+                            }
+                            if (cameraMovementMulti.ContainsKey(section))
+                            {
+                                cameraMovementMulti[section].Text = kernel.GetCameraMovementIDMulti(section, i).ToString("X4");
+                            }
+
+                            //check for stat increases
+                            if (statIncreases.ContainsKey(section))
+                            {
+                                statIncreases[section].SetStatIncreases(kernel.GetStatIncreases(section, i));
+                            }
+
+                            //check for target data
+                            if (targetData.ContainsKey(section))
+                            {
+                                targetData[section].SetTargetData(kernel.GetTargetData(section, i));
+                            }
+
+                            //check for damage calculation data
+                            if (damageCalculationControls.ContainsKey(section))
+                            {
+                                damageCalculationControls[section].Reload(kernel.GetDamageCalculationID(section, i),
+                                    kernel.GetAttackPower(section, i));
+                            }
+
+                            //check for item restrictions
+                            if (itemRestrictionLists.ContainsKey(section))
+                            {
+                                itemRestrictionLists[section].SetItemRestrictions(kernel.GetItemRestrictions(section, i));
+                            }
+
+                            //check for equip lists
+                            if (equipableLists.ContainsKey(section))
+                            {
+                                equipableLists[section].SetEquipableFlags(kernel.GetEquipableFlags(section, i));
+                            }
+
+                            //check for materia slots
+                            if (materiaSlots.ContainsKey(section) && materiaGrowthComboBoxes.ContainsKey(section))
+                            {
+                                var slots = kernel.GetMateriaSlots(section, i);
+                                var rate = kernel.GetGrowthRate(section, i);
+                                materiaSlots[section].GrowthRate = rate;
+                                materiaSlots[section].SetSlots(slots, rate);
+                                materiaGrowthComboBoxes[section].SelectedIndex = (int)rate;
+                            }
+
+                            //check for elements
+                            if (elementLists.ContainsKey(section))
+                            {
+                                elementLists[section].SetElements(kernel.GetElement(section, i));
+                            }
+                            if (elementDamageModifiers.ContainsKey(section))
+                            {
+                                var modifier = kernel.GetDamageModifier(section, i);
+                                if (modifier == DamageModifier.Normal)
+                                {
+                                    elementDamageModifiers[section].SelectedIndex = 0;
+                                }
+                                else
+                                {
+                                    elementDamageModifiers[section].SelectedIndex = (int)modifier + 1;
+                                }
+                            }
+
+                            //check for status effects
+                            if (statusLists.ContainsKey(section))
+                            {
+                                statusLists[section].SetStatuses(kernel.GetStatuses(section, i));
+                            }
+                            if (equipmentStatus.ContainsKey(section))
+                            {
+                                int status = (int)kernel.GetEquipmentStatus(section, i);
+                                if (status == 0xFF)
+                                {
+                                    equipmentStatus[section].SelectedIndex = 0;
+                                }
+                                else
+                                {
+                                    equipmentStatus[section].SelectedIndex = status + 1;
+                                }
+                            }
+                            if (statusChangeComboBoxes.ContainsKey(section))
+                            {
+                                var change = kernel.GetStatusChange(section, i);
+                                var temp = DataManager.StatusChangeTypes.ToList();
+                                statusChangeComboBoxes[section].SelectedIndex = temp.IndexOf(change.Type);
+                            }
+
+                            //special attack flags
+                            if (specialAttackFlags.ContainsKey(section))
+                            {
+                                specialAttackFlags[section].SetFlags(kernel.GetSpecialEffects(section, i));
+                            }
+                        }
+
+                        //get data specific to this section
+                        switch (section)
+                        {
+                            //command data
+                            case KernelSection.CommandData:
+                                if (!textOnly)
+                                {
+                                    var command = kernel.CommandData.Commands[i];
+                                    if (command.InitialCursorAction == 0xFF)
+                                    {
+                                        comboBoxCommandInitialCursorAction.SelectedIndex = 0;
+                                    }
+                                    else
+                                    {
+                                        comboBoxCommandInitialCursorAction.SelectedIndex = command.InitialCursorAction + 1;
+                                    }
+                                }
+                                break;
+
+                            //attack data
+                            case KernelSection.AttackData:
+                                j = i - Kernel.SUMMON_OFFSET;
+                                FFText? summon = null;
+                                if (j >= 0 && j < kernel.SummonAttackNames.Strings.Length)
+                                {
+                                    summon = kernel.SummonAttackNames.Strings[j];
+                                }
+                                attackPasteToolStripMenuItem.Enabled = DataManager.CopiedAttack != null;
+                                var attack = kernel.AttackData.Attacks[i];
+                                SpellType type = SpellType.Unlisted;
+                                if (i < Kernel.INDEXED_SPELL_COUNT)
+                                {
+                                    type = kernel.BattleAndGrowthData.SpellIndexes[i].SpellType;
+                                }
+                                attackFormControl.UpdateForm(attack, i, DisplayJapaneseText, kernel.AttackIsLimit[i], summon, type);
+
+                                //checkBoxAttackSyncWithSceneBin.Checked = syncedAttackIDs.Contains((ushort)attack.Index);
+                                break;
+
+                            //item data
+                            case KernelSection.ItemData:
+                                if (!textOnly)
+                                {
+                                    var item = kernel.ItemData.Items[i];
+                                    comboBoxItemAttackEffectID.Text = item.AttackEffectId.ToString("X2");
+                                    numericItemStatusChangeChance.Value = item.StatusChange.Amount;
+                                    if (item.ConditionSubmenu == ConditionSubmenu.None)
+                                    {
+                                        comboBoxItemConditionSubMenu.SelectedIndex = 0;
+                                    }
+                                    else
+                                    {
+                                        comboBoxItemConditionSubMenu.SelectedIndex = (int)item.ConditionSubmenu + 1;
+                                    }
+                                    int k = AdditionalEffects.GetIndex(item.AdditionalEffects);
+                                    comboBoxItemAdditionalEffects.SelectedIndex = k;
+                                    numericItemEffectModifier.Value = item.AdditionalEffectsModifier;
+                                    numericItemEffectModifier.Enabled = AdditionalEffects.Effects[k].HasModifier;
+                                }
+                                break;
+
+                            //weapon data
+                            case KernelSection.WeaponData:
+                                if (!textOnly)
+                                {
+                                    var weapon = kernel.WeaponData.Weapons[i];
+                                    numericWeaponHitChance.Value = weapon.AccuracyRate;
+                                    numericWeaponCritChance.Value = weapon.CriticalRate;
+                                    numericWeaponModelIndex.Value = HexParser.GetLowerNybble(weapon.WeaponModelId);
+                                    numericWeaponAnimationIndex.Value = HexParser.GetUpperNybble(weapon.WeaponModelId);
+                                }
+                                break;
+
+                            //armor data
+                            case KernelSection.ArmorData:
+                                if (!textOnly)
+                                {
+                                    var armor = kernel.ArmorData.Armors[i];
+                                    numericArmorDefense.Value = armor.Defense;
+                                    numericArmorDefensePercent.Value = armor.Evade;
+                                    numericArmorMagicDefense.Value = armor.MagicDefense;
+                                    numericArmorMagicDefensePercent.Value = armor.MagicEvade;
+                                }
+                                break;
+
+                            //accessory data
+                            case KernelSection.AccessoryData:
+                                if (!textOnly)
+                                {
+                                    var acc = kernel.AccessoryData.Accessories[i];
+                                    if (acc.SpecialEffect == AccessoryEffect.None)
+                                    {
+                                        comboBoxAccessorySpecialEffects.SelectedIndex = 0;
+                                    }
+                                    else
+                                    {
+                                        comboBoxAccessorySpecialEffects.SelectedIndex = (int)acc.SpecialEffect + 1;
+                                    }
+                                }
+                                break;
+
+                            //materia data
+                            case KernelSection.MateriaData:
+                                if (!textOnly)
+                                {
+                                    var materia = kernel.MateriaData.Materias[i];
+                                    if (Enum.IsDefined(materia.Element))
+                                    {
+                                        comboBoxMateriaElement.SelectedIndex = (int)materia.Element + 1;
+                                    }
+                                    else
+                                    {
+                                        comboBoxMateriaElement.SelectedIndex = 0;
+                                    }
+                                    comboBoxMateriaType.SelectedIndex = (int)Materia.GetMateriaType(materia.MateriaTypeByte);
+                                    UpdateMateriaSubtype(materia);
+                                    materiaLevelControl.SetAPLevels(materia.Level2AP, materia.Level3AP, materia.Level4AP,
+                                        materia.Level5AP);
+                                    if (materia.EquipEffect > MateriaEquipEffect.COUNT)
+                                    {
+                                        comboBoxMateriaEquipAttributes.SelectedIndex = 0;
+                                    }
+                                    else
+                                    {
+                                        comboBoxMateriaEquipAttributes.SelectedIndex = materia.EquipEffect;
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                    else //nothing selected, so disable tab
+                    {
+                        if (section == KernelSection.AttackData && i > 0)
+                        {
+                            var names = kernel.GetAssociatedNames(section);
+                            var descs = kernel.GetAssociatedDescriptions(section);
+                            if (i < names.Length && i < descs.Length)
+                            {
+                                attackFormControl.UpdateForm(i, names[i], descs[i], DisplayJapaneseText);
+                            }
                         }
                         else
                         {
-                            i += AttackOffset;
+                            EnableOrDisableTabPageControls(section, false);
                         }
-                    }
-                    EnableOrDisableTabPageControls(section, true);
-
-                    //check for name
-                    if (nameTextBoxes.ContainsKey(section))
-                    {
-                        nameTextBoxes[section].Text = kernel.GetAssociatedNames(section)[i].ToString(DisplayJapaneseText);
-                    }
-
-                    //check for description
-                    if (descriptionTextBoxes.ContainsKey(section))
-                    {
-                        descriptionTextBoxes[section].Text = kernel.GetAssociatedDescriptions(section)[i].ToString(DisplayJapaneseText);
-                    }
-
-                    if (!textOnly)
-                    {
-                        //check for ID
-                        if (idLabels.ContainsKey(section))
-                        {
-                            idLabels[section].Text = $"ID: {i:X2}";
-                        }
-
-                        //check for toolstrips
-                        if (toolStrips.ContainsKey(section))
-                        {
-                            toolStrips[section].Enabled = true;
-                        }
-
-                        //check for camera movement ID(s)
-                        if (cameraMovementSingle.ContainsKey(section))
-                        {
-                            cameraMovementSingle[section].Text = kernel.GetCameraMovementIDSingle(section, i).ToString("X4");
-                        }
-                        if (cameraMovementMulti.ContainsKey(section))
-                        {
-                            cameraMovementMulti[section].Text = kernel.GetCameraMovementIDMulti(section, i).ToString("X4");
-                        }
-
-                        //check for stat increases
-                        if (statIncreases.ContainsKey(section))
-                        {
-                            statIncreases[section].SetStatIncreases(kernel.GetStatIncreases(section, i));
-                        }
-
-                        //check for target data
-                        if (targetData.ContainsKey(section))
-                        {
-                            targetData[section].SetTargetData(kernel.GetTargetData(section, i));
-                        }
-
-                        //check for damage calculation data
-                        if (damageCalculationControls.ContainsKey(section))
-                        {
-                            damageCalculationControls[section].Reload(kernel.GetDamageCalculationID(section, i),
-                                kernel.GetAttackPower(section, i));
-                        }
-
-                        //check for item restrictions
-                        if (itemRestrictionLists.ContainsKey(section))
-                        {
-                            itemRestrictionLists[section].SetItemRestrictions(kernel.GetItemRestrictions(section, i));
-                        }
-
-                        //check for equip lists
-                        if (equipableLists.ContainsKey(section))
-                        {
-                            equipableLists[section].SetEquipableFlags(kernel.GetEquipableFlags(section, i));
-                        }
-
-                        //check for materia slots
-                        if (materiaSlots.ContainsKey(section) && materiaGrowthComboBoxes.ContainsKey(section))
-                        {
-                            var slots = kernel.GetMateriaSlots(section, i);
-                            var rate = kernel.GetGrowthRate(section, i);
-                            materiaSlots[section].GrowthRate = rate;
-                            materiaSlots[section].SetSlots(slots, rate);
-                            materiaGrowthComboBoxes[section].SelectedIndex = (int)rate;
-                        }
-
-                        //check for elements
-                        if (elementLists.ContainsKey(section))
-                        {
-                            elementLists[section].SetElements(kernel.GetElement(section, i));
-                        }
-                        if (elementDamageModifiers.ContainsKey(section))
-                        {
-                            var modifier = kernel.GetDamageModifier(section, i);
-                            if (modifier == DamageModifier.Normal)
-                            {
-                                elementDamageModifiers[section].SelectedIndex = 0;
-                            }
-                            else
-                            {
-                                elementDamageModifiers[section].SelectedIndex = (int)modifier + 1;
-                            }
-                        }
-
-                        //check for status effects
-                        if (statusLists.ContainsKey(section))
-                        {
-                            statusLists[section].SetStatuses(kernel.GetStatuses(section, i));
-                        }
-                        if (equipmentStatus.ContainsKey(section))
-                        {
-                            int status = (int)kernel.GetEquipmentStatus(section, i);
-                            if (status == 0xFF)
-                            {
-                                equipmentStatus[section].SelectedIndex = 0;
-                            }
-                            else
-                            {
-                                equipmentStatus[section].SelectedIndex = status + 1;
-                            }
-                        }
-                        if (statusChangeComboBoxes.ContainsKey(section))
-                        {
-                            var change = kernel.GetStatusChange(section, i);
-                            var temp = DataManager.StatusChangeTypes.ToList();
-                            statusChangeComboBoxes[section].SelectedIndex = temp.IndexOf(change.Type);
-                        }
-
-                        //special attack flags
-                        if (specialAttackFlags.ContainsKey(section))
-                        {
-                            specialAttackFlags[section].SetFlags(kernel.GetSpecialEffects(section, i));
-                        }
-                    }
-
-                    //get data specific to this section
-                    switch (section)
-                    {
-                        //command data
-                        case KernelSection.CommandData:
-                            if (!textOnly)
-                            {
-                                var command = kernel.CommandData.Commands[i];
-                                if (command.InitialCursorAction == 0xFF)
-                                {
-                                    comboBoxCommandInitialCursorAction.SelectedIndex = 0;
-                                }
-                                else
-                                {
-                                    comboBoxCommandInitialCursorAction.SelectedIndex = command.InitialCursorAction + 1;
-                                }
-                            }
-                            break;
-
-                        //attack data
-                        case KernelSection.AttackData:
-                            j = i - Kernel.SUMMON_OFFSET;
-                            FFText? summon = null;
-                            if (j >= 0 && j < kernel.SummonAttackNames.Strings.Length)
-                            {
-                                summon = kernel.SummonAttackNames.Strings[j];
-                            }
-                            attackPasteToolStripMenuItem.Enabled = DataManager.CopiedAttack != null;
-                            var attack = kernel.AttackData.Attacks[i];
-                            SpellType type = SpellType.Unlisted;
-                            if (i < Kernel.INDEXED_SPELL_COUNT)
-                            {
-                                type = kernel.BattleAndGrowthData.SpellIndexes[i].SpellType;
-                            }
-                            attackFormControl.UpdateForm(attack, i, DisplayJapaneseText, kernel.AttackIsLimit[i], summon, type);
-
-                            //checkBoxAttackSyncWithSceneBin.Checked = syncedAttackIDs.Contains((ushort)attack.Index);
-                            break;
-
-                        //item data
-                        case KernelSection.ItemData:
-                            if (!textOnly)
-                            {
-                                var item = kernel.ItemData.Items[i];
-                                comboBoxItemAttackEffectID.Text = item.AttackEffectId.ToString("X2");
-                                numericItemStatusChangeChance.Value = item.StatusChange.Amount;
-                                if (item.ConditionSubmenu == ConditionSubmenu.None)
-                                {
-                                    comboBoxItemConditionSubMenu.SelectedIndex = 0;
-                                }
-                                else
-                                {
-                                    comboBoxItemConditionSubMenu.SelectedIndex = (int)item.ConditionSubmenu + 1;
-                                }
-                                int k = AdditionalEffects.GetIndex(item.AdditionalEffects);
-                                comboBoxItemAdditionalEffects.SelectedIndex = k;
-                                numericItemEffectModifier.Value = item.AdditionalEffectsModifier;
-                                numericItemEffectModifier.Enabled = AdditionalEffects.Effects[k].HasModifier;
-                            }
-                            break;
-
-                        //weapon data
-                        case KernelSection.WeaponData:
-                            if (!textOnly)
-                            {
-                                var weapon = kernel.WeaponData.Weapons[i];
-                                numericWeaponHitChance.Value = weapon.AccuracyRate;
-                                numericWeaponCritChance.Value = weapon.CriticalRate;
-                                numericWeaponModelIndex.Value = HexParser.GetLowerNybble(weapon.WeaponModelId);
-                                numericWeaponAnimationIndex.Value = HexParser.GetUpperNybble(weapon.WeaponModelId);
-                            }
-                            break;
-
-                        //armor data
-                        case KernelSection.ArmorData:
-                            if (!textOnly)
-                            {
-                                var armor = kernel.ArmorData.Armors[i];
-                                numericArmorDefense.Value = armor.Defense;
-                                numericArmorDefensePercent.Value = armor.Evade;
-                                numericArmorMagicDefense.Value = armor.MagicDefense;
-                                numericArmorMagicDefensePercent.Value = armor.MagicEvade;
-                            }
-                            break;
-
-                        //accessory data
-                        case KernelSection.AccessoryData:
-                            if (!textOnly)
-                            {
-                                var acc = kernel.AccessoryData.Accessories[i];
-                                if (acc.SpecialEffect == AccessoryEffect.None)
-                                {
-                                    comboBoxAccessorySpecialEffects.SelectedIndex = 0;
-                                }
-                                else
-                                {
-                                    comboBoxAccessorySpecialEffects.SelectedIndex = (int)acc.SpecialEffect + 1;
-                                }
-                            }
-                            break;
-
-                        //materia data
-                        case KernelSection.MateriaData:
-                            if (!textOnly)
-                            {
-                                var materia = kernel.MateriaData.Materias[i];
-                                if (Enum.IsDefined(materia.Element))
-                                {
-                                    comboBoxMateriaElement.SelectedIndex = (int)materia.Element + 1;
-                                }
-                                else
-                                {
-                                    comboBoxMateriaElement.SelectedIndex = 0;
-                                }
-                                comboBoxMateriaType.SelectedIndex = (int)Materia.GetMateriaType(materia.MateriaTypeByte);
-                                UpdateMateriaSubtype(materia);
-                                materiaLevelControl.SetAPLevels(materia.Level2AP, materia.Level3AP, materia.Level4AP,
-                                    materia.Level5AP);
-                                if (materia.EquipEffect > MateriaEquipEffect.COUNT)
-                                {
-                                    comboBoxMateriaEquipAttributes.SelectedIndex = 0;
-                                }
-                                else
-                                {
-                                    comboBoxMateriaEquipAttributes.SelectedIndex = materia.EquipEffect;
-                                }
-                            }
-                            break;
                     }
                 }
-                else //nothing selected, so disable tab
-                {
-                    if (section == KernelSection.AttackData && i > 0)
-                    {
-                        var names = kernel.GetAssociatedNames(section);
-                        var descs = kernel.GetAssociatedDescriptions(section);
-                        if (i < names.Length && i < descs.Length)
-                        {
-                            attackFormControl.UpdateForm(i, names[i], descs[i], DisplayJapaneseText);
-                        }
-                    }
-                    else
-                    {
-                        EnableOrDisableTabPageControls(section, false);
-                    }
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageDialog.ShowException(ex, "Loading kernel data");
             }
             loading = false;
         }
@@ -1210,71 +1231,78 @@ namespace FF7Scarlet.KernelEditor
             {
                 bool wasAlreadyLoading = loading;
                 loading = true;
-                if (!tabPageIsEnabled.ContainsKey(tabPageInitCharacterStats))
+                try
                 {
-                    FormFunctions.EnableOrDisableInner(tabPageInitCharacterStats, true, (ReadOnlyCollection<Control>?)null);
-                    tabPageIsEnabled.Add(tabPageInitCharacterStats, true);
+                    if (!tabPageIsEnabled.ContainsKey(tabPageInitCharacterStats))
+                    {
+                        FormFunctions.EnableOrDisableInner(tabPageInitCharacterStats, true, (ReadOnlyCollection<Control>?)null);
+                        tabPageIsEnabled.Add(tabPageInitCharacterStats, true);
+                    }
+
+                    var character = kernel.CharacterList[charIndex];
+
+                    if (character is null) return;
+
+                    textBoxCharacterName.Text = character.Name.ToString(DisplayJapaneseText);
+                    numericCharacterID.Value = character!.ID;
+                    numericCharacterLevel.Value = character.Level;
+                    numericCharacterCurrentEXP.Value = character.CurrentEXP;
+                    numericCharacterEXPtoNext.Value = character.EXPtoNextLevel;
+                    numericCharacterLevelOffset.Value = character.RecruitLevelOffset;
+                    numericCharacterLevelOffset.Enabled = character.ID != (byte)CharacterNames.Yuffie;
+
+                    numericCharacterCurrHP.Value = character.CurrentHP;
+                    numericCharacterBaseHP.Value = character.BaseHP;
+                    numericCharacterMaxHP.Value = character.MaxHP;
+                    numericCharacterCurrMP.Value = character.CurrentMP;
+                    numericCharacterBaseMP.Value = character.BaseMP;
+                    numericCharacterMaxMP.Value = character.MaxMP;
+
+                    var temp = Enum.GetValues<CharacterFlags>().ToList();
+                    comboBoxCharacterFlags.SelectedIndex = temp.IndexOf(character.CharacterFlags);
+                    checkBoxCharacterBackRow.Checked = character.IsBackRow;
+                    numericCharacterKillCount.Value = character.KillCount;
+                    characterLimitControl.LimitLevel = character.LimitLevel;
+                    characterLimitControl.LearnedLimits = character.LearnedLimits;
+                    characterLimitControl.LimitBar = character.CurrentLimitBar;
+
+                    var wpn = kernel.GetWeaponByID(character.WeaponID);
+                    if (wpn != null)
+                    {
+                        comboBoxCharacterWeapon.SelectedIndex = character.WeaponID;
+                        materiaSlotSelectorCharacterWeapon.SetMateria(character.WeaponMateria, kernel);
+                    }
+                    var armor = kernel.GetArmorByID(character.ArmorID);
+                    if (armor != null)
+                    {
+                        comboBoxCharacterArmor.SelectedIndex = character.ArmorID;
+                        materiaSlotSelectorCharacterArmor.SetMateria(character.ArmorMateria, kernel);
+                    }
+                    var acc = kernel.GetAccessoryByID(character.AccessoryID);
+                    if (acc == null)
+                    {
+                        comboBoxCharacterAccessory.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        comboBoxCharacterAccessory.SelectedIndex = character.AccessoryID + 1;
+                    }
+                    characterStatsControl.SetStatsFromCharacter(character);
+
+                    limitRequirementControl1.Enabled = true;
+                    limitRequirementControl2.Enabled = true;
+                    limitRequirementControl3.Enabled = true;
+                    limitRequirementControl4.Enabled = true;
+
+                    limitRequirementControl1.SetCharacter(character);
+                    limitRequirementControl2.SetCharacter(character);
+                    limitRequirementControl3.SetCharacter(character);
+                    limitRequirementControl4.SetCharacter(character);
                 }
-
-                var character = kernel.CharacterList[charIndex];
-
-                if (character is null) return;
-
-                textBoxCharacterName.Text = character.Name.ToString(DisplayJapaneseText);
-                numericCharacterID.Value = character!.ID;
-                numericCharacterLevel.Value = character.Level;
-                numericCharacterCurrentEXP.Value = character.CurrentEXP;
-                numericCharacterEXPtoNext.Value = character.EXPtoNextLevel;
-                numericCharacterLevelOffset.Value = character.RecruitLevelOffset;
-                numericCharacterLevelOffset.Enabled = character.ID != (byte)CharacterNames.Yuffie;
-
-                numericCharacterCurrHP.Value = character.CurrentHP;
-                numericCharacterBaseHP.Value = character.BaseHP;
-                numericCharacterMaxHP.Value = character.MaxHP;
-                numericCharacterCurrMP.Value = character.CurrentMP;
-                numericCharacterBaseMP.Value = character.BaseMP;
-                numericCharacterMaxMP.Value = character.MaxMP;
-
-                var temp = Enum.GetValues<CharacterFlags>().ToList();
-                comboBoxCharacterFlags.SelectedIndex = temp.IndexOf(character.CharacterFlags);
-                checkBoxCharacterBackRow.Checked = character.IsBackRow;
-                numericCharacterKillCount.Value = character.KillCount;
-                characterLimitControl.LimitLevel = character.LimitLevel;
-                characterLimitControl.LearnedLimits = character.LearnedLimits;
-                characterLimitControl.LimitBar = character.CurrentLimitBar;
-
-                var wpn = kernel.GetWeaponByID(character.WeaponID);
-                if (wpn != null)
+                catch (Exception ex)
                 {
-                    comboBoxCharacterWeapon.SelectedIndex = character.WeaponID;
-                    materiaSlotSelectorCharacterWeapon.SetMateria(character.WeaponMateria, kernel);
+                    MessageDialog.ShowException(ex, "Loading character data");
                 }
-                var armor = kernel.GetArmorByID(character.ArmorID);
-                if (armor != null)
-                {
-                    comboBoxCharacterArmor.SelectedIndex = character.ArmorID;
-                    materiaSlotSelectorCharacterArmor.SetMateria(character.ArmorMateria, kernel);
-                }
-                var acc = kernel.GetAccessoryByID(character.AccessoryID);
-                if (acc == null)
-                {
-                    comboBoxCharacterAccessory.SelectedIndex = 0;
-                }
-                else
-                {
-                    comboBoxCharacterAccessory.SelectedIndex = character.AccessoryID + 1;
-                }
-                characterStatsControl.SetStatsFromCharacter(character);
-
-                limitRequirementControl1.Enabled = true;
-                limitRequirementControl2.Enabled = true;
-                limitRequirementControl3.Enabled = true;
-                limitRequirementControl4.Enabled = true;
-
-                limitRequirementControl1.SetCharacter(character);
-                limitRequirementControl2.SetCharacter(character);
-                limitRequirementControl3.SetCharacter(character);
-                limitRequirementControl4.SetCharacter(character);
 
                 loading = wasAlreadyLoading;
             }
@@ -1290,76 +1318,84 @@ namespace FF7Scarlet.KernelEditor
             if (chara >= 0 && chara < Kernel.PLAYABLE_CHARACTER_COUNT && stat >= 0 && stat < 9)
             {
                 loading = true;
-                var c = kernel.CharacterList[chara];
 
-                //enable the controls
-                FormFunctions.EnableOrDisableInner(groupBoxSelectedCurve, true, null);
-
-                //check if selected character is Cait Sith or Vincent
-                bool inaccurate = false;
-                if (chara == (int)CharacterNames.CaitSith || chara == (int)CharacterNames.Vincent)
+                try
                 {
-                    if (DataManager.ExeData == null)
-                    {
-                        inaccurate = stat != (int)CurveStats.EXP;
-                    }
-                    else if (chara == (int)CharacterNames.CaitSith)
-                    {
-                        c = DataManager.ExeData.CaitSith;
-                    }
-                    else
-                    {
-                        c = DataManager.ExeData.Vincent;
-                    }
-                }
-                labelInaccurateCurve.Visible = inaccurate;
+                    var c = kernel.CharacterList[chara];
 
-                //fill out the charts
-                chartMainCurve.SuspendLayout();
-                MainCurveMin.Points.Clear();
-                MainCurveMax.Points.Clear();
-                var minStats = kernel.BattleAndGrowthData.CalculateMinStats(c, (CurveStats)stat);
-                var maxStats = kernel.BattleAndGrowthData.CalculateMaxStats(c, (CurveStats)stat);
-                for (int i = 1; i <= 99; ++i)
-                {
-                    if (stat != (int)CurveStats.EXP)
-                    {
-                        MainCurveMin.Points.AddXY(i, minStats[i - 1]);
-                    }
-                    MainCurveMax.Points.AddXY(i, maxStats[i - 1]);
-                }
-                chartMainCurve.ResumeLayout();
+                    //enable the controls
+                    FormFunctions.EnableOrDisableInner(groupBoxSelectedCurve, true, null);
 
-                //set numerics
-                numericCurveIndex.Value = kernel.GetCurveIndex(chara, stat);
-                bool isEXP = (stat == (int)CurveStats.EXP);
-                groupBoxCurveBonuses.Enabled = !isEXP;
-                FormFunctions.EnableOrDisableInner(groupBoxCurveBonuses, !isEXP, null);
-                if (isEXP)
-                {
-                    labelCurveMin.Text = "Value: ??";
-                    labelCurveMax.Visible = false;
-                }
-                else
-                {
-                    labelCurveMin.Text = "Min: ??";
-                    labelCurveMax.Visible = true;
-
-                    for (int i = 0; i < 12; ++i)
+                    //check if selected character is Cait Sith or Vincent
+                    bool inaccurate = false;
+                    if (chara == (int)CharacterNames.CaitSith || chara == (int)CharacterNames.Vincent)
                     {
-                        if (stat == (int)CurveStats.HP)
+                        if (DataManager.ExeData == null)
                         {
-                            curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToHP[i];
+                            inaccurate = stat != (int)CurveStats.EXP;
                         }
-                        else if (stat == (int)CurveStats.MP)
+                        else if (chara == (int)CharacterNames.CaitSith)
                         {
-                            curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToMP[i];
+                            c = DataManager.ExeData.CaitSith;
                         }
                         else
                         {
-                            curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToPrimaryStats[i];
+                            c = DataManager.ExeData.Vincent;
                         }
                     }
+                    labelInaccurateCurve.Visible = inaccurate;
+
+                    //fill out the charts
+                    chartMainCurve.SuspendLayout();
+                    MainCurveMin.Points.Clear();
+                    MainCurveMax.Points.Clear();
+                    var minStats = kernel.BattleAndGrowthData.CalculateMinStats(c, (CurveStats)stat);
+                    var maxStats = kernel.BattleAndGrowthData.CalculateMaxStats(c, (CurveStats)stat);
+                    for (int i = 1; i <= 99; ++i)
+                    {
+                        if (stat != (int)CurveStats.EXP)
+                        {
+                            MainCurveMin.Points.AddXY(i, minStats[i - 1]);
+                        }
+                        MainCurveMax.Points.AddXY(i, maxStats[i - 1]);
+                    }
+                    chartMainCurve.ResumeLayout();
+
+                    //set numerics
+                    numericCurveIndex.Value = kernel.GetCurveIndex(chara, stat);
+                    bool isEXP = (stat == (int)CurveStats.EXP);
+                    groupBoxCurveBonuses.Enabled = !isEXP;
+                    FormFunctions.EnableOrDisableInner(groupBoxCurveBonuses, !isEXP, null);
+                    if (isEXP)
+                    {
+                        labelCurveMin.Text = "Value: ??";
+                        labelCurveMax.Visible = false;
+                    }
+                    else
+                    {
+                        labelCurveMin.Text = "Min: ??";
+                        labelCurveMax.Visible = true;
+
+                        for (int i = 0; i < 12; ++i)
+                        {
+                            if (stat == (int)CurveStats.HP)
+                            {
+                                curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToHP[i];
+                            }
+                            else if (stat == (int)CurveStats.MP)
+                            {
+                                curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToMP[i];
+                            }
+                            else
+                            {
+                                curveBonuses[i].Value = kernel.BattleAndGrowthData.RandomBonusToPrimaryStats[i];
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageDialog.ShowException(ex, "Loading curve data");
                 }
 
                 loading = false;
@@ -1376,27 +1412,34 @@ namespace FF7Scarlet.KernelEditor
             {
                 var item = kernel.InitialData.Inventory[selected];
                 loading = true;
-                comboBoxInitItem.Enabled = true;
-                var type = DataParser.GetItemType(item.Item);
-                switch (DataParser.GetItemType(item.Item))
+                try
                 {
-                    case ItemType.None:
-                        comboBoxInitItem.SelectedIndex = 0;
-                        break;
-                    default:
-                        comboBoxInitItem.SelectedIndex = item.Item + 1;
-                        break;
-                }
+                    comboBoxInitItem.Enabled = true;
+                    var type = DataParser.GetItemType(item.Item);
+                    switch (DataParser.GetItemType(item.Item))
+                    {
+                        case ItemType.None:
+                            comboBoxInitItem.SelectedIndex = 0;
+                            break;
+                        default:
+                            comboBoxInitItem.SelectedIndex = item.Item + 1;
+                            break;
+                    }
 
-                if (type == ItemType.None)
-                {
-                    numericInitItemAmount.Value = 0;
-                    numericInitItemAmount.Enabled = false;
+                    if (type == ItemType.None)
+                    {
+                        numericInitItemAmount.Value = 0;
+                        numericInitItemAmount.Enabled = false;
+                    }
+                    else
+                    {
+                        numericInitItemAmount.Value = item.Amount;
+                        numericInitItemAmount.Enabled = true;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    numericInitItemAmount.Value = item.Amount;
-                    numericInitItemAmount.Enabled = true;
+                    MessageDialog.ShowException(ex, "Loading item data");
                 }
                 loading = false;
             }
@@ -1425,34 +1468,41 @@ namespace FF7Scarlet.KernelEditor
             {
                 loading = true;
 
-                //get data to edit
-                InventoryMateria materia;
-                ComboBox comboBox;
-                Button editButton;
+                try
+                {
+                    //get data to edit
+                    InventoryMateria materia;
+                    ComboBox comboBox;
+                    Button editButton;
 
-                if (isStolen)
-                {
-                    materia = kernel.InitialData.StolenMateria[i];
-                    comboBox = comboBoxInitMateriaStolen;
-                    editButton = buttonInitMateriaStolenEdit;
-                }
-                else
-                {
-                    materia = kernel.InitialData.Materia[i];
-                    comboBox = comboBoxInitMateria;
-                    editButton = buttonInitMateriaEdit;
-                }
+                    if (isStolen)
+                    {
+                        materia = kernel.InitialData.StolenMateria[i];
+                        comboBox = comboBoxInitMateriaStolen;
+                        editButton = buttonInitMateriaStolenEdit;
+                    }
+                    else
+                    {
+                        materia = kernel.InitialData.Materia[i];
+                        comboBox = comboBoxInitMateria;
+                        editButton = buttonInitMateriaEdit;
+                    }
 
-                comboBox.Enabled = true;
-                if (materia.Index == 0xFF)
-                {
-                    comboBox.SelectedIndex = 0;
-                    editButton.Enabled = false;
+                    comboBox.Enabled = true;
+                    if (materia.Index == 0xFF)
+                    {
+                        comboBox.SelectedIndex = 0;
+                        editButton.Enabled = false;
+                    }
+                    else
+                    {
+                        comboBox.SelectedIndex = materia.Index + 1;
+                        editButton.Enabled = true;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    comboBox.SelectedIndex = materia.Index + 1;
-                    editButton.Enabled = true;
+                    MessageDialog.ShowException(ex, "Loading materia data");
                 }
                 loading = false;
             }
@@ -1525,48 +1575,55 @@ namespace FF7Scarlet.KernelEditor
         {
             bool wasAlreadyLoading = loading;
             loading = true;
-            var s = Kernel.GetDataSection(section);
-            if (listBoxes.ContainsKey(s))
+            try
             {
-                int i = listBoxes[s].SelectedIndex;
-                listBoxes[s].SuspendLayout();
-                listBoxes[s].Items.Clear();
-                var names = kernel.GetAssociatedNames(s);
-                if (names != null)
+                var s = Kernel.GetDataSection(section);
+                if (listBoxes.ContainsKey(s))
                 {
-                    int top = 0, bottom = names.Length, j;
-                    bool summons = false;
-                    if (section == KernelSection.AttackData) //offset for attacks
+                    int i = listBoxes[s].SelectedIndex;
+                    listBoxes[s].SuspendLayout();
+                    listBoxes[s].Items.Clear();
+                    var names = kernel.GetAssociatedNames(s);
+                    if (names != null)
                     {
-                        top = AttackOffset;
-                        bottom = AttackOffset + AttackCount;
-                        summons = SelectedAttackType == AttackTypes.Summon;
-                        if (summons) { bottom -= 2; }
-                    }
+                        int top = 0, bottom = names.Length, j;
+                        bool summons = false;
+                        if (section == KernelSection.AttackData) //offset for attacks
+                        {
+                            top = AttackOffset;
+                            bottom = AttackOffset + AttackCount;
+                            summons = SelectedAttackType == AttackTypes.Summon;
+                            if (summons) { bottom -= 2; }
+                        }
 
-                    for (j = top; j < bottom; ++j)
-                    {
-                        listBoxes[s].Items.Add(names[j].ToString(DisplayJapaneseText));
-                    }
-                    if (summons) //add extra limits
-                    {
-                        for (j = Kernel.SPECIAL_SUMMON_OFFSET; j < Kernel.SPECIAL_SUMMON_OFFSET + 2; ++j)
+                        for (j = top; j < bottom; ++j)
                         {
                             listBoxes[s].Items.Add(names[j].ToString(DisplayJapaneseText));
                         }
-                    }
-
-                    //re-set previously selected item
-                    listBoxes[s].SelectedIndex = i;
-                    if (nameTextBoxes.ContainsKey(s))
-                    {
-                        if (i >= 0 && i < listBoxes[s].Items.Count)
+                        if (summons) //add extra limits
                         {
-                            nameTextBoxes[s].Text = names[i + top].ToString(DisplayJapaneseText);
+                            for (j = Kernel.SPECIAL_SUMMON_OFFSET; j < Kernel.SPECIAL_SUMMON_OFFSET + 2; ++j)
+                            {
+                                listBoxes[s].Items.Add(names[j].ToString(DisplayJapaneseText));
+                            }
+                        }
+
+                        //re-set previously selected item
+                        listBoxes[s].SelectedIndex = i;
+                        if (nameTextBoxes.ContainsKey(s))
+                        {
+                            if (i >= 0 && i < listBoxes[s].Items.Count)
+                            {
+                                nameTextBoxes[s].Text = names[i + top].ToString(DisplayJapaneseText);
+                            }
                         }
                     }
+                    listBoxes[s].ResumeLayout();
                 }
-                listBoxes[s].ResumeLayout();
+            }
+            catch (Exception ex)
+            {
+                MessageDialog.ShowException(ex, "Updating names");
             }
             if (!wasAlreadyLoading) { loading = false; }
         }
@@ -1579,14 +1636,21 @@ namespace FF7Scarlet.KernelEditor
         {
             bool wasAlreadyLoading = loading;
             loading = true;
-            var s = Kernel.GetDataSection(section);
-            if (listBoxes.ContainsKey(s) && descriptionTextBoxes.ContainsKey(s))
+            try
             {
-                int i = listBoxes[s].SelectedIndex;
-                if (i >= 0 && i < kernel.GetCount(s))
+                var s = Kernel.GetDataSection(section);
+                if (listBoxes.ContainsKey(s) && descriptionTextBoxes.ContainsKey(s))
                 {
-                    descriptionTextBoxes[s].Text = kernel.GetAssociatedDescriptions(s)[i].ToString(DisplayJapaneseText);
+                    int i = listBoxes[s].SelectedIndex;
+                    if (i >= 0 && i < kernel.GetCount(s))
+                    {
+                        descriptionTextBoxes[s].Text = kernel.GetAssociatedDescriptions(s)[i].ToString(DisplayJapaneseText);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageDialog.ShowException(ex, "Updating description");
             }
             if (!wasAlreadyLoading) { loading = false; }
         }
@@ -1604,14 +1668,20 @@ namespace FF7Scarlet.KernelEditor
                 PopulateInitCharacterDataTab(SelectedCharacterIndex);
             }
             PopulateInventoryListBoxes();
-            if (kernel.InitialData.Party1 == 0xFF) { comboBoxParty1.SelectedIndex = 0; }
-            else { comboBoxParty1.SelectedIndex = kernel.InitialData.Party1 + 1; }
-            if (kernel.InitialData.Party2 == 0xFF) { comboBoxParty2.SelectedIndex = 0; }
-            else { comboBoxParty2.SelectedIndex = kernel.InitialData.Party2 + 1; }
-            if (kernel.InitialData.Party3 == 0xFF) { comboBoxParty3.SelectedIndex = 0; }
-            else { comboBoxParty3.SelectedIndex = kernel.InitialData.Party3 + 1; }
-            numericStartingGil.Value = kernel.InitialData.Gil;
-
+            try
+            {
+                if (kernel.InitialData.Party1 == 0xFF) { comboBoxParty1.SelectedIndex = 0; }
+                else { comboBoxParty1.SelectedIndex = kernel.InitialData.Party1 + 1; }
+                if (kernel.InitialData.Party2 == 0xFF) { comboBoxParty2.SelectedIndex = 0; }
+                else { comboBoxParty2.SelectedIndex = kernel.InitialData.Party2 + 1; }
+                if (kernel.InitialData.Party3 == 0xFF) { comboBoxParty3.SelectedIndex = 0; }
+                else { comboBoxParty3.SelectedIndex = kernel.InitialData.Party3 + 1; }
+                numericStartingGil.Value = kernel.InitialData.Gil;
+            }
+            catch (Exception ex)
+            {
+                MessageDialog.ShowException(ex, "Loading party data");
+            }
 
             if (!wasAlreadyLoading) { loading = false; }
         }
@@ -1634,27 +1704,34 @@ namespace FF7Scarlet.KernelEditor
         {
             bool wasAlreadyLoading = loading;
             loading = true;
-            int i = listBoxBattleText.SelectedIndex;
-
-            listBoxBattleText.SuspendLayout();
-            listBoxBattleText.Items.Clear();
-
-            foreach (var t in kernel.BattleText.Strings)
+            try
             {
-                try
+                int i = listBoxBattleText.SelectedIndex;
+
+                listBoxBattleText.SuspendLayout();
+                listBoxBattleText.Items.Clear();
+
+                foreach (var t in kernel.BattleText.Strings)
                 {
-                    listBoxBattleText.Items.Add(t.ToString(DisplayJapaneseText));
+                    try
+                    {
+                        listBoxBattleText.Items.Add(t.ToString(DisplayJapaneseText));
+                    }
+                    catch
+                    {
+                        listBoxBattleText.Items.Add("(error parsing text)");
+                    }
                 }
-                catch
+
+                listBoxBattleText.SelectedIndex = i;
+                if (i >= 0 && i < kernel.BattleText.Strings.Length)
                 {
-                    listBoxBattleText.Items.Add("(error parsing text)");
+                    textBoxBattleText.Text = kernel.BattleText.Strings[i].ToString(DisplayJapaneseText);
                 }
             }
-
-            listBoxBattleText.SelectedIndex = i;
-            if (i >= 0 && i < kernel.BattleText.Strings.Length)
+            catch (Exception ex)
             {
-                textBoxBattleText.Text = kernel.BattleText.Strings[i].ToString(DisplayJapaneseText);
+                MessageDialog.ShowException(ex, "Updating battle text");
             }
 
             if (!wasAlreadyLoading) { loading = false; }
@@ -1667,22 +1744,30 @@ namespace FF7Scarlet.KernelEditor
         {
             bool wasAlreadyLoading = loading;
             loading = true;
-            int i = listBoxLimitBreaks.SelectedIndex, j;
 
-            listBoxLimitBreaks.SuspendLayout();
-            listBoxLimitBreaks.Items.Clear();
-
-            for (j = Kernel.ATTACK_COUNT; j < kernel.MagicNames.Strings.Length; ++j)
+            try
             {
-                listBoxLimitBreaks.Items.Add(kernel.MagicNames.Strings[j].ToString(DisplayJapaneseText));
+                int i = listBoxLimitBreaks.SelectedIndex, j;
+
+                listBoxLimitBreaks.SuspendLayout();
+                listBoxLimitBreaks.Items.Clear();
+
+                for (j = Kernel.ATTACK_COUNT; j < kernel.MagicNames.Strings.Length; ++j)
+                {
+                    listBoxLimitBreaks.Items.Add(kernel.MagicNames.Strings[j].ToString(DisplayJapaneseText));
+                }
+
+                listBoxLimitBreaks.SelectedIndex = i;
+                j = i + Kernel.ATTACK_COUNT;
+                if (j >= Kernel.ATTACK_COUNT && j < kernel.MagicNames.Strings.Length)
+                {
+                    textBoxLimitName.Text = kernel.MagicNames.Strings[j].ToString(DisplayJapaneseText);
+                    textBoxLimitDescription.Text = kernel.MagicDescriptions.Strings[j].ToString(DisplayJapaneseText);
+                }
             }
-
-            listBoxLimitBreaks.SelectedIndex = i;
-            j = i + Kernel.ATTACK_COUNT;
-            if (j >= Kernel.ATTACK_COUNT && j < kernel.MagicNames.Strings.Length)
+            catch (Exception ex)
             {
-                textBoxLimitName.Text = kernel.MagicNames.Strings[j].ToString(DisplayJapaneseText);
-                textBoxLimitDescription.Text = kernel.MagicDescriptions.Strings[j].ToString(DisplayJapaneseText);
+                MessageDialog.ShowException(ex, "Updating limit data");
             }
 
             if (!wasAlreadyLoading) { loading = false; }
@@ -1714,8 +1799,15 @@ namespace FF7Scarlet.KernelEditor
         /// <param name="mat">The selected materia</param>
         private void UpdateMateriaSubtype(Materia mat)
         {
-            comboBoxMateriaSubtype.SelectedIndex = MateriaExt.GetSubtypeIndex(mat);
-            buttonMateriaAttributes.Enabled = MateriaExt.MateriaHasEditableAttribules(mat);
+            try
+            {
+                comboBoxMateriaSubtype.SelectedIndex = MateriaExt.GetSubtypeIndex(mat);
+                buttonMateriaAttributes.Enabled = MateriaExt.MateriaHasEditableAttribules(mat);
+            }
+            catch (Exception ex)
+            {
+                MessageDialog.ShowException(ex, "Getting materia subtype");
+            }
         }
 
         #endregion
