@@ -310,7 +310,9 @@ namespace FF7Scarlet.Shared.Controls
                     slots[slot] = newValue;
                     if (SlotSelectorType == SlotSelectorType.Slots)
                     {
-                        for (int i = 0; i < 5; ++i)
+                        int max = 4;
+                        if (DataManager.PS3TweaksEnabled) { max++; }
+                        for (int i = 0; i < max; ++i)
                         {
                             var mi = menuStrips[slot].Items[i] as ToolStripMenuItem;
                             if (mi != null)
