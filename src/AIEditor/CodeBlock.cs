@@ -187,7 +187,7 @@ namespace FF7Scarlet.AIEditor
                         if (pop1 != null && pop1.Parameter != null)
                         {
                             sb.Append($"If (1st in Stack != {block[0].Disassemble(jpText, false)})");
-                            sb.Append($" (else goto label {BitConverter.ToUInt16(pop1.Parameter)})");
+                            sb.Append($" (else goto label {HexParser.BytesToShort(pop1.Parameter)})");
                         }
                         break;
                     case Opcodes.Mask:
@@ -239,7 +239,7 @@ namespace FF7Scarlet.AIEditor
                         var parameter = block[1].GetParameter();
                         if (parameter != null)
                         {
-                            var elementName = Enum.GetName((Elements)BitConverter.ToUInt16(parameter));
+                            var elementName = Enum.GetName((Elements)HexParser.BytesToShort(parameter));
                             if (elementName == null)
                             {
                                 sb.Append($"GetElementDefense({block[0].Disassemble(jpText, false)}, Unknown ({block[1].Disassemble(jpText, false)}))");
