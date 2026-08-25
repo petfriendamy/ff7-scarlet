@@ -1775,7 +1775,7 @@ namespace FF7Scarlet.KernelEditor
 
         private void ReloadAllText()
         {
-            for (int i = 0; i < Kernel.KERNEL1_END; ++i)
+            for (int i = 0; i <= Kernel.KERNEL1_END; ++i)
             {
                 var s = (KernelSection)i;
                 UpdateNames(s);
@@ -2494,7 +2494,7 @@ namespace FF7Scarlet.KernelEditor
                 if (selected >= 0 && selected < listBoxes[curr].Items.Count)
                 {
                     loading = true;
-                    kernel.UpdateName(curr, nameTextBoxes[curr].Text, selected);
+                    kernel.UpdateName(curr, nameTextBoxes[curr].Text, selected, DisplayJapaneseText);
                     listBoxes[curr].Items[selected] = nameTextBoxes[curr].Text;
                     if (Kernel.SectionIsItems(curr))
                     {
@@ -3771,7 +3771,7 @@ namespace FF7Scarlet.KernelEditor
                     temp.MergeKernel2Data(DataManager.Kernel2Path);
                 }
 
-                kernel.CopyAllText(temp);
+                kernel.CopyAllText(temp, DisplayJapaneseText);
                 ReloadAllText();
                 useKernel2StringsToolStripMenuItem.Checked = flip;
                 SetUnsaved(true);

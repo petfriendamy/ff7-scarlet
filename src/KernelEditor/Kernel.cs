@@ -239,7 +239,7 @@ namespace FF7Scarlet.KernelEditor
             return output.ToArray();
         }
 
-        public void CopyAllText(Kernel other)
+        public void CopyAllText(Kernel other, bool isJP)
         {
             int i;
 
@@ -257,10 +257,10 @@ namespace FF7Scarlet.KernelEditor
 
                 for (int j = 0; j < count; ++j)
                 {
-                    UpdateName(s, otherNames[j], j);
+                    UpdateName(s, otherNames[j], j, isJP);
                     if (j < GetCount(s))
                     {
-                        UpdateDescription(s, otherDescs[j], j);
+                        UpdateDescription(s, otherDescs[j], j, isJP);
                     }
                 }
             }
@@ -624,7 +624,7 @@ namespace FF7Scarlet.KernelEditor
             return Array.Empty<FFText>();
         }
 
-        public void UpdateName(KernelSection section, string? name, int pos)
+        public void UpdateName(KernelSection section, string? name, int pos, bool isJP)
         {
             var ds = GetDataSection(section);
             var names = GetAssociatedNames(ds, true);
@@ -632,11 +632,11 @@ namespace FF7Scarlet.KernelEditor
             if (name != null) { n = name; }
             if (names.Length > 0)
             {
-                names[pos] = new FFText(n);
+                names[pos] = new FFText(n, isJapanese: isJP);
             }
         }
 
-        public void UpdateDescription(KernelSection section, string? desc, int pos)
+        public void UpdateDescription(KernelSection section, string? desc, int pos, bool isJP)
         {
             var ds = GetDataSection(section);
             var descs = GetAssociatedDescriptions(ds);
@@ -644,22 +644,22 @@ namespace FF7Scarlet.KernelEditor
             if (desc != null) { d = desc; }
             if (descs.Length > 0)
             {
-                descs[pos] = new FFText(d);
+                descs[pos] = new FFText(d, isJapanese: isJP);
             }
         }
 
-        public void UpdateString(KernelSection section, string? value, int pos)
+        public void UpdateString(KernelSection section, string? value, int pos, bool isJP)
         {
             var ts = GetTextSection(section);
             if (ts != null)
             {
                 if ((int)section <= DESCRIPTIONS_END)
                 {
-                    UpdateDescription(section, value, pos);
+                    UpdateDescription(section, value, pos, isJP);
                 }
                 else if ((int)section <= NAMES_END)
                 {
-                    UpdateName(section, value, pos);
+                    UpdateName(section, value, pos, isJP);
                 }
                 else
                 {
