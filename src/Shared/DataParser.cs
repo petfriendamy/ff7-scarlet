@@ -106,7 +106,7 @@ namespace FF7Scarlet.Shared
                 writer.Write(c.LuckBonus);
                 writer.Write(c.LimitLevel);
                 writer.Write(c.CurrentLimitBar);
-                writer.Write(new FFText(c.Name, CHARACTER_NAME_LENGTH).GetBytes());
+                writer.Write(c.Name.GetBytes(CHARACTER_NAME_LENGTH));
                 writer.Write(c.WeaponID);
                 writer.Write(c.ArmorID);
                 writer.Write(c.AccessoryID);
