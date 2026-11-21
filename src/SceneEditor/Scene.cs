@@ -464,7 +464,7 @@ namespace FF7Scarlet.SceneEditor
             }
 
             //make a copy of the unedited data
-            if (isJPoriginal) { GetRawData(); }
+            if (isJPoriginal) { GetRawData(true); }
             else { Array.Copy(data, rawData, UNCOMPRESSED_BLOCK_SIZE); }
         }
 
@@ -670,7 +670,7 @@ namespace FF7Scarlet.SceneEditor
             }
         }
 
-        public byte[] GetRawData()
+        public byte[] GetRawData(bool isJapanese)
         {
             try
             {
@@ -746,7 +746,7 @@ namespace FF7Scarlet.SceneEditor
                             {
                                 writer.Write(HexParser.GetNullBlock(Enemy.DATA_BLOCK_SIZE + NAME_LENGTH));
                             }
-                            else { writer.Write(e.GetRawEnemyData(true)); }
+                            else { writer.Write(e.GetRawEnemyData(true, isJapanese)); }
                         }
                     }
                     catch (IOException ex)

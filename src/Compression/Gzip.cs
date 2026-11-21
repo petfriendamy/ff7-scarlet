@@ -162,7 +162,7 @@ namespace FF7Scarlet.Compression
             return sceneList;
         }
 
-        private static byte[][] GetCompressedScenes(ref Scene[] sceneList, int start, int count, CompressionType compressionType)
+        private static byte[][] GetCompressedScenes(ref Scene[] sceneList, int start, int count, bool isJapanese, CompressionType compressionType)
         {
             if (start + count > Scene.SCENE_COUNT)
             {
@@ -171,7 +171,7 @@ namespace FF7Scarlet.Compression
             var compressed = new byte[count][];
             for (int i = start; i < start + count; ++i)
             {
-                var temp = GetCompressedData(sceneList[i].GetRawData(), compressionType);
+                var temp = GetCompressedData(sceneList[i].GetRawData(isJapanese), compressionType);
                 if (temp.Length % 4 != 0) //must be a multiple of 4
                 {
                     int len = temp.Length + 1;
@@ -241,7 +241,7 @@ namespace FF7Scarlet.Compression
             return merged.ToArray();
         }
 
-        public static byte[] CompressSceneBin(Scene[] sceneList, ref byte[] sceneLookupTable, CompressionType compressionType)
+        public static byte[] CompressSceneBin(Scene[] sceneList, ref byte[] sceneLookupTable, bool isJapanese, CompressionType compressionType)
         {
             //fill the scene lookup table with 0xFF
             for (int i = 0; i < Scene.BLOCK_COUNT; ++i)
@@ -252,7 +252,7 @@ namespace FF7Scarlet.Compression
             //write the compressed data to a file and update lookup table
             int currScene = 0, currBlock = 0;
             var output = new List<byte>();
-            var compressedScenes = GetCompressedScenes(ref sceneList, 0, Scene.SCENE_COUNT, compressionType);
+            var compressedScenes = GetCompressedScenes(ref sceneList, 0, Scene.SCENE_COUNT, isJapanese, compressionType);
             while (currScene < Scene.SCENE_COUNT && currBlock < Scene.BLOCK_COUNT)
             {
                 int len = GetTrimmedLength(ref compressedScenes, currScene);
@@ -264,9 +264,9 @@ namespace FF7Scarlet.Compression
             return output.ToArray();
         }
 
-        public static int CreateSceneChunk(Scene[] sceneList, string path, int start, int count, CompressionType compressionType)
+        public static int CreateSceneChunk(Scene[] sceneList, string path, int start, int count, bool isJapanese, CompressionType compressionType)
         {
-            var compressed = GetCompressedScenes(ref sceneList, start, count, compressionType);
+            var compressed = GetCompressedScenes(ref sceneList, start, count, isJapanese, compressionType);
             int newCount = GetTrimmedLength(ref compressed);
             File.WriteAllBytes(path, MergeCompressedScenes(ref compressed, 0, newCount));
             return newCount;

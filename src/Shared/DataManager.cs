@@ -676,12 +676,12 @@ namespace FF7Scarlet.Shared
             ScenePath = path;
         }
 
-        public static void CreateSceneBin()
+        public static void CreateSceneBin(bool isJapanese)
         {
             if (SceneFilePathExists)
             {
                 File.WriteAllBytes(ScenePath,
-                    Gzip.CompressSceneBin(sceneList, ref sceneLookupTable, CompressionType));
+                    Gzip.CompressSceneBin(sceneList, ref sceneLookupTable, isJapanese, CompressionType));
 
                 //update the scene lookup table in the kernel
                 if (!LookupTableIsCorrect())

@@ -1113,7 +1113,7 @@ namespace FF7Scarlet.SceneEditor
                     MessageDialog.ShowWarning("No kernel file is selected, so the lookup table cannot be updated. This scene.bin file may not work correctly in FF7.");
                 }
                 DataManager.UpdateAllScenes(this, sceneList);
-                DataManager.CreateSceneBin();
+                DataManager.CreateSceneBin(DisplayJapaneseText);
                 SetUnsaved(false);
             }
             catch (Exception ex)
@@ -1129,7 +1129,7 @@ namespace FF7Scarlet.SceneEditor
         {
             try
             {
-                await Task.Run(() => sceneList[pos].GetRawData());
+                await Task.Run(() => sceneList[pos].GetRawData(DisplayJapaneseText));
             }
             catch (Exception ex)
             {

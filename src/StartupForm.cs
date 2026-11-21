@@ -409,7 +409,7 @@ namespace FF7Scarlet
                     DataManager.SetFilePath(FileClass.Scene, file, isJPoriginal:isJPoriginal);
                     if (isJPoriginal)
                     {
-                        DataManager.CreateSceneBin();
+                        DataManager.CreateSceneBin(true);
                     }
                     UpdateTextBoxes(true);
                     CheckLookupTable();

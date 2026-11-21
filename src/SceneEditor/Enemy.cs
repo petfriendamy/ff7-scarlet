@@ -229,7 +229,7 @@ namespace FF7Scarlet.SceneEditor
             return true;
         }
 
-        public byte[] GetRawEnemyData(bool includeName, bool includeModelID = false)
+        public byte[] GetRawEnemyData(bool includeName, bool isJP = false, bool includeModelID = false)
         {
             int length = DATA_BLOCK_SIZE;
             if (includeName)
@@ -250,7 +250,7 @@ namespace FF7Scarlet.SceneEditor
                 }
                 if (includeName)
                 {
-                    writer.Write(Name.GetBytes(NAME_LENGTH, addSpace:true));
+                    writer.Write(Name.GetBytes(NAME_LENGTH, addSpace:!isJP));
                 }
                 writer.Write(Level);
                 writer.Write(Speed);

@@ -8,7 +8,7 @@ namespace FF7Scarlet.SceneEditor
     {
         private readonly Scene[] scenes;
         private int selectedScene;
-        private bool processing = false;
+        private bool processing = false, jpText = false;
 
         private bool Processing
         {
@@ -26,6 +26,7 @@ namespace FF7Scarlet.SceneEditor
             InitializeComponent();
             scenes = sceneList;
             selectedScene = selected;
+            this.jpText = jpText;
 
             //scene data
             for (int i = 0; i < Scene.SCENE_COUNT; ++i)
@@ -212,7 +213,7 @@ namespace FF7Scarlet.SceneEditor
                     if (result == DialogResult.OK)
                     {
                         Processing = true;
-                        int finalCount = await ExportChunk(scenes, path, start, count);
+                        int finalCount = await ExportChunk(scenes, path, start, count, jpText);
                         progressBarSaving.Value = 100;
                         if (finalCount < count)
                         {
@@ -428,7 +429,7 @@ namespace FF7Scarlet.SceneEditor
             {
                 await Task.Run(() =>
                 {
-                    var data = scenes[scene].GetRawData();
+                    var data = scenes[scene].GetRawData(jpText);
                     File.WriteAllBytes(path, data);
                 });
 
@@ -460,14 +461,14 @@ namespace FF7Scarlet.SceneEditor
             return false;
         }
 
-        private async Task<int> ExportChunk(Scene[] sceneList, string path, int start, int count)
+        private async Task<int> ExportChunk(Scene[] sceneList, string path, int start, int count, bool isJapanese)
         {
             int result = 0;
             try
             {
                 result = await Task.Run(() =>
                 {
-                    return Gzip.CreateSceneChunk(sceneList, path, start, count, DataManager.CompressionType);
+                    return Gzip.CreateSceneChunk(sceneList, path, start, count, isJapanese, DataManager.CompressionType);
                 });
             }
             catch (Exception ex)
@@ -489,7 +490,7 @@ namespace FF7Scarlet.SceneEditor
                         if (enemy != null)
                         {
                             string filePath = Path.Combine(folderPath, $"enemy.{sceneID}.{i}.bin");
-                            File.WriteAllBytes(filePath, enemy.GetRawEnemyData(true, true));
+                            File.WriteAllBytes(filePath, enemy.GetRawEnemyData(true, jpText, true));
                         }
                     }
                     return true;

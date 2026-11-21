@@ -3610,7 +3610,7 @@ namespace FF7Scarlet.KernelEditor
                                 MessageBoxIcon.Information);
                             if (count > 0)
                             {
-                                DataManager.CreateSceneBin();
+                                DataManager.CreateSceneBin(DisplayJapaneseText);
                             }
                         }
                     }
