@@ -63,9 +63,16 @@ namespace FF7Scarlet.SceneEditor
             ParseData(data, isJPoriginal);
         }
 
-        public Scene(Scene other) :base()
+        public Scene(Scene other, bool noUpdate = false, bool isJapanese = false) :base()
         {
-            ParseData(other.rawData, false);
+            if (noUpdate)
+            {
+                ParseData(other.rawData, false);
+            }
+            else
+            {
+                ParseData(other.GetRawData(isJapanese), false);
+            }
         }
 
         public bool IsEmpty()
@@ -128,22 +135,27 @@ namespace FF7Scarlet.SceneEditor
                 Enemies[i] = newEnemy;
 
                 //attempt to copy the attacks
+                var currentAttacks =
+                    (from atk in AttackList
+                     where atk != null
+                     select atk).ToArray();
+
+                var newAttacks =
+                    (from atk in attacks
+                     where atk != null && GetAttackByID((ushort)atk.Index) == null
+                     select atk).ToArray();
+
+                //check if there's enough room for the new attacks
+                if (currentAttacks.Length + newAttacks.Length > ATTACK_COUNT) { return false; }
+
+                //search for empty slots and insert the new attacks
                 int slot = 0;
-                while (AttackList[slot] != null && slot < ATTACK_COUNT)
+                for (int j = 0; j < ATTACK_COUNT && slot < newAttacks.Length; ++j)
                 {
-                    slot++;
-                }
-                for (int j = 0; j < attacks.Length; ++j)
-                {
-                    var atk = attacks[j];
-                    if (atk != null && GetAttackByID((ushort)atk.Index) == null)
+                    if (AttackList[j] == null)
                     {
-                        AttackList[slot] = DataParser.CopyAttack(atk);
-                        while (AttackList[slot] != null)
-                        {
-                            slot++;
-                            if (slot >= ATTACK_COUNT) { return false; }
-                        }
+                        AttackList[j] = DataParser.CopyAttack(newAttacks[slot]);
+                        slot++;
                     }
                 }
             }

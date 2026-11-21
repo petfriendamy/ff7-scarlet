@@ -97,7 +97,7 @@ namespace FF7Scarlet.SceneEditor
             if (DataManager.Kernel != null)
             {
                 var lookup = DataManager.Kernel.BattleAndGrowthData.SceneLookupTable;
-                int start = lookup[chunk], next = 255, count;
+                int start = lookup[chunk], next = Scene.SCENE_COUNT, count;
                 if (chunk < 63) { next = lookup[chunk + 1]; }
                 count = next - start;
 

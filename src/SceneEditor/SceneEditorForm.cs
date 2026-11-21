@@ -230,7 +230,8 @@ namespace FF7Scarlet.SceneEditor
             enemyPasteToolStripMenuItem.Enabled = DataManager.CopiedEnemy != null;
 
             //create private version of scene data that can be edited freely
-            sceneList = DataManager.CopySceneList();
+            japaneseTextToolStripMenuItem.Checked = DataManager.GlobalLanguage == Language.Japanese;
+            sceneList = DataManager.CopySceneList(true);
             this.syncedAttacks = syncedAttacks;
             lastAttackID = 0;
             LoadSceneList(0);
@@ -1112,13 +1113,13 @@ namespace FF7Scarlet.SceneEditor
                 {
                     MessageDialog.ShowWarning("No kernel file is selected, so the lookup table cannot be updated. This scene.bin file may not work correctly in FF7.");
                 }
-                DataManager.UpdateAllScenes(this, sceneList);
+                DataManager.UpdateAllScenes(this, sceneList, DisplayJapaneseText);
                 DataManager.CreateSceneBin(DisplayJapaneseText);
                 SetUnsaved(false);
             }
             catch (Exception ex)
             {
-                ExceptionHandler.Handle(ex, "saving scene");
+                ExceptionHandler.Handle(ex, "saving scene.bin");
             }
             progressBarSaving.Value = 0;
             EnableOrDisableForm(true);
@@ -2218,7 +2219,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedScene != null)
             {
-                DataManager.CopiedScene = new Scene(SelectedScene);
+                DataManager.CopiedScene = new Scene(SelectedScene, isJapanese: DisplayJapaneseText);
                 scenePasteToolStripMenuItem.Enabled = true;
             }
         }
@@ -2227,7 +2228,7 @@ namespace FF7Scarlet.SceneEditor
         {
             if (SelectedSceneIndex != -1 && DataManager.CopiedScene != null)
             {
-                sceneList[SelectedSceneIndex] = new Scene(DataManager.CopiedScene);
+                sceneList[SelectedSceneIndex] = new Scene(DataManager.CopiedScene, isJapanese: DisplayJapaneseText);
                 LoadSceneData(SelectedSceneIndex, true, true);
                 enemyNeedsSync = false;
                 attackNeedsSync = false;

@@ -37,9 +37,14 @@ namespace FF7Scarlet.SceneEditor
         {
             BattleSetupData = new BattleSetupData(other.BattleSetupData);
             CameraPlacementData = new CameraPlacementData(other.CameraPlacementData);
-            for (int i = 0; i < ENEMY_COUNT; ++i)
+            int i;
+            for (i = 0; i < ENEMY_COUNT; ++i)
             {
                 EnemyLocations[i] = new EnemyLocation(other.EnemyLocations[i]);
+            }
+            for (i = 0; i < SCRIPT_NUMBER; ++i)
+            {
+                Scripts[i] = new Script(other.Scripts[i]);
             }
         }
 

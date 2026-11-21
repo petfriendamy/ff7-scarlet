@@ -33,6 +33,7 @@ namespace FF7Scarlet.Shared
         public static ExeData? VanillaExe { get; private set; }
         public static Kernel? Kernel { get; private set; }
         public static BattleLgp? BattleLgp { get; private set; }
+        public static Language GlobalLanguage { get; set; } = Language.English;
         public static bool RememberLastOpened { get; set; } = true;
         public static CompressionType CompressionType { get; set; } = CompressionType.Standard;
         public static bool PS3TweaksEnabled { get; set; }
@@ -267,6 +268,10 @@ namespace FF7Scarlet.Shared
                                         exeDir = Directory.GetParent(temp)?.FullName;
                                     }
                                 }
+                                if (exeDir != null)
+                                {
+                                    GlobalLanguage = ExeData.GetLanguage(exeDir);
+                                }
                             }
                         }
 
@@ -383,6 +388,7 @@ namespace FF7Scarlet.Shared
                                 {
                                     ExeData = new ExeData(path);
                                     ExePath = path;
+                                    GlobalLanguage = ExeData.GetLanguage(path);
                                 }
                             }
                             return isValid;
@@ -506,26 +512,26 @@ namespace FF7Scarlet.Shared
             }
         }
 
-        public static Scene[] CopySceneList()
+        public static Scene[] CopySceneList(bool noUpdate = false)
         {
             var copy = new Scene[Scene.SCENE_COUNT];
             for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
-                copy[i] = new Scene(sceneList[i]);
+                copy[i] = new Scene(sceneList[i], noUpdate);
             }
             return copy;
         }
 
-        public static void UpdateScene(Form caller, Scene newScene, int pos)
+        public static void UpdateScene(Form caller, Scene newScene, int pos, bool isJapanese)
         {
-            sceneList[pos] = new Scene(newScene);
+            sceneList[pos] = new Scene(newScene, isJapanese: isJapanese);
         }
 
-        public static void UpdateAllScenes(Form caller, Scene[] newScenes)
+        public static void UpdateAllScenes(Form caller, Scene[] newScenes, bool isJapanese)
         {
             for (int i = 0; i < Scene.SCENE_COUNT; ++i)
             {
-                UpdateScene(caller, newScenes[i], i);
+                UpdateScene(caller, newScenes[i], i, isJapanese);
             }
         }
 
@@ -678,16 +684,25 @@ namespace FF7Scarlet.Shared
 
         public static void CreateSceneBin(bool isJapanese)
         {
-            if (SceneFilePathExists)
+            if (!SceneFilePathExists)
+            {
+                throw new FileNotFoundException("No scene.bin path was specified.");
+            }
+
+            try
             {
                 File.WriteAllBytes(ScenePath,
-                    Gzip.CompressSceneBin(sceneList, ref sceneLookupTable, isJapanese, CompressionType));
+                Gzip.CompressSceneBin(sceneList, ref sceneLookupTable, isJapanese, CompressionType));
 
                 //update the scene lookup table in the kernel
                 if (!LookupTableIsCorrect())
                 {
                     SyncLookupTable();
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create scene.bin: {ex.Message}", ex);
             }
         }
 
@@ -732,10 +747,13 @@ namespace FF7Scarlet.Shared
             }
         }
 
-        public static string GetBackupPath(string path)
+        public static string GetBackupPath(string path, int num = 0)
         {
-            string ext = Path.GetExtension(path);
-            return path.Substring(0, path.LastIndexOf('.')) + $"-bak{ext}";
+            string ext = Path.GetExtension(path),
+                newPath = Path.GetFileNameWithoutExtension(path) + "-bak";
+            if (num > 0) { newPath += num.ToString(); }
+
+            return newPath + ext;
         }
 
         public static void CreateBackupFile(string path)
@@ -747,7 +765,7 @@ namespace FF7Scarlet.Shared
                 while (File.Exists(backup))
                 {
                     i++;
-                    backup = path.Substring(0, path.LastIndexOf('-')) + $"-bak{i}.bin";
+                    backup = GetBackupPath(path, i);
                 }
                 File.Copy(path, backup);
             }

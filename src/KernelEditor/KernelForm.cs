@@ -389,6 +389,7 @@ namespace FF7Scarlet.KernelEditor
             InitializeComponent();
             Text = WINDOW_TITLE;
             FormFunctions.FixColors(this);
+            japaneseTextToolStripMenuItem.Checked = DataManager.GlobalLanguage == Language.Japanese;
 
             kernel = DataManager.CopyKernel();
             DataManager.MergeCharacterData(kernel);
@@ -3610,7 +3611,14 @@ namespace FF7Scarlet.KernelEditor
                                 MessageBoxIcon.Information);
                             if (count > 0)
                             {
-                                DataManager.CreateSceneBin(DisplayJapaneseText);
+                                try
+                                {
+                                    DataManager.CreateSceneBin(DisplayJapaneseText);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageDialog.ShowException(ex, "saving scene.bin");
+                                }
                             }
                         }
                     }

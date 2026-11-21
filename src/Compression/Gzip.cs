@@ -70,16 +70,13 @@ namespace FF7Scarlet.Compression
         private static Scene DecompressScene(byte[] compressedData, bool isJPoriginal)
         {
             var uncompressedData = new byte[Scene.UNCOMPRESSED_BLOCK_SIZE];
-            int decompressedSize;
 
             using (var inputStream = new MemoryStream(compressedData))
             using (var outputStream = new MemoryStream())
             using (var gzipper = new GZipStream(inputStream, CompressionMode.Decompress))
             {
-                while ((decompressedSize = gzipper.Read(uncompressedData, 0, Scene.UNCOMPRESSED_BLOCK_SIZE)) != 0)
-                {
-                    outputStream.Write(uncompressedData, 0, decompressedSize);
-                }
+                gzipper.CopyTo(outputStream);
+                uncompressedData = outputStream.ToArray();
             }
             return new Scene(ref uncompressedData, isJPoriginal);
         }
@@ -196,7 +193,7 @@ namespace FF7Scarlet.Compression
                 if (compressedScenes[i] != null)
                 {
                     mergedSize += (uint)compressedScenes[i].Length;
-                    if (mergedSize < Scene.COMPRESSED_BLOCK_SIZE)
+                    if (mergedSize <= Scene.COMPRESSED_BLOCK_SIZE)
                     {
                         newLength++;
                     }
@@ -256,6 +253,10 @@ namespace FF7Scarlet.Compression
             while (currScene < Scene.SCENE_COUNT && currBlock < Scene.BLOCK_COUNT)
             {
                 int len = GetTrimmedLength(ref compressedScenes, currScene);
+                if (len == 0)
+                {
+                    throw new InvalidOperationException($"Scene {currScene} was too large to compress.");
+                }
                 output.AddRange(MergeCompressedScenes(ref compressedScenes, currScene, len));
                 sceneLookupTable[currBlock] = (byte)currScene;
                 currScene += len;

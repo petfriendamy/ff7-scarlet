@@ -1881,13 +1881,14 @@ namespace FF7Scarlet.ExeEditor
                         }
 
                         //write AP multiplier
-                        stream.Seek(AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset() + exeOffset, SeekOrigin.Begin);
+                        long pos = AP_MULTIPLIER_POS + GetAPPriceMultiplierOffset() + exeOffset;
+                        stream.Seek(pos, SeekOrigin.Begin);
                         writer.Write(APPriceMultiplier);
-                        stream.Seek(AP_MASTER_OFFSET, SeekOrigin.Current);
+                        stream.Seek(pos + AP_MASTER_OFFSET, SeekOrigin.Begin);
                         writer.Write(APPriceMultiplier);
 
                         //write Teioh's name
-                        stream.Seek(TEIOH_POS - GetChocoboRaceOffset() + exeOffset, SeekOrigin.Begin);
+                        stream.Seek(TEIOH_POS + GetChocoboRaceOffset() + exeOffset, SeekOrigin.Begin);
                         writer.Write(ChocoboNames[GetNumChocoboNames(Language)].GetBytes(GetChocoboNameLength()));
                     }
                     IsUnedited = false;
@@ -2439,9 +2440,9 @@ namespace FF7Scarlet.ExeEditor
                         //read quit text
                         for (i = 0; i < NUM_QUIT_TEXTS_1 + NUM_QUIT_TEXTS_2; ++i)
                         {
-                            SaveMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
+                            QuitMenuTexts[i] = StringParser.GetTextFromByteArray(bytes, (int)stream.Position,
                                 QUIT_TEXT_LENGTH_1);
-                            stream.Seek(SaveMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
+                            stream.Seek(QuitMenuTexts[i].ToString().Length + 1, SeekOrigin.Current);
                         }
 
                         //read battle arena text
@@ -2738,7 +2739,7 @@ namespace FF7Scarlet.ExeEditor
                         if (disembarkDiff)
                         {
                             writer.Write($"{GetHextPosition(MODEL_CAN_DISEMBARK_POS[i]):X2} = ");
-                            foreach (var b in moveBytesNew)
+                            foreach (var b in disembarkBytesNew)
                             {
                                 writer.Write($"{b:X2} ");
                             }
